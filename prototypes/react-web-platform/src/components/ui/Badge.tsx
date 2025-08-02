@@ -7,21 +7,22 @@ function cn(...classes: (string | undefined | null | false)[]): string {
 
 // Badge variants definition (following SGS production pattern)
 const badgeVariants = {
-  base: "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  base: "inline-flex items-center justify-center rounded-md border font-semibold transition-colors focus:outline-none shadow-sm",
   variants: {
     default: "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
     secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
     destructive: "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-    outline: "text-foreground",
-    success: "border-transparent bg-green-100 text-green-800 hover:bg-green-100/80 dark:bg-green-900/30 dark:text-green-400",
-    warning: "border-transparent bg-yellow-100 text-yellow-800 hover:bg-yellow-100/80 dark:bg-yellow-900/30 dark:text-yellow-400",
-    error: "border-transparent bg-red-100 text-red-800 hover:bg-red-100/80 dark:bg-red-900/30 dark:text-red-400",
-    info: "border-transparent bg-blue-100 text-blue-800 hover:bg-blue-100/80 dark:bg-blue-900/30 dark:text-blue-400"
+    outline: "text-foreground border-muted/40",
+    success: "border-emerald-300 bg-emerald-100 text-emerald-800 hover:bg-emerald-100/80 dark:bg-emerald-900/40 dark:text-emerald-200 dark:border-emerald-600",
+    warning: "border-amber-300 bg-amber-100 text-amber-800 hover:bg-amber-100/80 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-600",
+    error: "border-red-300 bg-red-100 text-red-800 hover:bg-red-100/80 dark:bg-red-900/40 dark:text-red-200 dark:border-red-600",
+    info: "border-blue-300 bg-blue-100 text-blue-800 hover:bg-blue-100/80 dark:bg-blue-900/40 dark:text-blue-200 dark:border-blue-600"
   },
   sizes: {
-    sm: "h-5 px-2 text-xs",
-    md: "h-6 px-3 text-sm", 
-    lg: "h-8 px-4 text-base"
+    xs: "h-4 px-1.5 text-xs min-w-[24px]",
+    sm: "h-5 px-2 text-xs min-w-[32px]",
+    md: "h-6 px-3 text-sm min-w-[40px]", 
+    lg: "h-8 px-4 text-base min-w-[48px]"
   }
 }
 

@@ -16,43 +16,31 @@ export function InventoryBadge({
   showPercentage = false,
   format = 'available'
 }: InventoryBadgeProps) {
-  const { percentage, colorClasses, variant } = useMemo(() => {
+  const { percentage, variant } = useMemo(() => {
     if (total === 0) {
       return {
         percentage: 0,
-        colorClasses: 'bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600',
         variant: 'default' as const
       }
     }
 
     const pct = Math.round((available / total) * 100)
     
-    let colorClasses: string
     let variant: 'default' | 'success' | 'warning' | 'error'
     
     if (pct >= 70) {
-      // Green - plenty available (more vibrant)
-      colorClasses = 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-900/40 dark:text-emerald-200 dark:border-emerald-600'
       variant = 'success'
     } else if (pct >= 40) {
-      // Yellow - moderate availability (warmer tone)
-      colorClasses = 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-600'
       variant = 'warning'
     } else if (pct >= 15) {
-      // Orange - low availability (more vibrant)
-      colorClasses = 'bg-orange-100 text-orange-800 border-orange-300 dark:bg-orange-900/40 dark:text-orange-200 dark:border-orange-600'
       variant = 'warning'
     } else if (pct > 0) {
-      // Red - very low availability (more vibrant)
-      colorClasses = 'bg-red-100 text-red-800 border-red-300 dark:bg-red-900/40 dark:text-red-200 dark:border-red-600'
       variant = 'error'
     } else {
-      // Deep red - none available (stronger signal)
-      colorClasses = 'bg-red-200 text-red-900 border-red-400 dark:bg-red-900/60 dark:text-red-100 dark:border-red-500'
       variant = 'error'
     }
 
-    return { percentage: pct, colorClasses, variant }
+    return { percentage: pct, variant }
   }, [available, total])
 
   const displayText = useMemo(() => {
@@ -72,16 +60,14 @@ export function InventoryBadge({
   }, [available, total, percentage])
 
   return (
-    <div className="flex items-center justify-center w-full">
-      <Badge
-        variant={variant}
-        size="sm"
-        className={`font-mono font-bold text-xs px-2 py-1 rounded-md border shadow-sm min-w-[50px] text-center justify-center ${colorClasses} ${className}`}
-        title={tooltipText}
-      >
-        <span className="w-full text-center">{displayText}</span>
-      </Badge>
-    </div>
+    <Badge
+      variant={variant}
+      size="sm"
+      className={`font-mono ${className}`}
+      title={tooltipText}
+    >
+      {displayText}
+    </Badge>
   )
 }
 

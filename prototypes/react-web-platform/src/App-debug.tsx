@@ -1,10 +1,5 @@
 import { ThemeProvider } from './lib/theme/provider'
 import { useTheme } from './lib/theme/provider'
-import { StockDashboard } from './domains/stocks'
-import { NewsDashboard } from './domains/news'
-import { VolunteerDashboard } from './domains/volunteers'
-import { GitaStudyDashboard } from './domains/gita'
-import { ErrorBoundary } from './components/ErrorBoundary'
 
 function ThemeToggle() {
   const { theme, setTheme, resolvedTheme, platform } = useTheme()
@@ -59,39 +54,8 @@ function AppContent() {
           <div className="p-4 border rounded-lg">
             <h2 className="text-lg font-semibold mb-2">Debug Info</h2>
             <p className="text-sm text-muted-foreground">
-              Basic app structure is working. Testing Stock Dashboard...
+              If you can see this, the basic app structure is working.
             </p>
-          </div>
-          
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">🕉️ Bhagavad Gita Study Management</h2>
-            <p className="text-sm text-muted-foreground">
-              Comprehensive testing of ALL DataTable and UnifiedInlineEditor features through Sanskrit study tracking
-            </p>
-            <ErrorBoundary name="GitaStudyDashboard">
-              <GitaStudyDashboard />
-            </ErrorBoundary>
-          </div>
-          
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Stock Market Dashboard</h2>
-            <ErrorBoundary name="StockDashboard">
-              <StockDashboard />
-            </ErrorBoundary>
-          </div>
-          
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Breaking News Dashboard</h2>
-            <ErrorBoundary name="NewsDashboard">
-              <NewsDashboard />
-            </ErrorBoundary>
-          </div>
-          
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Volunteer T-shirt Management</h2>
-            <ErrorBoundary name="VolunteerDashboard">
-              <VolunteerDashboard />
-            </ErrorBoundary>
           </div>
         </div>
       </div>

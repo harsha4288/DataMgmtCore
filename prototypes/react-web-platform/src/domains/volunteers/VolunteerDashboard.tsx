@@ -24,12 +24,16 @@ interface Volunteer extends Record<string, unknown> {
   tshirt_xxl_max: number
   tshirt_xxl_issued: number
   
+  // Calculated fields for display
+  preferences: string
+  
   // Event participation
   events_assigned: number
   hours_logged: number
 }
 
 export function VolunteerDashboard() {
+  console.log('VolunteerDashboard: Component starting to render')
   const [loading, setLoading] = useState(false)
   const [volunteers, setVolunteers] = useState<Volunteer[]>([])
 
@@ -49,6 +53,7 @@ export function VolunteerDashboard() {
           tshirt_l_max: 8, tshirt_l_issued: 5,
           tshirt_xl_max: 3, tshirt_xl_issued: 2,
           tshirt_xxl_max: 1, tshirt_xxl_issued: 0,
+          preferences: '11/19',
           events_assigned: 4,
           hours_logged: 24
         },
@@ -63,6 +68,7 @@ export function VolunteerDashboard() {
           tshirt_l_max: 6, tshirt_l_issued: 4,
           tshirt_xl_max: 4, tshirt_xl_issued: 3,
           tshirt_xxl_max: 2, tshirt_xxl_issued: 1,
+          preferences: '11/16',
           events_assigned: 6,
           hours_logged: 32
         },
@@ -77,6 +83,7 @@ export function VolunteerDashboard() {
           tshirt_l_max: 5, tshirt_l_issued: 2,
           tshirt_xl_max: 2, tshirt_xl_issued: 0,
           tshirt_xxl_max: 1, tshirt_xxl_issued: 0,
+          preferences: '3/15',
           events_assigned: 2,
           hours_logged: 8
         },
@@ -91,6 +98,7 @@ export function VolunteerDashboard() {
           tshirt_l_max: 7, tshirt_l_issued: 6,
           tshirt_xl_max: 5, tshirt_xl_issued: 4,
           tshirt_xxl_max: 3, tshirt_xxl_issued: 2,
+          preferences: '14/17',
           events_assigned: 5,
           hours_logged: 28
         },
@@ -105,6 +113,7 @@ export function VolunteerDashboard() {
           tshirt_l_max: 6, tshirt_l_issued: 4,
           tshirt_xl_max: 2, tshirt_xl_issued: 1,
           tshirt_xxl_max: 1, tshirt_xxl_issued: 0,
+          preferences: '7/14',
           events_assigned: 3,
           hours_logged: 18
         },
@@ -119,6 +128,7 @@ export function VolunteerDashboard() {
           tshirt_l_max: 4, tshirt_l_issued: 2,
           tshirt_xl_max: 3, tshirt_xl_issued: 2,
           tshirt_xxl_max: 2, tshirt_xxl_issued: 1,
+          preferences: '9/14',
           events_assigned: 4,
           hours_logged: 22
         },
@@ -133,6 +143,7 @@ export function VolunteerDashboard() {
           tshirt_l_max: 7, tshirt_l_issued: 3,
           tshirt_xl_max: 4, tshirt_xl_issued: 2,
           tshirt_xxl_max: 2, tshirt_xxl_issued: 1,
+          preferences: '7/19',
           events_assigned: 2,
           hours_logged: 12
         },
@@ -147,6 +158,7 @@ export function VolunteerDashboard() {
           tshirt_l_max: 8, tshirt_l_issued: 5,
           tshirt_xl_max: 6, tshirt_xl_issued: 4,
           tshirt_xxl_max: 3, tshirt_xxl_issued: 2,
+          preferences: '14/20',
           events_assigned: 7,
           hours_logged: 35
         },
@@ -161,6 +173,7 @@ export function VolunteerDashboard() {
           tshirt_l_max: 5, tshirt_l_issued: 3,
           tshirt_xl_max: 2, tshirt_xl_issued: 1,
           tshirt_xxl_max: 1, tshirt_xxl_issued: 0,
+          preferences: '6/13',
           events_assigned: 3,
           hours_logged: 16
         },
@@ -175,6 +188,7 @@ export function VolunteerDashboard() {
           tshirt_l_max: 9, tshirt_l_issued: 6,
           tshirt_xl_max: 4, tshirt_xl_issued: 3,
           tshirt_xxl_max: 2, tshirt_xxl_issued: 1,
+          preferences: '15/22',
           events_assigned: 6,
           hours_logged: 30
         }
@@ -262,7 +276,7 @@ export function VolunteerDashboard() {
     )
   }
 
-  const [columns, setColumns] = useState<Column<Volunteer>[]>([
+  const columns: Column<Volunteer>[] = [
     {
       key: 'name',
       label: 'Volunteer Name',
@@ -541,7 +555,7 @@ export function VolunteerDashboard() {
         />
       )
     }
-  ])
+  ]
 
   // Bulk actions for volunteer management
   const bulkActions: BulkAction<Volunteer>[] = [
@@ -651,7 +665,6 @@ export function VolunteerDashboard() {
           reorderable: true
         }}
         onColumnsChange={(newColumns) => {
-          setColumns(newColumns)
           console.log('Column order changed:', newColumns.map(c => c.key))
         }}
         selection={{

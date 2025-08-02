@@ -47,26 +47,32 @@ export function UnifiedInlineEditor({
   const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Get responsive sizing for buttons and icons - compact sizing
+  // Professional responsive sizing system for DataTable consistency
   const getSizing = useCallback((size: 'sm' | 'md' | 'lg') => {
     switch (size) {
       case 'sm':
         return {
-          buttonClass: 'h-4 w-4 min-h-[16px] min-w-[16px]',
-          iconClass: 'h-2 w-2 stroke-[2px]',
-          shirtClass: 'h-2.5 w-2.5 stroke-[1.5px]'
+          buttonClass: 'h-6 w-6 min-h-[24px] min-w-[24px]',
+          iconClass: 'h-3 w-3 stroke-[2px]',
+          shirtClass: 'h-3 w-3 stroke-[1.5px]',
+          textClass: 'text-xs',
+          containerClass: 'gap-1'
         }
       case 'lg':
         return {
-          buttonClass: 'h-5 w-5 min-h-[20px] min-w-[20px]',
-          iconClass: 'h-2.5 w-2.5 stroke-[2px]', 
-          shirtClass: 'h-3 w-3 stroke-[1.5px]'
+          buttonClass: 'h-8 w-8 min-h-[32px] min-w-[32px]',
+          iconClass: 'h-4 w-4 stroke-[2px]', 
+          shirtClass: 'h-4 w-4 stroke-[1.5px]',
+          textClass: 'text-sm',
+          containerClass: 'gap-2'
         }
       default: // md
         return {
-          buttonClass: 'h-4 w-4 min-h-[16px] min-w-[16px]',
-          iconClass: 'h-2 w-2 stroke-[2px]',
-          shirtClass: 'h-2.5 w-2.5 stroke-[1.5px]'
+          buttonClass: 'h-7 w-7 min-h-[28px] min-w-[28px]',
+          iconClass: 'h-3.5 w-3.5 stroke-[2px]',
+          shirtClass: 'h-3.5 w-3.5 stroke-[1.5px]',
+          textClass: 'text-sm',
+          containerClass: 'gap-1.5'
         }
     }
   }, [])
@@ -225,28 +231,28 @@ export function UnifiedInlineEditor({
     const currentValue = Number(value) || 0
     const canDecrement = min === undefined || currentValue > min
     const canIncrement = max === undefined || currentValue < max
-    const sizing = getSizing('sm') // Controls are always small for compactness
+    const controlSizing = getSizing(tshirtButtonSize) // Use consistent sizing
 
     return (
       <>
         <Button
           variant="outline"
           size="sm"
-          className={`${sizing.buttonClass} p-0 bg-white hover:bg-red-50 border-2 border-red-500 text-red-600 hover:text-red-700 hover:border-red-600 transition-all duration-200 shadow-sm`}
+          className={`${controlSizing.buttonClass} p-0 bg-white hover:bg-red-50 border border-red-400 text-red-600 hover:text-red-700 hover:border-red-500 transition-colors shadow-sm`}
           onClick={handleDecrement}
           disabled={!canDecrement || disabled || isSaving}
         >
-          <Minus className={`${sizing.iconClass}`} />
+          <Minus className={`${controlSizing.iconClass}`} />
         </Button>
         
         <Button
           variant="outline"
           size="sm"
-          className={`${sizing.buttonClass} p-0 bg-white hover:bg-green-50 border-2 border-green-500 text-green-600 hover:text-green-700 hover:border-green-600 transition-all duration-200 shadow-sm`}
+          className={`${controlSizing.buttonClass} p-0 bg-white hover:bg-green-50 border border-green-400 text-green-600 hover:text-green-700 hover:border-green-500 transition-colors shadow-sm`}
           onClick={handleIncrement}
           disabled={!canIncrement || disabled || isSaving}
         >
-          <Plus className={`${sizing.iconClass}`} />
+          <Plus className={`${controlSizing.iconClass}`} />
         </Button>
       </>
     )
@@ -294,29 +300,29 @@ export function UnifiedInlineEditor({
     )
 
     if (controlsPosition === 'between' && showControls) {
-      const sizing = getSizing('sm') // Use small size for better table fit
+      const betweenSizing = getSizing(tshirtButtonSize) // Consistent sizing
       return (
-        <div className="relative flex items-center justify-center gap-0.5 bg-muted/30 rounded px-1 py-0.5 min-w-[64px]">
+        <div className={`relative flex items-center justify-center ${betweenSizing.containerClass} bg-muted/30 rounded px-1 py-0.5 min-w-[70px]`}>
           <Button
             variant="outline"
             size="sm"
-            className={`${sizing.buttonClass} p-0 bg-white hover:bg-red-50 border-2 border-red-500 text-red-600 hover:text-red-700 hover:border-red-600 transition-all duration-200 shadow-sm flex items-center justify-center`}
+            className={`${betweenSizing.buttonClass} p-0 bg-white hover:bg-red-50 border-2 border-red-500 text-red-600 hover:text-red-700 hover:border-red-600 transition-all duration-200 shadow-sm flex items-center justify-center`}
             onClick={handleDecrement}
             disabled={!((Number(value) || 0) > (min || 0)) || disabled || isSaving}
           >
-            <Minus className={`${sizing.iconClass} flex-shrink-0`} />
+            <Minus className={`${betweenSizing.iconClass} flex-shrink-0`} />
           </Button>
           
-          <span className="w-8 text-center font-mono text-sm font-semibold">{value}</span>
+          <span className={`w-8 text-center font-mono font-semibold ${betweenSizing.textClass}`}>{value}</span>
           
           <Button
             variant="outline"
             size="sm"
-            className={`${sizing.buttonClass} p-0 bg-white hover:bg-green-50 border-2 border-green-500 text-green-600 hover:text-green-700 hover:border-green-600 transition-all duration-200 shadow-sm flex items-center justify-center`}
+            className={`${betweenSizing.buttonClass} p-0 bg-white hover:bg-green-50 border-2 border-green-500 text-green-600 hover:text-green-700 hover:border-green-600 transition-all duration-200 shadow-sm flex items-center justify-center`}
             onClick={handleIncrement}
             disabled={!((Number(value) || 0) < (max || Infinity)) || disabled || isSaving}
           >
-            <Plus className={`${sizing.iconClass} flex-shrink-0`} />
+            <Plus className={`${betweenSizing.iconClass} flex-shrink-0`} />
           </Button>
         </div>
       )
@@ -325,16 +331,16 @@ export function UnifiedInlineEditor({
     return (
       <div className="relative flex items-center gap-1">
         {controlsPosition === 'around' && showControls && (() => {
-          const sizing = getSizing('sm')
+          const aroundSizing = getSizing(tshirtButtonSize)
           return (
             <Button
               variant="outline"
               size="sm"
-              className={`${sizing.buttonClass} p-0 bg-white hover:bg-red-50 border-2 border-red-500 text-red-600 hover:text-red-700 hover:border-red-600 transition-all duration-200 shadow-sm flex items-center justify-center`}
+              className={`${aroundSizing.buttonClass} p-0 bg-white hover:bg-red-50 border border-red-400 text-red-600 hover:text-red-700 hover:border-red-500 transition-colors shadow-sm flex-shrink-0`}
               onClick={handleDecrement}
               disabled={!((Number(value) || 0) > (min || 0)) || disabled || isSaving}
             >
-              <Minus className={`${sizing.iconClass} flex-shrink-0`} />
+              <Minus className={`${aroundSizing.iconClass}`} />
             </Button>
           )
         })()}
@@ -342,16 +348,16 @@ export function UnifiedInlineEditor({
         {inputElement}
 
         {controlsPosition === 'around' && showControls && (() => {
-          const sizing = getSizing('sm')
+          const aroundSizing = getSizing(tshirtButtonSize)
           return (
             <Button
               variant="outline"
               size="sm"
-              className={`${sizing.buttonClass} p-0 bg-white hover:bg-green-50 border-2 border-green-500 text-green-600 hover:text-green-700 hover:border-green-600 transition-all duration-200 shadow-sm flex items-center justify-center`}
+              className={`${aroundSizing.buttonClass} p-0 bg-white hover:bg-green-50 border border-green-400 text-green-600 hover:text-green-700 hover:border-green-500 transition-colors shadow-sm flex-shrink-0`}
               onClick={handleIncrement}
               disabled={!((Number(value) || 0) < (max || Infinity)) || disabled || isSaving}
             >
-              <Plus className={`${sizing.iconClass} flex-shrink-0`} />
+              <Plus className={`${aroundSizing.iconClass}`} />
             </Button>
           )
         })()}
@@ -365,16 +371,17 @@ export function UnifiedInlineEditor({
 
   // Show T-shirt button for zero quantities (production pattern)
   if (showTShirtButton && isZeroQuantity) {
+    const sizing = getSizing(tshirtButtonSize)
     return (
       <Button
         variant="outline"
         size="sm"
-        className="h-6 w-6 p-0 hover:bg-accent/20 text-muted-foreground hover:text-primary transition-colors"
+        className={`${sizing.buttonClass} p-0 hover:bg-accent/20 text-muted-foreground hover:text-primary transition-colors`}
         disabled={disabled || isSaving}
         onClick={onIncrement || (() => handleIncrement())}
         title="Add T-shirt"
       >
-        <Shirt className="h-3.5 w-3.5" />
+        <Shirt className={`${sizing.shirtClass}`} />
       </Button>
     )
   }

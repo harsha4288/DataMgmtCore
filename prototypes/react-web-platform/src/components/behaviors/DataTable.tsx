@@ -755,7 +755,7 @@ export function DataTable<T extends Record<string, unknown>>({
         <>
           {/* Table */}
           <div 
-            className="overflow-auto border border-muted/40 dark:border-muted/30 rounded-md"
+            className="overflow-auto border border-muted/50 dark:border-muted/40 rounded-lg shadow-sm bg-background"
             style={{ maxHeight: maxHeight }}
           >
             <table ref={tableRef} className={`w-full bg-background text-foreground border-collapse ${
@@ -764,7 +764,7 @@ export function DataTable<T extends Record<string, unknown>>({
               <thead className={frozenHeader ? 'sticky top-0 z-[52]' : ''}>
                 {/* Group Headers Row (if any columns have groupHeader) */}
                 {Object.keys(groupedColumns?.groups || {}).length > 0 && (
-                  <tr className={`border-b bg-muted/15 dark:bg-muted/8 ${frozenHeader ? 'sticky top-0 z-[52]' : ''}`}>
+                  <tr className={`border-b border-muted/40 dark:border-muted/30 bg-muted/20 dark:bg-muted/10 ${frozenHeader ? 'sticky top-0 z-[52]' : ''}`}>
                     {/* Selection column spacer */}
                     {selection.enabled && (
                       <th 
@@ -792,11 +792,11 @@ export function DataTable<T extends Record<string, unknown>>({
                             <th
                               key={column.groupHeader}
                               colSpan={groupColumns.length}
-                              className="px-2 py-1 text-center font-medium bg-muted/25 dark:bg-muted/15 border-l border-r border-muted/40 dark:border-muted/30 text-foreground"
-                              style={{ width: `${groupWidth}px`, minWidth: `${groupWidth}px` }}
+                              className="px-3 py-2 text-center font-semibold bg-muted/30 dark:bg-muted/20 border-l border-r border-muted/50 dark:border-muted/40 text-foreground text-xs shadow-sm"
+                              style={{ width: `${groupWidth}px`, minWidth: `${groupWidth}px`, minHeight: '32px' }}
                             >
-                              <div className="flex items-center justify-center gap-1 min-h-[24px]">
-                                <span className="text-xs font-medium leading-tight">{column.groupHeader}</span>
+                              <div className="flex items-center justify-center gap-1.5 min-h-[32px]">
+                                <span className="text-xs font-semibold leading-tight">{column.groupHeader}</span>
                               </div>
                             </th>
                           )
@@ -809,10 +809,10 @@ export function DataTable<T extends Record<string, unknown>>({
                           headers.push(
                             <th 
                               key={columnKey} 
-                              className="px-2 py-1 bg-muted/40 dark:bg-muted/20 border-r border-muted/40 dark:border-muted/30"
+                              className="px-3 py-2 bg-muted/50 dark:bg-muted/25 border-r border-muted/50 dark:border-muted/40 shadow-sm"
                               style={{ width: `${width}px`, minWidth: `${width}px` }}
                             >
-                              <div className="h-[24px] bg-muted/20 dark:bg-muted/10 rounded"></div>
+                              <div className="h-[32px] bg-gradient-to-b from-muted/40 to-muted/30 dark:from-muted/20 dark:to-muted/15 rounded border border-muted/30 shadow-sm"></div>
                             </th>
                           )
                         }
@@ -857,7 +857,7 @@ export function DataTable<T extends Record<string, unknown>>({
                         className={`${
                           deviceType === 'mobile' && responsive.compactOnMobile ? 'px-1 py-0' : 'px-1 py-0'
                         } select-none relative group text-foreground border-r border-muted/40 dark:border-muted/30 last:border-r-0 ${
-                          column.sortable !== false ? 'cursor-pointer hover:bg-muted/30 dark:hover:bg-muted/20' : ''
+                          column.sortable !== false ? 'cursor-pointer hover:bg-muted/40 dark:hover:bg-muted/25 hover:shadow-sm transition-all duration-150' : ''
                         } ${
                           column.align === 'center' ? 'text-center' :
                           column.align === 'right' ? 'text-right' : 'text-left'
@@ -881,14 +881,14 @@ export function DataTable<T extends Record<string, unknown>>({
                         onDrop={(e) => handleDrop(e, index)}
                         onClick={() => handleSort(column.key)}
                       >
-                        <div className="flex flex-col items-center gap-0.5 min-h-[32px] justify-center px-1 py-0">
+                        <div className="flex flex-col items-center gap-0.5 min-h-[40px] justify-center px-2 py-1">
                           <div className="flex items-center gap-1 w-full justify-center">
                             {columnControls.reorderable && (
                               <span className="opacity-0 group-hover:opacity-50 cursor-grab text-xs mr-1">
                                 ⋮⋮
                               </span>
                             )}
-                            <span className="text-center font-medium text-xs leading-tight">{column.label}</span>
+                            <span className="text-center font-semibold text-xs leading-tight">{column.label}</span>
                             
                             {/* Column-specific badge */}
                             {column.badge && (
@@ -938,7 +938,7 @@ export function DataTable<T extends Record<string, unknown>>({
                   return (
                     <tr
                       key={index}
-                      className={`border-b border-muted/40 dark:border-muted/30 hover:bg-muted/40 dark:hover:bg-muted/25 text-foreground transition-colors duration-150 ${
+                      className={`border-b border-muted/40 dark:border-muted/30 hover:bg-muted/50 dark:hover:bg-muted/30 text-foreground transition-all duration-200 hover:shadow-sm ${
                         isSelected ? 'bg-primary/15 dark:bg-primary/25 border-primary/30' : ''
                       } ${
                         onRowClick ? 'cursor-pointer' : ''
@@ -978,7 +978,7 @@ export function DataTable<T extends Record<string, unknown>>({
                           <td
                             key={String(column.key)}
                             className={`${
-                              deviceType === 'mobile' && responsive.compactOnMobile ? 'px-0 py-0' : 'px-0 py-0'
+                              deviceType === 'mobile' && responsive.compactOnMobile ? 'px-0 py-0.5' : 'px-0 py-1'
                             } text-foreground border-r border-muted/40 dark:border-muted/30 last:border-r-0 ${
                               column.align === 'center' ? 'text-center' :
                               column.align === 'right' ? 'text-right' : 'text-left'
@@ -997,7 +997,7 @@ export function DataTable<T extends Record<string, unknown>>({
                               column.align === 'center' ? 'flex items-center justify-center' :
                               column.align === 'right' ? 'flex items-center justify-end' : 
                               'flex items-center justify-start'
-                            } w-full h-full`}>
+                            } w-full min-h-[32px] px-2 py-1`}>
                               {renderCell(column, item, item[column.key])}
                             </div>
                           </td>
