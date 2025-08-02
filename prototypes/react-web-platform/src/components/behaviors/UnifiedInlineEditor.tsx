@@ -47,26 +47,26 @@ export function UnifiedInlineEditor({
   const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Get responsive sizing for buttons and icons - auto-fitting
+  // Get responsive sizing for buttons and icons - compact sizing
   const getSizing = useCallback((size: 'sm' | 'md' | 'lg') => {
     switch (size) {
       case 'sm':
         return {
-          buttonClass: 'h-7 w-7 min-h-[28px] min-w-[28px]',
-          iconClass: 'h-4 w-4 stroke-[2.5px]',
-          shirtClass: 'h-4 w-4 stroke-[2px]'
+          buttonClass: 'h-4 w-4 min-h-[16px] min-w-[16px]',
+          iconClass: 'h-2 w-2 stroke-[2px]',
+          shirtClass: 'h-2.5 w-2.5 stroke-[1.5px]'
         }
       case 'lg':
         return {
-          buttonClass: 'h-10 w-10 min-h-[40px] min-w-[40px]',
-          iconClass: 'h-6 w-6 stroke-[2.5px]', 
-          shirtClass: 'h-7 w-7 stroke-[2px]'
+          buttonClass: 'h-5 w-5 min-h-[20px] min-w-[20px]',
+          iconClass: 'h-2.5 w-2.5 stroke-[2px]', 
+          shirtClass: 'h-3 w-3 stroke-[1.5px]'
         }
       default: // md
         return {
-          buttonClass: 'h-8 w-8 min-h-[32px] min-w-[32px]',
-          iconClass: 'h-5 w-5 stroke-[2.5px]',
-          shirtClass: 'h-6 w-6 stroke-[2px]'
+          buttonClass: 'h-4 w-4 min-h-[16px] min-w-[16px]',
+          iconClass: 'h-2 w-2 stroke-[2px]',
+          shirtClass: 'h-2.5 w-2.5 stroke-[1.5px]'
         }
     }
   }, [])
@@ -363,51 +363,62 @@ export function UnifiedInlineEditor({
   const currentValue = Number(value) || 0
   const isZeroQuantity = type === 'quantity' && currentValue === 0
 
-  // Show T-shirt button for zero quantities
+  // Show T-shirt button for zero quantities (production pattern)
   if (showTShirtButton && isZeroQuantity) {
-    const sizing = getSizing(tshirtButtonSize)
     return (
-      <div className="flex flex-col items-center space-y-2">
-        {max && (
-          <div className="text-xs text-muted-foreground font-medium text-center">
-            MAX: {max}
-          </div>
-        )}
-        <Button
-          variant="outline"
-          className={`${sizing.buttonClass} p-1 bg-blue-50 hover:bg-blue-100 border-2 border-blue-500 text-blue-600 hover:text-blue-700 hover:border-blue-600 transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center`}
-          onClick={onIncrement || (() => handleIncrement())}
-          disabled={disabled || isSaving}
-          title={`Add item (Max: ${max})`}
+      <Button
+        variant="outline"
+        size="sm"
+        className="h-6 w-6 p-0 hover:bg-accent/20 text-muted-foreground hover:text-primary transition-colors"
+        disabled={disabled || isSaving}
+        onClick={onIncrement || (() => handleIncrement())}
+        title="Add T-shirt"
+      >
+        <Shirt className="h-3.5 w-3.5" />
+      </Button>
+    )
+  }
+
+  // For inline controls, render with gap container
+  if (controlsPosition === 'inline' && showControls) {
+    return (
+      <div className="flex items-center gap-1">
+        {renderControls()}
+        <div
+          onClick={handleClick}
+          className={`
+            ${type === 'quantity' ? 'w-12' : type === 'number' ? 'w-16' : 'min-w-[60px]'} 
+            px-1 py-0.5 text-center text-sm rounded cursor-pointer
+            hover:bg-muted/50 dark:hover:bg-muted/30 transition-colors
+            ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+            ${className}
+          `}
+          title={disabled ? 'Cannot edit' : 'Click to edit (Enter to save, Esc to cancel)'}
         >
-          <Shirt className={`${sizing.shirtClass} flex-shrink-0`} />
-        </Button>
+          <span className={type === 'quantity' || type === 'number' ? 'font-mono font-semibold' : ''}>
+            {String(value) || placeholder}
+          </span>
+        </div>
       </div>
     )
   }
 
+  // For no controls, render without gap container
   return (
-    <div className="flex items-center gap-1">
-      {controlsPosition === 'inline' && showControls && renderControls()}
-      
-      <div
-        onClick={handleClick}
-        className={`
-          ${type === 'quantity' ? 'w-12' : type === 'number' ? 'w-16' : 'min-w-[60px]'} 
-          px-1 py-0.5 text-center text-sm rounded cursor-pointer
-          hover:bg-muted/50 dark:hover:bg-muted/30 transition-colors
-          ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
-          ${className}
-        `}
-        title={disabled ? 'Cannot edit' : 'Click to edit (Enter to save, Esc to cancel)'}
-      >
-        <span className={type === 'quantity' || type === 'number' ? 'font-mono font-semibold' : ''}>
-          {type === 'quantity' && max ? `${value}` : String(value) || placeholder}
-          {type === 'quantity' && max && !isZeroQuantity && (
-            <div className="text-xs text-muted-foreground mt-0.5">MAX: {max}</div>
-          )}
-        </span>
-      </div>
+    <div
+      onClick={handleClick}
+      className={`
+        ${type === 'quantity' ? 'w-12' : type === 'number' ? 'w-16' : 'min-w-[60px]'} 
+        px-1 py-0.5 text-center text-sm rounded cursor-pointer
+        hover:bg-muted/50 dark:hover:bg-muted/30 transition-colors
+        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+        ${className}
+      `}
+      title={disabled ? 'Cannot edit' : 'Click to edit (Enter to save, Esc to cancel)'}
+    >
+      <span className={type === 'quantity' || type === 'number' ? 'font-mono font-semibold' : ''}>
+        {String(value) || placeholder}
+      </span>
     </div>
   )
 }

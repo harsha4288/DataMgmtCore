@@ -239,8 +239,7 @@ export function VolunteerDashboard() {
     const showControls = issuedNum > 0
 
     return (
-      <div className="flex flex-col items-center justify-center space-y-2 min-h-[80px] w-full px-1">
-        <UnifiedInlineEditor
+      <UnifiedInlineEditor
           value={issuedNum}
           type="quantity"
           max={max}
@@ -248,7 +247,7 @@ export function VolunteerDashboard() {
           showControls={showControls}
           controlsPosition="between"
           showTShirtButton={!showControls}
-          tshirtButtonSize="lg"
+          tshirtButtonSize="md"
           onSave={async (newValue) => {
             await handleQuantityChange(volunteer.id as number, issuedKey, newValue as number)
           }}
@@ -260,7 +259,6 @@ export function VolunteerDashboard() {
           }}
           className="text-lg font-bold font-mono"
         />
-      </div>
     )
   }
 
@@ -324,10 +322,13 @@ export function VolunteerDashboard() {
       minWidth: 80,
       maxWidth: 120,
       render: (value) => (
-        <Badge variant={
-          value === 'active' ? 'success' : 
-          value === 'pending' ? 'warning' : 'error'
-        }>
+        <Badge 
+          variant={
+            value === 'active' ? 'success' : 
+            value === 'pending' ? 'warning' : 'error'
+          }
+          size="sm"
+        >
           {String(value).toUpperCase()}
         </Badge>
       )
@@ -352,7 +353,7 @@ export function VolunteerDashboard() {
                            (volunteer.tshirt_xxl_issued as number)
         return (
           <div className="flex items-center justify-center h-full w-full">
-            <div className="text-lg font-mono font-bold text-orange-600 dark:text-orange-400 leading-none px-3 py-2 bg-orange-50 dark:bg-orange-900/20 rounded-md border border-orange-200 dark:border-orange-700 shadow-sm">
+            <div className="text-xs font-mono font-semibold text-orange-600 dark:text-orange-400 leading-none px-2 py-1 bg-orange-50 dark:bg-orange-900/20 rounded border border-orange-200 dark:border-orange-700 shadow-sm min-w-[44px] text-center">
               {totalIssued}/{totalMax}
             </div>
           </div>
@@ -487,7 +488,7 @@ export function VolunteerDashboard() {
       minWidth: 80,
       maxWidth: 110,
       render: (value) => (
-        <Badge variant="default" size="sm">
+        <Badge variant="default" size="sm" className="font-mono">
           {String(value)}
         </Badge>
       )
@@ -630,6 +631,7 @@ export function VolunteerDashboard() {
         onCellEdit={handleCellEdit}
         cellValidation={validateTShirtQuantity}
         frozenColumns={[0, 1]} // Freeze the first two columns (name and role)
+        frozenHeader={true} // Freeze the header row for scrolling
         maxHeight="calc(100vh - 300px)"
         pagination={{
           enabled: true,
@@ -658,6 +660,16 @@ export function VolunteerDashboard() {
         }}
         onSelectionChange={(selectedVolunteers) => {
           console.log('Selection changed:', selectedVolunteers.length, 'volunteers selected')
+        }}
+        responsive={{
+          enabled: true,
+          hideColumnsOnMobile: ['email', 'events_assigned', 'hours_logged'] as (keyof Volunteer)[],
+          hideColumnsOnTablet: ['events_assigned', 'hours_logged'] as (keyof Volunteer)[],
+          compactOnMobile: true,
+          breakpoints: {
+            mobile: 768,
+            tablet: 1024
+          }
         }}
       />
     </div>

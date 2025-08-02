@@ -71,6 +71,13 @@ coverage/
 tmp/
 temp/
 
+# Misc
+*.zip
+*.rar
+*.xls
+*.csv
+*.xlsx
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

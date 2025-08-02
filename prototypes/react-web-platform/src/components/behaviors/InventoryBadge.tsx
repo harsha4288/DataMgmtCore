@@ -76,10 +76,10 @@ export function InventoryBadge({
       <Badge
         variant={variant}
         size="sm"
-        className={`font-mono font-bold text-xs px-2 py-1 rounded-md border shadow-sm min-w-[50px] text-center ${colorClasses} ${className}`}
+        className={`font-mono font-bold text-xs px-2 py-1 rounded-md border shadow-sm min-w-[50px] text-center justify-center ${colorClasses} ${className}`}
         title={tooltipText}
       >
-        {displayText}
+        <span className="w-full text-center">{displayText}</span>
       </Badge>
     </div>
   )

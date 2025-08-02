@@ -101,6 +101,19 @@ export interface DataTableProps<T> {
   // Column freezing
   frozenColumns?: number[]
   maxHeight?: string
+  // Header row freezing
+  frozenHeader?: boolean
+  // Responsive design
+  responsive?: {
+    enabled: boolean
+    breakpoints?: {
+      mobile: number    // Default: 768px
+      tablet: number    // Default: 1024px
+    }
+    hideColumnsOnMobile?: (keyof T)[]   // Columns to hide on mobile
+    hideColumnsOnTablet?: (keyof T)[]   // Columns to hide on tablet
+    compactOnMobile?: boolean           // Use compact spacing on mobile
+  }
 }
 
 export function DataTable<T extends Record<string, unknown>>({
@@ -120,7 +133,9 @@ export function DataTable<T extends Record<string, unknown>>({
   onCellEdit,
   cellValidation,
   frozenColumns = [],
-  maxHeight
+  maxHeight,
+  frozenHeader = false,
+  responsive = { enabled: false }
 }: DataTableProps<T>) {
   const [sortConfig, setSortConfig] = useState<{
     key: keyof T
@@ -134,6 +149,7 @@ export function DataTable<T extends Record<string, unknown>>({
   const [draggedColumn, setDraggedColumn] = useState<number | null>(null)
   const [resizingColumn, setResizingColumn] = useState<number | null>(null)
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set())
+  const [screenWidth, setScreenWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1024)
   const tableRef = useRef<HTMLTableElement>(null)
   const resizeStartX = useRef<number>(0)
   const resizeStartWidth = useRef<number>(0)
@@ -148,6 +164,45 @@ export function DataTable<T extends Record<string, unknown>>({
     return selection.columnWidth || 48 // Default to 48px
   }, [selection.columnWidth])
 
+  // Handle responsive design
+  useEffect(() => {
+    if (!responsive.enabled) return
+    
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth)
+    }
+    
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [responsive.enabled])
+  
+  // Get current device type
+  const deviceType = useMemo(() => {
+    if (!responsive.enabled) return 'desktop'
+    
+    const mobileBreakpoint = responsive.breakpoints?.mobile || 768
+    const tabletBreakpoint = responsive.breakpoints?.tablet || 1024
+    
+    if (screenWidth < mobileBreakpoint) return 'mobile'
+    if (screenWidth < tabletBreakpoint) return 'tablet'
+    return 'desktop'
+  }, [screenWidth, responsive])
+  
+  // Filter columns based on responsive settings
+  const responsiveColumns = useMemo(() => {
+    if (!responsive.enabled) return localColumns
+    
+    return localColumns.filter(column => {
+      if (deviceType === 'mobile' && responsive.hideColumnsOnMobile?.includes(column.key)) {
+        return false
+      }
+      if (deviceType === 'tablet' && responsive.hideColumnsOnTablet?.includes(column.key)) {
+        return false
+      }
+      return true
+    })
+  }, [localColumns, deviceType, responsive])
+  
   // Calculate left offset for frozen columns
   const getFrozenLeft = useCallback((columnIndex: number) => {
     if (!isFrozenColumn(columnIndex)) return 0
@@ -161,14 +216,14 @@ export function DataTable<T extends Record<string, unknown>>({
     // Add width of all previous frozen columns
     for (let i = 0; i < columnIndex; i++) {
       if (isFrozenColumn(i)) {
-        const column = localColumns[i]
+        const column = responsiveColumns[i]
         const width = columnWidths[String(column.key)] || column.width || 150
         left += width
       }
     }
     
     return left
-  }, [isFrozenColumn, selection.enabled, getSelectionColumnWidth, localColumns, columnWidths])
+  }, [isFrozenColumn, selection.enabled, getSelectionColumnWidth, responsiveColumns, columnWidths])
 
 
 
@@ -183,7 +238,7 @@ export function DataTable<T extends Record<string, unknown>>({
     const groups: { [key: string]: Column<T>[] } = {}
     const ungrouped: Column<T>[] = []
 
-    localColumns.forEach(column => {
+    responsiveColumns.forEach(column => {
       if (column.groupHeader) {
         if (!groups[column.groupHeader]) {
           groups[column.groupHeader] = []
@@ -195,26 +250,26 @@ export function DataTable<T extends Record<string, unknown>>({
     })
 
     return { groups, ungrouped }
-  }, [localColumns])
+  }, [responsiveColumns])
 
 
   // Column management functions
   const handleColumnReorder = useCallback((fromIndex: number, toIndex: number) => {
     if (!columnControls.reorderable) return
     
-    const newColumns = [...localColumns]
+    const newColumns = [...responsiveColumns]
     const [removed] = newColumns.splice(fromIndex, 1)
     newColumns.splice(toIndex, 0, removed)
     
     setLocalColumns(newColumns)
     onColumnsChange?.(newColumns)
-  }, [localColumns, columnControls.reorderable, onColumnsChange])
+  }, [responsiveColumns, columnControls.reorderable, onColumnsChange])
 
   const handleColumnResize = useCallback((columnIndex: number, newWidth: number) => {
     if (!columnControls.resizable) return
     
-    const column = localColumns[columnIndex]
-    const minWidth = column.minWidth || 100
+    const column = responsiveColumns[columnIndex]
+    const minWidth = column.minWidth || (deviceType === 'mobile' && responsive.compactOnMobile ? 80 : 100)
     const maxWidth = column.maxWidth || 500
     const constrainedWidth = Math.max(minWidth, Math.min(maxWidth, newWidth))
     
@@ -222,20 +277,20 @@ export function DataTable<T extends Record<string, unknown>>({
       ...prev,
       [String(column.key)]: constrainedWidth
     }))
-  }, [localColumns, columnControls.resizable])
+  }, [responsiveColumns, columnControls.resizable, deviceType, responsive.compactOnMobile])
 
   // Filter and search data
   const filteredData = useMemo(() => {
     if (!search.enabled || !searchTerm) return data
 
     return data.filter(item => 
-      localColumns.some(column => {
+      responsiveColumns.some(column => {
         if (column.searchable === false) return false
         const value = item[column.key]
         return String(value).toLowerCase().includes(searchTerm.toLowerCase())
       })
     )
-  }, [data, searchTerm, localColumns, search.enabled])
+  }, [data, searchTerm, responsiveColumns, search.enabled])
 
   // Sort data
   const sortedData = useMemo(() => {
@@ -298,7 +353,7 @@ export function DataTable<T extends Record<string, unknown>>({
   }
 
   const handleSort = (key: keyof T) => {
-    const column = localColumns.find(col => col.key === key)
+    const column = responsiveColumns.find(col => col.key === key)
     if (column?.sortable === false) return
 
     setSortConfig(current => ({
@@ -338,7 +393,7 @@ export function DataTable<T extends Record<string, unknown>>({
     setResizingColumn(columnIndex)
     resizeStartX.current = e.clientX
     
-    const column = localColumns[columnIndex]
+    const column = responsiveColumns[columnIndex]
     const currentWidth = columnWidths[String(column.key)] || column.width || 150
     resizeStartWidth.current = currentWidth
     
@@ -364,9 +419,9 @@ export function DataTable<T extends Record<string, unknown>>({
   const handleExport = () => {
     if (!exportConfig.enabled) return
 
-    const headers = localColumns.map(col => col.label).join(',')
+    const headers = responsiveColumns.map(col => col.label).join(',')
     const rows = sortedData.map(item => 
-      localColumns.map(col => {
+      responsiveColumns.map(col => {
         const value = item[col.key]
         return typeof value === 'string' && value.includes(',') 
           ? `"${value}"` 
@@ -703,15 +758,17 @@ export function DataTable<T extends Record<string, unknown>>({
             className="overflow-auto border border-muted/40 dark:border-muted/30 rounded-md"
             style={{ maxHeight: maxHeight }}
           >
-            <table ref={tableRef} className="w-full text-sm bg-background text-foreground border-collapse">
-              <thead>
+            <table ref={tableRef} className={`w-full bg-background text-foreground border-collapse ${
+              deviceType === 'mobile' && responsive.compactOnMobile ? 'text-xs' : 'text-sm'
+            }`}>
+              <thead className={frozenHeader ? 'sticky top-0 z-[52]' : ''}>
                 {/* Group Headers Row (if any columns have groupHeader) */}
                 {Object.keys(groupedColumns?.groups || {}).length > 0 && (
-                  <tr className="border-b bg-muted/20 dark:bg-muted/10">
+                  <tr className={`border-b bg-muted/15 dark:bg-muted/8 ${frozenHeader ? 'sticky top-0 z-[52]' : ''}`}>
                     {/* Selection column spacer */}
                     {selection.enabled && (
                       <th 
-                        className="p-2 sticky left-0 z-[51] bg-background shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                        className={`p-2 sticky left-0 ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-background shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]`}
                         style={{ width: `${getSelectionColumnWidth()}px` }}
                       />
                     )}
@@ -721,12 +778,12 @@ export function DataTable<T extends Record<string, unknown>>({
                       const renderedColumns = new Set<string>()
                       const headers: React.ReactNode[] = []
                       
-                      localColumns.forEach((column) => {
+                      responsiveColumns.forEach((column) => {
                         const columnKey = String(column.key)
                         
                         if (column.groupHeader && !renderedColumns.has(column.groupHeader)) {
                           // Find all columns in this group
-                          const groupColumns = localColumns.filter(col => col.groupHeader === column.groupHeader)
+                          const groupColumns = responsiveColumns.filter(col => col.groupHeader === column.groupHeader)
                           const groupWidth = groupColumns.reduce((sum, col) => {
                             return sum + (columnWidths[String(col.key)] || col.width || 150)
                           }, 0)
@@ -735,11 +792,11 @@ export function DataTable<T extends Record<string, unknown>>({
                             <th
                               key={column.groupHeader}
                               colSpan={groupColumns.length}
-                              className="p-3 text-center font-semibold bg-muted/30 dark:bg-muted/20 border-l border-r border-muted/40 dark:border-muted/30 text-foreground"
+                              className="px-2 py-1 text-center font-medium bg-muted/25 dark:bg-muted/15 border-l border-r border-muted/40 dark:border-muted/30 text-foreground"
                               style={{ width: `${groupWidth}px`, minWidth: `${groupWidth}px` }}
                             >
-                              <div className="flex items-center justify-center gap-2 min-h-[32px]">
-                                <span className="text-sm font-semibold leading-tight">{column.groupHeader}</span>
+                              <div className="flex items-center justify-center gap-1 min-h-[24px]">
+                                <span className="text-xs font-medium leading-tight">{column.groupHeader}</span>
                               </div>
                             </th>
                           )
@@ -747,14 +804,16 @@ export function DataTable<T extends Record<string, unknown>>({
                           // Mark all columns in this group as rendered
                           groupColumns.forEach(col => renderedColumns.add(col.groupHeader!))
                         } else if (!column.groupHeader) {
-                          // Ungrouped column spacer
+                          // Ungrouped column spacer - enhanced visibility
                           const width = columnWidths[columnKey] || column.width || 150
                           headers.push(
                             <th 
                               key={columnKey} 
-                              className="p-2"
+                              className="px-2 py-1 bg-muted/40 dark:bg-muted/20 border-r border-muted/40 dark:border-muted/30"
                               style={{ width: `${width}px`, minWidth: `${width}px` }}
-                            ></th>
+                            >
+                              <div className="h-[24px] bg-muted/20 dark:bg-muted/10 rounded"></div>
+                            </th>
                           )
                         }
                       })
@@ -765,11 +824,11 @@ export function DataTable<T extends Record<string, unknown>>({
                 )}
                 
                 {/* Main Headers Row */}
-                <tr className="border-b border-muted/40 dark:border-muted/30 bg-background text-foreground">
+                <tr className={`border-b border-muted/40 dark:border-muted/30 bg-background text-foreground ${frozenHeader ? 'sticky top-0 z-[52]' : ''}`}>
                   {/* Selection column */}
                   {selection.enabled && (
                     <th 
-                      className="p-2 sticky left-0 z-[51] bg-background border-r border-muted/40 dark:border-muted/30"
+                      className={`p-2 sticky left-0 ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-background border-r border-muted/40 dark:border-muted/30`}
                       style={{ width: `${getSelectionColumnWidth()}px` }}
                     >
                       <input
@@ -783,7 +842,7 @@ export function DataTable<T extends Record<string, unknown>>({
                       />
                     </th>
                   )}
-                  {localColumns.map((column, index) => {
+                  {responsiveColumns.map((column, index) => {
                     const width = columnWidths[String(column.key)] || column.width || 150
                     const isFrozen = isFrozenColumn(index)
                     const frozenLeft = getFrozenLeft(index)
@@ -795,7 +854,9 @@ export function DataTable<T extends Record<string, unknown>>({
                     return (
                       <th
                         key={String(column.key)}
-                        className={`p-2 select-none relative group text-foreground border-r border-muted/40 dark:border-muted/30 last:border-r-0 ${
+                        className={`${
+                          deviceType === 'mobile' && responsive.compactOnMobile ? 'px-1 py-0' : 'px-1 py-0'
+                        } select-none relative group text-foreground border-r border-muted/40 dark:border-muted/30 last:border-r-0 ${
                           column.sortable !== false ? 'cursor-pointer hover:bg-muted/30 dark:hover:bg-muted/20' : ''
                         } ${
                           column.align === 'center' ? 'text-center' :
@@ -805,7 +866,7 @@ export function DataTable<T extends Record<string, unknown>>({
                         } ${
                           column.groupHeader ? 'border-l border-r border-muted/40 dark:border-muted/30' : ''
                         } ${
-                          isFrozen ? 'sticky z-[51] bg-background shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]' : ''
+                          isFrozen ? `sticky ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-background shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]` : ''
                         } ${
                           isFirstUnfrozen ? 'border-l-4 border-l-blue-400 dark:border-l-blue-500' : ''
                         }`}
@@ -820,14 +881,14 @@ export function DataTable<T extends Record<string, unknown>>({
                         onDrop={(e) => handleDrop(e, index)}
                         onClick={() => handleSort(column.key)}
                       >
-                        <div className="flex flex-col items-center gap-1 min-h-[50px] justify-center px-1 py-2">
+                        <div className="flex flex-col items-center gap-0.5 min-h-[32px] justify-center px-1 py-0">
                           <div className="flex items-center gap-1 w-full justify-center">
                             {columnControls.reorderable && (
                               <span className="opacity-0 group-hover:opacity-50 cursor-grab text-xs mr-1">
                                 ⋮⋮
                               </span>
                             )}
-                            <span className="flex-1 text-center font-medium text-sm leading-tight">{column.label}</span>
+                            <span className="text-center font-medium text-xs leading-tight">{column.label}</span>
                             
                             {/* Column-specific badge */}
                             {column.badge && (
@@ -904,7 +965,7 @@ export function DataTable<T extends Record<string, unknown>>({
                           />
                         </td>
                       )}
-                      {localColumns.map((column, columnIndex) => {
+                      {responsiveColumns.map((column, columnIndex) => {
                         const width = columnWidths[String(column.key)] || column.width || 150
                         const isFrozen = isFrozenColumn(columnIndex)
                         const frozenLeft = getFrozenLeft(columnIndex)
@@ -916,21 +977,29 @@ export function DataTable<T extends Record<string, unknown>>({
                         return (
                           <td
                             key={String(column.key)}
-                            className={`px-2 py-3 text-foreground border-r border-muted/40 dark:border-muted/30 last:border-r-0 ${
+                            className={`${
+                              deviceType === 'mobile' && responsive.compactOnMobile ? 'px-0 py-0' : 'px-0 py-0'
+                            } text-foreground border-r border-muted/40 dark:border-muted/30 last:border-r-0 ${
                               column.align === 'center' ? 'text-center' :
                               column.align === 'right' ? 'text-right' : 'text-left'
                             } ${
                               isFrozen ? 'sticky z-[50] bg-background shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]' : ''
                             } ${
                               isFirstUnfrozen ? 'border-l-4 border-l-blue-400 dark:border-l-blue-500' : ''
-                            } vertical-align-middle`}
+                            }`}
                             style={{ 
                               width: `${width}px`, 
                               minWidth: `${width}px`,
                               left: isFrozen ? `${frozenLeft}px` : undefined
                             }}
                           >
-                            {renderCell(column, item, item[column.key])}
+                            <div className={`${
+                              column.align === 'center' ? 'flex items-center justify-center' :
+                              column.align === 'right' ? 'flex items-center justify-end' : 
+                              'flex items-center justify-start'
+                            } w-full h-full`}>
+                              {renderCell(column, item, item[column.key])}
+                            </div>
                           </td>
                         )
                       })}

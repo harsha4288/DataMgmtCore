@@ -4,6 +4,7 @@ import { useTheme } from './lib/theme/provider'
 import { StockDashboard } from './domains/stocks'
 import { NewsDashboard } from './domains/news'
 import { VolunteerDashboard } from './domains/volunteers'
+import { GitaStudyDashboard } from './domains/gita'
 
 function ThemeToggle() {
   const { theme, setTheme, resolvedTheme, platform } = useTheme()
@@ -99,6 +100,14 @@ function AppContent() {
         </div>
 
         <div className="space-y-8">
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold">Bhagavad Gita Study Management System 🕉️</h2>
+            <p className="text-sm text-muted-foreground">
+              Comprehensive testing of ALL DataTable and UnifiedInlineEditor features through Sanskrit study tracking
+            </p>
+            <GitaStudyDashboard />
+          </div>
+
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">Volunteer T-shirt Management (SGS Patterns)</h2>
             <VolunteerDashboard />
