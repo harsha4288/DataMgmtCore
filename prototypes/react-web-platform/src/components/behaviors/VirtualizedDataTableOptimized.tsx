@@ -1,5 +1,5 @@
 import { useVirtualizer } from '@tanstack/react-virtual'
-import { useRef, useMemo, useState, useCallback } from 'react'
+import { useRef, useMemo, useState, useCallback, useEffect } from 'react'
 import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
 import { Badge } from '../ui/Badge'
@@ -138,6 +138,28 @@ export function VirtualizedDataTableOptimized<T extends Record<string, unknown>>
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedItems, setSelectedItems] = useState<Set<T>>(new Set())
   const [isAllSelected, setIsAllSelected] = useState(false)
+
+  // Add scroll event listener for debugging
+  useEffect(() => {
+    const element = parentRef.current;
+    if (!element) return;
+
+    let lastScrollTop = 0;
+    const handleScroll = () => {
+      const currentScrollTop = element.scrollTop;
+      if (Math.abs(currentScrollTop - lastScrollTop) > 10) { // Only log significant scroll changes
+        console.log('📜 Scroll Event:', {
+          scrollTop: currentScrollTop,
+          scrollHeight: element.scrollHeight,
+          clientHeight: element.clientHeight
+        });
+        lastScrollTop = currentScrollTop;
+      }
+    };
+
+    element.addEventListener('scroll', handleScroll);
+    return () => element.removeEventListener('scroll', handleScroll);
+  }, [])
 
   // Filtered data based on search
   const filteredData = useMemo(() => {
@@ -404,7 +426,11 @@ export function VirtualizedDataTableOptimized<T extends Record<string, unknown>>
     totalSize,
     maxHeight,
     virtualItemsIndexes: virtualItems.map(item => item.index),
-    isVirtualizing: virtualItems.length < filteredData.length
+    isVirtualizing: virtualItems.length < filteredData.length,
+    visibleRange: virtualItems.length > 0 ? 
+      `${Math.min(...virtualItems.map(v => v.index))} - ${Math.max(...virtualItems.map(v => v.index))}` : 
+      'none',
+    renderingItems: virtualItems.map(v => `Item ${v.index}: "${filteredData[v.index]?.title?.slice(0, 30)}..."`)
   })
 
   return (
@@ -525,6 +551,7 @@ export function VirtualizedDataTableOptimized<T extends Record<string, unknown>>
             return (
               <div
                 key={virtualRow.key}
+                data-virtual-row={virtualRow.index}
                 className={`absolute top-0 left-0 w-full border-b border-muted/40 hover:bg-muted/40 transition-colors flex ${
                   onRowClick ? 'cursor-pointer' : ''
                 } ${isSelected ? 'bg-blue-50 dark:bg-blue-950/20' : ''}`}
@@ -576,6 +603,12 @@ export function VirtualizedDataTableOptimized<T extends Record<string, unknown>>
           <span className={virtualItems.length < filteredData.length ? 'text-green-600 font-semibold' : 'text-orange-600'}>
             🚀 Virtual scrolling: {virtualItems.length} of {filteredData.length} rows rendered
             {virtualItems.length < filteredData.length ? ' ✅ WORKING' : ' ⚠️ ALL RENDERED'}
+          </span>
+          <span className="text-xs text-blue-600 block">
+            DOM elements: {parentRef.current?.querySelectorAll('[data-virtual-row]')?.length || 0} • 
+            Range: {virtualItems.length > 0 ? 
+              `${Math.min(...virtualItems.map(v => v.index))} - ${Math.max(...virtualItems.map(v => v.index))}` : 
+              'none'}
           </span>
           <span className="text-xs opacity-60">
             Container: {maxHeight}, Row height: {virtualScrolling.itemHeight || 48}px
