@@ -4,7 +4,11 @@ import { StockDashboard } from './domains/stocks'
 import { NewsDashboard } from './domains/news'
 import { VolunteerDashboard } from './domains/volunteers'
 import { GitaStudyDashboard } from './domains/gita'
+<<<<<<< HEAD
 import { ErrorBoundary } from './components/ErrorBoundary'
+=======
+import { PWAStatus } from './components/behaviors/PWAStatus'
+>>>>>>> 8e77fbd (Phase 5.1 PWA setup)
 
 function ThemeToggle() {
   const { theme, setTheme, resolvedTheme, platform } = useTheme()
@@ -56,6 +60,7 @@ function AppContent() {
 
         <div className="grid gap-6">
           <ThemeToggle />
+<<<<<<< HEAD
           <div className="p-4 border rounded-lg">
             <h2 className="text-lg font-semibold mb-2">Debug Info</h2>
             <p className="text-sm text-muted-foreground">
@@ -63,6 +68,13 @@ function AppContent() {
             </p>
           </div>
           
+=======
+          <EntityEngineDemo />
+          <PWAStatus />
+        </div>
+
+        <div className="space-y-8">
+>>>>>>> 8e77fbd (Phase 5.1 PWA setup)
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">🕉️ Bhagavad Gita Study Management</h2>
             <p className="text-sm text-muted-foreground">

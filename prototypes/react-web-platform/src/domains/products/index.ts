@@ -1,0 +1,1 @@
+export { ProductCatalogDashboard } from './ProductCatalogDashboard'
