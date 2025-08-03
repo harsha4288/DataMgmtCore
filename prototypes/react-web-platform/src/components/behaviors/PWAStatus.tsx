@@ -1,9 +1,11 @@
 import { usePWA } from '../../lib/hooks/usePWA'
+import { useOffline } from '../../lib/hooks/useOffline'
 import { Button } from '../ui/Button'
 import { Badge } from '../ui/Badge'
 
 export function PWAStatus() {
   const { isSupported, isInstalled, canInstall, serviceWorkerRegistered, installPWA } = usePWA()
+  const { isOnline, isOffline, connectionType, effectiveType, failedRequestCount } = useOffline()
 
   if (!isSupported) {
     return (
@@ -30,6 +32,19 @@ export function PWAStatus() {
             <Badge variant={isInstalled ? "success" : "info"} size="sm">
               {isInstalled ? "Installed" : "Not Installed"}
             </Badge>
+            <Badge variant={isOnline ? "success" : "error"} size="sm">
+              {isOnline ? "Online" : "Offline"}
+            </Badge>
+            {connectionType !== 'unknown' && (
+              <Badge variant="info" size="sm">
+                {effectiveType || connectionType}
+              </Badge>
+            )}
+            {failedRequestCount > 0 && (
+              <Badge variant="warning" size="sm">
+                {failedRequestCount} queued
+              </Badge>
+            )}
           </div>
         </div>
         
