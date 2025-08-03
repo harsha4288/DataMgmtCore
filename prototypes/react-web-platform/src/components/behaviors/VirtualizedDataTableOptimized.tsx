@@ -168,7 +168,9 @@ export function VirtualizedDataTableOptimized<T extends Record<string, unknown>>
       return virtualScrolling.itemHeight || 48
     },
     overscan: virtualScrolling.overscan || 5,
-    getItemKey: (index) => index
+    getItemKey: (index) => index,
+    // Enable debug mode to understand what's happening
+    debug: process.env.NODE_ENV === 'development'
   })
 
   // Selection handlers
@@ -395,6 +397,16 @@ export function VirtualizedDataTableOptimized<T extends Record<string, unknown>>
   const totalSize = rowVirtualizer.getTotalSize()
   const virtualItems = rowVirtualizer.getVirtualItems()
 
+  // Debug virtual scrolling behavior
+  console.log('🔍 VirtualizedDataTable Debug:', {
+    totalItems: filteredData.length,
+    virtualItemsRendered: virtualItems.length,
+    totalSize,
+    maxHeight,
+    virtualItemsIndexes: virtualItems.map(item => item.index),
+    isVirtualizing: virtualItems.length < filteredData.length
+  })
+
   return (
     <div className={`rounded-lg border border-muted/50 overflow-hidden ${className}`}>
       {/* Controls Header */}
@@ -560,8 +572,14 @@ export function VirtualizedDataTableOptimized<T extends Record<string, unknown>>
 
       {/* Footer Stats */}
       <div className="px-3 py-2 bg-muted/10 border-t border-muted/50 text-xs text-muted-foreground flex items-center justify-between">
-        <div>
-          Virtual scrolling: {virtualItems.length} of {filteredData.length} rows rendered
+        <div className="flex items-center gap-4">
+          <span className={virtualItems.length < filteredData.length ? 'text-green-600 font-semibold' : 'text-orange-600'}>
+            🚀 Virtual scrolling: {virtualItems.length} of {filteredData.length} rows rendered
+            {virtualItems.length < filteredData.length ? ' ✅ WORKING' : ' ⚠️ ALL RENDERED'}
+          </span>
+          <span className="text-xs opacity-60">
+            Container: {maxHeight}, Row height: {virtualScrolling.itemHeight || 48}px
+          </span>
         </div>
         <div className="flex items-center gap-4">
           {search.enabled && searchTerm && (
