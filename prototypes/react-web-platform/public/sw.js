@@ -1,4 +1,4 @@
-const VERSION = 'v1.1.0'
+const VERSION = 'v1.4.0-dev-bypass'
 const STATIC_CACHE = `react-data-platform-static-${VERSION}`
 const DYNAMIC_CACHE = `react-data-platform-dynamic-${VERSION}`
 const API_CACHE = `react-data-platform-api-${VERSION}`

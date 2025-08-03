@@ -1,13 +1,14 @@
 import { useEffect, useState, useMemo } from 'react'
-import { ProductData } from '../../types/api'
-import { FakeStoreAdapter } from '../../core/data-adapters/fake-store'
-import { VirtualizedDataTable } from '../../components/behaviors/VirtualizedDataTable'
+import { FakeStoreAdapter, ProductData } from '../../core/data-adapters/fake-store'
+import { VirtualizedDataTableOptimized } from '../../components/behaviors/VirtualizedDataTableOptimized'
 import { DataTable, Column, BulkAction } from '../../components/behaviors/DataTable'
 import { AdvancedFiltering, FilterConfig, ActiveFilter } from '../../components/behaviors/AdvancedFiltering'
 import { Button } from '../../components/ui/Button'
 import { Badge } from '../../components/ui/Badge'
 
 export function ProductCatalogDashboard() {
+  console.log('🛍️ ProductCatalogDashboard: Component mounting')
+  
   const [products, setProducts] = useState<ProductData[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -22,6 +23,7 @@ export function ProductCatalogDashboard() {
   }, [datasetSize])
 
   const loadProducts = async () => {
+    console.log('🛍️ ProductCatalogDashboard: Loading products, datasetSize:', datasetSize)
     setLoading(true)
     setError(null)
     
@@ -29,15 +31,18 @@ export function ProductCatalogDashboard() {
       let productData: ProductData[]
       
       if (datasetSize === 'large') {
+        console.log('🛍️ Loading large dataset...')
         productData = await adapter.getLargeProductDataset(25) // 500 products
       } else {
+        console.log('🛍️ Loading small dataset...')
         productData = await adapter.getProducts()
       }
       
+      console.log('🛍️ Products loaded successfully:', productData.length)
       setProducts(productData)
     } catch (err) {
-      console.error('Error loading products:', err)
-      setError('Failed to load product data.')
+      console.error('🛍️ Error loading products:', err)
+      setError(`Failed to load product data: ${err instanceof Error ? err.message : String(err)}`)
       setProducts([])
     } finally {
       setLoading(false)
@@ -257,10 +262,25 @@ export function ProductCatalogDashboard() {
     )
   }
 
-  const TableComponent = useVirtualScrolling ? VirtualizedDataTable : DataTable
+  const TableComponent = useVirtualScrolling ? VirtualizedDataTableOptimized : DataTable
+
+  console.log('🛍️ ProductCatalogDashboard: Rendering, loading:', loading, 'error:', error, 'products:', products.length)
+
+  // Debug panel
+  const debugInfo = (
+    <div className="p-3 bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800 rounded-lg text-xs">
+      <strong>🐛 ProductCatalog Debug:</strong> Loading: {loading ? 'YES' : 'NO'} | 
+      Products: {products.length} | 
+      Error: {error || 'None'} | 
+      Dataset: {datasetSize} | 
+      Virtual: {useVirtualScrolling ? 'YES' : 'NO'}
+    </div>
+  )
 
   return (
     <div className="p-6 space-y-6">
+      {debugInfo}
+      
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -279,8 +299,13 @@ export function ProductCatalogDashboard() {
             )}
           </Badge>
           {datasetSize === 'large' && (
-            <Badge variant="warning" size="sm">
-              Virtual Scrolling
+            <Badge variant={useVirtualScrolling ? "success" : "warning"} size="sm">
+              {useVirtualScrolling ? "✅ Virtual Scrolling Active" : "⚠️ Standard Rendering"}
+            </Badge>
+          )}
+          {useVirtualScrolling && (
+            <Badge variant="info" size="sm">
+              🚀 Optimized Component
             </Badge>
           )}
         </div>
@@ -314,15 +339,21 @@ export function ProductCatalogDashboard() {
               size="sm"
               onClick={() => setUseVirtualScrolling(false)}
             >
-              Standard
+              Standard (All DOM)
             </Button>
             <Button
               variant={useVirtualScrolling ? 'default' : 'outline'}
               size="sm"
               onClick={() => setUseVirtualScrolling(true)}
             >
-              Virtual Scrolling
+              Virtual (Optimized)
             </Button>
+          </div>
+        )}
+
+        {useVirtualScrolling && (
+          <div className="text-xs text-muted-foreground max-w-md">
+            <strong>🧪 Testing Virtual Scrolling:</strong> Open dev tools → Elements → Look for "Virtual scrolling: X of Y rows rendered" at table bottom. Only visible rows are in DOM!
           </div>
         )}
       </div>
@@ -342,58 +373,102 @@ export function ProductCatalogDashboard() {
       />
 
       {/* Data Table */}
-      <TableComponent
-        data={filteredProducts}
-        columns={columns}
-        loading={loading}
-        emptyMessage="No products found"
-        className="shadow-sm"
-        virtualScrolling={useVirtualScrolling ? {
-          enabled: true,
-          itemHeight: 80,
-          overscan: 10
-        } : { enabled: false }}
-        maxHeight={useVirtualScrolling ? "500px" : undefined}
-        pagination={{
-          enabled: !useVirtualScrolling,
-          pageSize: 20,
-          showPageSizeOptions: true
-        }}
-        search={{
-          enabled: true,
-          placeholder: "Search products by name..."
-        }}
-        export={{
-          enabled: true,
-          filename: `products-${new Date().toISOString().split('T')[0]}.csv`
-        }}
-        selection={{
-          enabled: true,
-          bulkActions: [
-            {
-              id: 'bulk-activate',
-              label: 'Activate Selected',
-              action: (selectedProducts) => {
-                console.log('Activating products:', selectedProducts)
+{useVirtualScrolling ? (
+        <VirtualizedDataTableOptimized
+          data={filteredProducts}
+          columns={columns}
+          loading={loading}
+          emptyMessage="No products found"
+          className="shadow-sm"
+          virtualScrolling={{
+            enabled: true,
+            itemHeight: 80,
+            overscan: 10
+          }}
+          maxHeight="500px"
+          search={{
+            enabled: true,
+            placeholder: "Search products by name..."
+          }}
+          export={{
+            enabled: true,
+            filename: `products-${new Date().toISOString().split('T')[0]}.csv`
+          }}
+          selection={{
+            enabled: true,
+            bulkActions: [
+              {
+                id: 'bulk-activate',
+                label: 'Activate Selected',
+                action: (selectedProducts) => {
+                  console.log('Activating products:', selectedProducts)
+                }
+              },
+              {
+                id: 'bulk-deactivate',
+                label: 'Deactivate Selected',
+                variant: 'destructive',
+                action: (selectedProducts) => {
+                  console.log('Deactivating products:', selectedProducts)
+                }
               }
-            },
-            {
-              id: 'bulk-deactivate',
-              label: 'Deactivate Selected',
-              variant: 'destructive',
-              action: (selectedProducts) => {
-                console.log('Deactivating products:', selectedProducts)
+            ]
+          }}
+          responsive={{
+            enabled: true,
+            hideColumnsOnMobile: ['image', 'rating', 'status'],
+            hideColumnsOnTablet: ['image'],
+            compactOnMobile: true
+          }}
+        />
+      ) : (
+        <DataTable
+          data={filteredProducts}
+          columns={columns}
+          loading={loading}
+          emptyMessage="No products found"
+          className="shadow-sm"
+          pagination={{
+            enabled: true,
+            pageSize: 20,
+            showPageSizeOptions: true
+          }}
+          search={{
+            enabled: true,
+            placeholder: "Search products by name..."
+          }}
+          export={{
+            enabled: true,
+            filename: `products-${new Date().toISOString().split('T')[0]}.csv`
+          }}
+          selection={{
+            enabled: true,
+            bulkActions: [
+              {
+                id: 'bulk-activate',
+                label: 'Activate Selected',
+                action: (selectedProducts) => {
+                  console.log('Activating products:', selectedProducts)
+                }
+              },
+              {
+                id: 'bulk-deactivate',
+                label: 'Deactivate Selected',
+                variant: 'destructive',
+                action: (selectedProducts) => {
+                  console.log('Deactivating products:', selectedProducts)
+                }
               }
-            }
-          ]
-        }}
-        responsive={{
-          enabled: true,
-          hideColumnsOnMobile: ['image', 'rating', 'status'],
-          hideColumnsOnTablet: ['image'],
-          compactOnMobile: true
-        }}
-      />
+            ]
+          }}
+          responsive={{
+            enabled: true,
+            hideColumnsOnMobile: ['image', 'rating', 'status'],
+            hideColumnsOnTablet: ['image'],
+            compactOnMobile: true
+          }}
+        />
+      )}
     </div>
   )
 }

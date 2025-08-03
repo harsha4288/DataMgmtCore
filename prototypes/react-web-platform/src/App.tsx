@@ -4,6 +4,7 @@ import { StockDashboard } from './domains/stocks'
 import { NewsDashboard } from './domains/news'
 import { VolunteerDashboard } from './domains/volunteers'
 import { GitaStudyDashboard } from './domains/gita'
+import { SimpleVirtualTest } from './domains/test/SimpleVirtualTest'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { PWAStatus } from './components/behaviors/PWAStatus'
 import { PWADebugTracker } from './components/debug/PWADebugTracker'
@@ -60,6 +61,10 @@ function AppContent() {
         <div className="grid gap-6">
           <ThemeToggle />
           <PWAStatus />
+          <div className="p-4 bg-red-100 dark:bg-red-900 border-2 border-red-500 rounded-lg">
+            <h3 className="text-lg font-bold text-red-800 dark:text-red-200">🔴 CACHE TEST - If you see this, the changes are working!</h3>
+            <p className="text-red-700 dark:text-red-300">This should appear immediately if caching issues are resolved.</p>
+          </div>
         </div>
 
         <div className="space-y-8">
@@ -91,6 +96,16 @@ function AppContent() {
             <h2 className="text-xl font-semibold">Volunteer T-shirt Management</h2>
             <ErrorBoundary name="VolunteerDashboard">
               <VolunteerDashboard />
+            </ErrorBoundary>
+          </div>
+          
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold">🧪 Virtual Scrolling Test - Simple Demo</h2>
+            <p className="text-sm text-muted-foreground">
+              Testing VirtualizedDataTableOptimized with simple data (no API dependencies)
+            </p>
+            <ErrorBoundary name="SimpleVirtualTest">
+              <SimpleVirtualTest />
             </ErrorBoundary>
           </div>
         </div>
