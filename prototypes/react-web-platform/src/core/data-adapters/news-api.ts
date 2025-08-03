@@ -33,7 +33,7 @@ export class NewsApiAdapter extends BaseDataAdapter<NewsData> {
   //   'ars-technica', 'the-verge', 'engadget'
   // ];
 
-  constructor(apiKey: string) {
+  constructor(apiKey: string = 'c16aa80419ab4a8d89f9ec2ab2f6f90c') {
     super({
       baseUrl: 'https://newsapi.org/v2',
       apiKey,
@@ -63,7 +63,7 @@ export class NewsApiAdapter extends BaseDataAdapter<NewsData> {
     
     try {
       // Use everything endpoint for general news
-      const url = new URL('/everything', this.config.baseUrl);
+      const url = new URL('/v2/everything', this.config.baseUrl);
       url.searchParams.set('apiKey', this.config.apiKey!);
       url.searchParams.set('pageSize', limit.toString());
       url.searchParams.set('page', page.toString());
@@ -84,11 +84,14 @@ export class NewsApiAdapter extends BaseDataAdapter<NewsData> {
         url.searchParams.set('category', categoryFilter.value as string);
       }
 
+      console.log('🔗 Fetching from NewsAPI:', url.toString());
       const rawResponse = await fetch(url.toString());
       const data = await rawResponse.json() as NewsApiResponse;
 
+      console.log('📡 NewsAPI Response:', { status: data.status, articlesCount: data.articles?.length, totalResults: data.totalResults });
+
       if (data.status !== 'ok' || !data.articles) {
-        console.warn('NewsAPI returned error, using mock data');
+        console.warn('❌ NewsAPI returned error, using mock data. Response:', data);
         return this.getMockNewsResponse(params);
       }
 
@@ -126,9 +129,10 @@ export class NewsApiAdapter extends BaseDataAdapter<NewsData> {
       this.setCache(cacheKey, result, 300); // 5 minute cache
       return result;
     } catch (error) {
-      console.error('Error fetching news:', error);
+      console.error('❌ Error fetching news:', error);
+      console.log('ℹ️ NewsAPI has CORS restrictions for browser requests. Using enhanced mock data for virtual scrolling demo.');
       
-      // Return mock data for demo purposes when API fails
+      // Return enhanced mock data for demo purposes when API fails
       return this.getMockNewsResponse(params);
     }
   }
@@ -513,7 +517,7 @@ export class NewsApiAdapter extends BaseDataAdapter<NewsData> {
   private generateMockNews(): NewsData[] {
     const baseTime = new Date();
     
-    return [
+    const baseArticles = [
       {
         id: '1',
         title: 'Revolutionary AI Model Breaks Performance Records',
@@ -595,5 +599,55 @@ export class NewsApiAdapter extends BaseDataAdapter<NewsData> {
         wordCount: 750,
       },
     ];
+
+    // Generate more articles for virtual scrolling testing (100 total)
+    const generatedArticles: NewsData[] = [];
+    const titles = [
+      'Breaking: New Technology Breakthrough',
+      'Market Analysis: Crypto Surge Continues', 
+      'Health Update: Vaccine Development Progress',
+      'Sports: Championship Finals Tonight',
+      'Weather Alert: Storm System Approaching',
+      'Politics: Election Results Update',
+      'Science: Space Mission Success',
+      'Entertainment: New Movie Releases',
+      'Education: University Research Findings',
+      'Environment: Climate Change Report',
+      'Tech Innovation: AI Revolution Continues',
+      'Business Weekly: Market Trends Analysis',
+      'Health Alert: Medical Breakthrough',
+      'Sports Update: Season Highlights',
+      'Climate Watch: Environmental Changes'
+    ];
+
+    const sources = ['Reuters', 'BBC', 'CNN', 'Associated Press', 'Bloomberg', 'The Guardian', 'Wall Street Journal', 'TechCrunch', 'Wired', 'The Verge'];
+    const authors = ['John Smith', 'Sarah Johnson', 'Mike Wilson', 'Emma Davis', 'David Brown', 'Lisa Garcia', 'Alex Chen', 'Maria Rodriguez', 'James Wilson', 'Sophie Turner'];
+    const categories = ['technology', 'business', 'health', 'sports', 'science', 'entertainment'];
+
+    for (let i = 0; i < 95; i++) {
+      const titleIndex = i % titles.length;
+      const sourceIndex = i % sources.length;
+      const authorIndex = i % authors.length;
+      const categoryIndex = i % categories.length;
+      
+      generatedArticles.push({
+        id: (baseArticles.length + i + 1).toString(),
+        title: `${titles[titleIndex]} - Article ${i + 1}`,
+        description: `This is a generated news article for testing virtual scrolling functionality. Article number ${i + 1}.`,
+        content: `Full content for article ${i + 1}. This demonstrates virtual scrolling with a larger dataset.`,
+        author: authors[authorIndex],
+        source: sources[sourceIndex],
+        sourceId: sources[sourceIndex].toLowerCase().replace(' ', '-'),
+        url: `https://example.com/article-${i + 1}`,
+        imageUrl: `https://images.unsplash.com/photo-${1600000000000 + i}?w=300`,
+        publishedAt: new Date(baseTime.getTime() - (i * 2 * 60 * 60 * 1000)), // 2 hours apart
+        category: categories[categoryIndex],
+        tags: ['news', 'test', categories[categoryIndex]],
+        readTime: Math.floor(Math.random() * 5) + 2, // 2-6 minutes
+        wordCount: Math.floor(Math.random() * 800) + 400, // 400-1200 words
+      });
+    }
+
+    return [...baseArticles, ...generatedArticles];
   }
 }
