@@ -103,12 +103,26 @@ export function GitaStudyDashboard() {
   const [students] = useState<GitaStudent[]>(generateGitaStudents())
   const [selectedStudents, setSelectedStudents] = useState<GitaStudent[]>([])
 
-  // Helper functions
-  const getGradeColor = (score: number): 'success' | 'warning' | 'error' | 'default' => {
-    if (score >= 85) return 'success'
-    if (score >= 70) return 'warning' 
-    if (score >= 60) return 'default'
-    return 'error'
+  // Helper functions - Updated for inspiration-based colorful grade system
+  const getGradeColor = (score: number): 'grade-a' | 'grade-b' | 'grade-c' | 'grade-d' | 'grade-f' => {
+    if (score >= 90) return 'grade-a'  // 90+ = A (Green)
+    if (score >= 80) return 'grade-b'  // 80-89 = B (Blue)
+    if (score >= 70) return 'grade-c'  // 70-79 = C (Yellow)
+    if (score >= 60) return 'grade-d'  // 60-69 = D (Orange)
+    return 'grade-f'                   // <60 = F (Red)
+  }
+  
+  // Letter grade to color mapping for consistency
+  const getLetterGradeColor = (letterGrade: string): 'grade-a' | 'grade-b' | 'grade-c' | 'grade-d' | 'grade-f' => {
+    const grade = letterGrade.charAt(0).toUpperCase()
+    switch (grade) {
+      case 'A': return 'grade-a'  // Green
+      case 'B': return 'grade-b'  // Blue  
+      case 'C': return 'grade-c'  // Yellow
+      case 'D': return 'grade-d'  // Orange
+      case 'F': return 'grade-f'  // Red
+      default: return 'grade-f'
+    }
   }
 
   const getLevelColor = (level: string): 'success' | 'warning' | 'info' | 'default' => {
@@ -178,7 +192,7 @@ export function GitaStudyDashboard() {
       render: (value, student) => (
         <div className="flex flex-col items-center gap-1">
           <span className="text-lg font-bold">{value}%</span>
-          <Badge variant={getGradeColor(Number(value))} size="sm">
+          <Badge variant={getLetterGradeColor(student.letterGrade)} size="sm">
             {student.letterGrade}
           </Badge>
         </div>
@@ -381,6 +395,21 @@ export function GitaStudyDashboard() {
             <Download className="w-4 h-4" />
             Export Report
           </Button>
+        </div>
+      </div>
+
+      {/* Grade Badge Test - Inspiration-based colorful system */}
+      <div className="p-4 bg-card border rounded-lg">
+        <h3 className="text-sm font-semibold mb-2">New Colorful Grade System (Inspiration-based)</h3>
+        <div className="flex gap-2 mb-2">
+          <Badge variant="grade-a" size="sm">A</Badge>
+          <Badge variant="grade-b" size="sm">B</Badge>
+          <Badge variant="grade-c" size="sm">C</Badge>
+          <Badge variant="grade-d" size="sm">D</Badge>
+          <Badge variant="grade-f" size="sm">F</Badge>
+        </div>
+        <div className="text-xs text-muted-foreground">
+          A=Green • B=Blue • C=Yellow • D=Orange • F=Red (matching Inspiration1.jpg)
         </div>
       </div>
 

@@ -2,43 +2,46 @@
 
 @layer base {
   :root {
-    /* Light theme colors */
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Clean light theme colors - Based on Inspiration1.jpg */
+    --background: 0 0% 100%;              /* Pure white like inspiration */
+    --foreground: 0 0% 10%;               /* #1a1a1a - Dark text for readability */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 0 0% 10%;
     --primary: 221.2 83.2% 53.3%;
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
+    --secondary-foreground: 0 0% 10%;
     --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted-foreground: 215 16% 46%;      /* #6c757d - Muted secondary text */
     --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
+    --accent-foreground: 0 0% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --border: 215 16% 88%;                /* #e1e5e9 - Light gray borders */
+    --input: 215 16% 88%;
     --ring: 221.2 83.2% 53.3%;
-    --content-primary: 222.2 84% 4.9%;
-    --content-secondary: 215.4 16.3% 46.9%;
+    --content-primary: 0 0% 10%;
+    --content-secondary: 215 16% 46%;
     --content-tertiary: 215.4 16.3% 65%;
     --content-inverse: 210 40% 98%;
     --content-disabled: 215.4 16.3% 75%;
     --radius: 0.5rem;
 
-    /* DataTable-specific layer separation variables */
-    --table-container: 0 0% 100%;
+    /* Clean modern typography matching inspiration */
+    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+    /* Clean light background system - Based on Inspiration1.jpg */
+    --table-container: 0 0% 100%;         /* Clean white container */
     --table-container-elevated: 0 0% 100%;
-    --table-header: 210 40% 98%;
+    --table-header: 216 12% 97%;          /* #f8f9fa - Subtle gray header */
     --table-header-elevated: 210 40% 96%;
-    --table-row: 0 0% 100%;
-    --table-row-hover: 210 40% 96%;
-    --table-border: 214.3 31.8% 91.4%;
-    --table-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    --table-shadow-elevated: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --table-row: 0 0% 100%;               /* White rows */
+    --table-row-hover: 214 15% 96%;       /* #f5f6fa - Light hover state */
+    --table-border: 215 16% 88%;          /* #e1e5e9 - Light gray borders */
+    --table-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);  /* Clean subtle shadows */
+    --table-shadow-elevated: 0 4px 6px rgba(0, 0, 0, 0.1);
     
     /* Table layout standardization */
     --table-header-height: 40px;
@@ -49,34 +52,92 @@
     --table-text-indent: 0px;
     --table-subtext-indent: 0px;
     
-    /* Typography standardization */
-    --table-header-font-size: 0.75rem;
-    --table-header-font-weight: 600;
-    --table-group-header-font-size: 0.75rem;
+    /* Modern typography system - Based on Inspiration Images */
+    --table-header-font-size: 14px;      /* Clean readable size */
+    --table-header-font-weight: 600;     /* Semi-bold like inspiration */
+    --table-header-text-transform: none; /* No caps, clean like inspiration */
+    --table-group-header-font-size: 14px;
     --table-group-header-font-weight: 600;
-    --table-body-font-size: 0.875rem;
-    --table-body-font-weight: 400;
-
-    /* Badge system variables */
-    --badge-success: 142.1 76.2% 36.3%;
-    --badge-success-foreground: 355.7 100% 97.3%;
-    --badge-success-border: 142.1 70.6% 45.3%;
-    --badge-warning: 32.2 94.6% 43.7%;
-    --badge-warning-foreground: 26.5 77.8% 9.6%;
-    --badge-warning-border: 32.2 85% 55%;
-    --badge-error: 0 84.2% 60.2%;
-    --badge-error-foreground: 210 40% 98%;
-    --badge-error-border: 0 72.2% 50.6%;
-    --badge-info: 199.4 89.2% 48.4%;
-    --badge-info-foreground: 210 40% 98%;
-    --badge-info-border: 199.4 80% 60%;
+    --table-body-font-size: 14px;        /* Data typography */
+    --table-body-font-weight: 400;       /* Regular weight */
+    --table-body-line-height: 1.5;       /* Good readability */
     
-    /* Badge standardization */
-    --badge-border-radius: 0.375rem;
-    --badge-font-weight: 500;
+    /* Badge typography */
+    --badge-font-family: inherit;
+    --badge-font-size: 13px;             /* Slightly smaller for badges */
+    --badge-font-weight: 600;            /* Semi-bold for grade letters */
+    --badge-text-transform: uppercase;   /* A, B, C uppercase */
+    
+    /* Percentage indicators - From Inspiration1.jpg */
+    --percentage-font-size: 13px;
+    --percentage-font-weight: 500;
+    --percentage-color: 142 76% 36%;     /* Green for positive trends */
+    --percentage-gap: 4px;               /* Space between number and arrow */
+    
+    /* Professional label system - From Inspiration1.jpg */
+    --label-padding: 4px 8px;
+    --label-border-radius: 6px;
+    --label-font-size: 12px;
+    --label-font-weight: 500;
+    --label-text-transform: none;        /* Sentence case like inspiration */
+
+    /* Professional interactive elements - Phase 3.1D */
+    --interactive-button-size: 20px;
+    --interactive-button-padding: 8px;
+    --interactive-button-radius: 4px;
+    --interactive-button-hover-scale: 1.1;
+    --min-touch-target: 44px;
+    
+    /* Enhanced visual hierarchy - Phase 3.1D */
+    --table-border-width: 1.5px;            /* Better border definition */
+    --table-freeze-shadow: 2px 0 6px rgba(0, 0, 0, 0.15);
+    
+    /* Clean interface polish - Based on Inspiration */
+    --card-elevation: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --card-elevation-hover: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --subtle-border: 1px solid hsl(var(--border));
+    --enhanced-border: var(--table-border-width) solid hsl(var(--border));
+
+    /* Colorful grade badges matching Inspiration1.jpg */
+    --badge-grade-a: 142 76% 36%;        /* #10b26c - Green for A grade */
+    --badge-grade-a-foreground: 0 0% 100%;
+    --badge-grade-b: 217 91% 60%;        /* #3b82f6 - Blue for B grade */
+    --badge-grade-b-foreground: 0 0% 100%;
+    --badge-grade-c: 32 95% 50%;         /* #f59e0b - Yellow/amber for C grade */
+    --badge-grade-c-foreground: 26 78% 10%;
+    --badge-grade-d: 21 90% 48%;         /* #f97316 - Orange for D grade */
+    --badge-grade-d-foreground: 0 0% 100%;
+    --badge-grade-f: 0 84% 60%;          /* #ef4444 - Red for F grade */
+    --badge-grade-f-foreground: 0 0% 100%;
+    
+    /* Professional label color variants */
+    --label-admin: 239 84% 67%;          /* #6366f1 - Purple/indigo for admin */
+    --label-sensitive: 0 84% 60%;        /* #ef4444 - Red for sensitive data */
+    --label-business: 258 90% 66%;       /* #8b5cf6 - Purple for business data */
+    --label-customer: 188 95% 68%;       /* #06b6d4 - Cyan for customer data */
+    --label-roadmap: 215 28% 17%;        /* #6b7280 - Gray for roadmap info */
+    --label-active: 142 76% 36%;         /* #10b26c - Green for active status */
+    
+    /* Legacy badge system for compatibility */
+    --badge-success: 142 76% 36%;
+    --badge-success-foreground: 0 0% 100%;
+    --badge-success-border: 142 70% 45%;
+    --badge-warning: 32 95% 50%;
+    --badge-warning-foreground: 26 78% 10%;
+    --badge-warning-border: 32 85% 55%;
+    --badge-error: 0 84% 60%;
+    --badge-error-foreground: 0 0% 100%;
+    --badge-error-border: 0 72% 51%;
+    --badge-info: 217 91% 60%;
+    --badge-info-foreground: 0 0% 100%;
+    --badge-info-border: 199 80% 60%;
+    
+    /* Badge styling - Rounded corners like inspiration */
+    --badge-border-radius: 6px;          /* Rounded corners like inspiration */
+    --badge-font-weight: 600;            /* Medium bold */
     --badge-default: 210 40% 96%;
-    --badge-default-foreground: 222.2 84% 4.9%;
-    --badge-default-border: 214.3 31.8% 91.4%;
+    --badge-default-foreground: 0 0% 10%;
+    --badge-default-border: 215 16% 88%;
     
     /* Placeholder/empty state styling */
     --placeholder-color: 215.4 16.3% 65%;
@@ -88,67 +149,99 @@
   }
 
   .dark {
-    /* Dark theme colors */
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    /* Sophisticated navy dark theme - Based on Inspiration2.jpg */
+    --background: 220 23% 18%;     /* #1a1f2e - Deep navy from inspiration */
+    --foreground: 0 0% 100%;       /* Pure white text - excellent contrast */
+    --card: 220 23% 18%;
+    --card-foreground: 0 0% 100%;
+    --popover: 220 23% 18%;
+    --popover-foreground: 0 0% 100%;
     --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --primary-foreground: 220 23% 18%;
+    --secondary: 220 23% 21%;      /* Slightly lighter secondary */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 23% 21%;
+    --muted-foreground: 215 20% 73%; /* #b8c1d3 - Light gray secondary text */
+    --accent: 220 23% 21%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --border: 215 20% 26%;         /* #2d3447 - Navy border */
+    --input: 220 23% 21%;
     --ring: 224.3 76.3% 94.1%;
-    --content-primary: 210 40% 98%;
-    --content-secondary: 215 20.2% 65.1%;
-    --content-tertiary: 215 20.2% 45%;
-    --content-inverse: 222.2 84% 4.9%;
-    --content-disabled: 215 20.2% 35%;
+    --content-primary: 0 0% 100%;
+    --content-secondary: 215 20% 73%;
+    --content-tertiary: 215 20% 45%;
+    --content-inverse: 220 23% 18%;
+    --content-disabled: 215 20% 35%;
 
-    /* DataTable-specific dark theme layer separation */
-    --table-container: 217.2 32.6% 17.5%;
-    --table-container-elevated: 217.2 32.6% 20%;
-    --table-header: 217.2 32.6% 15%;
-    --table-header-elevated: 217.2 32.6% 12%;
-    --table-row: 217.2 32.6% 17.5%;
-    --table-row-hover: 217.2 32.6% 22%;
-    --table-border: 217.2 32.6% 25%;
-    --table-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.25);
-    --table-shadow-elevated: 0 10px 15px -3px rgb(0 0 0 / 0.25);
+    /* Sophisticated navy dark theme layers - Based on Inspiration2.jpg */
+    --table-container: 220 23% 18%;    /* Matching container */
+    --table-container-elevated: 220 23% 20%;
+    --table-header: 220 20% 22%;       /* #1e2337 - Slightly lighter header */
+    --table-header-elevated: 220 20% 24%;
+    --table-row: 220 23% 18%;          /* Navy rows */
+    --table-row-hover: 217 20% 25%;    /* #252b3f - Subtle hover state */
+    --table-border: 215 20% 26%;       /* Navy border */
+    --table-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);      /* Professional shadows */
+    --table-shadow-elevated: 0 4px 8px rgba(0, 0, 0, 0.3);
+    
+    /* Enhanced visual hierarchy - dark theme overrides */
+    --table-freeze-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
+    
+    /* Clean interface polish - dark theme */
+    --card-elevation: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --card-elevation-hover: 0 4px 8px rgba(0, 0, 0, 0.3);
+    --subtle-border: 1px solid hsl(var(--border));
+    --enhanced-border: var(--table-border-width) solid hsl(var(--border));
 
-    /* Badge system dark theme overrides */
-    --badge-success: 142.1 70.6% 45.3%;
-    --badge-success-foreground: 220.9 39.3% 11%;
-    --badge-success-border: 142.1 76.2% 36.3%;
-    --badge-warning: 32.2 95% 44%;
-    --badge-warning-foreground: 26.5 77.8% 9.6%;
-    --badge-warning-border: 32.2 94.6% 43.7%;
-    --badge-error: 0 72.2% 50.6%;
-    --badge-error-foreground: 210 40% 98%;
-    --badge-error-border: 0 62.8% 30.6%;
-    --badge-info: 199.4 89.2% 48.4%;
-    --badge-info-foreground: 210 40% 98%;
-    --badge-info-border: 199.4 80% 60%;
+    /* Colorful grade badges - dark theme optimized */
+    --badge-grade-a: 142 76% 36%;        /* Same green - works on dark */
+    --badge-grade-a-foreground: 0 0% 100%;
+    --badge-grade-b: 217 91% 60%;        /* Same blue - works on dark */
+    --badge-grade-b-foreground: 0 0% 100%;
+    --badge-grade-c: 32 95% 50%;         /* Same yellow - works on dark */
+    --badge-grade-c-foreground: 26 78% 10%;
+    --badge-grade-d: 21 90% 48%;         /* Same orange - works on dark */
+    --badge-grade-d-foreground: 0 0% 100%;
+    --badge-grade-f: 0 84% 60%;          /* Same red - works on dark */
+    --badge-grade-f-foreground: 0 0% 100%;
+    
+    /* Professional label colors - dark theme */
+    --label-admin: 239 84% 67%;          /* Same colors work on dark */
+    --label-sensitive: 0 84% 60%;
+    --label-business: 258 90% 66%;
+    --label-customer: 188 95% 68%;
+    --label-roadmap: 215 28% 60%;        /* Lighter gray for dark theme */
+    --label-active: 142 76% 36%;
+    
+    /* Legacy badge system - dark theme overrides */
+    --badge-success: 142 76% 36%;
+    --badge-success-foreground: 0 0% 100%;
+    --badge-success-border: 142 70% 45%;
+    --badge-warning: 32 95% 50%;
+    --badge-warning-foreground: 26 78% 10%;
+    --badge-warning-border: 32 85% 55%;
+    --badge-error: 0 84% 60%;
+    --badge-error-foreground: 0 0% 100%;
+    --badge-error-border: 0 72% 51%;
+    --badge-info: 217 91% 60%;
+    --badge-info-foreground: 0 0% 100%;
+    --badge-info-border: 199 80% 60%;
     
     /* Badge standardization - dark theme */
-    --badge-default: 217.2 32.6% 17.5%;
-    --badge-default-foreground: 210 40% 98%;
-    --badge-default-border: 217.2 32.6% 25%;
+    --badge-default: 220 23% 21%;
+    --badge-default-foreground: 0 0% 100%;
+    --badge-default-border: 215 20% 26%;
     
-    /* Placeholder/empty state styling - dark theme */
-    --placeholder-color: 215 20.2% 45%;
-    --empty-badge-color: 215 20.2% 35%;
-    --empty-badge-background: 217.2 32.6% 15%;
-    --empty-badge-border: 217.2 32.6% 25%;
+    /* Professional placeholder/empty state styling - dark theme */
+    --placeholder-color: 215 20% 45%;
+    --empty-badge-color: 215 20% 35%;
+    --empty-badge-background: 220 23% 18%;
+    --empty-badge-border: 215 20% 26%;
+    
+    /* Percentage indicators - dark theme */
+    --percentage-color: 142 76% 36%;     /* Green works on dark theme */
   }
 
   /* Platform-specific adjustments */
@@ -173,6 +266,7 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+    font-family: var(--font-family);
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
@@ -463,6 +557,78 @@
     border-color: hsl(var(--badge-default-border));
   }
 
+  /* Grade badge utilities - Based on Inspiration1.jpg */
+  .bg-badge-grade-a {
+    background-color: hsl(var(--badge-grade-a));
+  }
+  
+  .text-badge-grade-a-foreground {
+    color: hsl(var(--badge-grade-a-foreground));
+  }
+  
+  .bg-badge-grade-b {
+    background-color: hsl(var(--badge-grade-b));
+  }
+  
+  .text-badge-grade-b-foreground {
+    color: hsl(var(--badge-grade-b-foreground));
+  }
+  
+  .bg-badge-grade-c {
+    background-color: hsl(var(--badge-grade-c));
+  }
+  
+  .text-badge-grade-c-foreground {
+    color: hsl(var(--badge-grade-c-foreground));
+  }
+  
+  .bg-badge-grade-d {
+    background-color: hsl(var(--badge-grade-d));
+  }
+  
+  .text-badge-grade-d-foreground {
+    color: hsl(var(--badge-grade-d-foreground));
+  }
+  
+  .bg-badge-grade-f {
+    background-color: hsl(var(--badge-grade-f));
+  }
+  
+  .text-badge-grade-f-foreground {
+    color: hsl(var(--badge-grade-f-foreground));
+  }
+
+  /* Professional label utilities - Based on Inspiration1.jpg */
+  .bg-label-admin {
+    background-color: hsl(var(--label-admin));
+    color: white;
+  }
+  
+  .bg-label-sensitive {
+    background-color: hsl(var(--label-sensitive));
+    color: white;
+  }
+  
+  .bg-label-business {
+    background-color: hsl(var(--label-business));
+    color: white;
+  }
+  
+  .bg-label-customer {
+    background-color: hsl(var(--label-customer));
+    color: white;
+  }
+  
+  .bg-label-roadmap {
+    background-color: hsl(var(--label-roadmap));
+    color: white;
+  }
+  
+  .bg-label-active {
+    background-color: hsl(var(--label-active));
+    color: white;
+  }
+
   /* Badge standardization utilities */
   .badge-radius {
     border-radius: var(--badge-border-radius);
@@ -470,6 +636,45 @@
   
   .badge-weight {
     font-weight: var(--badge-font-weight);
+  }
+
+  /* Professional badge styling - Based on Inspiration */
+  .badge-grade {
+    padding: var(--label-padding);
+    border-radius: var(--badge-border-radius);
+    font-size: var(--badge-font-size);
+    font-weight: var(--badge-font-weight);
+    text-transform: var(--badge-text-transform);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 20px;
+  }
+  
+  .label-professional {
+    padding: var(--label-padding);
+    border-radius: var(--label-border-radius);
+    font-size: var(--label-font-size);
+    font-weight: var(--label-font-weight);
+    text-transform: var(--label-text-transform);
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+  
+  .percentage-indicator {
+    font-size: var(--percentage-font-size);
+    font-weight: var(--percentage-font-weight);
+    color: hsl(var(--percentage-color));
+    display: inline-flex;
+    align-items: center;
+    gap: var(--percentage-gap);
+  }
+  
+  .percentage-indicator::after {
+    content: "↑";
+    font-size: 0.8em;
   }
 
   /* Placeholder/empty state utilities */
@@ -522,10 +727,11 @@
     min-height: var(--table-row-height);
   }
 
-  /* Typography utilities */
+  /* Typography utilities - Modern system based on Inspiration */
   .text-table-header {
     font-size: var(--table-header-font-size);
     font-weight: var(--table-header-font-weight);
+    text-transform: var(--table-header-text-transform);
   }
   
   .text-table-group-header {
@@ -536,6 +742,73 @@
   .text-table-body {
     font-size: var(--table-body-font-size);
     font-weight: var(--table-body-font-weight);
+    line-height: var(--table-body-line-height);
+  }
+  
+  .font-modern {
+    font-family: var(--font-family);
+  }
+
+  /* Professional interactive element utilities - Phase 3.1D */
+  .w-interactive-button {
+    width: var(--interactive-button-size);
+  }
+  
+  .h-interactive-button {
+    height: var(--interactive-button-size);
+  }
+  
+  .p-interactive-button {
+    padding: var(--interactive-button-padding);
+  }
+  
+  .rounded-interactive-button {
+    border-radius: var(--interactive-button-radius);
+  }
+  
+  .hover\:scale-interactive:hover {
+    transform: scale(var(--interactive-button-hover-scale));
+  }
+  
+  .min-touch-target {
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
+  }
+  
+  /* Enhanced visual hierarchy utilities - Phase 3.1D */
+  .border-table-enhanced {
+    border-width: var(--table-border-width);
+    border-color: hsl(var(--table-border));
+  }
+  
+  .shadow-table-freeze {
+    box-shadow: var(--table-freeze-shadow);
+  }
+  
+  /* Clean interface polish utilities */
+  .elevation-card {
+    box-shadow: var(--card-elevation);
+  }
+  
+  .hover\:elevation-card-hover:hover {
+    box-shadow: var(--card-elevation-hover);
+  }
+  
+  .border-subtle {
+    border: var(--subtle-border);
+  }
+  
+  .border-enhanced {
+    border: var(--enhanced-border);
+  }
+  
+  /* Professional interaction transitions */
+  .transition-interactive {
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .transition-elevation {
+    transition: box-shadow 0.2s ease-in-out;
   }
 
   /* Platform-specific utilities */
