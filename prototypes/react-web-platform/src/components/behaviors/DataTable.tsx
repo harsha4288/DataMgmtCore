@@ -692,7 +692,7 @@ export function DataTable<T extends Record<string, unknown>>({
   }
 
   return (
-    <div className={`space-y-6 p-6 bg-slate-50 dark:bg-slate-950 min-h-screen ${className}`}>
+    <div className={`space-y-6 p-6 bg-background min-h-screen ${className}`}>
       {/* Search, Export, and Bulk Actions Controls */}
       {(search.enabled || exportConfig.enabled || (selection.enabled && selectedItems.size > 0)) && (
         <div className="flex items-center justify-between gap-4">
@@ -748,27 +748,27 @@ export function DataTable<T extends Record<string, unknown>>({
 
       {/* Data Display */}
       {filteredData.length === 0 ? (
-        <div className="p-8 text-center text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-300 dark:border-slate-600">
+        <div className="p-8 text-center text-muted-foreground bg-table-container-elevated rounded-xl shadow-table-elevated border border-table">
           {searchTerm ? `No results found for "${searchTerm}"` : emptyMessage}
         </div>
       ) : (
         <>
           {/* Table */}
           <div 
-            className="overflow-auto border border-slate-300 dark:border-slate-600 rounded-xl shadow-2xl bg-white dark:bg-slate-800"
+            className="overflow-auto border border-table rounded-xl shadow-table-elevated bg-table-container-elevated"
             style={{ maxHeight: maxHeight }}
           >
-            <table ref={tableRef} className={`w-full bg-transparent text-slate-900 dark:text-slate-100 border-collapse ${
+            <table ref={tableRef} className={`w-full bg-transparent text-foreground border-collapse ${
               deviceType === 'mobile' && responsive.compactOnMobile ? 'text-xs' : 'text-sm'
             }`}>
               <thead className={frozenHeader ? 'sticky top-0 z-[52]' : ''}>
                 {/* Group Headers Row (if any columns have groupHeader) */}
                 {Object.keys(groupedColumns?.groups || {}).length > 0 && (
-                  <tr className={`border-b border-slate-300 dark:border-slate-500 bg-gradient-to-r from-slate-200 to-slate-100 dark:from-slate-600 dark:to-slate-700 ${frozenHeader ? 'sticky top-0 z-[52]' : ''}`}>
+                  <tr className={`border-b border-table bg-table-header-elevated ${frozenHeader ? 'sticky top-0 z-[52]' : ''}`}>
                     {/* Selection column spacer */}
                     {selection.enabled && (
                       <th 
-                        className={`p-2 sticky left-0 ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-gradient-to-r from-slate-200 to-slate-100 dark:from-slate-600 dark:to-slate-700 shadow-lg border-r border-slate-300 dark:border-slate-500`}
+                        className={`p-2 sticky left-0 ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-table-header-elevated shadow-table border-r border-table`}
                         style={{ width: `${getSelectionColumnWidth()}px` }}
                       />
                     )}
@@ -792,7 +792,7 @@ export function DataTable<T extends Record<string, unknown>>({
                             <th
                               key={column.groupHeader}
                               colSpan={groupColumns.length}
-                              className="px-3 py-2 text-center font-semibold bg-gradient-to-b from-blue-100 to-blue-50 dark:from-slate-600 dark:to-slate-700 border-l border-r border-slate-400 dark:border-slate-400 text-slate-800 dark:text-slate-100 text-xs shadow-lg"
+                              className="px-3 py-2 text-center font-semibold bg-table-header border-l border-r border-table text-foreground text-xs shadow-table"
                               style={{ width: `${groupWidth}px`, minWidth: `${groupWidth}px`, minHeight: '32px' }}
                             >
                               <div className="flex items-center justify-center gap-1.5 min-h-[32px]">
@@ -809,10 +809,10 @@ export function DataTable<T extends Record<string, unknown>>({
                           headers.push(
                             <th 
                               key={columnKey} 
-                              className="px-3 py-2 bg-slate-100 dark:bg-slate-750 border-r border-slate-400 dark:border-slate-400 shadow-lg"
+                              className="px-3 py-2 bg-table-header border-r border-table shadow-table"
                               style={{ width: `${width}px`, minWidth: `${width}px` }}
                             >
-                              <div className="h-[32px] bg-slate-200 dark:bg-slate-600 rounded border border-slate-300 dark:border-slate-500 shadow-md"></div>
+                              <div className="h-[32px] bg-muted rounded border border-table shadow-sm"></div>
                             </th>
                           )
                         }
@@ -824,11 +824,11 @@ export function DataTable<T extends Record<string, unknown>>({
                 )}
                 
                 {/* Main Headers Row */}
-                <tr className={`border-b border-slate-300 dark:border-slate-500 bg-gradient-to-r from-blue-50 to-slate-100 dark:from-slate-700 dark:to-slate-800 text-slate-800 dark:text-slate-100 shadow-lg ${frozenHeader ? 'sticky top-0 z-[52]' : ''}`}>
+                <tr className={`border-b border-table bg-table-header text-foreground shadow-table ${frozenHeader ? 'sticky top-0 z-[52]' : ''}`}>
                   {/* Selection column */}
                   {selection.enabled && (
                     <th 
-                      className={`p-2 sticky left-0 ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-gradient-to-r from-blue-50 to-slate-100 dark:from-slate-700 dark:to-slate-800 border-r border-slate-300 dark:border-slate-500 shadow-lg`}
+                      className={`p-2 sticky left-0 ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-table-header border-r border-table shadow-table`}
                       style={{ width: `${getSelectionColumnWidth()}px` }}
                     >
                       <input
@@ -838,7 +838,7 @@ export function DataTable<T extends Record<string, unknown>>({
                           if (el) el.indeterminate = isIndeterminate
                         }}
                         onChange={(e) => handleSelectAll(e.target.checked)}
-                        className="rounded border-slate-300 bg-white dark:bg-slate-700 checked:bg-blue-600 checked:border-blue-600 dark:border-slate-500"
+                        className="rounded border-table bg-card checked:bg-primary checked:border-primary"
                       />
                     </th>
                   )}
@@ -856,19 +856,19 @@ export function DataTable<T extends Record<string, unknown>>({
                         key={String(column.key)}
                         className={`${
                           deviceType === 'mobile' && responsive.compactOnMobile ? 'px-1 py-0' : 'px-1 py-0'
-                        } select-none relative group text-slate-700 dark:text-slate-200 border-r border-slate-200 dark:border-slate-600 last:border-r-0 ${
-                          column.sortable !== false ? 'cursor-pointer hover:bg-gradient-to-r hover:from-blue-100 hover:to-slate-200 dark:hover:from-slate-600 dark:hover:to-slate-700 hover:shadow-lg transition-all duration-200' : ''
+                        } select-none relative group text-muted-foreground border-r border-table last:border-r-0 ${
+                          column.sortable !== false ? 'cursor-pointer hover:bg-muted hover:shadow-table transition-all duration-200' : ''
                         } ${
                           column.align === 'center' ? 'text-center' :
                           column.align === 'right' ? 'text-right' : 'text-left'
                         } ${
                           draggedColumn === index ? 'opacity-50' : ''
                         } ${
-                          column.groupHeader ? 'border-l border-r border-slate-200 dark:border-slate-600' : ''
+                          column.groupHeader ? 'border-l border-r border-table' : ''
                         } ${
-                          isFrozen ? `sticky ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-gradient-to-r from-blue-50 to-slate-100 dark:from-slate-700 dark:to-slate-800 shadow-lg` : ''
+                          isFrozen ? `sticky ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-table-header shadow-table` : ''
                         } ${
-                          isFirstUnfrozen ? 'border-l-4 border-l-blue-400 dark:border-l-blue-500' : ''
+                          isFirstUnfrozen ? 'border-l-4 border-l-primary' : ''
                         }`}
                         style={{ 
                           width: `${width}px`, 
@@ -923,7 +923,7 @@ export function DataTable<T extends Record<string, unknown>>({
                         {/* Resize handle */}
                         {columnControls.resizable && column.resizable !== false && (
                           <div
-                            className="absolute right-0 top-0 h-full w-1 cursor-col-resize opacity-0 group-hover:opacity-100 hover:bg-blue-500 hover:opacity-100"
+                            className="absolute right-0 top-0 h-full w-1 cursor-col-resize opacity-0 group-hover:opacity-100 hover:bg-primary hover:opacity-100"
                             onMouseDown={(e) => handleResizeStart(e, index)}
                           />
                         )}
@@ -938,8 +938,8 @@ export function DataTable<T extends Record<string, unknown>>({
                   return (
                     <tr
                       key={index}
-                      className={`border-b border-slate-200 dark:border-slate-600 hover:bg-gradient-to-r hover:from-slate-100 hover:to-white dark:hover:from-slate-700 dark:hover:to-slate-750 text-slate-900 dark:text-slate-100 transition-all duration-200 hover:shadow-md ${
-                        isSelected ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700' : ''
+                      className={`border-b border-table hover:bg-table-row-hover text-foreground transition-all duration-200 hover:shadow-sm ${
+                        isSelected ? 'bg-primary/10 border-primary/30' : ''
                       } ${
                         onRowClick ? 'cursor-pointer' : ''
                       }`}
@@ -953,14 +953,14 @@ export function DataTable<T extends Record<string, unknown>>({
                       {/* Selection column */}
                       {selection.enabled && (
                         <td 
-                          className="p-2 sticky left-0 z-[50] bg-white dark:bg-slate-800 border-r border-slate-300 dark:border-slate-600 shadow-lg"
+                          className="p-2 sticky left-0 z-[50] bg-table-container border-r border-table shadow-table"
                           style={{ width: `${getSelectionColumnWidth()}px` }}
                         >
                           <input
                             type="checkbox"
                             checked={isSelected}
                             onChange={(e) => handleSelectItem(index, e.target.checked)}
-                            className="rounded border-slate-300 bg-white dark:bg-slate-700 checked:bg-blue-600 checked:border-blue-600 dark:border-slate-500"
+                            className="rounded border-table bg-card checked:bg-primary checked:border-primary"
                             onClick={(e) => e.stopPropagation()}
                           />
                         </td>
@@ -979,13 +979,13 @@ export function DataTable<T extends Record<string, unknown>>({
                             key={String(column.key)}
                             className={`${
                               deviceType === 'mobile' && responsive.compactOnMobile ? 'px-0 py-0.5' : 'px-0 py-1'
-                            } text-slate-900 dark:text-slate-100 border-r border-slate-200 dark:border-slate-600 last:border-r-0 ${
+                            } text-foreground border-r border-table last:border-r-0 ${
                               column.align === 'center' ? 'text-center' :
                               column.align === 'right' ? 'text-right' : 'text-left'
                             } ${
-                              isFrozen ? 'sticky z-[50] bg-white dark:bg-slate-800 shadow-lg' : ''
+                              isFrozen ? 'sticky z-[50] bg-table-container shadow-table' : ''
                             } ${
-                              isFirstUnfrozen ? 'border-l-4 border-l-blue-400 dark:border-l-blue-500' : ''
+                              isFirstUnfrozen ? 'border-l-4 border-l-primary' : ''
                             }`}
                             style={{ 
                               width: `${width}px`, 
@@ -1022,7 +1022,7 @@ export function DataTable<T extends Record<string, unknown>>({
                       setPageSize(Number(e.target.value))
                       setCurrentPage(1)
                     }}
-                    className="ml-2 px-2 py-1 border border-slate-300 dark:border-slate-600 rounded text-sm bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
+                    className="ml-2 px-2 py-1 border border-table rounded text-sm bg-card text-foreground"
                   >
                     <option value={5}>5</option>
                     <option value={10}>10</option>

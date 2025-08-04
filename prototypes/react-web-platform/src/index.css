@@ -28,6 +28,17 @@
     --content-inverse: 210 40% 98%;
     --content-disabled: 215.4 16.3% 75%;
     --radius: 0.5rem;
+
+    /* DataTable-specific layer separation variables */
+    --table-container: 0 0% 100%;
+    --table-container-elevated: 0 0% 100%;
+    --table-header: 210 40% 98%;
+    --table-header-elevated: 210 40% 96%;
+    --table-row: 0 0% 100%;
+    --table-row-hover: 210 40% 96%;
+    --table-border: 214.3 31.8% 91.4%;
+    --table-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --table-shadow-elevated: 0 10px 15px -3px rgb(0 0 0 / 0.1);
   }
 
   .dark {
@@ -56,6 +67,17 @@
     --content-tertiary: 215 20.2% 45%;
     --content-inverse: 222.2 84% 4.9%;
     --content-disabled: 215 20.2% 35%;
+
+    /* DataTable-specific dark theme layer separation */
+    --table-container: 217.2 32.6% 17.5%;
+    --table-container-elevated: 217.2 32.6% 20%;
+    --table-header: 217.2 32.6% 15%;
+    --table-header-elevated: 217.2 32.6% 12%;
+    --table-row: 217.2 32.6% 17.5%;
+    --table-row-hover: 217.2 32.6% 22%;
+    --table-border: 217.2 32.6% 25%;
+    --table-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.25);
+    --table-shadow-elevated: 0 10px 15px -3px rgb(0 0 0 / 0.25);
   }
 
   /* Platform-specific adjustments */
@@ -270,6 +292,43 @@
   
   .to-primary\/60 {
     --tw-gradient-to: hsl(var(--primary) / 0.6);
+  }
+
+  /* DataTable layer separation utilities */
+  .bg-table-container {
+    background-color: hsl(var(--table-container));
+  }
+  
+  .bg-table-container-elevated {
+    background-color: hsl(var(--table-container-elevated));
+  }
+  
+  .bg-table-header {
+    background-color: hsl(var(--table-header));
+  }
+  
+  .bg-table-header-elevated {
+    background-color: hsl(var(--table-header-elevated));
+  }
+  
+  .bg-table-row {
+    background-color: hsl(var(--table-row));
+  }
+  
+  .hover\:bg-table-row-hover:hover {
+    background-color: hsl(var(--table-row-hover));
+  }
+  
+  .border-table {
+    border-color: hsl(var(--table-border));
+  }
+  
+  .shadow-table {
+    box-shadow: var(--table-shadow);
+  }
+  
+  .shadow-table-elevated {
+    box-shadow: var(--table-shadow-elevated);
   }
 
   /* Platform-specific utilities */
