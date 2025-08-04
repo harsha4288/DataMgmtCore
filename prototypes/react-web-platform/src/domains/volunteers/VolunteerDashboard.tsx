@@ -315,12 +315,6 @@ export function VolunteerDashboard() {
             value === 'Coordinator' ? 'info' : 
             value === 'Specialist' ? 'warning' : 'default'
           }
-          className={
-            value === 'Team Lead' ? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/40 dark:text-green-300' :
-            value === 'Coordinator' ? 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/40 dark:text-blue-300' :
-            value === 'Specialist' ? 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/40 dark:text-yellow-300' :
-            'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/40 dark:text-gray-300'
-          }
         >
           {String(value)}
         </Badge>
@@ -619,7 +613,7 @@ export function VolunteerDashboard() {
   ]
 
   return (
-    <div className="space-y-4 p-6 border rounded-lg bg-background shadow-sm">
+    <div className="space-y-6 p-6 bg-background min-h-screen">
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
           <span className="text-lg font-semibold">👕 Volunteer T-shirt Management</span>

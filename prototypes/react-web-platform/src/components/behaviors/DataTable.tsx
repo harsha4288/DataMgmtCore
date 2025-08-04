@@ -759,7 +759,7 @@ export function DataTable<T extends Record<string, unknown>>({
             style={{ maxHeight: maxHeight }}
           >
             <table ref={tableRef} className={`w-full bg-transparent text-foreground border-collapse ${
-              deviceType === 'mobile' && responsive.compactOnMobile ? 'text-xs' : 'text-sm'
+              deviceType === 'mobile' && responsive.compactOnMobile ? 'text-xs' : 'text-table-body'
             }`}>
               <thead className={frozenHeader ? 'sticky top-0 z-[52]' : ''}>
                 {/* Group Headers Row (if any columns have groupHeader) */}
@@ -792,11 +792,11 @@ export function DataTable<T extends Record<string, unknown>>({
                             <th
                               key={column.groupHeader}
                               colSpan={groupColumns.length}
-                              className="px-3 py-2 text-center font-semibold bg-table-header border-l border-r border-table text-foreground text-xs shadow-table"
-                              style={{ width: `${groupWidth}px`, minWidth: `${groupWidth}px`, minHeight: '32px' }}
+                              className="px-3 py-2 text-center bg-table-header border-l border-r border-table text-foreground text-table-group-header shadow-table"
+                              style={{ width: `${groupWidth}px`, minWidth: `${groupWidth}px`, minHeight: 'var(--table-group-header-height)' }}
                             >
-                              <div className="flex items-center justify-center gap-1.5 min-h-[32px]">
-                                <span className="text-xs font-semibold leading-tight">{column.groupHeader}</span>
+                              <div className="flex items-center justify-center gap-1.5" style={{ minHeight: 'var(--table-group-header-height)' }}>
+                                <span className="text-table-group-header leading-tight">{column.groupHeader}</span>
                               </div>
                             </th>
                           )
@@ -812,7 +812,7 @@ export function DataTable<T extends Record<string, unknown>>({
                               className="px-3 py-2 bg-table-header border-r border-table shadow-table"
                               style={{ width: `${width}px`, minWidth: `${width}px` }}
                             >
-                              <div className="h-[32px] bg-muted rounded border border-table shadow-sm"></div>
+                              <div className="bg-muted rounded border border-table shadow-sm" style={{ height: 'var(--table-group-header-height)' }}></div>
                             </th>
                           )
                         }
@@ -855,7 +855,7 @@ export function DataTable<T extends Record<string, unknown>>({
                       <th
                         key={String(column.key)}
                         className={`${
-                          deviceType === 'mobile' && responsive.compactOnMobile ? 'px-1 py-0' : 'px-1 py-0'
+                          deviceType === 'mobile' && responsive.compactOnMobile ? '' : ''
                         } select-none relative group text-muted-foreground border-r border-table last:border-r-0 ${
                           column.sortable !== false ? 'cursor-pointer hover:bg-muted hover:shadow-table transition-all duration-200' : ''
                         } ${
@@ -881,14 +881,14 @@ export function DataTable<T extends Record<string, unknown>>({
                         onDrop={(e) => handleDrop(e, index)}
                         onClick={() => handleSort(column.key)}
                       >
-                        <div className="flex flex-col items-center gap-0.5 min-h-[40px] justify-center px-2 py-1">
+                        <div className="flex flex-col items-center gap-0.5 justify-center" style={{ minHeight: 'var(--table-header-height)', padding: 'var(--table-cell-padding-y) var(--table-cell-padding-x)' }}>
                           <div className="flex items-center gap-1 w-full justify-center">
                             {columnControls.reorderable && (
                               <span className="opacity-0 group-hover:opacity-50 cursor-grab text-xs mr-1">
                                 ⋮⋮
                               </span>
                             )}
-                            <span className="text-center font-semibold text-xs leading-tight">{column.label}</span>
+                            <span className="text-center text-table-header leading-tight">{column.label}</span>
                             
                             {/* Column-specific badge */}
                             {column.badge && (
@@ -978,7 +978,7 @@ export function DataTable<T extends Record<string, unknown>>({
                           <td
                             key={String(column.key)}
                             className={`${
-                              deviceType === 'mobile' && responsive.compactOnMobile ? 'px-0 py-0.5' : 'px-0 py-1'
+                              deviceType === 'mobile' && responsive.compactOnMobile ? '' : ''
                             } text-foreground border-r border-table last:border-r-0 ${
                               column.align === 'center' ? 'text-center' :
                               column.align === 'right' ? 'text-right' : 'text-left'
@@ -997,7 +997,7 @@ export function DataTable<T extends Record<string, unknown>>({
                               column.align === 'center' ? 'flex items-center justify-center' :
                               column.align === 'right' ? 'flex items-center justify-end' : 
                               'flex items-center justify-start'
-                            } w-full min-h-[32px] px-2 py-1`}>
+                            } w-full`} style={{ minHeight: 'var(--table-row-height)', padding: 'var(--table-cell-padding-y) var(--table-cell-padding-x)' }}>
                               {renderCell(column, item, item[column.key])}
                             </div>
                           </td>

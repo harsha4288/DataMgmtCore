@@ -16,11 +16,12 @@ export function InventoryBadge({
   showPercentage = false,
   format = 'available'
 }: InventoryBadgeProps) {
-  const { percentage, variant } = useMemo(() => {
+  const { percentage, variant, isEmpty } = useMemo(() => {
     if (total === 0) {
       return {
         percentage: 0,
-        variant: 'default' as const
+        variant: 'default' as const,
+        isEmpty: true
       }
     }
 
@@ -40,7 +41,7 @@ export function InventoryBadge({
       variant = 'error'
     }
 
-    return { percentage: pct, variant }
+    return { percentage: pct, variant, isEmpty: false }
   }, [available, total])
 
   const displayText = useMemo(() => {
@@ -59,6 +60,18 @@ export function InventoryBadge({
     return `Available: ${available}, Issued: ${issued}, Total: ${total} (${percentage}% available)`
   }, [available, total, percentage])
 
+  // Use consistent empty state styling for zero inventory
+  if (isEmpty) {
+    return (
+      <span 
+        className={`inline-flex items-center justify-center bg-empty-badge text-empty-badge border-empty-badge badge-radius badge-weight h-5 px-2 text-xs min-w-[32px] border shadow-sm ${className}`}
+        title={tooltipText}
+      >
+        <span className="placeholder-symbol" />
+      </span>
+    )
+  }
+
   return (
     <Badge
       variant={variant}
@@ -71,23 +84,23 @@ export function InventoryBadge({
   )
 }
 
-// Utility function to get color classes programmatically
+// Utility function to get color classes programmatically using CSS variables
 export function getInventoryColorClasses(available: number, total: number): string {
   if (total === 0) {
-    return 'bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600'
+    return 'bg-muted text-muted-foreground border-border'
   }
 
   const percentage = (available / total) * 100
   
   if (percentage >= 70) {
-    return 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-900/40 dark:text-emerald-200 dark:border-emerald-600'
+    return 'bg-badge-success text-badge-success-foreground border-badge-success'
   } else if (percentage >= 40) {
-    return 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-600'
+    return 'bg-badge-warning text-badge-warning-foreground border-badge-warning'
   } else if (percentage >= 15) {
-    return 'bg-orange-100 text-orange-800 border-orange-300 dark:bg-orange-900/40 dark:text-orange-200 dark:border-orange-600'
+    return 'bg-badge-warning text-badge-warning-foreground border-badge-warning'
   } else if (percentage > 0) {
-    return 'bg-red-100 text-red-800 border-red-300 dark:bg-red-900/40 dark:text-red-200 dark:border-red-600'
+    return 'bg-badge-error text-badge-error-foreground border-badge-error'
   } else {
-    return 'bg-red-200 text-red-900 border-red-400 dark:bg-red-900/60 dark:text-red-100 dark:border-red-500'
+    return 'bg-badge-error text-badge-error-foreground border-badge-error'
   }
 }

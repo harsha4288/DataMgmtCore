@@ -204,7 +204,7 @@ export function StockDashboard() {
   ]
 
   return (
-    <div className="space-y-4 p-4 border rounded-lg">
+    <div className="space-y-6 p-6 bg-background min-h-screen">
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
           <span className="text-sm font-medium">Stock Dashboard</span>
@@ -222,11 +222,11 @@ export function StockDashboard() {
       </div>
 
       {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-          <p className="text-sm text-red-800">
+        <div className="p-4 bg-table-container-elevated rounded-xl shadow-table-elevated border border-table">
+          <p className="text-sm text-foreground">
             <strong>API Error:</strong> {error}
           </p>
-          <p className="text-xs text-red-600 mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             Showing demo data as fallback. Get a free API key at alphavantage.co
           </p>
         </div>

@@ -159,7 +159,7 @@ export function NewsDashboard() {
   ])
 
   return (
-    <div className="space-y-4 p-4 border rounded-lg">
+    <div className="space-y-6 p-6 bg-background min-h-screen">
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
           <span className="text-sm font-medium">News Dashboard</span>
@@ -180,21 +180,21 @@ export function NewsDashboard() {
       </div>
 
       {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-          <p className="text-sm text-red-800">
+        <div className="p-4 bg-table-container-elevated rounded-xl shadow-table-elevated border border-table">
+          <p className="text-sm text-foreground">
             <strong>API Error:</strong> {error}
           </p>
-          <p className="text-xs text-red-600 mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             Using enhanced mock data (100 articles) due to NewsAPI CORS restrictions. Virtual scrolling demo works perfectly!
           </p>
         </div>
       )}
       
-      <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
-        <p className="text-sm text-blue-800">
+      <div className="p-4 bg-table-container-elevated rounded-xl shadow-table-elevated border border-table">
+        <p className="text-sm text-foreground">
           <strong>Virtual Scrolling Demo:</strong> 100 news articles generated for testing
         </p>
-        <p className="text-xs text-blue-600 mt-1">
+        <p className="text-xs text-muted-foreground mt-1">
           NewsAPI requires server-side requests due to CORS policy. Mock data demonstrates virtual scrolling perfectly.
         </p>
       </div>

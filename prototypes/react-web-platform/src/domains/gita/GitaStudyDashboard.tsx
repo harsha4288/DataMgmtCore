@@ -439,8 +439,8 @@ export function GitaStudyDashboard() {
       />
       
       {selectedStudents.length > 0 && (
-        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-          <p className="text-sm text-blue-700 dark:text-blue-300">
+        <div className="p-4 bg-table-container-elevated rounded-xl shadow-table-elevated border border-table">
+          <p className="text-sm text-foreground">
             <strong>{selectedStudents.length}</strong> students selected for bulk actions.
           </p>
         </div>
