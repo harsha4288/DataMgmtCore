@@ -1,5 +1,14 @@
 # Phase 3.1B: Component Decoupling from Hardcoded Styles
 
+> 📋 **MAIN STRATEGY**: [phase-3.1-datatable-ui-enhancements.md](phase-3.1-datatable-ui-enhancements.md)  
+> ⚠️ **IMPLEMENTATION GUARDRAILS**: See main document Section "Implementation Guardrails"  
+> 🎯 **SUCCESS CRITERIA**: All changes must use CSS variables only - zero hardcoded styles
+
+## Critical Constraints From Main Document
+- ❌ **NEVER**: `bg-slate-100`, `border-blue-200`, hardcoded colors
+- ✅ **ALWAYS**: `bg-card`, `border-border`, semantic CSS variable classes
+- 🎯 **TEST**: Can change entire look by editing `theme.css` alone?
+
 ## 📋 Overview
 
 **Goal**: Remove all hardcoded styles from reusable components and convert to semantic CSS variable classes.

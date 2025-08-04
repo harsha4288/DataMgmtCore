@@ -157,6 +157,74 @@ Helper Text:     font-size: 0.75rem, weight: 400
 
 ---
 
+## ⚠️ IMPLEMENTATION GUARDRAILS
+
+> **CRITICAL**: These constraints MUST be followed in ALL subtasks and iterations
+
+### ❌ FORBIDDEN PATTERNS - Never Use These
+
+```typescript
+// ❌ HARDCODED COLORS - Breaks theme system
+className="bg-slate-100 border-blue-200 text-gray-800"
+className="bg-gradient-to-br from-slate-100 via-blue-50 to-slate-200"
+className="shadow-lg border-slate-300 text-slate-900"
+
+// ❌ FIXED STYLE VALUES - Won't respect theme changes
+style={{ backgroundColor: '#f1f5f9', borderColor: '#e2e8f0' }}
+style={{ color: '#475569', fontSize: '14px' }}
+
+// ❌ ARBITRARY VALUES - Bypasses design system
+className="bg-[#f8fafc] text-[#1e293b] border-[#cbd5e1]"
+```
+
+### ✅ REQUIRED PATTERNS - Always Use These
+
+```typescript
+// ✅ SEMANTIC CLASSES - Use CSS variables
+className="bg-card border-border text-foreground"
+className="bg-muted text-muted-foreground"
+className="bg-background border-muted"
+
+// ✅ THEME-AWARE VARIANTS - Respect light/dark modes
+className="bg-primary text-primary-foreground"
+className="hover:bg-muted/50 focus:ring-ring"
+
+// ✅ DESIGN SYSTEM UTILITIES - Use predefined tokens
+className="text-sm font-medium leading-none"
+className="rounded-md shadow-sm"
+```
+
+### 🔍 PRE-IMPLEMENTATION VALIDATION CHECKLIST
+
+Before making ANY styling change, verify:
+
+- [ ] **CSS Variables Only**: Does this use semantic classes that reference CSS variables?
+- [ ] **Global Theme Test**: If I change one CSS variable in `theme.css`, will this update automatically?
+- [ ] **Cross-Domain Consistency**: Will this look identical across all 6 domains?
+- [ ] **Light/Dark Compatibility**: Does this work in both theme modes?
+- [ ] **Zero Hardcoding**: Are there NO hardcoded colors, sizes, or spacing values?
+
+### 🎯 VALIDATION COMMAND
+
+After each change, run this mental test:
+```bash
+# Can I achieve the desired visual change by ONLY editing theme.css?
+# If NO → You're hardcoding and breaking the architecture
+# If YES → You're following the theme-based approach ✅
+```
+
+### 🚨 CODE REVIEW CRITERIA
+
+Every implementation MUST pass:
+
+1. **Theme Independence**: No hardcoded values in component files
+2. **Single Source of Truth**: All visual changes controlled from `theme.css`
+3. **Semantic Naming**: Uses descriptive classes like `bg-card`, not `bg-slate-100`
+4. **Universal Application**: Same change affects all DataTable instances
+5. **Mode Compatibility**: Works in light, dark, and future theme variants
+
+---
+
 ## 🔧 Technical Implementation Strategy
 
 ### **Component Architecture Enhancement**
