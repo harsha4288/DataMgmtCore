@@ -468,24 +468,199 @@ All inspiration-based requirements captured and ready for CSS variable implement
 
 ---
 
+## 🔧 Badge System Standardization (August 5, 2025)
+
+### **Critical Issues Identified from Screenshot Analysis**
+
+From `@src/assets/testing/current_state4.jpg`, inconsistent badge styling discovered:
+
+#### **Current State Analysis**
+- ✅ **Level Column**: Using correct grade-based variants (orange BEGINNER, yellow INTERMEDIATE, blue ADVANCED)
+- ❌ **Status Column**: Using legacy success/warning/error variants (green Active, orange Paused, blue Completed)  
+- ❌ **Verses Memorized Column**: Using legacy success/warning/error variants (red 7%, red 4%, red 14%)
+- ❌ **A-Grade Text Color**: Using dark green (#065f46) appearing black instead of proper green
+- ✅ **Overall Grade Column**: Grade variants working correctly for letter grades
+
+#### **Root Cause**: Legacy Badge Variants Still Active
+**Files with Legacy Variants Identified**: 10 files using `success/warning/error/info`
+- `src/domains/gita/GitaStudyDashboard.tsx` - Status column mapping  
+- `src/components/behaviors/InventoryBadge.tsx` - Core calculation logic
+- `src/domains/news/NewsDashboard.tsx` - News status badges
+- `src/domains/stocks/StockDashboard.tsx` - Stock indicators
+- `src/domains/products/ProductCatalogDashboard.tsx` - Product status  
+- `src/domains/users/UserDirectoryDashboard.tsx` - User status
+- `src/components/behaviors/PWAStatus.tsx` - System status
+- `src/components/behaviors/VirtualizedDataTableOptimized.tsx` - Table badges
+- `src/components/behaviors/DataTable.tsx` - Core table badges  
+- `src/components/behaviors/AdvancedFiltering.tsx` - Filter badges
+
+**Additional Files with Legacy Classes**: 4 files with hardcoded success/warning/error classes
+
+---
+
+## 🎨 Enhanced Dynamic Color System Requirements
+
+### **Current Problem**: Fixed Thresholds Inadequate
+Current InventoryBadge uses fixed thresholds (70%→green, 40%→warning, 15%→warning, 0%→red) that don't provide nuanced color representation.
+
+### **New Dynamic Color Calculation Spec**
+
+#### **Percentage-to-Grade Mapping**
+```css
+/* Dynamic color system - calculated approach */
+1%     → grade-f (red)      /* Critical/empty state */
+25%    → grade-f (red)      /* Still critical */
+50%    → grade-d (orange)   /* Medium/warning state */  
+75%    → grade-c (yellow)   /* Good progress */
+90%    → grade-b (blue)     /* Very good */
+100%   → grade-a (green)    /* Perfect/complete */
+```
+
+#### **Implementation Strategy**
+1. **CSS-First Approach**: Use CSS `calc()` functions where possible
+2. **Parameter-Driven**: Allow custom threshold (e.g., pass 72% to set green threshold)
+3. **Smooth Transitions**: Avoid harsh threshold jumps
+4. **Accessibility**: Maintain WCAG contrast ratios
+
+#### **Technical Requirements**
+```typescript
+interface DynamicColorOptions {
+  percentage: number;
+  customThresholds?: {
+    excellent?: number;  // Default 90% → grade-a
+    good?: number;       // Default 75% → grade-b  
+    fair?: number;       // Default 50% → grade-c
+    poor?: number;       // Default 25% → grade-d
+    // Below poor → grade-f
+  };
+}
+```
+
+---
+
+## 🎯 A-Grade Text Color Fix
+
+### **Current Issue**
+```css
+--badge-grade-a-foreground: 158 64% 18%; /* #065f46 - Too dark, appears black */
+```
+
+### **Problem**: Dark Green Appearing Black
+On soft green background `--badge-grade-a: 142 47% 91%`, the dark green text (158 64% 18%) appears nearly black instead of green.
+
+### **Solution Strategy**
+1. **Lighten Foreground**: Use medium green that still maintains contrast
+2. **Accessibility Test**: Verify 4.5:1 contrast ratio maintained
+3. **Visual Test**: Ensure text appears green, not black
+4. **Cross-Theme**: Validate on both light and dark themes
+
+### **Proposed Fix**
+```css
+--badge-grade-a-foreground: 158 64% 28%; /* Lighter green, still accessible */
+```
+
+---
+
+## 📋 Comprehensive Implementation Roadmap
+
+### **Phase 1: Core System Updates (Critical Priority)**
+
+#### **Step 1.1: Dynamic Color Calculation System**
+- [ ] Update `InventoryBadge.tsx` with percentage-based color calculation
+- [ ] Implement custom threshold support via parameters  
+- [ ] Add CSS variable integration for smooth color transitions
+- [ ] Test dynamic colors: 1%→red, 50%→medium, 100%→green
+
+#### **Step 1.2: A-Grade Text Color Fix**
+- [ ] Update `--badge-grade-a-foreground` in `index.css`
+- [ ] Verify contrast ratio meets WCAG 2.1 AA standards
+- [ ] Test appearance on both light and dark themes
+- [ ] Validate text appears green, not black
+
+### **Phase 2: Legacy Variant Cleanup (High Priority)**
+
+#### **Step 2.1: Status Column Standardization**
+- [ ] `GitaStudyDashboard.tsx`: Replace legacy status variants
+  - Active → grade-a (green)
+  - Completed → grade-b (blue)  
+  - Paused → grade-c (yellow)
+  - Dropped → grade-f (red)
+
+#### **Step 2.2: Cross-Domain Badge Standardization**
+- [ ] **News Domain**: Update news status badges to grade system
+- [ ] **Stock Domain**: Update stock indicators to grade variants  
+- [ ] **Product Domain**: Update product status and inventory badges
+- [ ] **User Domain**: Update user status and role badges
+- [ ] **Component Systems**: Update PWA status, DataTable badges
+
+### **Phase 3: Stale Style Audit (Medium Priority)**
+
+#### **Step 3.1: Deep Legacy Search**
+- [ ] Search for hardcoded hex colors that should use CSS variables
+- [ ] Find direct Tailwind color classes (bg-green-500, text-red-600)
+- [ ] Locate remaining success/warning/error string literals
+- [ ] Verify no inline styles bypass CSS variable system
+
+#### **Step 3.2: Architecture Validation**  
+- [ ] Confirm all badges use CSS variable system
+- [ ] Validate theme independence (no hardcoded values)
+- [ ] Test cross-domain consistency
+- [ ] Verify dynamic color system works universally
+
+---
+
+## ✅ Success Criteria
+
+### **Visual Consistency**
+- [ ] All status badges use grade-based colors consistently
+- [ ] Inventory percentages show appropriate dynamic colors
+- [ ] A-grade badges display green text, not black
+- [ ] Cross-domain visual consistency achieved
+
+### **Technical Excellence**  
+- [ ] Dynamic color calculation system implemented
+- [ ] Custom threshold parameter support working
+- [ ] All legacy variants eliminated
+- [ ] CSS variable architecture maintained
+
+### **User Experience**
+- [ ] Intuitive color coding: red=critical, orange=warning, green=success
+- [ ] Smooth color transitions based on percentage values
+- [ ] Professional appearance matching inspiration images
+- [ ] Accessibility standards maintained
+
+---
+
 ## 📋 Implementation Log
 
 ### **Phase 3.1D Status**
-**Status**: 📋 **READY FOR IMPLEMENTATION**
+**Status**: 🔧 **BADGE STANDARDIZATION IN PROGRESS**
+
+#### **Completed**
+- [x] **Inspiration-Based Aesthetic**: Clean white light and navy dark themes implemented
+- [x] **Typography System**: Modern sans-serif fonts matching inspiration  
+- [x] **Grade Badge Foundation**: A-F grade system with base colors established
+- [x] **CSS Variable Architecture**: Professional color palette in place
+
+#### **Current Focus: Badge System Standardization**
+- [ ] **Dynamic Color System**: Implement percentage-based color calculation
+- [ ] **A-Grade Text Fix**: Resolve dark green appearing black issue
+- [ ] **Legacy Variant Cleanup**: Standardize across 14+ identified files
+- [ ] **Cross-Domain Consistency**: Ensure uniform badge styling
 
 #### **Next Actions**
-1. **Begin Implementation**: Start with inspiration-based color system
-2. **Badge System**: Implement A-F grade badges with proper colors
-3. **Theme Updates**: Apply clean white light and navy dark themes
-4. **Typography**: Update to clean modern fonts
-5. **Screenshot Validation**: Compare results with inspiration images
+1. **Document Updates**: Complete comprehensive plan documentation  
+2. **Core System**: Implement dynamic color calculation in InventoryBadge
+3. **Text Color Fix**: Update A-grade foreground color
+4. **Legacy Cleanup**: Systematically update all identified files
+5. **Testing**: Validate consistency across all domains
 
 #### **Success Gateway to Phase 3.1C**
 Phase 3.1C will resume after Phase 3.1D completion with:
-- Inspiration-based aesthetic implemented
-- Colorful badge system working
-- Clean typography established
-- Professional themes validated
+- Dynamic color calculation system working
+- All legacy badge variants eliminated  
+- Professional badge consistency across domains
+- A-grade text color displaying properly
 
 ---
 
