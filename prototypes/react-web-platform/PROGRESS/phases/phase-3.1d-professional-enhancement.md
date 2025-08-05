@@ -634,33 +634,57 @@ On soft green background `--badge-grade-a: 142 47% 91%`, the dark green text (15
 ## 📋 Implementation Log
 
 ### **Phase 3.1D Status**
-**Status**: 🔧 **BADGE STANDARDIZATION IN PROGRESS**
+**Status**: 🔧 **BADGE STANDARDIZATION - EXTENSION IN PROGRESS**
 
-#### **Completed**
+#### **Completed (Core System)**
 - [x] **Inspiration-Based Aesthetic**: Clean white light and navy dark themes implemented
 - [x] **Typography System**: Modern sans-serif fonts matching inspiration  
 - [x] **Grade Badge Foundation**: A-F grade system with base colors established
 - [x] **CSS Variable Architecture**: Professional color palette in place
+- [x] **Dynamic Color System**: Percentage-based color calculation implemented in InventoryBadge
+- [x] **A-Grade Text Fix**: Updated foreground color from #065f46 to visible green
+- [x] **Legacy Variant Cleanup**: All success/warning/error/info variants replaced with grade system
+- [x] **Cross-Domain Consistency**: Badge system standardized across all domains
 
-#### **Current Focus: Badge System Standardization**
-- [ ] **Dynamic Color System**: Implement percentage-based color calculation
-- [ ] **A-Grade Text Fix**: Resolve dark green appearing black issue
-- [ ] **Legacy Variant Cleanup**: Standardize across 14+ identified files
-- [ ] **Cross-Domain Consistency**: Ensure uniform badge styling
+#### **Current Focus: UI Polish & Refinements (Extension)**
+Based on user feedback from screenshot analysis (`current_state5.jpg`):
+
+**High Priority Issues:**
+- [ ] **Fix Remaining Stale Badges**: Role and PREFS columns using old badge styles
+- [ ] **Add Generic Badge Variant**: Create neutral style for unspecified grades (like Events column)
+
+**Medium Priority Issues:**
+- [ ] **Icon Button Sizing**: T-shirt icons too small in DataTable rows, need full button visibility
+- [ ] **Group Header Height**: Minimize padding above/below group header text (near-zero spacing)
+- [ ] **Group Header Background**: Match selection column background for visual consistency
+
+#### **Extension Implementation Plan**
+
+##### **Step 1: Badge System Completion**
+1. **Locate Stale Badge Usage**: Find Role and PREFS column implementations
+2. **Update to Grade System**: Replace with appropriate grade variants
+3. **Add Generic Badge**: Create neutral variant (inspired by Events column)
+4. **Test Badge Consistency**: Validate all badges use standardized system
+
+##### **Step 2: DataTable Polish**
+1. **Icon Button Enhancement**: Increase t-shirt icon size to fill button properly
+2. **Group Header Optimization**: Reduce height padding to minimal spacing
+3. **Background Alignment**: Match group header background to selection column
+4. **Visual Testing**: Confirm improved visibility and consistency
 
 #### **Next Actions**
-1. **Document Updates**: Complete comprehensive plan documentation  
-2. **Core System**: Implement dynamic color calculation in InventoryBadge
-3. **Text Color Fix**: Update A-grade foreground color
-4. **Legacy Cleanup**: Systematically update all identified files
-5. **Testing**: Validate consistency across all domains
+1. **Badge Audit**: Search for remaining stale badge implementations
+2. **Generic Badge**: Design and implement neutral variant
+3. **Icon Enhancement**: Fix t-shirt button visibility issues
+4. **Header Polish**: Minimize group header height and align backgrounds
+5. **Final Testing**: Validate all improvements working correctly
 
 #### **Success Gateway to Phase 3.1C**
-Phase 3.1C will resume after Phase 3.1D completion with:
-- Dynamic color calculation system working
-- All legacy badge variants eliminated  
-- Professional badge consistency across domains
-- A-grade text color displaying properly
+Phase 3.1C will resume after Phase 3.1D extension completion with:
+- All badge styles fully standardized (including Role/PREFS columns)
+- Generic badge variant available for neutral cases
+- Improved DataTable icon visibility and group header polish
+- Complete professional UI consistency achieved
 
 ---
 

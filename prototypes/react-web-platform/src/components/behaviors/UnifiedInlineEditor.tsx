@@ -52,25 +52,25 @@ export function UnifiedInlineEditor({
     switch (size) {
       case 'sm':
         return {
-          buttonClass: 'h-6 w-6 min-h-[24px] min-w-[24px]',
-          iconClass: 'h-3 w-3 stroke-[2px]',
-          shirtClass: 'h-3 w-3 stroke-[1.5px]',
+          buttonClass: 'h-7 w-7 min-h-[28px] min-w-[28px]',
+          iconClass: 'h-3.5 w-3.5 stroke-[2px]',
+          shirtClass: 'h-3.5 w-3.5 stroke-[1.5px]',
           textClass: 'text-xs',
           containerClass: 'gap-1'
         }
       case 'lg':
         return {
-          buttonClass: 'h-8 w-8 min-h-[32px] min-w-[32px]',
-          iconClass: 'h-4 w-4 stroke-[2px]', 
-          shirtClass: 'h-4 w-4 stroke-[1.5px]',
+          buttonClass: 'h-10 w-10 min-h-[40px] min-w-[40px]',
+          iconClass: 'h-5 w-5 stroke-[2px]', 
+          shirtClass: 'h-5 w-5 stroke-[1.5px]',
           textClass: 'text-sm',
           containerClass: 'gap-2'
         }
       default: // md
         return {
-          buttonClass: 'h-7 w-7 min-h-[28px] min-w-[28px]',
-          iconClass: 'h-3.5 w-3.5 stroke-[2px]',
-          shirtClass: 'h-3.5 w-3.5 stroke-[1.5px]',
+          buttonClass: 'h-8 w-8 min-h-[32px] min-w-[32px]',
+          iconClass: 'h-4 w-4 stroke-[2px]',
+          shirtClass: 'h-4 w-4 stroke-[1.5px]',
           textClass: 'text-sm',
           containerClass: 'gap-1.5'
         }

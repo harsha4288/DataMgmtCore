@@ -45,7 +45,7 @@
     
     /* Table layout standardization */
     --table-header-height: 40px;
-    --table-group-header-height: 40px;
+    --table-group-header-height: 28px;
     --table-row-height: 40px;
     --table-cell-padding-x: 12px;
     --table-cell-padding-y: 8px;
@@ -114,6 +114,11 @@
     --badge-grade-f: 0 93% 94%;          /* #fee2e2 - Soft red background */
     --badge-grade-f-foreground: 0 74% 42%; /* #dc2626 - Dark red text */
     --badge-grade-f-border: 0 88% 88%;   /* Subtle red border */
+    
+    /* Generic/Neutral badge for unspecified grades (inspired by Events column) */
+    --badge-neutral: 210 20% 96%;        /* #f3f4f6 - Light gray background */
+    --badge-neutral-foreground: 215 25% 27%; /* #374151 - Dark gray text */
+    --badge-neutral-border: 214 20% 90%;  /* Subtle gray border */
     
     /* Subtle professional label variants - like HTML badges */
     --label-admin: 199 89% 94%;          /* #e0f2fe - Soft blue like Team Lead */
@@ -215,6 +220,11 @@
     --badge-default: 220 23% 21%;
     --badge-default-foreground: 0 0% 100%;
     --badge-default-border: 215 20% 26%;
+    
+    /* Generic/Neutral badge for dark theme */
+    --badge-neutral: 215 25% 27%;        /* #374151 - Medium gray background */
+    --badge-neutral-foreground: 210 20% 96%; /* #f3f4f6 - Light gray text */
+    --badge-neutral-border: 215 20% 32%;  /* Subtle gray border */
     
     /* Professional placeholder/empty state styling - dark theme */
     --placeholder-color: 215 20% 45%;
@@ -598,6 +608,18 @@
   
   .border-badge-grade-f {
     border-color: hsl(var(--badge-grade-f-border));
+  }
+  
+  .bg-badge-neutral {
+    background-color: hsl(var(--badge-neutral));
+  }
+  
+  .text-badge-neutral-foreground {
+    color: hsl(var(--badge-neutral-foreground));
+  }
+  
+  .border-badge-neutral {
+    border-color: hsl(var(--badge-neutral-border));
   }
 
   /* Subtle professional label utilities - Based on HTML inspiration */

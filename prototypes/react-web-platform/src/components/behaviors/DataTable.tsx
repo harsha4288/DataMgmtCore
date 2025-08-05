@@ -768,7 +768,7 @@ export function DataTable<T extends Record<string, unknown>>({
                     {/* Selection column spacer */}
                     {selection.enabled && (
                       <th 
-                        className={`p-2 sticky left-0 ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-table-header-elevated shadow-table border-r border-table`}
+                        className={`p-2 sticky left-0 ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-table-header shadow-table border-r border-table`}
                         style={{ width: `${getSelectionColumnWidth()}px` }}
                       />
                     )}
@@ -792,7 +792,7 @@ export function DataTable<T extends Record<string, unknown>>({
                             <th
                               key={column.groupHeader}
                               colSpan={groupColumns.length}
-                              className="px-3 py-2 text-center bg-table-header border-l border-r border-table text-foreground text-table-group-header shadow-table"
+                              className="px-3 py-0.5 text-center bg-table-header border-l border-r border-table text-foreground text-table-group-header shadow-table"
                               style={{ width: `${groupWidth}px`, minWidth: `${groupWidth}px`, minHeight: 'var(--table-group-header-height)' }}
                             >
                               <div className="flex items-center justify-center gap-1.5" style={{ minHeight: 'var(--table-group-header-height)' }}>
@@ -812,7 +812,7 @@ export function DataTable<T extends Record<string, unknown>>({
                               className="px-3 py-2 bg-table-header border-r border-table shadow-table"
                               style={{ width: `${width}px`, minWidth: `${width}px` }}
                             >
-                              <div className="bg-muted rounded border border-table shadow-sm" style={{ height: 'var(--table-group-header-height)' }}></div>
+                              <div className="bg-table-header rounded border border-table shadow-sm" style={{ height: 'var(--table-group-header-height)' }}></div>
                             </th>
                           )
                         }

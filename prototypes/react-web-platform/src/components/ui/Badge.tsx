@@ -23,7 +23,9 @@ const badgeVariants = {
     "grade-b": "bg-badge-grade-b text-badge-grade-b-foreground border-transparent hover:bg-badge-grade-b/90 badge-grade", 
     "grade-c": "bg-badge-grade-c text-badge-grade-c-foreground border-transparent hover:bg-badge-grade-c/90 badge-grade",
     "grade-d": "bg-badge-grade-d text-badge-grade-d-foreground border-transparent hover:bg-badge-grade-d/90 badge-grade",
-    "grade-f": "bg-badge-grade-f text-badge-grade-f-foreground border-transparent hover:bg-badge-grade-f/90 badge-grade"
+    "grade-f": "bg-badge-grade-f text-badge-grade-f-foreground border-transparent hover:bg-badge-grade-f/90 badge-grade",
+    // Generic/Neutral variant for unspecified grades (inspired by Events column)
+    "neutral": "bg-badge-neutral text-badge-neutral-foreground border-transparent hover:bg-badge-neutral/90"
   },
   sizes: {
     xs: "h-4 px-1.5 text-xs min-w-[24px]",

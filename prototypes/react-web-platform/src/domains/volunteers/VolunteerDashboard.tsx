@@ -311,9 +311,9 @@ export function VolunteerDashboard() {
       render: (value) => (
         <Badge 
           variant={
-            value === 'Team Lead' ? 'success' : 
-            value === 'Coordinator' ? 'info' : 
-            value === 'Specialist' ? 'warning' : 'default'
+            value === 'Team Lead' ? 'grade-a' : 
+            value === 'Coordinator' ? 'grade-b' : 
+            value === 'Specialist' ? 'grade-c' : 'neutral'
           }
         >
           {String(value)}
@@ -332,8 +332,8 @@ export function VolunteerDashboard() {
       render: (value) => (
         <Badge 
           variant={
-            value === 'active' ? 'success' : 
-            value === 'pending' ? 'warning' : 'error'
+            value === 'active' ? 'grade-a' : 
+            value === 'pending' ? 'grade-c' : 'grade-f'
           }
           size="sm"
         >
@@ -361,9 +361,9 @@ export function VolunteerDashboard() {
                            (volunteer.tshirt_xxl_issued as number)
         return (
           <div className="flex items-center justify-center h-full w-full">
-            <div className="text-xs font-mono font-semibold text-orange-600 dark:text-orange-400 leading-none px-2 py-1 bg-orange-50 dark:bg-orange-900/20 rounded border border-orange-200 dark:border-orange-700 shadow-sm min-w-[44px] text-center">
+            <Badge variant="grade-d" size="sm" className="font-mono">
               {totalIssued}/{totalMax}
-            </div>
+            </Badge>
           </div>
         )
       }
@@ -496,7 +496,7 @@ export function VolunteerDashboard() {
       minWidth: 80,
       maxWidth: 110,
       render: (value) => (
-        <Badge variant="default" size="sm" className="font-mono">
+        <Badge variant="neutral" size="sm" className="font-mono">
           {String(value)}
         </Badge>
       )
