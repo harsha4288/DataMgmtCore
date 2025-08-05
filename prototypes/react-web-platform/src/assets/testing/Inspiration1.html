@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T-Shirt Inventory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /*
+         * Custom CSS Variables for Theming
+         * These define the color palettes for both light and dark modes
+         */
+        :root {
+            /* Light Theme Palette */
+            --background-color-light: #f9fafb;
+            --surface-color-light: #ffffff;
+            --text-color-light: #1f2937;
+            --secondary-text-color-light: #6b7280;
+            --border-color-light: #e5e7eb;
+            --hover-color-light: #f3f4f6;
+            --header-bg-light: #fafafc;
+
+            /* Dark Theme Palette */
+            --background-color-dark: #101729;
+            --surface-color-dark: #192131;
+            --text-color-dark: #d1d5db;
+            --secondary-text-color-dark: #9ca3af;
+            --border-color-dark: #2d3645;
+            --hover-color-dark: #242c3b;
+            --header-bg-dark: #161e2c;
+            
+            /* Badge Colors (consistent across themes for identity) */
+            --badge-pending-bg: #fef3c7;
+            --badge-pending-text: #b45309;
+            --badge-active-bg: #d1fae5;
+            --badge-active-text: #065f46;
+            --badge-team-lead-bg: #e0f2fe;
+            --badge-team-lead-text: #0369a1;
+            --badge-coordinator-bg: #e2e8f0;
+            --badge-coordinator-text: #475569;
+            --badge-specialist-bg: #fae8ff;
+            --badge-specialist-text: #7e22ce;
+        }
+
+        /*
+         * Base styles for body and typography,
+         * with smooth transitions for theme changes.
+         */
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Light Theme classes */
+        .light-theme {
+            background-color: var(--background-color-light);
+            color: var(--text-color-light);
+        }
+        .light-theme .surface { background-color: var(--surface-color-light); border-color: var(--border-color-light); }
+        .light-theme .surface.hoverable:hover { background-color: var(--hover-color-light); }
+        .light-theme .header-surface { background-color: var(--header-bg-light); border-color: var(--border-color-light); }
+        .light-theme .table-cell-header { color: var(--secondary-text-color-light); }
+        .light-theme .badge-pending { background-color: var(--badge-pending-bg); color: var(--badge-pending-text); }
+        .light-theme .badge-active { background-color: var(--badge-active-bg); color: var(--badge-active-text); }
+        .light-theme .badge-team-lead { background-color: var(--badge-team-lead-bg); color: var(--badge-team-lead-text); }
+        .light-theme .badge-coordinator { background-color: var(--badge-coordinator-bg); color: var(--badge-coordinator-text); }
+        .light-theme .badge-specialist { background-color: var(--badge-specialist-bg); color: var(--badge-specialist-text); }
+        .light-theme .interactive-btn-plus { background-color: #dcfce7; color: #15803d; }
+        .light-theme .interactive-btn-minus { background-color: #fee2e2; color: #b91c1c; }
+
+        /* Dark Theme classes */
+        .dark-theme {
+            background-color: var(--background-color-dark);
+            color: var(--text-color-dark);
+        }
+        .dark-theme .surface { background-color: var(--surface-color-dark); border-color: var(--border-color-dark); }
+        .dark-theme .surface.hoverable:hover { background-color: var(--hover-color-dark); }
+        .dark-theme .header-surface { background-color: var(--header-bg-dark); border-color: var(--border-color-dark); }
+        .dark-theme .table-cell-header { color: var(--secondary-text-color-dark); }
+        .dark-theme .badge-pending { background-color: var(--badge-pending-bg); color: var(--badge-pending-text); }
+        .dark-theme .badge-active { background-color: var(--badge-active-bg); color: var(--badge-active-text); }
+        .dark-theme .badge-team-lead { background-color: var(--badge-team-lead-bg); color: var(--badge-team-lead-text); }
+        .dark-theme .badge-coordinator { background-color: var(--badge-coordinator-bg); color: var(--badge-coordinator-text); }
+        .dark-theme .badge-specialist { background-color: var(--badge-specialist-bg); color: var(--badge-specialist-text); }
+        .dark-theme .interactive-btn-plus { background-color: #1f352c; color: #4ade80; }
+        .dark-theme .interactive-btn-minus { background-color: #3b2727; color: #f87171; }
+
+        /*
+         * Component-specific styles
+         */
+        .table-container {
+            border-radius: 1.5rem; /* rounded-2xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border-width: 1px;
+        }
+
+        .table-cell-header {
+            padding: 1.25rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.75rem; /* text-xs */
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .table-cell {
+            padding: 1rem;
+            font-size: 0.875rem; /* text-sm */
+            vertical-align: middle;
+            white-space: nowrap; /* Prevents overflow in columns */
+        }
+        
+        .badge {
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px; /* Pill shape */
+            font-size: 0.75rem; /* text-xs */
+        }
+        
+        .interactive-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .button {
+            transition: transform 0.1s ease-in-out, background-color 0.2s, color 0.2s;
+            cursor: pointer;
+        }
+
+        .button:active {
+            transform: scale(0.9);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .modal-content {
+            width: 95%;
+            max-width: 700px;
+            max-height: 90%;
+            overflow-y: auto;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body class="light-theme">
+    <div class="p-6 md:p-10 flex flex-col items-center min-h-screen">
+        <!-- Theme Toggle Button -->
+        <div class="w-full max-w-7xl flex justify-end mb-6">
+            <button id="theme-toggle" class="p-2 rounded-full surface shadow-md text-secondary-text-color-light dark:text-secondary-text-color-dark">
+                <!-- SVG for Light mode (Sun) -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="w-full max-w-7xl table-container surface">
+            <!-- Header for the table -->
+            <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-start sm:items-center header-surface">
+                <h2 class="text-xl font-bold mb-4 sm:mb-0">T-Shirt Inventory (MAX/ISSUED)</h2>
+                <div class="flex space-x-4">
+                    <button id="analyze-button" class="py-2 px-4 rounded-full text-white font-medium bg-blue-600 hover:bg-blue-700 transition shadow-lg flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M11 20H13V22H11V20ZM11 2H13V4H11V2ZM4.2 17.8L5.6 19.2L7.1 17.8L5.6 16.4L4.2 17.8ZM16.9 7.1L18.4 5.6L19.8 7.1L18.4 8.5L16.9 7.1ZM2 11H4V13H2V11ZM20 11H22V13H20V11ZM16.9 16.9L18.4 18.4L19.8 19.8L18.4 21.2L16.9 19.8ZM4.2 6.2L5.6 4.8L7.1 6.2L5.6 7.6L4.2 6.2ZM12 8C14.2091 8 16 9.79086 16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8Z"></path></svg>
+                        Analyze Inventory
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table content -->
+            <div class="overflow-x-auto">
+                <table id="inventory-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="header-surface">
+                        <tr>
+                            <th scope="col" class="table-cell-header">
+                                <input type="checkbox" class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                            </th>
+                            <th scope="col" class="table-cell-header">Volunteer Name</th>
+                            <th scope="col" class="table-cell-header">Role</th>
+                            <th scope="col" class="table-cell-header">Status</th>
+                            <th scope="col" class="table-cell-header text-center">PREFS</th>
+                            <th scope="col" class="table-cell-header text-center">S</th>
+                            <th scope="col" class="table-cell-header text-center">M</th>
+                            <th scope="col" class="table-cell-header text-center">L</th>
+                            <th scope="col" class="table-cell-header text-center">XL</th>
+                            <th scope="col" class="table-cell-header text-center">2XL</th>
+                            <th scope="col" class="table-cell-header text-center">Events</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <!-- Table Row 1 -->
+                        <tr class="hoverable">
+                            <td class="table-cell">
+                                <input type="checkbox" class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                            </td>
+                            <td class="table-cell font-medium">Sarah Johnson</td>
+                            <td class="table-cell">
+                                <span class="badge badge-team-lead">Team Lead</span>
+                            </td>
+                            <td class="table-cell">
+                                <span class="badge badge-active">ACTIVE</span>
+                            </td>
+                            <td class="table-cell text-center">
+                                <span class="px-2 py-1 rounded-full text-xs font-medium border border-gray-300 dark:border-gray-600">11/19</span>
+                            </td>
+                            <td class="table-cell text-center">1</td>
+                            <td class="table-cell text-center">3</td>
+                            <td class="table-cell text-center">5</td>
+                            <td class="table-cell text-center">2</td>
+                            <td class="table-cell text-center">
+                                <span class="px-2 py-1 rounded-full text-sm font-medium">·</span>
+                            </td>
+                            <td class="table-cell text-center">4</td>
+                        </tr>
+                        <!-- Table Row 2 -->
+                        <tr class="hoverable">
+                            <td class="table-cell">
+                                <input type="checkbox" class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                            </td>
+                            <td class="table-cell font-medium">Mike Chen</td>
+                            <td class="table-cell">
+                                <span class="badge badge-coordinator">Coordinator</span>
+                            </td>
+                            <td class="table-cell">
+                                <span class="badge badge-active">ACTIVE</span>
+                            </td>
+                            <td class="table-cell text-center">
+                                <span class="px-2 py-1 rounded-full text-xs font-medium border border-gray-300 dark:border-gray-600">11/16</span>
+                            </td>
+                            <td class="table-cell text-center">1</td>
+                            <td class="table-cell text-center">2</td>
+                            <td class="table-cell text-center">4</td>
+                            <td class="table-cell text-center">3</td>
+                            <td class="table-cell text-center">1</td>
+                            <td class="table-cell text-center">6</td>
+                        </tr>
+                        <!-- Table Row 3 (with interactive controls) -->
+                        <tr class="hoverable">
+                            <td class="table-cell">
+                                <input type="checkbox" class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                            </td>
+                            <td class="table-cell font-medium">Emily Rodriguez</td>
+                            <td class="table-cell">
+                                <span class="badge badge-specialist">Specialist</span>
+                            </td>
+                            <td class="table-cell">
+                                <span class="badge badge-pending">PENDING</span>
+                            </td>
+                            <td class="table-cell text-center">
+                                <span class="px-2 py-1 rounded-full text-xs font-medium border border-gray-300 dark:border-gray-600">1/15</span>
+                            </td>
+                            <td class="table-cell text-center">
+                                <div class="interactive-cell">
+                                    <button class="button p-1 rounded-full interactive-btn-minus">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                                        </svg>
+                                    </button>
+                                    <span class="font-semibold text-sm">1</span>
+                                    <button class="button p-1 rounded-full interactive-btn-plus">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="table-cell text-center">
+                                <span class="px-2 py-1 rounded-full text-sm font-medium">·</span>
+                            </td>
+                            <td class="table-cell text-center">
+                                <span class="px-2 py-1 rounded-full text-sm font-medium">·</span>
+                            </td>
+                            <td class="table-cell text-center">
+                                <span class="px-2 py-1 rounded-full text-sm font-medium">·</span>
+                            </td>
+                            <td class="table-cell text-center">
+                                <span class="px-2 py-1 rounded-full text-sm font-medium">·</span>
+                            </td>
+                            <td class="table-cell text-center">2</td>
+                        </tr>
+                        <!-- Table Row 4 -->
+                        <tr class="hoverable">
+                            <td class="table-cell">
+                                <input type="checkbox" class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                            </td>
+                            <td class="table-cell font-medium">David Park</td>
+                            <td class="table-cell">
+                                <span class="badge badge-specialist">Specialist</span>
+                            </td>
+                            <td class="table-cell">
+                                <span class="badge badge-active">ACTIVE</span>
+                            </td>
+                            <td class="table-cell text-center">
+                                <span class="px-2 py-1 rounded-full text-xs font-medium border border-gray-300 dark:border-gray-600">14/17</span>
+                            </td>
+                            <td class="table-cell text-center">
+                                <span class="px-2 py-1 rounded-full text-sm font-medium">·</span>
+                            </td>
+                            <td class="table-cell text-center">2</td>
+                            <td class="table-cell text-center">6</td>
+                            <td class="table-cell text-center">4</td>
+                            <td class="table-cell text-center">
+                                <span class="px-2 py-1 rounded-full text-sm font-medium">·</span>
+                            </td>
+                            <td class="table-cell text-center">5</td>
+                        </tr>
+                        <!-- Table Row 5 -->
+                        <tr class="hoverable">
+                            <td class="table-cell">
+                                <input type="checkbox" class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                            </td>
+                            <td class="table-cell font-medium">Lisa Wang</td>
+                            <td class="table-cell">
+                                <span class="badge badge-team-lead">Team Lead</span>
+                            </td>
+                            <td class="table-cell">
+                                <span class="badge badge-active">ACTIVE</span>
+                            </td>
+                            <td class="table-cell text-center">
+                                <span class="px-2 py-1 rounded-full text-xs font-medium border border-gray-300 dark:border-gray-600">7/14</span>
+                            </td>
+                            <td class="table-cell text-center">
+                                <span class="px-2 py-1 rounded-full text-sm font-medium">·</span>
+                            </td>
+                            <td class="table-cell text-center">2</td>
+                            <td class="table-cell text-center">4</td>
+                            <td class="table-cell text-center">1</td>
+                            <td class="table-cell text-center">
+                                <span class="px-2 py-1 rounded-full text-sm font-medium">·</span>
+                            </td>
+                            <td class="table-cell text-center">3</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Analysis Modal -->
+    <div id="analysis-modal" class="modal-overlay hidden">
+        <div class="modal-content surface">
+            <div class="flex justify-between items-center pb-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-xl font-bold">Inventory Analysis ✨</h3>
+                <button id="close-modal" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="analysis-content" class="py-4 text-gray-700 dark:text-gray-300">
+                <!-- Loading spinner or analysis text will go here -->
+                <div id="loading-spinner" class="flex justify-center items-center py-8 hidden">
+                    <div class="spinner"></div>
+                </div>
+                <p id="analysis-text" class="whitespace-pre-line"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for theme toggling and Gemini API integration
+
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const analyzeBtn = document.getElementById('analyze-button');
+        const body = document.body;
+        const modalOverlay = document.getElementById('analysis-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+        const analysisContent = document.getElementById('analysis-content');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const analysisText = document.getElementById('analysis-text');
+        const inventoryTable = document.getElementById('inventory-table');
+
+        // Theme Toggling Logic
+        const updateTheme = (isDark) => {
+            if (isDark) {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
+                themeToggleBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                `;
+            } else {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                localStorage.setItem('theme', 'light');
+                themeToggleBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                `;
+            }
+        };
+
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme) {
+            updateTheme(currentTheme === 'dark');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            const isDark = body.classList.contains('dark-theme');
+            updateTheme(!isDark);
+        });
+
+        // Gemini API Integration Logic
+        analyzeBtn.addEventListener('click', async () => {
+            // Show modal and loading spinner
+            modalOverlay.classList.remove('hidden');
+            loadingSpinner.classList.remove('hidden');
+            analysisText.textContent = '';
+            
+            // Extract data from the table
+            const tableHeaders = Array.from(inventoryTable.querySelectorAll('thead th')).map(th => th.textContent.trim());
+            const tableRows = Array.from(inventoryTable.querySelectorAll('tbody tr')).map(row => {
+                return Array.from(row.querySelectorAll('td')).map(td => {
+                    // Check for nested spans or interactive elements to get the right text
+                    const span = td.querySelector('span');
+                    if (span) {
+                        return span.textContent.trim();
+                    }
+                    const interactiveCell = td.querySelector('.interactive-cell');
+                    if (interactiveCell) {
+                         // Get the text content from the inner span
+                        return interactiveCell.querySelector('span')?.textContent.trim();
+                    }
+                    return td.textContent.trim();
+                });
+            });
+
+            // Construct the prompt for the LLM
+            const prompt = `
+                I have a T-shirt inventory table for a team of volunteers. The columns are: ${tableHeaders.join(', ')}.
+                The data is as follows:
+                ${tableRows.map(row => row.join('|')).join('\n')}
+
+                Please analyze this data and provide a concise, professional summary. Include the following:
+                1. A brief overview of the current status (e.g., total number of volunteers, pending vs. active).
+                2. A breakdown of T-shirt sizes (e.g., how many of each size are issued).
+                3. A mention of any notable information, like which volunteer has the most T-shirts.
+                4. A key insight or a practical recommendation based on the data.
+            `;
+            
+            // Call the Gemini API
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                
+                // Exponential backoff for API calls
+                let response;
+                for (let i = 0; i < 5; i++) {
+                    try {
+                        response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        if (response.status !== 429) {
+                            break; // Success, break the loop
+                        }
+                        await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+                    } catch (e) {
+                        console.error('Fetch error:', e);
+                        await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+                    }
+                }
+
+                if (!response || !response.ok) {
+                    throw new Error(`API call failed with status: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    analysisText.textContent = text;
+                } else {
+                    analysisText.textContent = "Could not retrieve analysis. Please try again.";
+                }
+
+            } catch (error) {
+                console.error("Error fetching analysis:", error);
+                analysisText.textContent = `An error occurred: ${error.message}. Please check your connection and try again.`;
+            } finally {
+                // Hide spinner
+                loadingSpinner.classList.add('hidden');
+            }
+        });
+
+        // Modal close functionality
+        closeModalBtn.addEventListener('click', () => {
+            modalOverlay.classList.add('hidden');
+        });
+        
+        // Close modal when clicking outside
+        modalOverlay.addEventListener('click', (event) => {
+            if (event.target === modalOverlay) {
+                modalOverlay.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -112,8 +112,8 @@ export function GitaStudyDashboard() {
     return 'grade-f'                   // <60 = F (Red)
   }
   
-  // Letter grade to color mapping for consistency
-  const getLetterGradeColor = (letterGrade: string): 'grade-a' | 'grade-b' | 'grade-c' | 'grade-d' | 'grade-f' => {
+  // Letter grade to Badge variant mapping for consistency
+  const getLetterGradeVariant = (letterGrade: string): 'grade-a' | 'grade-b' | 'grade-c' | 'grade-d' | 'grade-f' => {
     const grade = letterGrade.charAt(0).toUpperCase()
     switch (grade) {
       case 'A': return 'grade-a'  // Green
@@ -125,12 +125,27 @@ export function GitaStudyDashboard() {
     }
   }
 
-  const getLevelColor = (level: string): 'success' | 'warning' | 'info' | 'default' => {
+  // Percentage with up arrow like inspiration
+  const renderPercentageWithArrow = (value: number) => {
+    const improvement = Math.floor(Math.random() * 15) + 1 // Random 1-15% improvement
+    return (
+      <div className="flex flex-col items-center gap-1">
+        <Badge variant={getGradeColor(value)} size="sm">
+          {value}%
+        </Badge>
+        <div className="text-xs text-muted-foreground percentage-indicator">
+          {improvement}%
+        </div>
+      </div>
+    )
+  }
+
+  const getLevelColor = (level: string): 'grade-a' | 'grade-b' | 'grade-c' | 'grade-d' => {
     switch(level) {
-      case 'Scholar': return 'success'
-      case 'Advanced': return 'info'
-      case 'Intermediate': return 'warning'
-      default: return 'default'
+      case 'Scholar': return 'grade-a'      // Green for highest level
+      case 'Advanced': return 'grade-b'     // Blue for advanced
+      case 'Intermediate': return 'grade-c' // Yellow for intermediate
+      default: return 'grade-d'             // Orange for beginner
     }
   }
 
@@ -189,14 +204,16 @@ export function GitaStudyDashboard() {
       align: 'center',
       sortable: true,
       width: 120,
-      render: (value, student) => (
-        <div className="flex flex-col items-center gap-1">
-          <span className="text-lg font-bold">{value}%</span>
-          <Badge variant={getLetterGradeColor(student.letterGrade)} size="sm">
-            {student.letterGrade}
-          </Badge>
-        </div>
-      )
+      render: (value, student) => {
+        return (
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-lg font-bold">{value}%</span>
+            <Badge variant={getLetterGradeVariant(student.letterGrade)} size="sm">
+              {student.letterGrade}
+            </Badge>
+          </div>
+        )
+      }
     },
     {
       key: 'practiceDays',
@@ -234,11 +251,7 @@ export function GitaStudyDashboard() {
         min: 0,
         max: 100
       },
-      render: (value) => (
-        <Badge variant={getGradeColor(Number(value))} size="sm">
-          {value}%
-        </Badge>
-      )
+      render: (value) => renderPercentageWithArrow(Number(value))
     },
     {
       key: 'ch1_memorization',
@@ -252,11 +265,7 @@ export function GitaStudyDashboard() {
         min: 0,
         max: 100
       },
-      render: (value) => (
-        <Badge variant={getGradeColor(Number(value))} size="sm">
-          {value}%
-        </Badge>
-      )
+      render: (value) => renderPercentageWithArrow(Number(value))
     },
     {
       key: 'ch1_fluency',
@@ -270,11 +279,7 @@ export function GitaStudyDashboard() {
         min: 0,
         max: 100
       },
-      render: (value) => (
-        <Badge variant={getGradeColor(Number(value))} size="sm">
-          {value}%
-        </Badge>
-      )
+      render: (value) => renderPercentageWithArrow(Number(value))
     },
     {
       key: 'ch1_chanting',
@@ -288,11 +293,7 @@ export function GitaStudyDashboard() {
         min: 0,
         max: 100
       },
-      render: (value) => (
-        <Badge variant={getGradeColor(Number(value))} size="sm">
-          {value}%
-        </Badge>
-      )
+      render: (value) => renderPercentageWithArrow(Number(value))
     },
 
     // Verses memorized with quantity editing

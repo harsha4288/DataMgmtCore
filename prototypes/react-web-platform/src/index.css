@@ -2,28 +2,28 @@
 
 @layer base {
   :root {
-    /* Clean light theme colors - Based on Inspiration1.jpg */
-    --background: 0 0% 100%;              /* Pure white like inspiration */
-    --foreground: 0 0% 10%;               /* #1a1a1a - Dark text for readability */
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+    /* Softer light theme colors - Based on HTML inspiration */
+    --background: 220 14% 96%;            /* #f9fafb - Softer background like HTML */
+    --foreground: 215 25% 27%;            /* #1f2937 - Softer dark text */
+    --card: 0 0% 100%;                    /* #ffffff - White cards */
+    --card-foreground: 215 25% 27%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+    --popover-foreground: 215 25% 27%;
     --primary: 221.2 83.2% 53.3%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 0 0% 10%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 46%;      /* #6c757d - Muted secondary text */
-    --accent: 210 40% 96%;
-    --accent-foreground: 0 0% 10%;
+    --secondary: 220 13% 91%;             /* #e5e7eb - Softer secondary */
+    --secondary-foreground: 215 25% 27%;
+    --muted: 220 13% 91%;
+    --muted-foreground: 215 16% 47%;      /* #6b7280 - HTML secondary text */
+    --accent: 220 13% 91%;
+    --accent-foreground: 215 25% 27%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 215 16% 88%;                /* #e1e5e9 - Light gray borders */
-    --input: 215 16% 88%;
+    --border: 220 13% 91%;                /* #e5e7eb - Softer borders */
+    --input: 220 13% 91%;
     --ring: 221.2 83.2% 53.3%;
-    --content-primary: 0 0% 10%;
-    --content-secondary: 215 16% 46%;
+    --content-primary: 215 25% 27%;
+    --content-secondary: 215 16% 47%;
     --content-tertiary: 215.4 16.3% 65%;
     --content-inverse: 210 40% 98%;
     --content-disabled: 215.4 16.3% 75%;
@@ -32,14 +32,14 @@
     /* Clean modern typography matching inspiration */
     --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-    /* Clean light background system - Based on Inspiration1.jpg */
-    --table-container: 0 0% 100%;         /* Clean white container */
+    /* Softer light background system - Based on HTML inspiration */
+    --table-container: 0 0% 100%;         /* White container like HTML */
     --table-container-elevated: 0 0% 100%;
-    --table-header: 216 12% 97%;          /* #f8f9fa - Subtle gray header */
-    --table-header-elevated: 210 40% 96%;
+    --table-header: 220 9% 98%;           /* #fafafc - Softer header like HTML */
+    --table-header-elevated: 220 13% 96%;
     --table-row: 0 0% 100%;               /* White rows */
-    --table-row-hover: 214 15% 96%;       /* #f5f6fa - Light hover state */
-    --table-border: 215 16% 88%;          /* #e1e5e9 - Light gray borders */
+    --table-row-hover: 220 14% 96%;       /* #f3f4f6 - Softer hover like HTML */
+    --table-border: 220 13% 91%;          /* #e5e7eb - Softer borders */
     --table-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);  /* Clean subtle shadows */
     --table-shadow-elevated: 0 4px 6px rgba(0, 0, 0, 0.1);
     
@@ -98,25 +98,31 @@
     --subtle-border: 1px solid hsl(var(--border));
     --enhanced-border: var(--table-border-width) solid hsl(var(--border));
 
-    /* Colorful grade badges matching Inspiration1.jpg */
-    --badge-grade-a: 142 76% 36%;        /* #10b26c - Green for A grade */
-    --badge-grade-a-foreground: 0 0% 100%;
-    --badge-grade-b: 217 91% 60%;        /* #3b82f6 - Blue for B grade */
-    --badge-grade-b-foreground: 0 0% 100%;
-    --badge-grade-c: 32 95% 50%;         /* #f59e0b - Yellow/amber for C grade */
-    --badge-grade-c-foreground: 26 78% 10%;
-    --badge-grade-d: 21 90% 48%;         /* #f97316 - Orange for D grade */
-    --badge-grade-d-foreground: 0 0% 100%;
-    --badge-grade-f: 0 84% 60%;          /* #ef4444 - Red for F grade */
-    --badge-grade-f-foreground: 0 0% 100%;
+    /* Subtle grade badges like HTML inspiration */
+    --badge-grade-a: 142 47% 91%;        /* #d1fae5 - Soft green background */
+    --badge-grade-a-foreground: 158 64% 18%; /* #065f46 - Dark green text */
+    --badge-grade-b: 199 89% 94%;        /* #e0f2fe - Soft blue background */
+    --badge-grade-b-foreground: 201 96% 32%; /* #0369a1 - Dark blue text */
+    --badge-grade-c: 48 96% 89%;         /* #fef3c7 - Soft yellow background */
+    --badge-grade-c-foreground: 32 81% 29%; /* #b45309 - Dark yellow text */
+    --badge-grade-d: 25 95% 95%;         /* #fed7aa - Soft orange background */
+    --badge-grade-d-foreground: 17 88% 40%; /* #c2410c - Dark orange text */
+    --badge-grade-f: 0 93% 94%;          /* #fee2e2 - Soft red background */
+    --badge-grade-f-foreground: 0 74% 42%; /* #dc2626 - Dark red text */
     
-    /* Professional label color variants */
-    --label-admin: 239 84% 67%;          /* #6366f1 - Purple/indigo for admin */
-    --label-sensitive: 0 84% 60%;        /* #ef4444 - Red for sensitive data */
-    --label-business: 258 90% 66%;       /* #8b5cf6 - Purple for business data */
-    --label-customer: 188 95% 68%;       /* #06b6d4 - Cyan for customer data */
-    --label-roadmap: 215 28% 17%;        /* #6b7280 - Gray for roadmap info */
-    --label-active: 142 76% 36%;         /* #10b26c - Green for active status */
+    /* Subtle professional label variants - like HTML badges */
+    --label-admin: 199 89% 94%;          /* #e0f2fe - Soft blue like Team Lead */
+    --label-admin-foreground: 201 96% 32%; /* #0369a1 - Dark blue text */
+    --label-sensitive: 320 76% 96%;      /* #fae8ff - Soft purple like Specialist */
+    --label-sensitive-foreground: 273 86% 39%; /* #7e22ce - Dark purple text */
+    --label-business: 210 20% 91%;       /* #e2e8f0 - Soft gray like Coordinator */
+    --label-business-foreground: 215 28% 34%; /* #475569 - Dark gray text */
+    --label-customer: 142 47% 91%;       /* #d1fae5 - Soft green like Active */
+    --label-customer-foreground: 158 64% 18%; /* #065f46 - Dark green text */
+    --label-roadmap: 48 96% 89%;         /* #fef3c7 - Soft yellow like Pending */
+    --label-roadmap-foreground: 32 81% 29%; /* #b45309 - Dark yellow text */
+    --label-active: 142 47% 91%;         /* #d1fae5 - Soft green */
+    --label-active-foreground: 158 64% 18%; /* #065f46 - Dark green text */
     
     /* Legacy badge system for compatibility */
     --badge-success: 142 76% 36%;
@@ -149,42 +155,42 @@
   }
 
   .dark {
-    /* Sophisticated navy dark theme - Based on Inspiration2.jpg */
-    --background: 220 23% 18%;     /* #1a1f2e - Deep navy from inspiration */
-    --foreground: 0 0% 100%;       /* Pure white text - excellent contrast */
-    --card: 220 23% 18%;
-    --card-foreground: 0 0% 100%;
-    --popover: 220 23% 18%;
-    --popover-foreground: 0 0% 100%;
+    /* Softer dark theme - Based on HTML inspiration */
+    --background: 217 30% 9%;      /* #101729 - Lighter navy like HTML example */
+    --foreground: 215 20% 85%;     /* #d1d5db - Softer text, not pure white */
+    --card: 217 27% 12%;           /* #192131 - Surface color from HTML */
+    --card-foreground: 215 20% 85%;
+    --popover: 217 27% 12%;
+    --popover-foreground: 215 20% 85%;
     --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 220 23% 18%;
-    --secondary: 220 23% 21%;      /* Slightly lighter secondary */
-    --secondary-foreground: 0 0% 100%;
-    --muted: 220 23% 21%;
-    --muted-foreground: 215 20% 73%; /* #b8c1d3 - Light gray secondary text */
-    --accent: 220 23% 21%;
-    --accent-foreground: 0 0% 100%;
+    --primary-foreground: 217 30% 9%;
+    --secondary: 217 25% 15%;      /* Softer secondary */
+    --secondary-foreground: 215 20% 85%;
+    --muted: 217 25% 15%;
+    --muted-foreground: 215 16% 62%; /* #9ca3af - Muted text like HTML */
+    --accent: 217 25% 15%;
+    --accent-foreground: 215 20% 85%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 215 20% 26%;         /* #2d3447 - Navy border */
-    --input: 220 23% 21%;
+    --border: 217 20% 22%;         /* #2d3645 - Softer borders */
+    --input: 217 25% 15%;
     --ring: 224.3 76.3% 94.1%;
-    --content-primary: 0 0% 100%;
-    --content-secondary: 215 20% 73%;
-    --content-tertiary: 215 20% 45%;
-    --content-inverse: 220 23% 18%;
-    --content-disabled: 215 20% 35%;
+    --content-primary: 215 20% 85%;
+    --content-secondary: 215 16% 62%;
+    --content-tertiary: 215 16% 45%;
+    --content-inverse: 217 30% 9%;
+    --content-disabled: 215 16% 35%;
 
-    /* Sophisticated navy dark theme layers - Based on Inspiration2.jpg */
-    --table-container: 220 23% 18%;    /* Matching container */
-    --table-container-elevated: 220 23% 20%;
-    --table-header: 220 20% 22%;       /* #1e2337 - Slightly lighter header */
-    --table-header-elevated: 220 20% 24%;
-    --table-row: 220 23% 18%;          /* Navy rows */
-    --table-row-hover: 217 20% 25%;    /* #252b3f - Subtle hover state */
-    --table-border: 215 20% 26%;       /* Navy border */
-    --table-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);      /* Professional shadows */
-    --table-shadow-elevated: 0 4px 8px rgba(0, 0, 0, 0.3);
+    /* Softer dark theme table layers - Based on HTML inspiration */
+    --table-container: 217 27% 12%;    /* #192131 - Matching HTML surface */
+    --table-container-elevated: 217 25% 15%;
+    --table-header: 217 25% 14%;       /* #161e2c - Header like HTML example */
+    --table-header-elevated: 217 25% 16%;
+    --table-row: 217 27% 12%;          /* Surface rows */
+    --table-row-hover: 217 25% 18%;    /* #242c3b - Subtle hover like HTML */
+    --table-border: 217 20% 22%;       /* #2d3645 - Softer borders */
+    --table-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);      /* Lighter shadows */
+    --table-shadow-elevated: 0 4px 8px rgba(0, 0, 0, 0.2);
     
     /* Enhanced visual hierarchy - dark theme overrides */
     --table-freeze-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -195,17 +201,17 @@
     --subtle-border: 1px solid hsl(var(--border));
     --enhanced-border: var(--table-border-width) solid hsl(var(--border));
 
-    /* Colorful grade badges - dark theme optimized */
-    --badge-grade-a: 142 76% 36%;        /* Same green - works on dark */
-    --badge-grade-a-foreground: 0 0% 100%;
-    --badge-grade-b: 217 91% 60%;        /* Same blue - works on dark */
-    --badge-grade-b-foreground: 0 0% 100%;
-    --badge-grade-c: 32 95% 50%;         /* Same yellow - works on dark */
-    --badge-grade-c-foreground: 26 78% 10%;
-    --badge-grade-d: 21 90% 48%;         /* Same orange - works on dark */
-    --badge-grade-d-foreground: 0 0% 100%;
-    --badge-grade-f: 0 84% 60%;          /* Same red - works on dark */
-    --badge-grade-f-foreground: 0 0% 100%;
+    /* Subtle grade badges - dark theme optimized */
+    --badge-grade-a: 142 47% 91%;        /* Keep same soft backgrounds */
+    --badge-grade-a-foreground: 158 64% 18%;
+    --badge-grade-b: 199 89% 94%;        
+    --badge-grade-b-foreground: 201 96% 32%;
+    --badge-grade-c: 48 96% 89%;         
+    --badge-grade-c-foreground: 32 81% 29%;
+    --badge-grade-d: 25 95% 95%;         
+    --badge-grade-d-foreground: 17 88% 40%;
+    --badge-grade-f: 0 93% 94%;          
+    --badge-grade-f-foreground: 0 74% 42%;
     
     /* Professional label colors - dark theme */
     --label-admin: 239 84% 67%;          /* Same colors work on dark */
@@ -598,35 +604,35 @@
     color: hsl(var(--badge-grade-f-foreground));
   }
 
-  /* Professional label utilities - Based on Inspiration1.jpg */
+  /* Subtle professional label utilities - Based on HTML inspiration */
   .bg-label-admin {
     background-color: hsl(var(--label-admin));
-    color: white;
+    color: hsl(var(--label-admin-foreground));
   }
   
   .bg-label-sensitive {
     background-color: hsl(var(--label-sensitive));
-    color: white;
+    color: hsl(var(--label-sensitive-foreground));
   }
   
   .bg-label-business {
     background-color: hsl(var(--label-business));
-    color: white;
+    color: hsl(var(--label-business-foreground));
   }
   
   .bg-label-customer {
     background-color: hsl(var(--label-customer));
-    color: white;
+    color: hsl(var(--label-customer-foreground));
   }
   
   .bg-label-roadmap {
     background-color: hsl(var(--label-roadmap));
-    color: white;
+    color: hsl(var(--label-roadmap-foreground));
   }
   
   .bg-label-active {
     background-color: hsl(var(--label-active));
-    color: white;
+    color: hsl(var(--label-active-foreground));
   }
 
   /* Badge standardization utilities */

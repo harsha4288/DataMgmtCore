@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        :root {
+            --badge-grade-a: 142 76% 36%;
+            --badge-grade-a-foreground: 0 0% 100%;
+            --badge-grade-b: 217 91% 60%;
+        }
+        .test-a { background: hsl(var(--badge-grade-a)); color: hsl(var(--badge-grade-a-foreground)); }
+        .test-b { background: hsl(var(--badge-grade-b)); color: white; }
+    </style>
+</head>
+<body>
+    <div class="test-a" style="padding: 8px; display: inline-block; margin: 4px;">A</div>
+    <div class="test-b" style="padding: 8px; display: inline-block; margin: 4px;">B</div>
+    <div style="background: hsl(142 76% 36%); color: white; padding: 8px; display: inline-block; margin: 4px;">Direct Green</div>
+</body>
+</html>
