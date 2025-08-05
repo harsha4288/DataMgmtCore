@@ -768,7 +768,7 @@ export function DataTable<T extends Record<string, unknown>>({
                     {/* Selection column spacer */}
                     {selection.enabled && (
                       <th 
-                        className={`p-2 sticky left-0 ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-table-header shadow-table border-r border-table`}
+                        className={`p-2 sticky left-0 ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-table-frozen-column shadow-table border-r border-table`}
                         style={{ width: `${getSelectionColumnWidth()}px` }}
                       />
                     )}
@@ -792,10 +792,18 @@ export function DataTable<T extends Record<string, unknown>>({
                             <th
                               key={column.groupHeader}
                               colSpan={groupColumns.length}
-                              className="px-3 py-0.5 text-center bg-table-header border-l border-r border-table text-foreground text-table-group-header shadow-table"
-                              style={{ width: `${groupWidth}px`, minWidth: `${groupWidth}px`, minHeight: 'var(--table-group-header-height)' }}
+                              className="text-center bg-table-group-header border-l border-r border-table text-foreground text-table-group-header shadow-table"
+                              style={{ 
+                                width: `${groupWidth}px`, 
+                                minWidth: `${groupWidth}px`, 
+                                minHeight: 'var(--table-group-header-height)',
+                                padding: 'var(--table-group-header-padding-y) var(--table-group-header-padding-x)'
+                              }}
                             >
-                              <div className="flex items-center justify-center gap-1.5" style={{ minHeight: 'var(--table-group-header-height)' }}>
+                              <div className="flex items-center justify-center gap-1.5" style={{ 
+                                minHeight: 'var(--table-group-header-height)',
+                                lineHeight: '1.2'
+                              }}>
                                 <span className="text-table-group-header leading-tight">{column.groupHeader}</span>
                               </div>
                             </th>
@@ -809,10 +817,19 @@ export function DataTable<T extends Record<string, unknown>>({
                           headers.push(
                             <th 
                               key={columnKey} 
-                              className="px-3 py-2 bg-table-header border-r border-table shadow-table"
-                              style={{ width: `${width}px`, minWidth: `${width}px` }}
+                              className="bg-table-header border-r border-table shadow-table"
+                              style={{ 
+                                width: `${width}px`, 
+                                minWidth: `${width}px`,
+                                padding: 'var(--table-group-header-padding-y) var(--table-group-header-padding-x)'
+                              }}
                             >
-                              <div className="bg-table-header rounded border border-table shadow-sm" style={{ height: 'var(--table-group-header-height)' }}></div>
+                              <div className="flex items-center justify-center" style={{ 
+                                height: 'var(--table-group-header-height)',
+                                minHeight: 'var(--table-group-header-height)'
+                              }}>
+                                <div className="w-4 h-px border-table-group-header-line border-t"></div>
+                              </div>
                             </th>
                           )
                         }
@@ -828,7 +845,7 @@ export function DataTable<T extends Record<string, unknown>>({
                   {/* Selection column */}
                   {selection.enabled && (
                     <th 
-                      className={`p-2 sticky left-0 ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-table-header border-r border-table shadow-table`}
+                      className={`p-2 sticky left-0 ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-table-frozen-column border-r border-table shadow-table`}
                       style={{ width: `${getSelectionColumnWidth()}px` }}
                     >
                       <input
@@ -866,7 +883,7 @@ export function DataTable<T extends Record<string, unknown>>({
                         } ${
                           column.groupHeader ? 'border-l border-r border-table' : ''
                         } ${
-                          isFrozen ? `sticky ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-table-header shadow-table` : ''
+                          isFrozen ? `sticky ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-table-frozen-column shadow-table` : ''
                         } ${
                           isFirstUnfrozen ? 'border-l-4 border-l-primary' : ''
                         }`}

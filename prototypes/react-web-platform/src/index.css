@@ -37,6 +37,9 @@
     --table-container-elevated: 0 0% 100%;
     --table-header: 220 9% 98%;           /* #fafafc - Softer header like HTML */
     --table-header-elevated: 220 13% 96%;
+    --table-frozen-column: 220 9% 96%;    /* Slightly different from header for frozen columns */
+    --table-group-header: 220 13% 94%;    /* Distinct group header background */
+    --table-group-header-line: 220 13% 85%; /* Line for non-grouped columns */
     --table-row: 0 0% 100%;               /* White rows */
     --table-row-hover: 220 14% 96%;       /* #f3f4f6 - Softer hover like HTML */
     --table-border: 220 13% 91%;          /* #e5e7eb - Softer borders */
@@ -45,7 +48,9 @@
     
     /* Table layout standardization */
     --table-header-height: 40px;
-    --table-group-header-height: 28px;
+    --table-group-header-height: 24px;  /* Reduced from 28px for tighter spacing */
+    --table-group-header-padding-y: 2px; /* Minimal vertical padding */
+    --table-group-header-padding-x: 12px;
     --table-row-height: 40px;
     --table-cell-padding-x: 12px;
     --table-cell-padding-y: 8px;
@@ -87,6 +92,35 @@
     --interactive-button-radius: 4px;
     --interactive-button-hover-scale: 1.1;
     --min-touch-target: 44px;
+
+    /* Unified Button Theme System - Consistent styling for all interactive buttons */
+    --button-interactive-sm-size: 28px;  /* Small buttons (h-7 w-7) */
+    --button-interactive-md-size: 32px;  /* Medium buttons (h-8 w-8) */
+    --button-interactive-lg-size: 40px;  /* Large buttons (h-10 w-10) */
+    
+    /* Primary action buttons (+/increment) - Softer, theme-consistent */
+    --button-primary-bg: 0 0% 100%;          /* White background */
+    --button-primary-border: 142 47% 60%;    /* Softer green border */
+    --button-primary-text: 142 47% 55%;      /* Softer green text */
+    --button-primary-hover-bg: 142 47% 96%;  /* Light green hover */
+    --button-primary-hover-border: 142 76% 50%; /* Medium green hover border */
+    --button-primary-hover-text: 142 76% 45%;   /* Medium green hover text */
+    
+    /* Secondary action buttons (-/decrement) - Softer, theme-consistent */
+    --button-secondary-bg: 0 0% 100%;        /* White background */
+    --button-secondary-border: 0 47% 60%;    /* Softer red border */
+    --button-secondary-text: 0 47% 55%;      /* Softer red text */
+    --button-secondary-hover-bg: 0 93% 96%;  /* Light red hover */
+    --button-secondary-hover-border: 0 74% 50%; /* Medium red hover border */
+    --button-secondary-hover-text: 0 74% 45%;   /* Medium red hover text */
+    
+    /* Neutral action buttons (t-shirt, etc.) - Enhanced 3D appearance */
+    --button-neutral-bg: 0 0% 100%;          /* White background */
+    --button-neutral-border: 220 13% 75%;    /* Slightly darker border for definition */
+    --button-neutral-text: 215 16% 47%;      /* Muted text */
+    --button-neutral-hover-bg: 220 14% 96%;  /* Light hover */
+    --button-neutral-hover-border: 215 20% 65%; /* Darker border hover */
+    --button-neutral-hover-text: 221.2 83.2% 53.3%; /* Primary blue hover text */
     
     /* Enhanced visual hierarchy - Phase 3.1D */
     --table-border-width: 1.5px;            /* Better border definition */
@@ -196,6 +230,9 @@
     --table-container-elevated: 217 25% 15%;
     --table-header: 217 25% 14%;       /* #161e2c - Header like HTML example */
     --table-header-elevated: 217 25% 16%;
+    --table-frozen-column: 217 25% 16%; /* Unified with elevated header for frozen columns */
+    --table-group-header: 217 25% 18%; /* Distinct group header background */
+    --table-group-header-line: 217 20% 30%; /* Line for non-grouped columns */
     --table-row: 217 27% 12%;          /* Surface rows */
     --table-row-hover: 217 25% 18%;    /* #242c3b - Subtle hover like HTML */
     --table-border: 217 20% 22%;       /* #2d3645 - Softer borders */
@@ -234,6 +271,31 @@
     
     /* Percentage indicators - dark theme */
     --percentage-color: 142 76% 36%;     /* Green works on dark theme */
+
+    /* Unified Button Theme System - Dark theme overrides */
+    /* Primary action buttons (+/increment) - dark theme - Softer, theme-consistent */
+    --button-primary-bg: 217 27% 12%;        /* Dark background */
+    --button-primary-border: 142 47% 50%;    /* Softer green border */
+    --button-primary-text: 142 47% 55%;      /* Softer green text */
+    --button-primary-hover-bg: 142 76% 15%;  /* Dark green hover */
+    --button-primary-hover-border: 142 76% 60%; /* Brighter green hover */
+    --button-primary-hover-text: 142 76% 65%;   /* Brighter green hover text */
+    
+    /* Secondary action buttons (-/decrement) - dark theme - Softer, theme-consistent */
+    --button-secondary-bg: 217 27% 12%;      /* Dark background */
+    --button-secondary-border: 0 47% 60%;    /* Softer red border */
+    --button-secondary-text: 0 47% 65%;      /* Softer red text */
+    --button-secondary-hover-bg: 0 74% 15%;  /* Dark red hover */
+    --button-secondary-hover-border: 0 74% 65%; /* Brighter red hover */
+    --button-secondary-hover-text: 0 74% 70%;   /* Brighter red hover text */
+    
+    /* Neutral action buttons (t-shirt, etc.) - dark theme - Enhanced 3D appearance */
+    --button-neutral-bg: 217 27% 12%;        /* Dark background */
+    --button-neutral-border: 217 20% 35%;    /* Slightly lighter border for definition */
+    --button-neutral-text: 215 16% 70%;      /* Lighter muted text */
+    --button-neutral-hover-bg: 217 25% 18%;  /* Slightly lighter hover */
+    --button-neutral-hover-border: 217 25% 45%; /* Lighter border hover */
+    --button-neutral-hover-text: 217.2 91.2% 69.8%; /* Primary blue hover text */
   }
 
   /* Platform-specific adjustments */
@@ -466,6 +528,18 @@
   
   .bg-table-header-elevated {
     background-color: hsl(var(--table-header-elevated));
+  }
+  
+  .bg-table-frozen-column {
+    background-color: hsl(var(--table-frozen-column));
+  }
+  
+  .bg-table-group-header {
+    background-color: hsl(var(--table-group-header));
+  }
+  
+  .border-table-group-header-line {
+    border-color: hsl(var(--table-group-header-line));
   }
   
   .bg-table-row {
@@ -833,6 +907,91 @@
   
   .transition-elevation {
     transition: box-shadow 0.2s ease-in-out;
+  }
+
+  /* Unified Button System Utilities */
+  .btn-interactive-sm {
+    width: var(--button-interactive-sm-size);
+    height: var(--button-interactive-sm-size);
+    min-width: var(--button-interactive-sm-size);
+    min-height: var(--button-interactive-sm-size);
+  }
+  
+  .btn-interactive-md {
+    width: var(--button-interactive-md-size);
+    height: var(--button-interactive-md-size);
+    min-width: var(--button-interactive-md-size);
+    min-height: var(--button-interactive-md-size);
+  }
+  
+  .btn-interactive-lg {
+    width: var(--button-interactive-lg-size);
+    height: var(--button-interactive-lg-size);
+    min-width: var(--button-interactive-lg-size);
+    min-height: var(--button-interactive-lg-size);
+  }
+
+  /* Primary action button (+ increment) */
+  .btn-primary-action {
+    background-color: hsl(var(--button-primary-bg));
+    border: 2px solid hsl(var(--button-primary-border));
+    color: hsl(var(--button-primary-text));
+    padding: 0;
+    border-radius: var(--interactive-button-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .btn-primary-action:hover:not(:disabled) {
+    background-color: hsl(var(--button-primary-hover-bg));
+    border-color: hsl(var(--button-primary-hover-border));
+    color: hsl(var(--button-primary-hover-text));
+  }
+
+  /* Secondary action button (- decrement) */
+  .btn-secondary-action {
+    background-color: hsl(var(--button-secondary-bg));
+    border: 2px solid hsl(var(--button-secondary-border));
+    color: hsl(var(--button-secondary-text));
+    padding: 0;
+    border-radius: var(--interactive-button-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .btn-secondary-action:hover:not(:disabled) {
+    background-color: hsl(var(--button-secondary-hover-bg));
+    border-color: hsl(var(--button-secondary-hover-border));
+    color: hsl(var(--button-secondary-hover-text));
+  }
+
+  /* Neutral action button (t-shirt, etc.) - Enhanced 3D styling */
+  .btn-neutral-action {
+    background-color: hsl(var(--button-neutral-bg));
+    border: 2px solid hsl(var(--button-neutral-border));
+    color: hsl(var(--button-neutral-text));
+    padding: 0;
+    border-radius: var(--interactive-button-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+  }
+  
+  .btn-neutral-action:hover:not(:disabled) {
+    background-color: hsl(var(--button-neutral-hover-bg));
+    border-color: hsl(var(--button-neutral-hover-border));
+    color: hsl(var(--button-neutral-hover-text));
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
   }
 
   /* Platform-specific utilities */
