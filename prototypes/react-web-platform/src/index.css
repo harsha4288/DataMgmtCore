@@ -124,13 +124,13 @@
     --label-active: 142 47% 91%;         /* #d1fae5 - Soft green */
     --label-active-foreground: 158 64% 18%; /* #065f46 - Dark green text */
     
-    /* Legacy badge system for compatibility */
-    --badge-success: 142 76% 36%;
-    --badge-success-foreground: 0 0% 100%;
-    --badge-success-border: 142 70% 45%;
-    --badge-warning: 32 95% 50%;
-    --badge-warning-foreground: 26 78% 10%;
-    --badge-warning-border: 32 85% 55%;
+    /* Legacy badge system for compatibility - Updated to match soft palette */
+    --badge-success: 142 47% 91%;        /* #d1fae5 - Soft green matching grade-a */
+    --badge-success-foreground: 158 64% 18%; /* #065f46 - Dark green text */
+    --badge-success-border: 142 50% 85%;
+    --badge-warning: 25 95% 93%;         /* #fed7aa - Soft orange matching grade-d */
+    --badge-warning-foreground: 17 88% 40%; /* #c2410c - Dark orange text */
+    --badge-warning-border: 25 90% 85%;
     --badge-error: 0 84% 60%;
     --badge-error-foreground: 0 0% 100%;
     --badge-error-border: 0 72% 51%;
@@ -201,39 +201,10 @@
     --subtle-border: 1px solid hsl(var(--border));
     --enhanced-border: var(--table-border-width) solid hsl(var(--border));
 
-    /* Subtle grade badges - same professional style on dark theme */
-    --badge-grade-a: 142 47% 91%;        /* Keep soft backgrounds consistent */
-    --badge-grade-a-foreground: 158 64% 18%;
-    --badge-grade-b: 199 89% 94%;        
-    --badge-grade-b-foreground: 201 96% 32%;
-    --badge-grade-c: 48 96% 89%;         
-    --badge-grade-c-foreground: 32 81% 29%;
-    --badge-grade-d: 25 95% 93%;         
-    --badge-grade-d-foreground: 17 88% 40%;
-    --badge-grade-f: 0 93% 94%;          
-    --badge-grade-f-foreground: 0 74% 42%;
     
-    /* Professional label colors - dark theme */
-    --label-admin: 239 84% 67%;          /* Same colors work on dark */
-    --label-sensitive: 0 84% 60%;
-    --label-business: 258 90% 66%;
-    --label-customer: 188 95% 68%;
+    /* Professional label colors - dark theme overrides only where different */
     --label-roadmap: 215 28% 60%;        /* Lighter gray for dark theme */
     --label-active: 142 76% 36%;
-    
-    /* Legacy badge system - dark theme overrides */
-    --badge-success: 142 76% 36%;
-    --badge-success-foreground: 0 0% 100%;
-    --badge-success-border: 142 70% 45%;
-    --badge-warning: 32 95% 50%;
-    --badge-warning-foreground: 26 78% 10%;
-    --badge-warning-border: 32 85% 55%;
-    --badge-error: 0 84% 60%;
-    --badge-error-foreground: 0 0% 100%;
-    --badge-error-border: 0 72% 51%;
-    --badge-info: 217 91% 60%;
-    --badge-info-foreground: 0 0% 100%;
-    --badge-info-border: 199 80% 60%;
     
     /* Badge standardization - dark theme */
     --badge-default: 220 23% 21%;
