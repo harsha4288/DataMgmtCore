@@ -2,9 +2,9 @@
 
 @layer base {
   :root {
-    /* Softer light theme colors - Based on HTML inspiration */
-    --background: 220 14% 96%;            /* #f9fafb - Softer background like HTML */
-    --foreground: 215 25% 27%;            /* #1f2937 - Softer dark text */
+    /* Clean light theme colors - Phase 3.1d Inspiration1.jpg */
+    --background: 0 0% 100%;              /* #ffffff - Pure white like inspiration */
+    --foreground: 0 0% 10%;               /* #1a1a1a - Dark text for readability */
     --card: 0 0% 100%;                    /* #ffffff - White cards */
     --card-foreground: 215 25% 27%;
     --popover: 0 0% 100%;
@@ -98,14 +98,14 @@
     --subtle-border: 1px solid hsl(var(--border));
     --enhanced-border: var(--table-border-width) solid hsl(var(--border));
 
-    /* Subtle grade badges like HTML inspiration */
-    --badge-grade-a: 142 47% 91%;        /* #d1fae5 - Soft green background */
+    /* Subtle grade badges matching Inspiration1.html professional style */
+    --badge-grade-a: 142 47% 91%;        /* #d1fae5 - Soft green background like ACTIVE */
     --badge-grade-a-foreground: 158 64% 18%; /* #065f46 - Dark green text */
-    --badge-grade-b: 199 89% 94%;        /* #e0f2fe - Soft blue background */
+    --badge-grade-b: 199 89% 94%;        /* #e0f2fe - Soft blue background like Team Lead */
     --badge-grade-b-foreground: 201 96% 32%; /* #0369a1 - Dark blue text */
-    --badge-grade-c: 48 96% 89%;         /* #fef3c7 - Soft yellow background */
+    --badge-grade-c: 48 96% 89%;         /* #fef3c7 - Soft yellow background like PENDING */
     --badge-grade-c-foreground: 32 81% 29%; /* #b45309 - Dark yellow text */
-    --badge-grade-d: 25 95% 95%;         /* #fed7aa - Soft orange background */
+    --badge-grade-d: 25 95% 93%;         /* #fed7aa - Soft orange background */
     --badge-grade-d-foreground: 17 88% 40%; /* #c2410c - Dark orange text */
     --badge-grade-f: 0 93% 94%;          /* #fee2e2 - Soft red background */
     --badge-grade-f-foreground: 0 74% 42%; /* #dc2626 - Dark red text */
@@ -155,9 +155,9 @@
   }
 
   .dark {
-    /* Softer dark theme - Based on HTML inspiration */
-    --background: 217 30% 9%;      /* #101729 - Lighter navy like HTML example */
-    --foreground: 215 20% 85%;     /* #d1d5db - Softer text, not pure white */
+    /* Deep navy dark theme - Phase 3.1d Inspiration2.jpg */
+    --background: 217 32% 12%;     /* #1a1f2e - Deep navy from inspiration */
+    --foreground: 0 0% 100%;       /* #ffffff - Pure white text */
     --card: 217 27% 12%;           /* #192131 - Surface color from HTML */
     --card-foreground: 215 20% 85%;
     --popover: 217 27% 12%;
@@ -201,14 +201,14 @@
     --subtle-border: 1px solid hsl(var(--border));
     --enhanced-border: var(--table-border-width) solid hsl(var(--border));
 
-    /* Subtle grade badges - dark theme optimized */
-    --badge-grade-a: 142 47% 91%;        /* Keep same soft backgrounds */
+    /* Subtle grade badges - same professional style on dark theme */
+    --badge-grade-a: 142 47% 91%;        /* Keep soft backgrounds consistent */
     --badge-grade-a-foreground: 158 64% 18%;
     --badge-grade-b: 199 89% 94%;        
     --badge-grade-b-foreground: 201 96% 32%;
     --badge-grade-c: 48 96% 89%;         
     --badge-grade-c-foreground: 32 81% 29%;
-    --badge-grade-d: 25 95% 95%;         
+    --badge-grade-d: 25 95% 93%;         
     --badge-grade-d-foreground: 17 88% 40%;
     --badge-grade-f: 0 93% 94%;          
     --badge-grade-f-foreground: 0 74% 42%;

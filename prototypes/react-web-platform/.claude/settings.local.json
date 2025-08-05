@@ -3,7 +3,9 @@
     "allow": [
       "Bash(npm install)",
       "Bash(npm cache clean:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(rm:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": []
   }
