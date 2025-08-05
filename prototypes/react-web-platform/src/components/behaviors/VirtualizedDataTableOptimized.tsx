@@ -452,7 +452,7 @@ export function VirtualizedDataTableOptimized<T extends Record<string, unknown>>
 
             {selection.enabled && selectedItems.size > 0 && (
               <div className="flex items-center gap-2">
-                <Badge variant="info" size="sm">
+                <Badge variant="grade-b" size="sm">
                   {selectedItems.size} selected
                 </Badge>
                 {selection.bulkActions?.map((action) => (

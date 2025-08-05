@@ -286,7 +286,7 @@ export function AdvancedFiltering({
           </Button>
           
           {activeFilters.length > 0 && (
-            <Badge variant="info" size="sm">
+            <Badge variant="grade-b" size="sm">
               {activeFilters.length} active
             </Badge>
           )}

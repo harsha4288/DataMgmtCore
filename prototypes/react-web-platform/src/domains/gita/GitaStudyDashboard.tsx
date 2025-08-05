@@ -356,9 +356,10 @@ export function GitaStudyDashboard() {
         ]
       },
       render: (value) => {
-        const variant = value === 'Active' ? 'success' : 
-                       value === 'Completed' ? 'info' :
-                       value === 'Paused' ? 'warning' : 'error'
+        const variant = value === 'Active' ? 'grade-a' :     // Green for active
+                       value === 'Completed' ? 'grade-b' :   // Blue for completed  
+                       value === 'Paused' ? 'grade-c' :      // Yellow for paused
+                       'grade-f'                              // Red for dropped
         return (
           <Badge variant={variant} size="sm">
             {value}
@@ -389,7 +390,7 @@ export function GitaStudyDashboard() {
           </p>
         </div>
         <div className="flex items-center gap-4">
-          <Badge variant="info" className="px-3 py-1">
+          <Badge variant="grade-b" className="px-3 py-1">
             {students.length} Students
           </Badge>
           <Button variant="outline" size="sm" className="flex items-center gap-2">

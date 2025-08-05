@@ -100,15 +100,20 @@
 
     /* Subtle grade badges matching Inspiration1.html professional style */
     --badge-grade-a: 142 47% 91%;        /* #d1fae5 - Soft green background like ACTIVE */
-    --badge-grade-a-foreground: 158 64% 18%; /* #065f46 - Dark green text */
+    --badge-grade-a-foreground: 158 64% 28%; /* Lighter green that still maintains WCAG contrast */
+    --badge-grade-a-border: 142 50% 85%; /* Subtle green border */
     --badge-grade-b: 199 89% 94%;        /* #e0f2fe - Soft blue background like Team Lead */
     --badge-grade-b-foreground: 201 96% 32%; /* #0369a1 - Dark blue text */
+    --badge-grade-b-border: 199 85% 88%; /* Subtle blue border */
     --badge-grade-c: 48 96% 89%;         /* #fef3c7 - Soft yellow background like PENDING */
     --badge-grade-c-foreground: 32 81% 29%; /* #b45309 - Dark yellow text */
+    --badge-grade-c-border: 48 90% 83%;  /* Subtle yellow border */
     --badge-grade-d: 25 95% 93%;         /* #fed7aa - Soft orange background */
     --badge-grade-d-foreground: 17 88% 40%; /* #c2410c - Dark orange text */
+    --badge-grade-d-border: 25 90% 87%;  /* Subtle orange border */
     --badge-grade-f: 0 93% 94%;          /* #fee2e2 - Soft red background */
     --badge-grade-f-foreground: 0 74% 42%; /* #dc2626 - Dark red text */
+    --badge-grade-f-border: 0 88% 88%;   /* Subtle red border */
     
     /* Subtle professional label variants - like HTML badges */
     --label-admin: 199 89% 94%;          /* #e0f2fe - Soft blue like Team Lead */
@@ -543,12 +548,20 @@
     color: hsl(var(--badge-grade-a-foreground));
   }
   
+  .border-badge-grade-a {
+    border-color: hsl(var(--badge-grade-a-border));
+  }
+  
   .bg-badge-grade-b {
     background-color: hsl(var(--badge-grade-b));
   }
   
   .text-badge-grade-b-foreground {
     color: hsl(var(--badge-grade-b-foreground));
+  }
+  
+  .border-badge-grade-b {
+    border-color: hsl(var(--badge-grade-b-border));
   }
   
   .bg-badge-grade-c {
@@ -559,6 +572,10 @@
     color: hsl(var(--badge-grade-c-foreground));
   }
   
+  .border-badge-grade-c {
+    border-color: hsl(var(--badge-grade-c-border));
+  }
+  
   .bg-badge-grade-d {
     background-color: hsl(var(--badge-grade-d));
   }
@@ -567,12 +584,20 @@
     color: hsl(var(--badge-grade-d-foreground));
   }
   
+  .border-badge-grade-d {
+    border-color: hsl(var(--badge-grade-d-border));
+  }
+  
   .bg-badge-grade-f {
     background-color: hsl(var(--badge-grade-f));
   }
   
   .text-badge-grade-f-foreground {
     color: hsl(var(--badge-grade-f-foreground));
+  }
+  
+  .border-badge-grade-f {
+    border-color: hsl(var(--badge-grade-f-border));
   }
 
   /* Subtle professional label utilities - Based on HTML inspiration */

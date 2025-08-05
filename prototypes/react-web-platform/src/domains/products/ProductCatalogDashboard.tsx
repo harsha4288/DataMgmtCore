@@ -191,7 +191,7 @@ export function ProductCatalogDashboard() {
             </div>
           )}
           {product.discount && product.discount > 0 && (
-            <Badge variant="success" size="sm" className="mt-1">
+            <Badge variant="grade-a" size="sm" className="mt-1">
               -{product.discount}%
             </Badge>
           )}
@@ -207,7 +207,7 @@ export function ProductCatalogDashboard() {
         return (
           <div className="text-center">
             <Badge 
-              variant={inventory.inStock ? 'success' : 'error'} 
+              variant={inventory.inStock ? 'grade-a' : 'grade-f'} 
               size="sm"
             >
               {inventory.inStock ? 'In Stock' : 'Out of Stock'}
@@ -240,8 +240,8 @@ export function ProductCatalogDashboard() {
       label: 'Status',
       align: 'center',
       render: (value) => {
-        const variant = value === 'active' ? 'success' : 
-                      value === 'inactive' ? 'warning' : 'error'
+        const variant = value === 'active' ? 'grade-a' : 
+                      value === 'inactive' ? 'grade-c' : 'grade-f'
         return (
           <Badge variant={variant} size="sm">
             {String(value).charAt(0).toUpperCase() + String(value).slice(1)}
@@ -290,7 +290,7 @@ export function ProductCatalogDashboard() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="info" size="sm">
+          <Badge variant="grade-b" size="sm">
             {filteredProducts.length} products
             {activeFilters.length > 0 && (
               <span className="ml-1 text-xs opacity-70">
@@ -299,12 +299,12 @@ export function ProductCatalogDashboard() {
             )}
           </Badge>
           {datasetSize === 'large' && (
-            <Badge variant={useVirtualScrolling ? "success" : "warning"} size="sm">
+            <Badge variant={useVirtualScrolling ? "grade-a" : "grade-c"} size="sm">
               {useVirtualScrolling ? "✅ Virtual Scrolling Active" : "⚠️ Standard Rendering"}
             </Badge>
           )}
           {useVirtualScrolling && (
-            <Badge variant="info" size="sm">
+            <Badge variant="grade-b" size="sm">
               🚀 Optimized Component
             </Badge>
           )}

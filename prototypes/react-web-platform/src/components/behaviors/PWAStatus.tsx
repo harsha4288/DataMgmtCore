@@ -11,7 +11,7 @@ export function PWAStatus() {
     return (
       <div className="p-4 bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-lg">
         <div className="flex items-center gap-2">
-          <Badge variant="warning" size="sm">Not Supported</Badge>
+          <Badge variant="grade-d" size="sm">Not Supported</Badge>
           <span className="text-sm text-orange-800 dark:text-orange-200">
             PWA features not supported in this browser
           </span>
@@ -26,22 +26,22 @@ export function PWAStatus() {
         <div className="space-y-2">
           <h3 className="font-medium text-blue-900 dark:text-blue-100">PWA Status</h3>
           <div className="flex flex-wrap gap-2">
-            <Badge variant={serviceWorkerRegistered ? "success" : "error"} size="sm">
+            <Badge variant={serviceWorkerRegistered ? "grade-a" : "grade-f"} size="sm">
               Service Worker {serviceWorkerRegistered ? "Active" : "Inactive"}
             </Badge>
-            <Badge variant={isInstalled ? "success" : "info"} size="sm">
+            <Badge variant={isInstalled ? "grade-a" : "grade-b"} size="sm">
               {isInstalled ? "Installed" : "Not Installed"}
             </Badge>
-            <Badge variant={isOnline ? "success" : "error"} size="sm">
+            <Badge variant={isOnline ? "grade-a" : "grade-f"} size="sm">
               {isOnline ? "Online" : "Offline"}
             </Badge>
             {connectionType !== 'unknown' && (
-              <Badge variant="info" size="sm">
+              <Badge variant="grade-b" size="sm">
                 {effectiveType || connectionType}
               </Badge>
             )}
             {failedRequestCount > 0 && (
-              <Badge variant="warning" size="sm">
+              <Badge variant="grade-c" size="sm">
                 {failedRequestCount} queued
               </Badge>
             )}

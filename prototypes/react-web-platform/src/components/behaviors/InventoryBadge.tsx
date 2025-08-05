@@ -7,6 +7,13 @@ interface InventoryBadgeProps {
   className?: string
   showPercentage?: boolean
   format?: 'available' | 'issued' // Control display format
+  customThresholds?: {
+    excellent?: number  // Default 90% → grade-a
+    good?: number       // Default 75% → grade-b  
+    fair?: number       // Default 50% → grade-c
+    poor?: number       // Default 25% → grade-d
+    // Below poor → grade-f
+  }
 }
 
 export function InventoryBadge({ 
@@ -14,7 +21,8 @@ export function InventoryBadge({
   total, 
   className = '',
   showPercentage = false,
-  format = 'available'
+  format = 'available',
+  customThresholds = {}
 }: InventoryBadgeProps) {
   const { percentage, variant, isEmpty } = useMemo(() => {
     if (total === 0) {
@@ -27,22 +35,30 @@ export function InventoryBadge({
 
     const pct = Math.round((available / total) * 100)
     
-    let variant: 'default' | 'success' | 'warning' | 'error'
+    // Dynamic grade-based system with custom thresholds
+    const thresholds = {
+      excellent: customThresholds.excellent ?? 90,  // A grade
+      good: customThresholds.good ?? 75,            // B grade
+      fair: customThresholds.fair ?? 50,            // C grade
+      poor: customThresholds.poor ?? 25             // D grade
+    }
     
-    if (pct >= 70) {
-      variant = 'success'
-    } else if (pct >= 40) {
-      variant = 'warning'
-    } else if (pct >= 15) {
-      variant = 'warning'
-    } else if (pct > 0) {
-      variant = 'error'
+    let variant: 'grade-a' | 'grade-b' | 'grade-c' | 'grade-d' | 'grade-f' | 'default'
+    
+    if (pct >= thresholds.excellent) {
+      variant = 'grade-a'       // Green - Excellent (90%+)
+    } else if (pct >= thresholds.good) {
+      variant = 'grade-b'       // Blue - Good (75-89%)
+    } else if (pct >= thresholds.fair) {
+      variant = 'grade-c'       // Yellow - Fair (50-74%)
+    } else if (pct >= thresholds.poor) {
+      variant = 'grade-d'       // Orange - Poor (25-49%)
     } else {
-      variant = 'error'
+      variant = 'grade-f'       // Red - Critical (0-24%)
     }
 
     return { percentage: pct, variant, isEmpty: false }
-  }, [available, total])
+  }, [available, total, customThresholds])
 
   const displayText = useMemo(() => {
     if (showPercentage) {
@@ -85,22 +101,39 @@ export function InventoryBadge({
 }
 
 // Utility function to get color classes programmatically using CSS variables
-export function getInventoryColorClasses(available: number, total: number): string {
+export function getInventoryColorClasses(
+  available: number, 
+  total: number,
+  customThresholds?: {
+    excellent?: number
+    good?: number
+    fair?: number
+    poor?: number
+  }
+): string {
   if (total === 0) {
     return 'bg-muted text-muted-foreground border-border'
   }
 
   const percentage = (available / total) * 100
   
-  if (percentage >= 70) {
-    return 'bg-badge-success text-badge-success-foreground border-badge-success'
-  } else if (percentage >= 40) {
-    return 'bg-badge-warning text-badge-warning-foreground border-badge-warning'
-  } else if (percentage >= 15) {
-    return 'bg-badge-warning text-badge-warning-foreground border-badge-warning'
-  } else if (percentage > 0) {
-    return 'bg-badge-error text-badge-error-foreground border-badge-error'
+  // Dynamic grade-based system with custom thresholds
+  const thresholds = {
+    excellent: customThresholds?.excellent ?? 90,  // A grade
+    good: customThresholds?.good ?? 75,            // B grade
+    fair: customThresholds?.fair ?? 50,            // C grade
+    poor: customThresholds?.poor ?? 25             // D grade
+  }
+  
+  if (percentage >= thresholds.excellent) {
+    return 'bg-badge-grade-a text-badge-grade-a-foreground border-badge-grade-a'
+  } else if (percentage >= thresholds.good) {
+    return 'bg-badge-grade-b text-badge-grade-b-foreground border-badge-grade-b'
+  } else if (percentage >= thresholds.fair) {
+    return 'bg-badge-grade-c text-badge-grade-c-foreground border-badge-grade-c'
+  } else if (percentage >= thresholds.poor) {
+    return 'bg-badge-grade-d text-badge-grade-d-foreground border-badge-grade-d'
   } else {
-    return 'bg-badge-error text-badge-error-foreground border-badge-error'
+    return 'bg-badge-grade-f text-badge-grade-f-foreground border-badge-grade-f'
   }
 }

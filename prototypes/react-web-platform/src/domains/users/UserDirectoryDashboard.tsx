@@ -144,7 +144,7 @@ export function UserDirectoryDashboard() {
             Manage and browse user accounts from JSONPlaceholder API
           </p>
         </div>
-        <Badge variant="info" size="sm">
+        <Badge variant="grade-b" size="sm">
           {users.length} users
         </Badge>
       </div>

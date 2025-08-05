@@ -88,7 +88,7 @@ export function NewsDashboard() {
       maxWidth: 160,
       badge: {
         value: news.length,
-        variant: 'info'
+        variant: 'grade-b'
       },
       render: (value) => (
         <Badge variant="default" size="sm">
