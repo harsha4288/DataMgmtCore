@@ -955,7 +955,7 @@ export function DataTable<T extends Record<string, unknown>>({
                   return (
                     <tr
                       key={index}
-                      className={`border-b border-table hover:bg-table-row-hover text-foreground transition-all duration-200 hover:shadow-sm ${
+                      className={`bg-table-row border-b border-table hover:bg-table-row-hover text-foreground transition-all duration-200 hover:shadow-sm ${
                         isSelected ? 'bg-primary/10 border-primary/30' : ''
                       } ${
                         onRowClick ? 'cursor-pointer' : ''
@@ -970,7 +970,7 @@ export function DataTable<T extends Record<string, unknown>>({
                       {/* Selection column */}
                       {selection.enabled && (
                         <td 
-                          className="p-2 sticky left-0 z-[50] bg-table-container border-r border-table shadow-table"
+                          className="p-2 sticky left-0 z-[50] bg-table-row shadow-table"
                           style={{ width: `${getSelectionColumnWidth()}px` }}
                         >
                           <input
@@ -991,6 +991,9 @@ export function DataTable<T extends Record<string, unknown>>({
                         const isFirstUnfrozen = !isFrozen && frozenColumns.length > 0 && 
                           (columnIndex === Math.max(...frozenColumns) + 1)
                         
+                        // Check if this is the first data column (when selection is enabled)
+                        const isFirstDataColumn = selection.enabled && columnIndex === 0
+                        
                         return (
                           <td
                             key={String(column.key)}
@@ -1003,6 +1006,8 @@ export function DataTable<T extends Record<string, unknown>>({
                               isFrozen ? 'sticky z-[50] bg-table-container shadow-table' : ''
                             } ${
                               isFirstUnfrozen ? 'border-l-4 border-l-primary' : ''
+                            } ${
+                              isFirstDataColumn ? 'border-l-0' : ''
                             }`}
                             style={{ 
                               width: `${width}px`, 

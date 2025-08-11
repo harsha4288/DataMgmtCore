@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import type { ThemeContextValue, ThemeMode, ColorScheme, DesignTokens } from '../../types/theme';
-import { designTokens, platformTokens, lightThemeProperties, darkThemeProperties } from './tokens';
+import { designTokens, platformTokens } from './tokens';
 import { usePlatform } from '../hooks/usePlatform';
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
@@ -56,24 +56,18 @@ export function ThemeProvider({
   useEffect(() => {
     const root = document.documentElement;
     
-    // Remove existing theme classes
+    // Remove existing theme attributes/classes
     root.classList.remove('light', 'dark');
+    root.removeAttribute('data-theme');
     
-    // Add current theme class
-    if (attribute === 'class') {
-      root.classList.add(resolvedTheme);
-    } else {
-      root.setAttribute(attribute, resolvedTheme);
-    }
+    // Set theme using data-theme attribute (matching DarkTheme.html)
+    root.setAttribute('data-theme', resolvedTheme);
     
     // Set platform attribute
     root.setAttribute('data-platform', platform);
     
-    // Apply CSS custom properties
-    const properties = resolvedTheme === 'dark' ? darkThemeProperties : lightThemeProperties;
-    Object.entries(properties).forEach(([property, value]) => {
-      root.style.setProperty(property, value);
-    });
+    // Theme switching is now handled purely by CSS via [data-theme="dark"] selectors
+    // No JavaScript property application needed
   }, [resolvedTheme, platform, attribute]);
 
   // Save theme to localStorage

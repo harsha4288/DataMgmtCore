@@ -40,6 +40,32 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Table-specific colors from CSS variables
+        "table-container": "hsl(var(--table-container))",
+        "table-container-elevated": "hsl(var(--table-container-elevated))",
+        "table-header": "hsl(var(--table-header))",
+        "table-header-elevated": "hsl(var(--table-header-elevated))",
+        "table-frozen-column": "hsl(var(--table-frozen-column))",
+        "table-group-header": "hsl(var(--table-group-header))",
+        "table-group-header-line": "hsl(var(--table-group-header-line))",
+        "table-row": "hsl(var(--table-row))",
+        "table-row-hover": "hsl(var(--table-row-hover))",
+        "table-border": "hsl(var(--table-border))",
+        // Table border variants
+        "table": "hsl(var(--table-border))",
+      },
+      borderColor: {
+        DEFAULT: "hsl(var(--border))",
+        // Table-specific border colors
+        "table": "hsl(var(--table-border))",
+        "table-group-header-line": "hsl(var(--table-group-header-line))",
+      },
+      boxShadow: {
+        DEFAULT: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+        // Table-specific shadows
+        "table": "var(--table-shadow)",
+        "table-elevated": "var(--table-shadow-elevated)",
+        "table-freeze": "var(--table-freeze-shadow)",
       },
       borderRadius: {
         lg: "var(--radius)",
