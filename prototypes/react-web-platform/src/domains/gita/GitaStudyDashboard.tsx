@@ -191,9 +191,9 @@ export function GitaStudyDashboard() {
       label: 'Level',
       align: 'center',
       sortable: true,
-      width: 100,
+      width: 130,
       render: (value) => (
-        <Badge variant={getLevelColor(String(value))} size="sm">
+        <Badge variant={getLevelColor(String(value))} size="sm" className="whitespace-nowrap">
           {value}
         </Badge>
       )

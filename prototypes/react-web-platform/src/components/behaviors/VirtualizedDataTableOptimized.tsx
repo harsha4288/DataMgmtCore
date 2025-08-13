@@ -488,7 +488,7 @@ export function VirtualizedDataTableOptimized<T extends Record<string, unknown>>
         <div className="flex min-w-full">
           {selection?.enabled && (
             <div 
-              className="flex-shrink-0 px-3 py-2 bg-muted/15 border-r border-muted/50 flex items-center justify-center"
+              className="flex-shrink-0 px-3 py-2 bg-muted/15 border-r border-table flex items-center justify-center"
               style={{ width: `${selection.columnWidth || 48}px` }}
             >
               <input
@@ -502,7 +502,7 @@ export function VirtualizedDataTableOptimized<T extends Record<string, unknown>>
           {columns.map((column, index) => (
             <div
               key={String(column.key)}
-              className={`flex-shrink-0 px-3 py-2 bg-muted/15 border-r border-muted/50 last:border-r-0 text-xs font-semibold ${
+              className={`flex-shrink-0 px-3 py-2 bg-muted/15 border-r border-table last:border-r-0 text-xs font-semibold ${
                 column.align === 'center' ? 'text-center' : 
                 column.align === 'right' ? 'text-right' : 'text-left'
               }`}
@@ -518,7 +518,6 @@ export function VirtualizedDataTableOptimized<T extends Record<string, unknown>>
                   <InventoryBadge
                     available={column.headerBadge.getValue(data).available}
                     total={column.headerBadge.getValue(data).total}
-                    size="xs"
                   />
                 )}
               </div>
@@ -552,7 +551,7 @@ export function VirtualizedDataTableOptimized<T extends Record<string, unknown>>
               <div
                 key={virtualRow.key}
                 data-virtual-row={virtualRow.index}
-                className={`absolute top-0 left-0 w-full border-b border-muted/40 hover:bg-muted/40 transition-colors flex ${
+                className={`virtualized-table-row absolute top-0 left-0 w-full border-b border-muted/40 transition-colors flex ${
                   onRowClick ? 'cursor-pointer' : ''
                 } ${isSelected ? 'bg-blue-50 dark:bg-blue-950/20' : ''}`}
                 style={{
@@ -563,7 +562,7 @@ export function VirtualizedDataTableOptimized<T extends Record<string, unknown>>
               >
                 {selection?.enabled && (
                   <div 
-                    className="flex-shrink-0 px-3 py-2 border-r border-muted/40 flex items-center justify-center"
+                    className="flex-shrink-0 px-3 py-2 border-r border-table flex items-center justify-center"
                     style={{ width: `${selection.columnWidth || 48}px` }}
                     onClick={(e) => e.stopPropagation()}
                   >
@@ -578,7 +577,7 @@ export function VirtualizedDataTableOptimized<T extends Record<string, unknown>>
                 {columns.map((column, colIndex) => (
                   <div
                     key={String(column.key)}
-                    className={`flex-shrink-0 px-3 py-2 border-r border-muted/40 last:border-r-0 flex items-center ${
+                    className={`flex-shrink-0 px-3 py-2 border-r border-table last:border-r-0 flex items-center ${
                       column.align === 'center' ? 'justify-center' : 
                       column.align === 'right' ? 'justify-end' : 'justify-start'
                     }`}

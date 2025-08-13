@@ -92,7 +92,7 @@ export interface DataTableProps<T> {
   selection?: {
     enabled: boolean
     bulkActions?: BulkAction<T>[]
-    columnWidth?: number // Selection column width in pixels, defaults to 48
+    columnWidth?: number // Selection column width in pixels, defaults to 96
   }
   onSelectionChange?: (selectedItems: T[]) => void
   // Inline editing configuration
@@ -161,7 +161,7 @@ export function DataTable<T extends Record<string, unknown>>({
 
   // Get selection column width
   const getSelectionColumnWidth = useCallback(() => {
-    return selection.columnWidth || 48 // Default to 48px
+    return selection.columnWidth || 32 // Default to 32px
   }, [selection.columnWidth])
 
   // Handle responsive design
@@ -205,25 +205,31 @@ export function DataTable<T extends Record<string, unknown>>({
   
   // Calculate left offset for frozen columns
   const getFrozenLeft = useCallback((columnIndex: number) => {
-    if (!isFrozenColumn(columnIndex)) return 0
+    if (!isFrozenColumn(columnIndex)) return undefined
     
     let left = 0
-    // Always account for selection column when enabled
+    
+    // Selection column is always at left: 0, so frozen columns start after it
     if (selection.enabled) {
-      left += getSelectionColumnWidth()
+      left = getSelectionColumnWidth()
     }
     
-    // Add width of all previous frozen columns
-    for (let i = 0; i < columnIndex; i++) {
-      if (isFrozenColumn(i)) {
-        const column = responsiveColumns[i]
+    // Find position of current column in sorted frozen columns array
+    const sortedFrozenColumns = [...frozenColumns].sort((a, b) => a - b)
+    const currentColumnPositionInFrozen = sortedFrozenColumns.indexOf(columnIndex)
+    
+    // Add width of all frozen columns that come before this one (in visual order)
+    for (let i = 0; i < currentColumnPositionInFrozen; i++) {
+      const frozenColIndex = sortedFrozenColumns[i]
+      const column = responsiveColumns[frozenColIndex]
+      if (column) {
         const width = columnWidths[String(column.key)] || column.width || 150
         left += width
       }
     }
     
     return left
-  }, [isFrozenColumn, selection.enabled, getSelectionColumnWidth, responsiveColumns, columnWidths])
+  }, [isFrozenColumn, selection.enabled, getSelectionColumnWidth, frozenColumns, responsiveColumns, columnWidths])
 
 
 
@@ -671,7 +677,7 @@ export function DataTable<T extends Record<string, unknown>>({
     }
 
     return defaultContent
-  }, [onCellEdit])
+  }, [onCellEdit, cellValidation])
 
   if (loading) {
     return (
@@ -692,7 +698,7 @@ export function DataTable<T extends Record<string, unknown>>({
   }
 
   return (
-    <div className={`space-y-6 p-6 bg-background min-h-screen ${className}`}>
+    <div className={`space-y-6 p-6 ${className}`}>
       {/* Search, Export, and Bulk Actions Controls */}
       {(search.enabled || exportConfig.enabled || (selection.enabled && selectedItems.size > 0)) && (
         <div className="flex items-center justify-between gap-4">
@@ -768,8 +774,8 @@ export function DataTable<T extends Record<string, unknown>>({
                     {/* Selection column spacer */}
                     {selection.enabled && (
                       <th 
-                        className={`p-2 sticky left-0 ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-table-frozen-column shadow-table border-r border-table`}
-                        style={{ width: `${getSelectionColumnWidth()}px` }}
+                        className={`p-2 sticky left-0 ${frozenHeader ? 'z-[54]' : 'z-[52]'} bg-table-frozen-column shadow-[1px_0_3px_rgba(0,0,0,0.1)] border-r border-table`}
+                        style={{ width: `${getSelectionColumnWidth()}px`, minWidth: `${getSelectionColumnWidth()}px`, maxWidth: `${getSelectionColumnWidth()}px` }}
                       />
                     )}
                     
@@ -845,8 +851,8 @@ export function DataTable<T extends Record<string, unknown>>({
                   {/* Selection column */}
                   {selection.enabled && (
                     <th 
-                      className={`p-2 sticky left-0 ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-table-frozen-column border-r border-table shadow-table`}
-                      style={{ width: `${getSelectionColumnWidth()}px` }}
+                      className={`p-2 sticky left-0 ${frozenHeader ? 'z-[54]' : 'z-[52]'} bg-table-frozen-column border-r border-table shadow-[1px_0_3px_rgba(0,0,0,0.1)]`}
+                      style={{ width: `${getSelectionColumnWidth()}px`, minWidth: `${getSelectionColumnWidth()}px`, maxWidth: `${getSelectionColumnWidth()}px` }}
                     >
                       <input
                         type="checkbox"
@@ -864,16 +870,13 @@ export function DataTable<T extends Record<string, unknown>>({
                     const isFrozen = isFrozenColumn(index)
                     const frozenLeft = getFrozenLeft(index)
                     
-                    // Check if this is the first unfrozen column after frozen ones
-                    const isFirstUnfrozen = !isFrozen && frozenColumns.length > 0 && 
-                      (index === Math.max(...frozenColumns) + 1)
                     
                     return (
                       <th
                         key={String(column.key)}
                         className={`${
                           deviceType === 'mobile' && responsive.compactOnMobile ? '' : ''
-                        } select-none relative group text-muted-foreground border-r border-table last:border-r-0 ${
+                        } select-none relative group text-muted-foreground ${
                           column.sortable !== false ? 'cursor-pointer hover:bg-muted hover:shadow-table transition-all duration-200' : ''
                         } ${
                           column.align === 'center' ? 'text-center' :
@@ -883,13 +886,12 @@ export function DataTable<T extends Record<string, unknown>>({
                         } ${
                           column.groupHeader ? 'border-l border-r border-table' : ''
                         } ${
-                          isFrozen ? `sticky ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-table-frozen-column shadow-table` : ''
-                        } ${
-                          isFirstUnfrozen ? 'border-l-4 border-l-primary' : ''
+                          isFrozen ? `sticky ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-table-frozen-column shadow-[2px_0_4px_rgba(0,0,0,0.1)] border-r border-table` : ''
                         }`}
                         style={{ 
                           width: `${width}px`, 
                           minWidth: `${width}px`,
+                          maxWidth: isFrozen ? `${width}px` : undefined,
                           left: isFrozen ? `${frozenLeft}px` : undefined
                         }}
                         draggable={columnControls.reorderable}
@@ -970,8 +972,8 @@ export function DataTable<T extends Record<string, unknown>>({
                       {/* Selection column */}
                       {selection.enabled && (
                         <td 
-                          className="p-2 sticky left-0 z-[50] bg-table-row shadow-table"
-                          style={{ width: `${getSelectionColumnWidth()}px` }}
+                          className="p-2 sticky left-0 z-[51] bg-table-frozen-column shadow-[1px_0_3px_rgba(0,0,0,0.1)] border-r border-table"
+                          style={{ width: `${getSelectionColumnWidth()}px`, minWidth: `${getSelectionColumnWidth()}px`, maxWidth: `${getSelectionColumnWidth()}px` }}
                         >
                           <input
                             type="checkbox"
@@ -987,9 +989,6 @@ export function DataTable<T extends Record<string, unknown>>({
                         const isFrozen = isFrozenColumn(columnIndex)
                         const frozenLeft = getFrozenLeft(columnIndex)
                         
-                        // Check if this is the first unfrozen column after frozen ones
-                        const isFirstUnfrozen = !isFrozen && frozenColumns.length > 0 && 
-                          (columnIndex === Math.max(...frozenColumns) + 1)
                         
                         // Check if this is the first data column (when selection is enabled)
                         const isFirstDataColumn = selection.enabled && columnIndex === 0
@@ -999,19 +998,18 @@ export function DataTable<T extends Record<string, unknown>>({
                             key={String(column.key)}
                             className={`${
                               deviceType === 'mobile' && responsive.compactOnMobile ? '' : ''
-                            } text-foreground border-r border-table last:border-r-0 ${
+                            } text-foreground ${
                               column.align === 'center' ? 'text-center' :
                               column.align === 'right' ? 'text-right' : 'text-left'
                             } ${
-                              isFrozen ? 'sticky z-[50] bg-table-container shadow-table' : ''
-                            } ${
-                              isFirstUnfrozen ? 'border-l-4 border-l-primary' : ''
+                              isFrozen ? 'sticky z-[50] bg-table-frozen-column shadow-[2px_0_4px_rgba(0,0,0,0.1)] border-r border-table' : ''
                             } ${
                               isFirstDataColumn ? 'border-l-0' : ''
                             }`}
                             style={{ 
                               width: `${width}px`, 
                               minWidth: `${width}px`,
+                              maxWidth: isFrozen ? `${width}px` : undefined,
                               left: isFrozen ? `${frozenLeft}px` : undefined
                             }}
                           >

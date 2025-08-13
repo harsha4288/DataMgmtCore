@@ -263,51 +263,47 @@ export function VirtualizedDataTable<T extends Record<string, unknown>>({
     <div className={`rounded-lg border border-muted/50 overflow-hidden ${className}`}>
       {/* Table Header */}
       <div className="bg-muted/15 border-b border-muted/50">
-        <table className="w-full">
-          <thead>
-            <tr className="min-h-[40px]">
-              {selection?.enabled && (
-                <th 
-                  className="px-2 py-1 text-left text-xs font-semibold border-r border-muted/50 last:border-r-0"
-                  style={{ width: `${selection.columnWidth || 48}px` }}
-                >
-                  <input
-                    type="checkbox"
-                    className="rounded"
-                    onChange={() => {
-                      // Handle select all logic
-                    }}
+        <div className="flex w-full min-h-[40px]">
+          {selection?.enabled && (
+            <div 
+              className="px-2 py-1 text-left text-xs font-semibold border-r border-muted/50 flex items-center justify-center flex-shrink-0"
+              style={{ width: `${selection.columnWidth || 48}px` }}
+            >
+              <input
+                type="checkbox"
+                className="rounded"
+                onChange={() => {
+                  // Handle select all logic
+                }}
+              />
+            </div>
+          )}
+          {columns.map((column, index) => (
+            <div
+              key={String(column.key)}
+              className={`px-2 py-1 text-xs font-semibold border-r border-muted/50 last:border-r-0 flex items-center flex-shrink-0 ${
+                column.align === 'center' ? 'justify-center' : 
+                column.align === 'right' ? 'justify-end' : 'justify-start'
+              }`}
+              style={{ 
+                width: column.width ? `${column.width}px` : 'auto',
+                minWidth: column.minWidth ? `${column.minWidth}px` : undefined,
+                maxWidth: column.maxWidth ? `${column.maxWidth}px` : undefined,
+                flex: !column.width ? '1' : undefined
+              }}
+            >
+              <div className="flex items-center gap-1">
+                {column.label}
+                {column.headerBadge && (
+                  <InventoryBadge
+                    available={column.headerBadge.getValue(data).available}
+                    total={column.headerBadge.getValue(data).total}
                   />
-                </th>
-              )}
-              {columns.map((column, index) => (
-                <th
-                  key={String(column.key)}
-                  className={`px-2 py-1 text-left text-xs font-semibold border-r border-muted/50 last:border-r-0 ${
-                    column.align === 'center' ? 'text-center' : 
-                    column.align === 'right' ? 'text-right' : 'text-left'
-                  }`}
-                  style={{ 
-                    width: column.width ? `${column.width}px` : undefined,
-                    minWidth: column.minWidth ? `${column.minWidth}px` : undefined,
-                    maxWidth: column.maxWidth ? `${column.maxWidth}px` : undefined
-                  }}
-                >
-                  <div className="flex items-center gap-1">
-                    {column.label}
-                    {column.headerBadge && (
-                      <InventoryBadge
-                        available={column.headerBadge.getValue(data).available}
-                        total={column.headerBadge.getValue(data).total}
-                        size="xs"
-                      />
-                    )}
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-        </table>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Virtualized Table Body */}
@@ -341,47 +337,44 @@ export function VirtualizedDataTable<T extends Record<string, unknown>>({
                   transform: `translateY(${virtualRow.start}px)`
                 }}
               >
-                <table className="w-full h-full">
-                  <tbody>
-                    <tr
-                      className={`border-b border-muted/40 hover:bg-muted/40 transition-colors ${
-                        onRowClick ? 'cursor-pointer' : ''
-                      }`}
-                      onClick={() => onRowClick?.(item)}
+                <div
+                  className={`virtualized-table-row flex w-full h-full border-b border-muted/40 transition-colors ${
+                    onRowClick ? 'cursor-pointer' : ''
+                  }`}
+                  onClick={() => onRowClick?.(item)}
+                >
+                  {selection?.enabled && (
+                    <div 
+                      className="px-2 py-1 border-r border-muted/40 flex items-center justify-center flex-shrink-0"
+                      style={{ width: `${selection.columnWidth || 48}px` }}
                     >
-                      {selection?.enabled && (
-                        <td 
-                          className="px-2 py-1 border-r border-muted/40 last:border-r-0"
-                          style={{ width: `${selection.columnWidth || 48}px` }}
-                        >
-                          <input
-                            type="checkbox"
-                            className="rounded"
-                            onChange={() => {
-                              // Handle individual row selection
-                            }}
-                          />
-                        </td>
-                      )}
-                      {columns.map((column, colIndex) => (
-                        <td
-                          key={String(column.key)}
-                          className={`px-2 py-1 border-r border-muted/40 last:border-r-0 ${
-                            column.align === 'center' ? 'text-center' : 
-                            column.align === 'right' ? 'text-right' : 'text-left'
-                          }`}
-                          style={{ 
-                            width: column.width ? `${column.width}px` : undefined,
-                            minWidth: column.minWidth ? `${column.minWidth}px` : undefined,
-                            maxWidth: column.maxWidth ? `${column.maxWidth}px` : undefined
-                          }}
-                        >
-                          {renderCellContent(item, column)}
-                        </td>
-                      ))}
-                    </tr>
-                  </tbody>
-                </table>
+                      <input
+                        type="checkbox"
+                        className="rounded"
+                        onChange={() => {
+                          // Handle individual row selection
+                        }}
+                      />
+                    </div>
+                  )}
+                  {columns.map((column, colIndex) => (
+                    <div
+                      key={String(column.key)}
+                      className={`px-2 py-1 border-r border-muted/40 last:border-r-0 flex items-center flex-shrink-0 ${
+                        column.align === 'center' ? 'justify-center' : 
+                        column.align === 'right' ? 'justify-end' : 'justify-start'
+                      }`}
+                      style={{ 
+                        width: column.width ? `${column.width}px` : 'auto',
+                        minWidth: column.minWidth ? `${column.minWidth}px` : undefined,
+                        maxWidth: column.maxWidth ? `${column.maxWidth}px` : undefined,
+                        flex: !column.width ? '1' : undefined
+                      }}
+                    >
+                      {renderCellContent(item, column)}
+                    </div>
+                  ))}
+                </div>
               </div>
             )
           })}
