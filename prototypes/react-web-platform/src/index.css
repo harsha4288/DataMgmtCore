@@ -37,7 +37,7 @@
     --table-container-elevated: 0 0% 100%;
     --table-header: 220 9% 98%;           /* #fafafc - Softer header like HTML */
     --table-header-elevated: 220 13% 96%;
-    --table-frozen-column: 220 9% 97%;    /* Very subtle gray, slightly different from white */
+    /* --table-frozen-column: 220 9% 97%; */    /* Removed - frozen columns now use row-specific backgrounds */
     --table-group-header: 220 13% 94%;    /* Distinct group header background */
     --table-group-header-line: 220 13% 85%; /* Line for non-grouped columns */
     --table-row: 0 0% 100%;               /* White rows */
@@ -202,7 +202,7 @@
     --table-container-elevated: 217 25% 15%;
     --table-header: 215 28% 17%;       /* #1f2937 - Header rows from DarkTheme.html */
     --table-header-elevated: 217 25% 16%;
-    --table-frozen-column: 217 25% 15%;   /* Slightly lighter than row background */
+    /* --table-frozen-column: 217 25% 15%; */   /* Removed - frozen columns now use row-specific backgrounds */
     --table-group-header: 217 39% 11%; /* #111827 - Group headers from DarkTheme.html */
     --table-group-header-line: 217 20% 30%; /* Line for non-grouped columns */
     --table-row: 217 39% 11%;          /* #111827 - Data rows from DarkTheme.html */
@@ -259,31 +259,43 @@
     --radius: 0.5rem;
   }
   
-  /* Phase 3.1E Checkbox styling from DarkTheme.html */
-  .checkbox {
+  /* Styled checkboxes matching inspiration */
+  input[type="checkbox"] {
     width: 18px;
     height: 18px;
     border: 2px solid hsl(var(--border));
     border-radius: 4px;
     background: transparent;
     cursor: pointer;
-    display: inline-block;
-    transition: all 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
     position: relative;
+    transition: all 0.2s;
   }
 
-  .checkbox:hover {
+  input[type="checkbox"]:hover {
     border-color: hsl(var(--primary));
     background: hsl(var(--accent) / 0.05);
   }
 
-  .checkbox.checked::after {
+  input[type="checkbox"]:checked {
+    background: hsl(var(--primary));
+    border-color: hsl(var(--primary));
+  }
+
+  input[type="checkbox"]:checked::after {
     content: '✓';
     position: absolute;
     top: -2px;
     left: 2px;
-    color: hsl(var(--primary));
+    color: white;
     font-weight: bold;
+    font-size: 14px;
+  }
+
+  input[type="checkbox"]:focus {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
   }
 
   /* Fix virtualized table gaps during scrolling */
@@ -536,9 +548,7 @@
     background-color: hsl(var(--table-header-elevated));
   }
   
-  .bg-table-frozen-column {
-    background-color: hsl(var(--table-frozen-column));
-  }
+  /* .bg-table-frozen-column removed - frozen columns now use row-specific backgrounds */
   
   .bg-table-group-header {
     background-color: hsl(var(--table-group-header));

@@ -774,7 +774,7 @@ export function DataTable<T extends Record<string, unknown>>({
                     {/* Selection column spacer */}
                     {selection.enabled && (
                       <th 
-                        className={`p-2 sticky left-0 ${frozenHeader ? 'z-[54]' : 'z-[52]'} bg-table-frozen-column shadow-[1px_0_3px_rgba(0,0,0,0.1)] border-r border-table`}
+                        className={`p-2 sticky left-0 ${frozenHeader ? 'z-[54]' : 'z-[52]'} bg-table-group-header shadow-[1px_0_3px_rgba(0,0,0,0.1)] border-r border-table`}
                         style={{ width: `${getSelectionColumnWidth()}px`, minWidth: `${getSelectionColumnWidth()}px`, maxWidth: `${getSelectionColumnWidth()}px` }}
                       />
                     )}
@@ -823,7 +823,7 @@ export function DataTable<T extends Record<string, unknown>>({
                           headers.push(
                             <th 
                               key={columnKey} 
-                              className="bg-table-header border-r border-table shadow-table"
+                              className="bg-table-group-header border-r border-table shadow-table"
                               style={{ 
                                 width: `${width}px`, 
                                 minWidth: `${width}px`,
@@ -851,7 +851,7 @@ export function DataTable<T extends Record<string, unknown>>({
                   {/* Selection column */}
                   {selection.enabled && (
                     <th 
-                      className={`p-2 sticky left-0 ${frozenHeader ? 'z-[54]' : 'z-[52]'} bg-table-frozen-column border-r border-table shadow-[1px_0_3px_rgba(0,0,0,0.1)]`}
+                      className={`p-2 sticky left-0 ${frozenHeader ? 'z-[54]' : 'z-[52]'} bg-table-header border-r border-table shadow-[1px_0_3px_rgba(0,0,0,0.1)]`}
                       style={{ width: `${getSelectionColumnWidth()}px`, minWidth: `${getSelectionColumnWidth()}px`, maxWidth: `${getSelectionColumnWidth()}px` }}
                     >
                       <input
@@ -886,7 +886,7 @@ export function DataTable<T extends Record<string, unknown>>({
                         } ${
                           column.groupHeader ? 'border-l border-r border-table' : ''
                         } ${
-                          isFrozen ? `sticky ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-table-frozen-column shadow-[2px_0_4px_rgba(0,0,0,0.1)] border-r border-table` : ''
+                          isFrozen ? `sticky ${frozenHeader ? 'z-[53]' : 'z-[51]'} bg-table-header shadow-[2px_0_4px_rgba(0,0,0,0.1)] border-r border-table` : ''
                         }`}
                         style={{ 
                           width: `${width}px`, 
@@ -972,7 +972,7 @@ export function DataTable<T extends Record<string, unknown>>({
                       {/* Selection column */}
                       {selection.enabled && (
                         <td 
-                          className="p-2 sticky left-0 z-[51] bg-table-frozen-column shadow-[1px_0_3px_rgba(0,0,0,0.1)] border-r border-table"
+                          className="p-2 sticky left-0 z-[51] bg-table-row shadow-[1px_0_3px_rgba(0,0,0,0.1)] border-r border-table"
                           style={{ width: `${getSelectionColumnWidth()}px`, minWidth: `${getSelectionColumnWidth()}px`, maxWidth: `${getSelectionColumnWidth()}px` }}
                         >
                           <input
@@ -1002,7 +1002,7 @@ export function DataTable<T extends Record<string, unknown>>({
                               column.align === 'center' ? 'text-center' :
                               column.align === 'right' ? 'text-right' : 'text-left'
                             } ${
-                              isFrozen ? 'sticky z-[50] bg-table-frozen-column shadow-[2px_0_4px_rgba(0,0,0,0.1)] border-r border-table' : ''
+                              isFrozen ? 'sticky z-[50] bg-table-row shadow-[2px_0_4px_rgba(0,0,0,0.1)] border-r border-table' : ''
                             } ${
                               isFirstDataColumn ? 'border-l-0' : ''
                             }`}
