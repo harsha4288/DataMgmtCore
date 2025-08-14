@@ -854,14 +854,9 @@ export function DataTable<T extends Record<string, unknown>>({
                       className={`p-2 sticky left-0 ${frozenHeader ? 'z-[54]' : 'z-[52]'} bg-table-header border-r border-table shadow-[1px_0_3px_rgba(0,0,0,0.1)]`}
                       style={{ width: `${getSelectionColumnWidth()}px`, minWidth: `${getSelectionColumnWidth()}px`, maxWidth: `${getSelectionColumnWidth()}px` }}
                     >
-                      <input
-                        type="checkbox"
-                        checked={isAllSelected}
-                        ref={(el) => {
-                          if (el) el.indeterminate = isIndeterminate
-                        }}
-                        onChange={(e) => handleSelectAll(e.target.checked)}
-                        className="rounded border-table bg-card checked:bg-primary checked:border-primary"
+                      <div
+                        className={`checkbox-custom ${isAllSelected ? 'checked' : ''} ${isIndeterminate ? 'indeterminate' : ''}`}
+                        onClick={() => handleSelectAll(!isAllSelected)}
                       />
                     </th>
                   )}
@@ -975,12 +970,12 @@ export function DataTable<T extends Record<string, unknown>>({
                           className="p-2 sticky left-0 z-[51] bg-table-row shadow-[1px_0_3px_rgba(0,0,0,0.1)] border-r border-table"
                           style={{ width: `${getSelectionColumnWidth()}px`, minWidth: `${getSelectionColumnWidth()}px`, maxWidth: `${getSelectionColumnWidth()}px` }}
                         >
-                          <input
-                            type="checkbox"
-                            checked={isSelected}
-                            onChange={(e) => handleSelectItem(index, e.target.checked)}
-                            className="rounded border-table bg-card checked:bg-primary checked:border-primary"
-                            onClick={(e) => e.stopPropagation()}
+                          <div
+                            className={`checkbox-custom ${isSelected ? 'checked' : ''}`}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleSelectItem(index, !isSelected)
+                            }}
                           />
                         </td>
                       )}
@@ -1002,7 +997,7 @@ export function DataTable<T extends Record<string, unknown>>({
                               column.align === 'center' ? 'text-center' :
                               column.align === 'right' ? 'text-right' : 'text-left'
                             } ${
-                              isFrozen ? 'sticky z-[50] bg-table-row shadow-[2px_0_4px_rgba(0,0,0,0.1)] border-r border-table' : ''
+                              isFrozen ? 'sticky z-[50] bg-table-header shadow-[2px_0_4px_rgba(0,0,0,0.1)] border-r border-table' : ''
                             } ${
                               isFirstDataColumn ? 'border-l-0' : ''
                             }`}

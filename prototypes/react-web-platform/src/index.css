@@ -578,6 +578,42 @@
     box-shadow: var(--table-shadow-elevated);
   }
 
+  /* Custom Checkbox for Data Table */
+  .checkbox-custom {
+    width: 18px;
+    height: 18px;
+    border: 2px solid hsl(var(--table-border));
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    display: inline-block;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .checkbox-custom:hover {
+    border-color: hsl(var(--accent));
+    background: hsl(var(--accent) / 0.05);
+  }
+
+  .checkbox-custom.checked::after {
+    content: '✓';
+    position: absolute;
+    top: -2px;
+    left: 2px;
+    color: hsl(var(--accent));
+    font-weight: bold;
+  }
+
+  .checkbox-custom.indeterminate::after {
+    content: '−';
+    position: absolute;
+    top: -4px;
+    left: 4px;
+    color: hsl(var(--accent));
+    font-weight: bold;
+  }
+
   /* Badge utilities */
   .bg-badge-success {
     background-color: hsl(var(--badge-success));

@@ -1,7 +1,7 @@
 # Phase 3.1E: Focused Dark Theme Implementation
 
-**Status**: 🔄 IN PROGRESS - Additional Styling Fixes Required  
-**Date**: August 11-13, 2025  
+**Status**: ❌ BLOCKED - Frozen Column Background Issue Persists  
+**Date**: August 11-14, 2025  
 
 ## Overview
 
@@ -12,14 +12,13 @@ Dark theme implementation for data tables based on `DarkTheme.html` inspiration 
 1. ✅ **Data row background** - `#111827`
 2. ✅ **Header row background** - `#1f2937`  
 3. ✅ **Group header background** - `#111827`
-4. ✅ **Selection column background fix** - Context-specific backgrounds
-5. ✅ **Group header non-grouped cells** - Consistent `bg-table-group-header`
-6. ✅ **Frozen column CSS cleanup** - Removed conflicting variables
+4. ✅ **Checkbox styling** - Amber accent color checkmark (`#fbbf24`) with transparent background
+5. ✅ **Data frozen columns** - Correct row background inheritance
+6. ✅ **CSS variable cleanup** - Removed conflicting `--table-frozen-column`
 
-## 🚧 Partially Implemented / Issues Remaining
+## ❌ Outstanding Critical Issue
 
-1. ❌ **Frozen column background** - Still not matching header row background
-2. ❌ **Checkbox styling** - Not matching DarkTheme.html inspiration exactly
+**Frozen Header Column Background** - Header frozen columns display data row background instead of header background
 
 ## Color Mapping
 
@@ -31,87 +30,45 @@ Dark theme implementation for data tables based on `DarkTheme.html` inspiration 
 /* --table-frozen-column: REMOVED - Should inherit from row context */
 ```
 
-## Recent Improvements (August 13, 2025)
+## 🔄 Failed Attempts to Fix Frozen Header Columns (August 14, 2025)
 
-### ✅ DataTable.tsx Changes Applied
-1. **Header frozen columns**: Changed from `bg-table-frozen-column` → `bg-table-header`
-2. **Data frozen columns**: Changed from `bg-table-frozen-column` → `bg-table-row`
-3. **Selection column fixes**:
-   - Group header: `bg-table-frozen-column` → `bg-table-group-header`
-   - Main header: Uses `bg-table-header` (correct)
-   - Data rows: `bg-table-frozen-column` → `bg-table-row`
-4. **Group header styling**: Non-grouped cells use `bg-table-group-header`
+### Attempt 1: CSS Class Assignment
+- **Action**: Applied `bg-table-header` to frozen header columns
+- **Result**: ❌ Still showing data row background
 
-### ✅ index.css Changes Applied
-1. **Removed frozen column variables**: Commented out `--table-frozen-column` in both themes
-2. **Removed CSS utility class**: `bg-table-frozen-column` utility removed
-3. **Enhanced checkbox styling**: Updated `input[type="checkbox"]` with:
-   - Proper hover/focus states
-   - White checkmark on checked state
-   - Removed old `.checkbox` class-based styling
+### Attempt 2: CSS Specificity Enhancement  
+- **Action**: Added `!important` to `.bg-table-header` utility class
+- **Result**: ❌ No change in frozen column appearance
 
-## ❌ Outstanding Issues
+### Attempt 3: Class Order Optimization
+- **Action**: Reordered CSS classes, separated frozen background class application
+- **Result**: ❌ Issue persists
 
-### 1. Frozen Column Background Mismatch
-**Problem**: Despite code changes, frozen columns still don't match header row backgrounds
-**Investigation Needed**: 
-- CSS specificity conflicts
-- Missing CSS variable updates
-- Tailwind class conflicts
-- Browser caching issues
+### Attempt 4: Specific CSS Selector
+- **Action**: Added `thead th.bg-table-header` with `!important`
+- **Result**: ❌ Still displays wrong background
 
-### 2. Checkbox Style Mismatch with Inspiration
-**Current Implementation**: 
-```css
-input[type="checkbox"]:checked::after {
-  content: '✓';
-  color: white;
-  /* ... */
-}
-```
+### Attempt 5: Dedicated CSS Class
+- **Action**: Created `.bg-table-header-frozen` class with `!important`
+- **Action**: Updated DataTable to use new class for header frozen columns
+- **Result**: ❌ Issue persists - frozen headers still show data row color
 
-**DarkTheme.html Inspiration**:
-```css
-.checkbox.checked::after {
-  content: '✓';
-  color: var(--accent-color); /* Yellow/amber accent */
-  /* ... */
-}
-```
+## Files That Need Modification
 
-**Difference**: Inspiration uses accent color (`--accent-color: #fbbf24`) for checkmark, not white
+To properly fix the frozen header column background issue, these files require investigation/modification:
 
-## Files Modified
+1. **`src/components/behaviors/DataTable.tsx`** - Lines 850-885 (header frozen column classes)
+2. **`src/index.css`** - Lines 545-557 (CSS utility classes for table backgrounds)  
+3. **Potential browser DevTools inspection** - Check computed styles vs expected styles
+4. **Potential Tailwind CSS configuration** - Investigate if Tailwind is overriding custom classes
 
-1. **`src/components/behaviors/DataTable.tsx`** - Frozen column background fixes
-2. **`src/index.css`** - CSS variable cleanup and checkbox styling
-3. **Attempted**: Multiple CSS class reference updates
+## Required Investigation
 
-## Next Steps Required
-
-1. **Debug frozen column background issue**:
-   - Investigate CSS specificity
-   - Check for Tailwind class conflicts
-   - Verify CSS variable propagation
-   - Test with browser dev tools
-
-2. **Fix checkbox styling**:
-   - Update checkmark color to use accent color
-   - Match exact styling from DarkTheme.html
-   - Test both light and dark themes
-
-3. **Comprehensive testing**:
-   - Test frozen columns in various scenarios
-   - Verify theme switching works correctly
-   - Check responsive behavior
-
-## Key Learnings
-
-1. **CSS Variable Cleanup**: Removing unused variables requires updating both CSS definitions and utility classes
-2. **Background Inheritance**: Frozen columns should inherit row-specific backgrounds for better visual consistency
-3. **Inspiration Matching**: Exact color values and styling details matter for professional appearance
-4. **Development Workflow**: Changes require server restart and cache clearing for proper testing
+1. **CSS Computed Style Analysis**: Use browser DevTools to inspect actual computed background values
+2. **Tailwind CSS Conflict Check**: Verify if Tailwind utilities are overriding custom classes
+3. **CSS Cascade Inspection**: Check what styles are actually being applied vs intended
+4. **Alternative Implementation**: Consider inline styles or different CSS approach
 
 ## Result
 
-🔄 **In Progress**: Core dark theme functional, but frozen column background and checkbox styling require additional investigation and fixes.
+❌ **BLOCKED**: Multiple CSS approaches attempted. Header frozen columns consistently display data row background (`#111827`) instead of header background (`#1f2937`). Issue requires deeper CSS debugging or alternative implementation strategy.
