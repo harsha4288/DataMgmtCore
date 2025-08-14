@@ -259,11 +259,11 @@
     --radius: 0.5rem;
   }
   
-  /* Styled checkboxes matching inspiration */
+  /* Styled checkboxes matching DarkTheme.html inspiration */
   input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    border: 2px solid hsl(var(--border));
+    border: 2px solid hsl(var(--table-border));
     border-radius: 4px;
     background: transparent;
     cursor: pointer;
@@ -275,12 +275,12 @@
 
   input[type="checkbox"]:hover {
     border-color: hsl(var(--primary));
-    background: hsl(var(--accent) / 0.05);
+    background: hsl(var(--primary) / 0.05);
   }
 
   input[type="checkbox"]:checked {
-    background: hsl(var(--primary));
     border-color: hsl(var(--primary));
+    background: transparent;
   }
 
   input[type="checkbox"]:checked::after {
@@ -288,7 +288,7 @@
     position: absolute;
     top: -2px;
     left: 2px;
-    color: white;
+    color: hsl(var(--primary));
     font-weight: bold;
     font-size: 14px;
   }
@@ -578,7 +578,7 @@
     box-shadow: var(--table-shadow-elevated);
   }
 
-  /* Custom Checkbox for Data Table */
+  /* Custom Checkbox for Data Table - Matching DarkTheme.html */
   .checkbox-custom {
     width: 18px;
     height: 18px;
@@ -592,8 +592,8 @@
   }
 
   .checkbox-custom:hover {
-    border-color: hsl(var(--accent));
-    background: hsl(var(--accent) / 0.05);
+    border-color: hsl(var(--primary));
+    background: hsl(var(--primary) / 0.05);
   }
 
   .checkbox-custom.checked::after {
@@ -601,8 +601,9 @@
     position: absolute;
     top: -2px;
     left: 2px;
-    color: hsl(var(--accent));
+    color: hsl(var(--primary));
     font-weight: bold;
+    font-size: 14px;
   }
 
   .checkbox-custom.indeterminate::after {
@@ -610,8 +611,9 @@
     position: absolute;
     top: -4px;
     left: 4px;
-    color: hsl(var(--accent));
+    color: hsl(var(--primary));
     font-weight: bold;
+    font-size: 14px;
   }
 
   /* Badge utilities */
