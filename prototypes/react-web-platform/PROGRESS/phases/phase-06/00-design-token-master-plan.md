@@ -160,7 +160,7 @@ src/
 | Task ID | Task Name | Status | Reference Documentation | Notes |
 |---------|-----------|--------|-------------------------|-------|
 | 6.1 | Token Build Pipeline Setup | ✅ COMPLETED | `04-build-pipeline-doc.md` | ✅ Infrastructure setup complete - 4KB output |
-| 6.2 | Core Token System Migration | ✅ COMPLETED | `01-token-extraction-guide.md`, `03-token-structure.md` | 4-level hierarchy implemented |
+| 6.2 | Core Token System Migration | ✅ COMPLETED | `01-token-extraction-guide.md`, `03-token-structure.md` | See referenced docs for details |
 | 6.3 | Component Pattern Implementation | 🔄 PENDING | `05-component-patterns-doc.md`, `06-migration-strategy-doc.md` | UI component updates |
 | 6.4 | Performance Monitoring Integration | 🔄 PENDING | `10-monitoring-doc.md`, `02-performance-baseline.md` | Monitoring tools |
 | 6.5 | Accessibility Validation | 🔄 PENDING | `src/index.css` + WCAG guidelines | WCAG compliance |

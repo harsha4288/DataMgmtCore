@@ -141,6 +141,289 @@
             color: hsl(var(--card-foreground));
             margin-top: 5px;
         }
+        
+        /* Badge System Styles */
+        .badge-showcase {
+            margin: 20px 0;
+        }
+        
+        .badge-grid {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+        
+        .badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid;
+            display: inline-flex;
+            align-items: center;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+        
+        /* Grade Badge Variants */
+        .badge.grade-a {
+            background-color: hsl(var(--colors-badge-gradeA-background));
+            color: hsl(var(--colors-badge-gradeA-text));
+            border-color: hsl(var(--colors-badge-gradeA-border));
+        }
+        
+        .badge.grade-b {
+            background-color: hsl(var(--colors-badge-gradeB-background));
+            color: hsl(var(--colors-badge-gradeB-text));
+            border-color: hsl(var(--colors-badge-gradeB-border));
+        }
+        
+        .badge.grade-c {
+            background-color: hsl(var(--colors-badge-gradeC-background));
+            color: hsl(var(--colors-badge-gradeC-text));
+            border-color: hsl(var(--colors-badge-gradeC-border));
+        }
+        
+        .badge.grade-d {
+            background-color: hsl(var(--colors-badge-gradeD-background));
+            color: hsl(var(--colors-badge-gradeD-text));
+            border-color: hsl(var(--colors-badge-gradeD-border));
+        }
+        
+        .badge.grade-f {
+            background-color: hsl(var(--colors-badge-gradeF-background));
+            color: hsl(var(--colors-badge-gradeF-text));
+            border-color: hsl(var(--colors-badge-gradeF-border));
+        }
+        
+        /* Status Badge Variants */
+        .badge.neutral {
+            background-color: hsl(var(--colors-badge-neutral-background));
+            color: hsl(var(--colors-badge-neutral-text));
+            border-color: hsl(var(--colors-badge-neutral-border));
+        }
+        
+        .badge.success {
+            background-color: hsl(var(--colors-badge-success-background));
+            color: hsl(var(--colors-badge-success-text));
+            border-color: hsl(var(--colors-badge-success-border));
+        }
+        
+        .badge.warning {
+            background-color: hsl(var(--colors-badge-warning-background));
+            color: hsl(var(--colors-badge-warning-text));
+            border-color: hsl(var(--colors-badge-warning-border));
+        }
+        
+        .badge.error {
+            background-color: hsl(var(--colors-badge-error-background));
+            color: hsl(var(--colors-badge-error-text));
+            border-color: hsl(var(--colors-badge-error-border));
+        }
+        
+        /* Data Table Styles */
+        .table-container {
+            margin: 20px 0;
+            overflow-x: auto;
+            border: 1px solid hsl(var(--table-border));
+            border-radius: 8px;
+            background: hsl(var(--table-container));
+        }
+        
+        .data-table {
+            width: 100%;
+            min-width: 900px;
+        }
+        
+        .table-header-group {
+            display: grid;
+            grid-template-columns: 200px 150px 100px 90px 90px 90px 90px 90px 90px;
+            background: hsl(var(--table-group-header));
+            border-bottom: 2px solid hsl(var(--table-group-header-line));
+        }
+        
+        .group-header {
+            padding: 8px 12px;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: hsl(var(--foreground));
+            text-align: center;
+            border-right: 1px solid hsl(var(--table-border));
+        }
+        
+        .table-header-row {
+            display: grid;
+            grid-template-columns: 200px 150px 100px 90px 90px 90px 90px 90px 90px;
+            background: hsl(var(--table-header));
+            border-bottom: 1px solid hsl(var(--table-border));
+        }
+        
+        .header-cell {
+            padding: 12px;
+            font-weight: 600;
+            font-size: 12px;
+            border-right: 1px solid hsl(var(--table-border));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .header-cell.frozen {
+            background: hsl(var(--table-header-elevated));
+            position: sticky;
+            left: 0;
+            z-index: 10;
+            box-shadow: 2px 0 4px hsl(var(--table-freeze-shadow));
+        }
+        
+        .header-cell.frozen:first-child {
+            left: 0;
+        }
+        
+        .header-cell.frozen:nth-child(2) {
+            left: 200px;
+        }
+        
+        .table-row {
+            display: grid;
+            grid-template-columns: 200px 150px 100px 90px 90px 90px 90px 90px 90px;
+            background: hsl(var(--table-row));
+            border-bottom: 1px solid hsl(var(--table-border));
+            transition: background-color 0.2s;
+        }
+        
+        .table-row:hover {
+            background: hsl(var(--table-row-hover));
+        }
+        
+        .table-cell {
+            padding: 12px;
+            border-right: 1px solid hsl(var(--table-border));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .table-cell.frozen {
+            background: hsl(var(--table-row));
+            position: sticky;
+            z-index: 5;
+            box-shadow: 2px 0 4px hsl(var(--table-freeze-shadow));
+        }
+        
+        .table-row:hover .table-cell.frozen {
+            background: hsl(var(--table-row-hover));
+        }
+        
+        .table-cell.frozen:first-child {
+            left: 0;
+            justify-content: flex-start;
+            font-weight: 600;
+        }
+        
+        .table-cell.frozen:nth-child(2) {
+            left: 200px;
+        }
+        
+        /* Quantity Controls */
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: 6px;
+            padding: 2px;
+        }
+        
+        .qty-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.2s;
+        }
+        
+        .qty-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .qty-value {
+            min-width: 24px;
+            text-align: center;
+            font-weight: bold;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        
+        .tshirt-btn {
+            width: 32px;
+            height: 32px;
+            border: 2px dashed hsl(var(--border));
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        
+        .tshirt-btn:hover {
+            border-color: hsl(var(--primary));
+            background: hsl(var(--primary) / 0.1);
+        }
+        
+        /* Interactive Elements */
+        .interactive-demo {
+            margin: 20px 0;
+        }
+        
+        .icon-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .icon-btn {
+            padding: 8px 16px;
+            border: 1px solid hsl(var(--border));
+            background: hsl(var(--card));
+            color: hsl(var(--card-foreground));
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        
+        .icon-btn:hover {
+            background: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+            border-color: hsl(var(--primary));
+        }
+        
+        .icon-btn.destructive {
+            border-color: hsl(var(--colors-badge-error-border));
+            color: hsl(var(--colors-badge-error-text));
+        }
+        
+        .icon-btn.destructive:hover {
+            background: hsl(var(--colors-badge-error-background));
+            color: hsl(var(--colors-badge-error-text));
+            border-color: hsl(var(--colors-badge-error-border));
+        }
     </style>
 </head>
 <body>
@@ -197,12 +480,172 @@
             </div>
         </div>
         
+        <h2>Badge System Showcase</h2>
+        <div class="badge-showcase">
+            <h3>Grade Badges (A-F System)</h3>
+            <div class="badge-grid">
+                <span class="badge grade-a">A Grade</span>
+                <span class="badge grade-b">B Grade</span>
+                <span class="badge grade-c">C Grade</span>
+                <span class="badge grade-d">D Grade</span>
+                <span class="badge grade-f">F Grade</span>
+            </div>
+            
+            <h3>Status Badges</h3>
+            <div class="badge-grid">
+                <span class="badge neutral">Neutral</span>
+                <span class="badge success">Success</span>
+                <span class="badge warning">Warning</span>
+                <span class="badge error">Error</span>
+            </div>
+        </div>
+
+        <h2>Data Table with Frozen Columns</h2>
+        <div class="table-container">
+            <div class="data-table">
+                <!-- Multi-level headers -->
+                <div class="table-header-group">
+                    <div class="group-header" colspan="2">Basic Info</div>
+                    <div class="group-header" colspan="5">T-Shirt Inventory (MAX/ISSUED)</div>
+                    <div class="group-header" colspan="2">Performance</div>
+                </div>
+                
+                <!-- Column headers -->
+                <div class="table-header-row">
+                    <div class="header-cell frozen">Name</div>
+                    <div class="header-cell frozen">Role</div>
+                    <div class="header-cell">PREFS</div>
+                    <div class="header-cell">👕 S</div>
+                    <div class="header-cell">👕 M</div>
+                    <div class="header-cell">👕 L</div>
+                    <div class="header-cell">👕 XL</div>
+                    <div class="header-cell">Events</div>
+                    <div class="header-cell">Hours</div>
+                </div>
+                
+                <!-- Data rows -->
+                <div class="table-row">
+                    <div class="table-cell frozen">Sarah Johnson</div>
+                    <div class="table-cell frozen"><span class="badge grade-a">Team Lead</span></div>
+                    <div class="table-cell"><span class="badge grade-d">11/19</span></div>
+                    <div class="table-cell">
+                        <div class="quantity-control">
+                            <button class="qty-btn">−</button>
+                            <span class="qty-value">1</span>
+                            <button class="qty-btn">+</button>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="quantity-control">
+                            <button class="qty-btn">−</button>
+                            <span class="qty-value">3</span>
+                            <button class="qty-btn">+</button>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="quantity-control">
+                            <button class="qty-btn">−</button>
+                            <span class="qty-value">5</span>
+                            <button class="qty-btn">+</button>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="quantity-control">
+                            <button class="qty-btn">−</button>
+                            <span class="qty-value">2</span>
+                            <button class="qty-btn">+</button>
+                        </div>
+                    </div>
+                    <div class="table-cell"><span class="badge neutral">4</span></div>
+                    <div class="table-cell"><span class="badge neutral">24</span></div>
+                </div>
+                
+                <div class="table-row">
+                    <div class="table-cell frozen">Mike Chen</div>
+                    <div class="table-cell frozen"><span class="badge grade-b">Coordinator</span></div>
+                    <div class="table-cell"><span class="badge grade-d">11/16</span></div>
+                    <div class="table-cell">
+                        <div class="quantity-control">
+                            <button class="qty-btn">−</button>
+                            <span class="qty-value">1</span>
+                            <button class="qty-btn">+</button>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="quantity-control">
+                            <button class="qty-btn">−</button>
+                            <span class="qty-value">2</span>
+                            <button class="qty-btn">+</button>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="quantity-control">
+                            <button class="qty-btn">−</button>
+                            <span class="qty-value">4</span>
+                            <button class="qty-btn">+</button>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="quantity-control">
+                            <button class="qty-btn">−</button>
+                            <span class="qty-value">3</span>
+                            <button class="qty-btn">+</button>
+                        </div>
+                    </div>
+                    <div class="table-cell"><span class="badge neutral">6</span></div>
+                    <div class="table-cell"><span class="badge neutral">32</span></div>
+                </div>
+                
+                <div class="table-row">
+                    <div class="table-cell frozen">Emily Rodriguez</div>
+                    <div class="table-cell frozen"><span class="badge grade-c">Volunteer</span></div>
+                    <div class="table-cell"><span class="badge grade-d">3/15</span></div>
+                    <div class="table-cell">
+                        <button class="tshirt-btn">👕</button>
+                    </div>
+                    <div class="table-cell">
+                        <div class="quantity-control">
+                            <button class="qty-btn">−</button>
+                            <span class="qty-value">1</span>
+                            <button class="qty-btn">+</button>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="quantity-control">
+                            <button class="qty-btn">−</button>
+                            <span class="qty-value">2</span>
+                            <button class="qty-btn">+</button>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <button class="tshirt-btn">👕</button>
+                    </div>
+                    <div class="table-cell"><span class="badge neutral">2</span></div>
+                    <div class="table-cell"><span class="badge neutral">8</span></div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Interactive Elements</h2>
+        <div class="interactive-demo">
+            <div class="icon-buttons">
+                <button class="icon-btn">📅 Assign Event</button>
+                <button class="icon-btn">👕 Bulk T-shirt</button>
+                <button class="icon-btn">📤 Export</button>
+                <button class="icon-btn destructive">🚫 Deactivate</button>
+            </div>
+        </div>
+
         <h2>Token Reference Examples</h2>
         <pre style="background: hsl(var(--card)); padding: 15px; border-radius: 8px; overflow-x: auto;">
 /* Component tokens reference semantic tokens */
 --background: var(--colors-background-primary);
 --table-container: var(--colors-table-container);
 --table-row-hover: var(--colors-table-rowHover);
+
+/* Badge tokens */
+--badge-grade-a: var(--colors-badge-gradeA-background);
+--badge-grade-b: var(--colors-badge-gradeB-background);
 
 /* Semantic tokens reference primitives */
 --colors-background-primary: {colors.white};
@@ -221,7 +664,52 @@
             // Update button text
             const button = document.querySelector('.button');
             button.textContent = isDark ? 'Switch to Light' : 'Switch to Dark';
+            
+            // Update status indicator
+            updateStatus();
         }
+        
+        function updateStatus() {
+            const status = document.querySelector('.status strong');
+            status.textContent = `Token System Status (${isDark ? 'Dark' : 'Light'} Theme):`;
+        }
+        
+        // Add click handlers for quantity controls
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('qty-btn')) {
+                const control = e.target.parentElement;
+                const valueEl = control.querySelector('.qty-value');
+                const currentValue = parseInt(valueEl.textContent);
+                const isIncrement = e.target.textContent === '+';
+                
+                const newValue = isIncrement ? currentValue + 1 : Math.max(0, currentValue - 1);
+                valueEl.textContent = newValue;
+                
+                // Visual feedback
+                valueEl.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    valueEl.style.transform = 'scale(1)';
+                }, 150);
+            }
+            
+            if (e.target.classList.contains('tshirt-btn')) {
+                // Convert T-shirt button to quantity control
+                const cell = e.target.parentElement;
+                const quantityHTML = `
+                    <div class="quantity-control">
+                        <button class="qty-btn">−</button>
+                        <span class="qty-value">1</span>
+                        <button class="qty-btn">+</button>
+                    </div>
+                `;
+                cell.innerHTML = quantityHTML;
+            }
+            
+            if (e.target.classList.contains('icon-btn')) {
+                const action = e.target.textContent;
+                alert(`Action triggered: ${action}`);
+            }
+        });
         
         // Initialize
         document.documentElement.setAttribute('data-theme', 'light');

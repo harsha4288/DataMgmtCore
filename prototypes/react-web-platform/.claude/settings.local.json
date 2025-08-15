@@ -12,7 +12,8 @@
       "Bash(grep:*)",
       "Bash(sed:*)",
       "Bash(npm run test-tokens:*)",
-      "Bash(npm run validate-references:*)"
+      "Bash(npm run validate-references:*)",
+      "Bash(npm run check-hardcoded:*)"
     ],
     "deny": []
   }
