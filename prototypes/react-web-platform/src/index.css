@@ -339,6 +339,11 @@
 
   th, td {
     box-sizing: border-box;
+    border-right: 1px solid hsl(var(--table-border));
+  }
+
+  th:last-child, td:last-child {
+    border-right: none;
   }
 }
 
