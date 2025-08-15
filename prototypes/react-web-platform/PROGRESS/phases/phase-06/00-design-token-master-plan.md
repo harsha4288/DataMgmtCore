@@ -70,14 +70,14 @@ Transform the current theme implementation into a **performance-optimized**, reu
 
 ### **Phase 6: Implementation & Development** 🚀 IN PROGRESS
 **Detailed Task Breakdown:**
-- **Task 6.1**: Token Build Pipeline Setup → `11-phase6.1-build-pipeline-setup.md`
-- **Task 6.2**: Core Token System Migration → `12-phase6.2-core-token-migration.md`
-- **Task 6.3**: Component Pattern Implementation → `13-phase6.3-component-patterns.md`
-- **Task 6.4**: Performance Monitoring Integration → `14-phase6.4-performance-monitoring.md`
-- **Task 6.5**: Accessibility Validation → `15-phase6.5-accessibility-validation.md`
-- **Task 6.6**: Staging Environment Deployment → `16-phase6.6-staging-deployment.md`
-- **Task 6.7**: Performance Testing & Optimization → `17-phase6.7-performance-testing.md`
-- **Task 6.8**: Production Deployment → `18-phase6.8-production-deployment.md`
+- **Task 6.1**: Token Build Pipeline Setup → Based on `04-build-pipeline-doc.md`
+- **Task 6.2**: Core Token System Migration → Based on `01-token-extraction-guide.md` + `03-token-structure.md`
+- **Task 6.3**: Component Pattern Implementation → Based on `05-component-patterns-doc.md` + `06-migration-strategy-doc.md`
+- **Task 6.4**: Performance Monitoring Integration → Based on `10-monitoring-doc.md` + `02-performance-baseline.md`
+- **Task 6.5**: Accessibility Validation → Based on existing CSS analysis + WCAG guidelines
+- **Task 6.6**: Staging Environment Deployment → Based on `09-rollout-plan-doc.md`
+- **Task 6.7**: Performance Testing & Optimization → Based on `02-performance-baseline.md` + performance goals
+- **Task 6.8**: Production Deployment → Based on `09-rollout-plan-doc.md`
 - **Validation**: All performance metrics meet target goals
 - **Deliverable**: Fully implemented design token system
 
@@ -156,62 +156,62 @@ src/
 | **Phase 6: Implementation** | 🚀 IN PROGRESS | 2025-08-15 | - | Development started |
 
 #### Phase 6 Task Tracking
-| Task ID | Task Name | Status | Progress File | Notes |
-|---------|-----------|--------|---------------|-------|
-| 6.1 | Token Build Pipeline Setup | 🔄 PENDING | `11-phase6.1-build-pipeline-setup.md` | Infrastructure setup |
-| 6.2 | Core Token System Migration | 🔄 PENDING | `12-phase6.2-core-token-migration.md` | CSS variable migration |
-| 6.3 | Component Pattern Implementation | 🔄 PENDING | `13-phase6.3-component-patterns.md` | UI component updates |
-| 6.4 | Performance Monitoring Integration | 🔄 PENDING | `14-phase6.4-performance-monitoring.md` | Monitoring tools |
-| 6.5 | Accessibility Validation | 🔄 PENDING | `15-phase6.5-accessibility-validation.md` | WCAG compliance |
-| 6.6 | Staging Environment Deployment | 🔄 PENDING | `16-phase6.6-staging-deployment.md` | Testing deployment |
-| 6.7 | Performance Testing & Optimization | 🔄 PENDING | `17-phase6.7-performance-testing.md` | Performance validation |
-| 6.8 | Production Deployment | 🔄 PENDING | `18-phase6.8-production-deployment.md` | Final deployment |
+| Task ID | Task Name | Status | Reference Documentation | Notes |
+|---------|-----------|--------|-------------------------|-------|
+| 6.1 | Token Build Pipeline Setup | 🔄 PENDING | `04-build-pipeline-doc.md` | Infrastructure setup |
+| 6.2 | Core Token System Migration | 🔄 PENDING | `01-token-extraction-guide.md`, `03-token-structure.md` | CSS variable migration |
+| 6.3 | Component Pattern Implementation | 🔄 PENDING | `05-component-patterns-doc.md`, `06-migration-strategy-doc.md` | UI component updates |
+| 6.4 | Performance Monitoring Integration | 🔄 PENDING | `10-monitoring-doc.md`, `02-performance-baseline.md` | Monitoring tools |
+| 6.5 | Accessibility Validation | 🔄 PENDING | `src/index.css` + WCAG guidelines | WCAG compliance |
+| 6.6 | Staging Environment Deployment | 🔄 PENDING | `09-rollout-plan-doc.md` | Testing deployment |
+| 6.7 | Performance Testing & Optimization | 🔄 PENDING | `02-performance-baseline.md` + goals | Performance validation |
+| 6.8 | Production Deployment | 🔄 PENDING | `09-rollout-plan-doc.md` | Final deployment |
 
 ### Implementation Checklist
 
-#### Task 6.1: Token Build Pipeline Setup → `11-phase6.1-build-pipeline-setup.md`
+#### Task 6.1: Token Build Pipeline Setup → Reference: `04-build-pipeline-doc.md`
 - [ ] 6.1.1 Set up design-system directory structure
 - [ ] 6.1.2 Create token compilation build scripts  
 - [ ] 6.1.3 Configure static vs dynamic token separation
 - [ ] 6.1.4 Test build pipeline generates correct outputs
 
-#### Task 6.2: Core Token System Migration → `12-phase6.2-core-token-migration.md`
+#### Task 6.2: Core Token System Migration → Reference: `01-token-extraction-guide.md`, `03-token-structure.md`
 - [ ] 6.2.1 Extract primitive tokens from existing CSS
 - [ ] 6.2.2 Create semantic token mappings
 - [ ] 6.2.3 Migrate CSS variables to new token structure
 - [ ] 6.2.4 Validate token hierarchy works correctly
 
-#### Task 6.3: Component Pattern Implementation → `13-phase6.3-component-patterns.md`
+#### Task 6.3: Component Pattern Implementation → Reference: `05-component-patterns-doc.md`, `06-migration-strategy-doc.md`
 - [ ] 6.3.1 Implement component-specific tokens
 - [ ] 6.3.2 Update table components to use new tokens
 - [ ] 6.3.3 Update badge and label components
 - [ ] 6.3.4 Test component patterns across themes
 
-#### Task 6.4: Performance Monitoring Integration → `14-phase6.4-performance-monitoring.md`
+#### Task 6.4: Performance Monitoring Integration → Reference: `10-monitoring-doc.md`, `02-performance-baseline.md`
 - [ ] 6.4.1 Set up bundle size monitoring
 - [ ] 6.4.2 Implement theme switching performance tracking
 - [ ] 6.4.3 Create token usage analytics
 - [ ] 6.4.4 Configure performance regression alerts
 
-#### Task 6.5: Accessibility Validation → `15-phase6.5-accessibility-validation.md`
+#### Task 6.5: Accessibility Validation → Reference: Current `src/index.css` + WCAG AA Guidelines
 - [ ] 6.5.1 Validate color contrast ratios (WCAG AA)
 - [ ] 6.5.2 Test theme switching accessibility
 - [ ] 6.5.3 Verify focus indicators work correctly
 - [ ] 6.5.4 Run automated accessibility tests
 
-#### Task 6.6: Staging Environment Deployment → `16-phase6.6-staging-deployment.md`
+#### Task 6.6: Staging Environment Deployment → Reference: `09-rollout-plan-doc.md`
 - [ ] 6.6.1 Deploy new token system to staging
 - [ ] 6.6.2 Run integration tests
 - [ ] 6.6.3 Validate performance metrics
 - [ ] 6.6.4 Test cross-browser compatibility
 
-#### Task 6.7: Performance Testing & Optimization → `17-phase6.7-performance-testing.md`
+#### Task 6.7: Performance Testing & Optimization → Reference: `02-performance-baseline.md` + Success Metrics
 - [ ] 6.7.1 Measure bundle size reduction
 - [ ] 6.7.2 Test theme switching performance
 - [ ] 6.7.3 Run mobile performance tests
 - [ ] 6.7.4 Optimize any performance bottlenecks
 
-#### Task 6.8: Production Deployment → `18-phase6.8-production-deployment.md`
+#### Task 6.8: Production Deployment → Reference: `09-rollout-plan-doc.md`
 - [ ] 6.8.1 Final production deployment
 - [ ] 6.8.2 Monitor performance metrics
 - [ ] 6.8.3 Activate monitoring dashboard
