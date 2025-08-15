@@ -1,181 +1,8 @@
 @import "tailwindcss";
-@import "./design-system/build/dynamic/tokens.css";
+@import "./design-system/buiclsld/dynamic/tokens.css";
 
 @layer base {
-  :root {
-    /* Semantic tokens referencing design system */
-    --background: var(--colors-background-primary);
-    --foreground: var(--colors-text-primary);
-    --card: var(--colors-surface-card);
-    --card-foreground: var(--colors-text-secondary);
-    --popover: var(--colors-surface-popover);
-    --popover-foreground: var(--colors-text-secondary);
-    --primary: var(--colors-interactive-primary-background);
-    --primary-foreground: var(--colors-interactive-primary-text);
-    --secondary: var(--colors-interactive-secondary-background);
-    --secondary-foreground: var(--colors-interactive-secondary-text);
-    --muted: var(--colors-interactive-secondary-background);
-    --muted-foreground: var(--colors-text-muted);
-    --accent: var(--colors-interactive-accent-background);
-    --accent-foreground: var(--colors-interactive-accent-text);
-    --destructive: var(--colors-interactive-destructive-background);
-    --destructive-foreground: var(--colors-interactive-destructive-text);
-    --border: var(--colors-border-default);
-    --border-header: var(--colors-border-header);
-    --input: var(--colors-surface-input);
-    --ring: var(--colors-border-focus);
-    --content-primary: var(--colors-text-secondary);
-    --content-secondary: var(--colors-text-muted);
-    --content-tertiary: var(--colors-text-tertiary);
-    --content-inverse: var(--colors-text-inverse);
-    --content-disabled: var(--colors-text-disabled);
-    --radius: var(--borderRadius-lg);
-
-    /* Clean modern typography matching inspiration */
-    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-
-    /* Table system using design tokens */
-    --table-container: var(--colors-table-container);
-    --table-container-elevated: var(--colors-table-containerElevated);
-    --table-header: var(--colors-table-header);
-    --table-header-elevated: var(--colors-table-headerElevated);
-    --table-group-header: var(--colors-table-groupHeader);
-    --table-group-header-line: var(--colors-table-groupHeaderLine);
-    --table-row: var(--colors-table-row);
-    --table-row-hover: var(--colors-table-rowHover);
-    --table-border: var(--colors-table-border);
-    --table-shadow: var(--colors-table-shadow);
-    --table-shadow-elevated: var(--colors-table-shadowElevated);
-
-    /* Table layout using design tokens */
-    --table-header-height: var(--layout-table-headerHeight);
-    --table-group-header-height: var(--layout-table-groupHeaderHeight);
-    --table-group-header-padding-y: var(--layout-table-groupHeaderPaddingY);
-    --table-group-header-padding-x: var(--layout-table-groupHeaderPaddingX);
-    --table-row-height: var(--layout-table-rowHeight);
-    --table-cell-padding-x: var(--layout-table-cellPaddingX);
-    --table-cell-padding-y: var(--layout-table-cellPaddingY);
-    --table-text-indent: var(--layout-table-textIndent);
-    --table-subtext-indent: var(--layout-table-subtextIndent);
-
-    /* Typography using design tokens */
-    --table-header-font-size: var(--typography-fontSize-tableHeader);
-    --table-header-font-weight: var(--typography-fontWeight-tableHeader);
-    --table-header-text-transform: var(--typography-textTransform-tableHeader);
-    --table-group-header-font-size: var(--typography-fontSize-tableGroupHeader);
-    --table-group-header-font-weight: var(--typography-fontWeight-tableGroupHeader);
-    --table-body-font-size: var(--typography-fontSize-tableBody);
-    --table-body-font-weight: var(--typography-fontWeight-tableBody);
-    --table-body-line-height: var(--typography-lineHeight-tableBody);
-
-    /* Badge system using design tokens */
-    --badge-font-family: var(--typography-fontFamily-badge);
-    --badge-font-size: var(--typography-fontSize-badge);
-    --badge-font-weight: var(--typography-fontWeight-badge);
-    --badge-text-transform: var(--typography-textTransform-badge);
-
-    /* Percentage indicators using design tokens */
-    --percentage-font-size: var(--typography-fontSize-percentage);
-    --percentage-font-weight: var(--typography-fontWeight-percentage);
-    --percentage-color: var(--colors-percentage-color);
-    --percentage-gap: var(--layout-percentage-gap);
-
-    /* Label system using design tokens */
-    --label-padding: var(--layout-label-padding);
-    --label-border-radius: var(--layout-label-borderRadius);
-    --label-font-size: var(--layout-label-fontSize);
-    --label-font-weight: var(--layout-label-fontWeight);
-    --label-text-transform: var(--layout-label-textTransform);
-
-    /* Interactive elements using design tokens */
-    --interactive-button-size: var(--layout-interactive-buttonSize);
-    --interactive-button-padding: var(--layout-interactive-buttonPadding);
-    --interactive-button-radius: var(--layout-interactive-buttonRadius);
-    --interactive-button-hover-scale: var(--layout-interactive-buttonHoverScale);
-    --min-touch-target: var(--layout-interactive-minTouchTarget);
-
-    /* Enhanced visual hierarchy using design tokens */
-    --table-border-width: var(--layout-table-borderWidth);
-    --table-freeze-shadow: var(--colors-table-freezeShadow);
-
-    /* Interface polish using design tokens */
-    --card-elevation: var(--shadows-card-default);
-    --card-elevation-hover: var(--shadows-card-hover);
-    --subtle-border: 1px solid hsl(var(--border));
-    --enhanced-border: var(--table-border-width) solid hsl(var(--border));
-
-    /* Reduced token count - Direct references to new system */
-
-    /* Placeholder/empty state using design tokens */
-    --placeholder-color: var(--colors-placeholder-color);
-    --placeholder-symbol: var(--colors-placeholder-symbol);
-    --placeholder-background: var(--colors-placeholder-background);
-    --empty-badge-color: var(--colors-empty-badgeColor);
-    --empty-badge-background: var(--colors-empty-badgeBackground);
-    --empty-badge-border: var(--colors-empty-badgeBorder);
-  }
-
-  [data-theme="dark"] {
-    /* Dark theme using design tokens */
-    --background: var(--colors-background-primary);
-    --foreground: var(--colors-text-primary);
-    --card: var(--colors-surface-card);
-    --card-foreground: var(--colors-text-secondary);
-    --popover: var(--colors-surface-popover);
-    --popover-foreground: var(--colors-text-secondary);
-    --primary: var(--colors-interactive-primary-background);
-    --primary-foreground: var(--colors-interactive-primary-text);
-    --secondary: var(--colors-interactive-secondary-background);
-    --secondary-foreground: var(--colors-interactive-secondary-text);
-    --muted: var(--colors-interactive-secondary-background);
-    --muted-foreground: var(--colors-text-muted);
-    --accent: var(--colors-interactive-accent-background);
-    --accent-foreground: var(--colors-interactive-accent-text);
-    --destructive: var(--colors-interactive-destructive-background);
-    --destructive-foreground: var(--colors-interactive-destructive-text);
-    --border: var(--colors-border-default);
-    --border-header: var(--colors-border-header);
-    --input: var(--colors-surface-input);
-    --ring: var(--colors-border-focus);
-    --content-primary: var(--colors-text-secondary);
-    --content-secondary: var(--colors-text-muted);
-    --content-tertiary: var(--colors-text-tertiary);
-    --content-inverse: var(--colors-text-inverse);
-    --content-disabled: var(--colors-text-disabled);
-
-    /* Dark theme table tokens using design system */
-    --table-container: var(--colors-table-container);
-    --table-container-elevated: var(--colors-table-containerElevated);
-    --table-header: var(--colors-table-header);
-    --table-header-elevated: var(--colors-table-headerElevated);
-    --table-group-header: var(--colors-table-groupHeader);
-    --table-group-header-line: var(--colors-table-groupHeaderLine);
-    --table-row: var(--colors-table-row);
-    --table-row-hover: var(--colors-table-rowHover);
-    --table-border: var(--colors-table-border);
-    --table-shadow: var(--colors-table-shadow);
-    --table-shadow-elevated: var(--colors-table-shadowElevated);
-
-    /* Dark theme enhanced hierarchy */
-    --table-freeze-shadow: var(--colors-table-freezeShadow);
-
-    /* Dark theme interface polish */
-    --card-elevation: var(--shadows-card-default);
-    --card-elevation-hover: var(--shadows-card-hover);
-    --subtle-border: 1px solid hsl(var(--border));
-    --enhanced-border: var(--table-border-width) solid hsl(var(--border));
-
-    /* Minimal dark theme overrides */
-
-    /* Dark theme placeholder/empty state using design tokens */
-    --placeholder-color: var(--colors-placeholder-color);
-    --empty-badge-color: var(--colors-empty-badgeColor);
-    --empty-badge-background: var(--colors-empty-badgeBackground);
-    --empty-badge-border: var(--colors-empty-badgeBorder);
-
-    /* Dark theme percentage indicators */
-    --percentage-color: var(--colors-percentage-color);
-  }
+  /* Essential base styles only - no semantic aliases */
 
   /* Platform-specific adjustments */
   [data-platform="mobile"] {
@@ -205,12 +32,12 @@
   }
 
   input[type="checkbox"]:hover {
-    border-color: hsl(var(--primary));
-    background: hsl(var(--primary) / 0.05);
+    border-color: hsl(var(--colors-interactive-primary-background));
+    background: hsl(var(--colors-interactive-primary-background) / 0.05);
   }
 
   input[type="checkbox"]:checked {
-    border-color: hsl(var(--primary));
+    border-color: hsl(var(--colors-interactive-primary-background));
     background: transparent;
   }
 
@@ -219,7 +46,7 @@
     position: absolute;
     top: -2px;
     left: 2px;
-    color: hsl(var(--primary));
+    color: hsl(var(--colors-interactive-primary-background));
     font-weight: bold;
     font-size: 14px;
   }
@@ -229,13 +56,13 @@
     position: absolute;
     top: -4px;
     left: 4px;
-    color: hsl(var(--primary));
+    color: hsl(var(--colors-interactive-primary-background));
     font-weight: bold;
     font-size: 14px;
   }
 
   input[type="checkbox"]:focus {
-    outline: 2px solid hsl(var(--ring));
+    outline: 2px solid hsl(var(--colors-border-focus));
     outline-offset: 2px;
   }
 
@@ -280,13 +107,13 @@
 
 @layer base {
   * {
-    border-color: hsl(var(--border));
+    border-color: hsl(var(--colors-border-default));
   }
 
   body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
-    font-family: var(--font-family);
+    background-color: hsl(var(--colors-background-primary));
+    color: hsl(var(--colors-text-primary));
+    font-family: var(--typography-fontFamily-base-0), var(--typography-fontFamily-base-1), var(--typography-fontFamily-base-2), var(--typography-fontFamily-base-3), var(--typography-fontFamily-base-4);
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
@@ -306,12 +133,12 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--muted-foreground) / 0.2);
+    background-color: hsl(var(--colors-text-muted) / 0.2);
     border-radius: 2px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--muted-foreground) / 0.4);
+    background-color: hsl(var(--colors-text-muted) / 0.4);
   }
 
   /* Mobile-specific improvements */
@@ -335,14 +162,14 @@
   }
 
   *:focus-visible {
-    outline: 2px solid hsl(var(--ring));
+    outline: 2px solid hsl(var(--colors-border-focus));
     outline-offset: 2px;
   }
 
   /* Selection styles */
   ::selection {
-    background-color: hsl(var(--primary) / 0.2);
-    color: hsl(var(--primary-foreground));
+    background-color: hsl(var(--colors-interactive-primary-background) / 0.2);
+    color: hsl(var(--colors-interactive-primary-text));
   }
 }
 
@@ -414,118 +241,9 @@
 
 @layer utilities {
 
-  /* Theme color utilities */
-  .bg-primary {
-    background-color: hsl(var(--primary));
-  }
+  /* Color utilities now auto-generated from tokens */
 
-  .text-primary {
-    color: hsl(var(--primary));
-  }
-
-  .text-primary-foreground {
-    color: hsl(var(--primary-foreground));
-  }
-
-  .bg-secondary {
-    background-color: hsl(var(--secondary));
-  }
-
-  .text-secondary-foreground {
-    color: hsl(var(--secondary-foreground));
-  }
-
-  .bg-card {
-    background-color: hsl(var(--card));
-  }
-
-  .text-card-foreground {
-    color: hsl(var(--card-foreground));
-  }
-
-  .bg-background {
-    background-color: hsl(var(--background));
-  }
-
-  .text-foreground {
-    color: hsl(var(--foreground));
-  }
-
-  .text-muted-foreground {
-    color: hsl(var(--muted-foreground));
-  }
-
-  .hover\:bg-primary\/90:hover {
-    background-color: hsl(var(--primary) / 0.9);
-  }
-
-  .hover\:bg-secondary\/80:hover {
-    background-color: hsl(var(--secondary) / 0.8);
-  }
-
-  .hover\:bg-muted\/80:hover {
-    background-color: hsl(var(--muted) / 0.8);
-  }
-
-  .hover\:bg-muted\/50:hover {
-    background-color: hsl(var(--muted) / 0.5);
-  }
-
-  .from-primary {
-    --tw-gradient-from: hsl(var(--primary));
-    --tw-gradient-to: hsl(var(--primary) / 0);
-    ;
-    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
-  }
-
-  .to-primary\/60 {
-    --tw-gradient-to: hsl(var(--primary) / 0.6);
-  }
-
-  /* DataTable layer separation utilities */
-  .bg-table-container {
-    background-color: hsl(var(--table-container));
-  }
-
-  .bg-table-container-elevated {
-    background-color: hsl(var(--table-container-elevated));
-  }
-
-  .bg-table-header {
-    background-color: hsl(var(--table-header));
-  }
-
-  .bg-table-header-elevated {
-    background-color: hsl(var(--table-header-elevated));
-  }
-
-  .bg-table-group-header {
-    background-color: hsl(var(--table-group-header));
-  }
-
-  .border-table-group-header-line {
-    border-color: hsl(var(--table-group-header-line));
-  }
-
-  .bg-table-row {
-    background-color: hsl(var(--table-row));
-  }
-
-  .hover\:bg-table-row-hover:hover {
-    background-color: hsl(var(--table-row-hover));
-  }
-
-  .border-table {
-    border-color: hsl(var(--table-border));
-  }
-
-  .shadow-table {
-    box-shadow: var(--table-shadow);
-  }
-
-  .shadow-table-elevated {
-    box-shadow: var(--table-shadow-elevated);
-  }
+  /* Table utilities now auto-generated from tokens */
 
   /* Custom Checkbox for Data Table - Matching DarkTheme.html */
   .checkbox-custom {
@@ -541,8 +259,8 @@
   }
 
   .checkbox-custom:hover {
-    border-color: hsl(var(--primary));
-    background: hsl(var(--primary) / 0.05);
+    border-color: hsl(var(--colors-interactive-primary-background));
+    background: hsl(var(--colors-interactive-primary-background) / 0.05);
   }
 
   .checkbox-custom.checked::after {
@@ -550,7 +268,7 @@
     position: absolute;
     top: -2px;
     left: 2px;
-    color: hsl(var(--primary));
+    color: hsl(var(--colors-interactive-primary-background));
     font-weight: bold;
     font-size: 14px;
   }
@@ -560,122 +278,12 @@
     position: absolute;
     top: -4px;
     left: 4px;
-    color: hsl(var(--primary));
+    color: hsl(var(--colors-interactive-primary-background));
     font-weight: bold;
     font-size: 14px;
   }
 
-  /* Badge utilities - Professional grade system from tokens */
-
-  /* Grade badge utilities - Based on design token system */
-  .bg-badge-grade-a {
-    background-color: hsl(var(--colors-badge-gradeA-background));
-  }
-  
-  .text-badge-grade-a-foreground {
-    color: hsl(var(--colors-badge-gradeA-text));
-  }
-  
-  .border-badge-grade-a {
-    border-color: hsl(var(--colors-badge-gradeA-border));
-  }
-  
-  .bg-badge-grade-b {
-    background-color: hsl(var(--colors-badge-gradeB-background));
-  }
-  
-  .text-badge-grade-b-foreground {
-    color: hsl(var(--colors-badge-gradeB-text));
-  }
-  
-  .border-badge-grade-b {
-    border-color: hsl(var(--colors-badge-gradeB-border));
-  }
-  
-  .bg-badge-grade-c {
-    background-color: hsl(var(--colors-badge-gradeC-background));
-  }
-  
-  .text-badge-grade-c-foreground {
-    color: hsl(var(--colors-badge-gradeC-text));
-  }
-  
-  .border-badge-grade-c {
-    border-color: hsl(var(--colors-badge-gradeC-border));
-  }
-  
-  .bg-badge-grade-d {
-    background-color: hsl(var(--colors-badge-gradeD-background));
-  }
-  
-  .text-badge-grade-d-foreground {
-    color: hsl(var(--colors-badge-gradeD-text));
-  }
-  
-  .border-badge-grade-d {
-    border-color: hsl(var(--colors-badge-gradeD-border));
-  }
-  
-  .bg-badge-grade-f {
-    background-color: hsl(var(--colors-badge-gradeF-background));
-  }
-  
-  .text-badge-grade-f-foreground {
-    color: hsl(var(--colors-badge-gradeF-text));
-  }
-  
-  .border-badge-grade-f {
-    border-color: hsl(var(--colors-badge-gradeF-border));
-  }
-  
-  .bg-badge-neutral {
-    background-color: hsl(var(--colors-badge-neutral-background));
-  }
-  
-  .text-badge-neutral-foreground {
-    color: hsl(var(--colors-badge-neutral-text));
-  }
-  
-  .border-badge-neutral {
-    border-color: hsl(var(--colors-badge-neutral-border));
-  }
-
-  /* Success/Warning/Error badge utilities */
-  .bg-badge-success {
-    background-color: hsl(var(--colors-badge-success-background));
-  }
-  
-  .text-badge-success-foreground {
-    color: hsl(var(--colors-badge-success-text));
-  }
-  
-  .border-badge-success {
-    border-color: hsl(var(--colors-badge-success-border));
-  }
-  
-  .bg-badge-warning {
-    background-color: hsl(var(--colors-badge-warning-background));
-  }
-  
-  .text-badge-warning-foreground {
-    color: hsl(var(--colors-badge-warning-text));
-  }
-  
-  .border-badge-warning {
-    border-color: hsl(var(--colors-badge-warning-border));
-  }
-  
-  .bg-badge-error {
-    background-color: hsl(var(--colors-badge-error-background));
-  }
-  
-  .text-badge-error-foreground {
-    color: hsl(var(--colors-badge-error-text));
-  }
-  
-  .border-badge-error {
-    border-color: hsl(var(--colors-badge-error-border));
-  }
+  /* Badge utilities now auto-generated from tokens */
 
   /* Professional badge styling - Based on Inspiration */
   .badge-grade {
@@ -839,186 +447,9 @@
     transition: box-shadow 0.2s ease-in-out;
   }
 
-  /* Typography utilities from token system */
-  .text-xs {
-    font-size: 12px;
-  }
+  /* Manual utilities removed - now auto-generated from tokens */
 
-  .text-sm {
-    font-size: 13px;
-  }
-
-  .text-base {
-    font-size: 14px;
-  }
-
-  .text-lg {
-    font-size: 16px;
-  }
-
-  .text-xl {
-    font-size: 18px;
-  }
-
-  .text-2xl {
-    font-size: 20px;
-  }
-
-  /* Font weight utilities */
-  .font-normal {
-    font-weight: 400;
-  }
-
-  .font-medium {
-    font-weight: 500;
-  }
-
-  .font-semibold {
-    font-weight: 600;
-  }
-
-  .font-bold {
-    font-weight: 700;
-  }
-
-  /* Spacing utilities from token system */
-  .p-xs {
-    padding: 4px;
-  }
-
-  .m-xs {
-    margin: 4px;
-  }
-
-  .px-xs {
-    padding-left: 4px;
-    padding-right: 4px;
-  }
-
-  .py-xs {
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-
-  .p-sm {
-    padding: 8px;
-  }
-
-  .m-sm {
-    margin: 8px;
-  }
-
-  .px-sm {
-    padding-left: 8px;
-    padding-right: 8px;
-  }
-
-  .py-sm {
-    padding-top: 8px;
-    padding-bottom: 8px;
-  }
-
-  .p-md {
-    padding: 12px;
-  }
-
-  .m-md {
-    margin: 12px;
-  }
-
-  .px-md {
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-
-  .py-md {
-    padding-top: 12px;
-    padding-bottom: 12px;
-  }
-
-  .p-lg {
-    padding: 16px;
-  }
-
-  .m-lg {
-    margin: 16px;
-  }
-
-  .px-lg {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-
-  .py-lg {
-    padding-top: 16px;
-    padding-bottom: 16px;
-  }
-
-  .p-xl {
-    padding: 24px;
-  }
-
-  .m-xl {
-    margin: 24px;
-  }
-
-  .px-xl {
-    padding-left: 24px;
-    padding-right: 24px;
-  }
-
-  .py-xl {
-    padding-top: 24px;
-    padding-bottom: 24px;
-  }
-
-  /* Border radius utilities */
-  .rounded-none {
-    border-radius: 0;
-  }
-
-  .rounded-sm {
-    border-radius: 0.125rem;
-  }
-
-  .rounded-md {
-    border-radius: 0.375rem;
-  }
-
-  .rounded-lg {
-    border-radius: 0.5rem;
-  }
-
-  .rounded-xl {
-    border-radius: 0.75rem;
-  }
-
-  .rounded-full {
-    border-radius: 9999px;
-  }
-
-  /* Shadow utilities */
-  .shadow-sm {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-
-  .shadow-md {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-
-  .shadow-lg {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  }
-
-  .shadow-freeze {
-    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.15);
-  }
-
-  .shadow-freeze-dark {
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
-  }
-
-  /* Platform-specific utilities */
+  /* Platform-specific optimizations - not tokenizable */
   .touch-manipulation {
     touch-action: manipulation;
   }
@@ -1027,40 +458,22 @@
     scroll-behavior: smooth;
   }
 
-  /* Safe area utilities for mobile */
-  .safe-top {
-    padding-top: env(safe-area-inset-top);
-  }
+  .safe-top { padding-top: env(safe-area-inset-top); }
+  .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+  .safe-left { padding-left: env(safe-area-inset-left); }
+  .safe-right { padding-right: env(safe-area-inset-right); }
 
-  .safe-bottom {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-
-  .safe-left {
-    padding-left: env(safe-area-inset-left);
-  }
-
-  .safe-right {
-    padding-right: env(safe-area-inset-right);
-  }
-
-  /* Performance optimizations */
   .gpu-accelerated {
     transform: translateZ(0);
     will-change: transform;
   }
 
-  .backface-hidden {
-    backface-visibility: hidden;
-  }
-
-  /* Content visibility optimizations */
+  .backface-hidden { backface-visibility: hidden; }
   .content-visibility-auto {
     content-visibility: auto;
     contain-intrinsic-size: 0 200px;
   }
 
-  /* Native-like transitions */
   .transition-native {
     transition-duration: 300ms;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
