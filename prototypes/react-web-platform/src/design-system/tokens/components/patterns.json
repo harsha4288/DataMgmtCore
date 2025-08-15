@@ -1,0 +1,59 @@
+{
+  "surface": {
+    "card": {
+      "padding": "{spacing.component.lg}",
+      "borderRadius": "{borderRadius.lg}",
+      "background": "{colors.surface.base}",
+      "shadow": "{elevation.sm}",
+      "shadowHover": "{elevation.md}"
+    },
+    "modal": {
+      "padding": "{spacing.component.lg}",
+      "borderRadius": "{borderRadius.lg}",
+      "background": "{colors.surface.base}",
+      "shadow": "{elevation.lg}",
+      "overlay": "{colors.background.overlay}"
+    },
+    "popover": {
+      "padding": "{spacing.component.md}",
+      "borderRadius": "{borderRadius.md}",
+      "background": "{colors.surface.elevated}",
+      "shadow": "{elevation.md}"
+    }
+  },
+  "interactive": {
+    "button": {
+      "height": "{layout.interactive.minTouchTarget}",
+      "paddingX": "{spacing.component.md}",
+      "borderRadius": "{borderRadius.md}",
+      "fontSize": "{typography.fontSize.base}",
+      "fontWeight": "{typography.fontWeight.medium}",
+      "transition": "all 200ms ease-out"
+    },
+    "input": {
+      "height": "{layout.interactive.minTouchTarget}",
+      "paddingX": "{spacing.component.md}",
+      "borderRadius": "{borderRadius.md}",
+      "fontSize": "{typography.fontSize.base}",
+      "border": "1px solid {colors.interactive.secondary.background}"
+    }
+  },
+  "feedback": {
+    "badge": {
+      "paddingX": "{spacing.component.sm}",
+      "paddingY": "{spacing.xs}",
+      "borderRadius": "{layout.badge.borderRadius}",
+      "fontSize": "{layout.badge.fontSize}",
+      "fontWeight": "{layout.badge.fontWeight}",
+      "textTransform": "{layout.badge.textTransform}",
+      "minHeight": "20px",
+      "border": "1px solid"
+    },
+    "notification": {
+      "padding": "{spacing.component.md}",
+      "borderRadius": "{borderRadius.md}",
+      "shadow": "{elevation.md}",
+      "border": "1px solid"
+    }
+  }
+}

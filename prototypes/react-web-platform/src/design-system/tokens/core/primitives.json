@@ -1,0 +1,176 @@
+{
+  "spacing": {
+    "xs": "4px",
+    "sm": "8px",
+    "md": "12px",
+    "lg": "16px",
+    "xl": "24px",
+    "2xl": "32px",
+    "3xl": "40px",
+    "4xl": "44px",
+    "5xl": "48px"
+  },
+  "colors": {
+    "primary": {
+      "50": "199 89% 48%",
+      "100": "199 89% 58%",
+      "400": "199 89% 68%",
+      "500": "221.2 83.2% 53.3%",
+      "600": "221.2 83.2% 43.3%",
+      "900": "221.2 83.2% 23.3%"
+    },
+    "primaryDark": {
+      "500": "217.2 91.2% 59.8%",
+      "600": "217.2 91.2% 49.8%"
+    },
+    "neutral": {
+      "50": "220 13% 98%",
+      "100": "220 13% 95%",
+      "200": "220 13% 91%",
+      "300": "220 13% 82%",
+      "400": "215 16% 65%",
+      "500": "215 16% 47%",
+      "600": "215 25% 27%",
+      "700": "215 25% 17%",
+      "800": "220 39% 11%",
+      "900": "0 0% 10%"
+    },
+    "neutralDark": {
+      "50": "225 44% 7%",
+      "100": "217 27% 12%",
+      "200": "215 28% 17%",
+      "300": "217 25% 15%",
+      "400": "217 39% 11%",
+      "500": "215 16% 25%",
+      "600": "215 16% 32%",
+      "700": "215 20% 85%",
+      "800": "215 16% 62%",
+      "900": "215 16% 45%"
+    },
+    "success": {
+      "50": "142 47% 91%",
+      "100": "142 50% 85%",
+      "500": "142 76% 36%",
+      "600": "158 64% 28%",
+      "700": "158 64% 18%"
+    },
+    "warning": {
+      "50": "48 96% 89%",
+      "100": "48 90% 83%",
+      "500": "32 81% 29%",
+      "600": "25 95% 93%",
+      "700": "25 90% 87%",
+      "800": "17 88% 40%"
+    },
+    "error": {
+      "50": "0 93% 94%",
+      "100": "0 88% 88%",
+      "500": "0 84.2% 60.2%",
+      "600": "0 74% 42%",
+      "700": "0 62.8% 30.6%"
+    },
+    "info": {
+      "50": "199 89% 94%",
+      "100": "199 85% 88%",
+      "500": "201 96% 32%",
+      "600": "217 91% 60%",
+      "700": "199 80% 60%"
+    },
+    "white": "0 0% 100%",
+    "black": "0 0% 10%"
+  },
+  "typography": {
+    "fontFamily": {
+      "sans": [
+        "-apple-system",
+        "BlinkMacSystemFont",
+        "Segoe UI",
+        "Roboto",
+        "sans-serif"
+      ],
+      "mono": [
+        "JetBrains Mono",
+        "Consolas",
+        "Monaco",
+        "monospace"
+      ]
+    },
+    "fontSize": {
+      "xs": "12px",
+      "sm": "13px",
+      "base": "14px",
+      "lg": "16px",
+      "xl": "18px",
+      "2xl": "20px"
+    },
+    "fontWeight": {
+      "normal": "400",
+      "medium": "500",
+      "semibold": "600",
+      "bold": "700"
+    },
+    "lineHeight": {
+      "tight": "1.25",
+      "normal": "1.5",
+      "relaxed": "1.75"
+    }
+  },
+  "borderRadius": {
+    "none": "0",
+    "sm": "0.125rem",
+    "md": "0.375rem",
+    "lg": "0.5rem",
+    "xl": "0.75rem",
+    "full": "9999px"
+  },
+  "shadows": {
+    "sm": "0 1px 3px rgba(0, 0, 0, 0.1)",
+    "md": "0 4px 6px rgba(0, 0, 0, 0.1)",
+    "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+    "freeze": "2px 0 6px rgba(0, 0, 0, 0.15)",
+    "freezeDark": "2px 0 8px rgba(0, 0, 0, 0.4)",
+    "card": "0 1px 3px rgba(0, 0, 0, 0.1)",
+    "cardHover": "0 4px 6px rgba(0, 0, 0, 0.1)",
+    "cardDark": "0 2px 4px rgba(0, 0, 0, 0.3)",
+    "cardHoverDark": "0 4px 8px rgba(0, 0, 0, 0.3)"
+  },
+  "layout": {
+    "table": {
+      "headerHeight": "40px",
+      "groupHeaderHeight": "24px",
+      "rowHeight": "40px",
+      "cellPaddingX": "12px",
+      "cellPaddingY": "8px",
+      "groupHeaderPaddingY": "2px",
+      "groupHeaderPaddingX": "12px",
+      "borderWidth": "1.5px",
+      "textIndent": "0px",
+      "subtextIndent": "0px"
+    },
+    "interactive": {
+      "buttonSize": "20px",
+      "buttonPadding": "8px",
+      "buttonRadius": "4px",
+      "buttonHoverScale": "1.1",
+      "minTouchTarget": "44px"
+    },
+    "badge": {
+      "borderRadius": "6px",
+      "fontSize": "13px",
+      "fontWeight": "600",
+      "textTransform": "uppercase"
+    },
+    "label": {
+      "padding": "4px 8px",
+      "borderRadius": "6px",
+      "fontSize": "12px",
+      "fontWeight": "500",
+      "textTransform": "none"
+    },
+    "percentage": {
+      "fontSize": "13px",
+      "fontWeight": "500",
+      "gap": "4px"
+    }
+  }
+}

@@ -7,7 +7,12 @@
       "Bash(rm:*)",
       "Bash(npm run dev:*)",
       "Bash(pkill:*)",
-      "Bash(true)"
+      "Bash(true)",
+      "Bash(node:*)",
+      "Bash(grep:*)",
+      "Bash(sed:*)",
+      "Bash(npm run test-tokens:*)",
+      "Bash(npm run validate-references:*)"
     ],
     "deny": []
   }

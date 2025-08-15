@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token System Visual Test</title>
+    <link rel="stylesheet" href="../build/dynamic/tokens.css">
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+            margin: 0; 
+            padding: 20px;
+            background: hsl(var(--colors-background-primary));
+            color: hsl(var(--colors-text-primary));
+        }
+        .test-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 20px; 
+            margin: 20px 0; 
+        }
+        .test-card { 
+            padding: 20px; 
+            border: 1px solid hsl(var(--colors-border-default)); 
+            border-radius: 8px;
+            background: hsl(var(--colors-surface-default));
+        }
+        .test-card:hover { background: hsl(var(--colors-surface-hover)); }
+        .theme-toggle { 
+            position: fixed; 
+            top: 20px; 
+            right: 20px; 
+            padding: 10px 20px;
+            background: hsl(var(--colors-interactive-primary-background));
+            color: hsl(var(--colors-interactive-primary-text));
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .color-swatch {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-right: 10px;
+            border: 1px solid hsl(var(--colors-border-default));
+        }
+        .utility-demo {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">Toggle Dark/Light</button>
+    
+    <h1>🧪 Design Token System Test</h1>
+    
+    <div class="test-grid">
+        <!-- Color Test -->
+        <div class="test-card">
+            <h3>🎨 Color Tokens</h3>
+            <div class="utility-demo">
+                <div class="color-swatch" style="background: hsl(var(--colors-background-primary))"></div>
+                <span>Background Primary</span>
+            </div>
+            <div class="utility-demo">
+                <div class="color-swatch" style="background: hsl(var(--colors-interactive-primary-background))"></div>
+                <span>Primary Interactive</span>
+            </div>
+            <div class="utility-demo">
+                <div class="color-swatch" style="background: hsl(var(--colors-surface-hover))"></div>
+                <span>Surface Hover</span>
+            </div>
+        </div>
+
+        <!-- Typography Test -->
+        <div class="test-card">
+            <h3>📝 Typography Utilities</h3>
+            <div class="text-xs">Extra Small Text (xs)</div>
+            <div class="text-sm">Small Text (sm)</div>
+            <div class="text-base">Base Text (base)</div>
+            <div class="text-lg">Large Text (lg)</div>
+            <div class="text-xl">Extra Large Text (xl)</div>
+        </div>
+
+        <!-- Spacing Test -->
+        <div class="test-card">
+            <h3>📏 Spacing Utilities</h3>
+            <div class="p-xs" style="background: hsl(var(--colors-surface-hover));">Padding XS</div>
+            <div class="p-sm" style="background: hsl(var(--colors-surface-hover)); margin-top: 8px;">Padding SM</div>
+            <div class="p-md" style="background: hsl(var(--colors-surface-hover)); margin-top: 8px;">Padding MD</div>
+        </div>
+
+        <!-- Interactive Test -->
+        <div class="test-card">
+            <h3>🖱️ Interactive Elements</h3>
+            <button style="
+                background: hsl(var(--colors-interactive-primary-background));
+                color: hsl(var(--colors-interactive-primary-text));
+                border: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                margin-right: 10px;
+            ">Primary Button</button>
+            <button style="
+                background: hsl(var(--colors-interactive-secondary-background));
+                color: hsl(var(--colors-interactive-secondary-text));
+                border: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+            ">Secondary Button</button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize theme on page load
+        document.documentElement.setAttribute('data-theme', 'light');
+        
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            
+            // Performance tracking
+            performance.mark('theme-switch-start');
+            setTimeout(() => {
+                performance.mark('theme-switch-end');
+                performance.measure('theme-switch', 'theme-switch-start', 'theme-switch-end');
+                const measures = performance.getEntriesByName('theme-switch');
+                console.log(`🚀 Theme switch took: ${measures[measures.length - 1].duration.toFixed(2)}ms`);
+            }, 0);
+        }
+    </script>
+</body>
+</html>

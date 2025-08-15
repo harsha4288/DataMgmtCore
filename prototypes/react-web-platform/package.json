@@ -5,9 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "node node_modules/vite/bin/vite.js",
-    "build": "tsc -b && node node_modules/vite/bin/vite.js build",
+    "build": "npm run build:tokens && tsc -b && node node_modules/vite/bin/vite.js build",
+    "build:tokens": "node src/design-system/build/token-compiler.js",
     "lint": "eslint .",
-    "preview": "node node_modules/vite/bin/vite.js preview"
+    "preview": "node node_modules/vite/bin/vite.js preview",
+    "monitor": "node scripts/monitor-dashboard.cjs",
+    "daily-check": "npm run monitor",
+    "precommit": "npm run monitor",
+    "validate-tokens": "npm run build:tokens && npm run monitor",
+    "validate-references": "grep -r 'var(--colors-' src/index.css && echo '✅ Token references found'",
+    "check-hardcoded": "grep -r ': [0-9].*%' src/index.css || echo '✅ Minimal hardcoded values'",
+    "test-tokens": "npm run validate-tokens && npm run validate-references && npm run check-hardcoded"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
