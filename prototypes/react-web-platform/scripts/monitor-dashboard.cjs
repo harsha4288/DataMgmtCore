@@ -4,6 +4,11 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
+// Configuration
+const HISTORY_FILE = path.join(__dirname, '..', '.performance-history.json');
+const MAX_HISTORY_ENTRIES = 50; // Keep last 50 measurements
+const REGRESSION_THRESHOLD = 0.10; // 10% increase triggers alert
+
 // ANSI color codes for terminal output
 const colors = {
   reset: '\x1b[0m',
@@ -103,11 +108,112 @@ function getStatusColor(current, limit, reverse = false) {
   return current <= limit ? 'green' : 'red';
 }
 
+// Historical tracking functions
+function loadHistory() {
+  try {
+    if (fs.existsSync(HISTORY_FILE)) {
+      const data = fs.readFileSync(HISTORY_FILE, 'utf8');
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.warn(colorize('⚠️  Warning: Could not load performance history', 'yellow'));
+  }
+  return { measurements: [] };
+}
+
+function saveToHistory(metrics) {
+  try {
+    const history = loadHistory();
+    const entry = {
+      timestamp: new Date().toISOString(),
+      metrics
+    };
+    
+    history.measurements.push(entry);
+    
+    // Keep only the last MAX_HISTORY_ENTRIES
+    if (history.measurements.length > MAX_HISTORY_ENTRIES) {
+      history.measurements = history.measurements.slice(-MAX_HISTORY_ENTRIES);
+    }
+    
+    fs.writeFileSync(HISTORY_FILE, JSON.stringify(history, null, 2));
+  } catch (error) {
+    console.warn(colorize('⚠️  Warning: Could not save performance history', 'yellow'));
+  }
+}
+
+function detectRegressions(currentMetrics) {
+  const history = loadHistory();
+  if (history.measurements.length < 2) {
+    return { hasRegression: false, regressions: [] };
+  }
+  
+  const lastMeasurement = history.measurements[history.measurements.length - 1];
+  const regressions = [];
+  
+  // Check bundle size regression
+  const bundleSizeIncrease = (currentMetrics.bundleSize.total - lastMeasurement.metrics.bundleSize.total) / lastMeasurement.metrics.bundleSize.total;
+  if (bundleSizeIncrease > REGRESSION_THRESHOLD) {
+    regressions.push({
+      metric: 'Bundle Size',
+      increase: (bundleSizeIncrease * 100).toFixed(1),
+      previous: formatBytes(lastMeasurement.metrics.bundleSize.total),
+      current: formatBytes(currentMetrics.bundleSize.total)
+    });
+  }
+  
+  // Check token count regression
+  const tokenCountIncrease = (currentMetrics.tokenCount.total - lastMeasurement.metrics.tokenCount.total) / lastMeasurement.metrics.tokenCount.total;
+  if (tokenCountIncrease > REGRESSION_THRESHOLD) {
+    regressions.push({
+      metric: 'Token Count',
+      increase: (tokenCountIncrease * 100).toFixed(1),
+      previous: lastMeasurement.metrics.tokenCount.total,
+      current: currentMetrics.tokenCount.total
+    });
+  }
+  
+  return {
+    hasRegression: regressions.length > 0,
+    regressions
+  };
+}
+
+function displayTrends(currentMetrics) {
+  const history = loadHistory();
+  if (history.measurements.length < 3) {
+    console.log(colorize('📈 TRENDS: Insufficient data (need 3+ measurements)', 'yellow'));
+    return;
+  }
+  
+  const last3 = history.measurements.slice(-3);
+  const bundleTrend = last3.map(m => m.metrics.bundleSize.total);
+  const tokenTrend = last3.map(m => m.metrics.tokenCount.total);
+  
+  console.log(colorize('📈 RECENT TRENDS (Last 3 measurements)', 'bold'));
+  console.log(colorize('-'.repeat(35), 'cyan'));
+  
+  // Bundle size trend
+  const bundleDirection = bundleTrend[2] > bundleTrend[0] ? '📈' : bundleTrend[2] < bundleTrend[0] ? '📉' : '➡️';
+  console.log(`Bundle Size: ${bundleDirection} ${formatBytes(bundleTrend[0])} → ${formatBytes(bundleTrend[1])} → ${formatBytes(bundleTrend[2])}`);
+  
+  // Token count trend
+  const tokenDirection = tokenTrend[2] > tokenTrend[0] ? '📈' : tokenTrend[2] < tokenTrend[0] ? '📉' : '➡️';
+  console.log(`Token Count: ${tokenDirection} ${tokenTrend[0]} → ${tokenTrend[1]} → ${tokenTrend[2]}`);
+  console.log('');
+}
+
 function generateReport() {
   const timestamp = new Date().toISOString();
   const tokenCount = getTokenCount();
   const bundleSize = getBundleSize();
   const fileCount = getFileCount();
+  
+  const currentMetrics = {
+    tokenCount,
+    bundleSize,
+    fileCount
+  };
   
   // Target limits from master plan
   const limits = {
@@ -152,11 +258,28 @@ function generateReport() {
   console.log(`└─ Components: ${fileCount.components}`);
   console.log('');
   
+  // Display trends
+  displayTrends(currentMetrics);
+  
+  // Check for regressions
+  const regressionCheck = detectRegressions(currentMetrics);
+  if (regressionCheck.hasRegression) {
+    console.log(colorize('🚨 PERFORMANCE REGRESSION DETECTED', 'bold'));
+    console.log(colorize('-'.repeat(35), 'red'));
+    regressionCheck.regressions.forEach(regression => {
+      console.log(colorize(`❌ ${regression.metric}: +${regression.increase}% increase`, 'red'));
+      console.log(`   Previous: ${regression.previous}`);
+      console.log(`   Current: ${regression.current}`);
+    });
+    console.log('');
+  }
+  
   // Overall Health Assessment
   const allHealthy = (
     tokenCount.total <= limits.tokenCount &&
     bundleSize.total <= limits.bundleSize &&
-    fileCount.total <= limits.fileCount
+    fileCount.total <= limits.fileCount &&
+    !regressionCheck.hasRegression
   );
   
   console.log(colorize('🏥 OVERALL HEALTH', 'bold'));
@@ -179,12 +302,18 @@ function generateReport() {
     if (fileCount.total > limits.fileCount) {
       console.log(colorize(`• Consolidate ${fileCount.total - limits.fileCount} JSON files using patterns`, 'red'));
     }
+    if (regressionCheck.hasRegression) {
+      console.log(colorize('• Investigate and fix performance regressions detected above', 'red'));
+    }
   }
   
   console.log('');
   console.log(colorize('💡 To fix issues: npm run tokens:audit', 'blue'));
-  console.log(colorize('📖 See: PROGRESS/phases/phase-06/12-implementation-checklist.md', 'blue'));
+  console.log(colorize('📖 See: PROGRESS/phases/phase-06/10-monitoring-doc.md', 'blue'));
   console.log('');
+  
+  // Save current metrics to history
+  saveToHistory(currentMetrics);
   
   // Exit with error code if unhealthy for CI/CD
   if (!allHealthy) {
@@ -194,12 +323,9 @@ function generateReport() {
   return {
     timestamp,
     healthy: allHealthy,
-    metrics: {
-      tokenCount,
-      bundleSize,
-      fileCount
-    },
-    limits
+    metrics: currentMetrics,
+    limits,
+    regressions: regressionCheck.regressions
   };
 }
 

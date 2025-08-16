@@ -13,7 +13,11 @@
       "Bash(sed:*)",
       "Bash(npm run test-tokens:*)",
       "Bash(npm run validate-references:*)",
-      "Bash(npm run check-hardcoded:*)"
+      "Bash(npm run check-hardcoded:*)",
+      "Bash(npm run monitor:*)",
+      "Bash(npm run analyze-tokens:*)",
+      "Bash(npm run build-tokens:*)",
+      "Bash(npm run build:tokens:*)"
     ],
     "deny": []
   }

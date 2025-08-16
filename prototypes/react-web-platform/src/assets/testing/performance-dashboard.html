@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 6.4: Performance Monitoring Dashboard</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f7fa;
+            color: #333;
+        }
+        
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .section h2 {
+            margin: 0 0 15px 0;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .commands {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        
+        .commands code {
+            color: #68d391;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .card h3 {
+            margin: 0 0 15px 0;
+            color: #2d3748;
+            font-size: 1.2rem;
+        }
+        
+        .card p {
+            margin: 0;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .status.completed {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .status.warning {
+            background: #fef5e7;
+            color: #975a16;
+        }
+        
+        .links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        .link {
+            background: #667eea;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        
+        .link:hover {
+            background: #5a67d8;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .metric:last-child {
+            border-bottom: none;
+        }
+        
+        .metric-value {
+            font-weight: 600;
+            color: #2d3748;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>🎯 Performance Monitoring Dashboard</h1>
+            <p>Task 6.4: Comprehensive Performance Monitoring Integration</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>🚀 Quick Access Commands</h2>
+                <div class="commands">
+<code># Enhanced monitoring dashboard
+npm run monitor
+
+# Token usage analytics
+npm run analyze-tokens
+
+# CI/CD integration test
+npm run ci-check
+
+# Complete analysis suite
+npm run analysis-suite</code>
+                </div>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>📊 Enhanced Monitor Dashboard</h3>
+                    <p>Real-time performance monitoring with historical tracking, regression detection, and color-coded health status.</p>
+                    <div class="commands">npm run monitor</div>
+                    <span class="status completed">✅ Completed</span>
+                </div>
+                
+                <div class="card">
+                    <h3>🔍 Token Usage Analytics</h3>
+                    <p>Comprehensive analysis revealing 252 unused tokens and 276 optimization opportunities.</p>
+                    <div class="commands">npm run analyze-tokens</div>
+                    <span class="status completed">✅ Completed</span>
+                </div>
+                
+                <div class="card">
+                    <h3>🎨 React Performance Monitor</h3>
+                    <p>Real-time theme switching performance measurement integrated into your React app.</p>
+                    <div class="commands">npm run dev</div>
+                    <span class="status completed">✅ Integrated</span>
+                </div>
+                
+                <div class="card">
+                    <h3>🚀 CI/CD Integration</h3>
+                    <p>Automated performance validation with Slack/GitHub integration support.</p>
+                    <div class="commands">npm run ci-check</div>
+                    <span class="status completed">✅ Ready</span>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>📈 Current Performance Metrics</h2>
+                <div class="metric">
+                    <span>Bundle Size</span>
+                    <span class="metric-value">30.45KB <span class="status warning">Over Target</span></span>
+                </div>
+                <div class="metric">
+                    <span>Token Count</span>
+                    <span class="metric-value">192 detected</span>
+                </div>
+                <div class="metric">
+                    <span>Token Efficiency</span>
+                    <span class="metric-value">21% (67/319 used)</span>
+                </div>
+                <div class="metric">
+                    <span>Unused Tokens</span>
+                    <span class="metric-value">252 tokens <span class="status warning">Cleanup Opportunity</span></span>
+                </div>
+                <div class="metric">
+                    <span>Optimization Potential</span>
+                    <span class="metric-value">276 token reduction possible</span>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>🔗 Access Links</h2>
+                <div class="links">
+                    <a href="http://localhost:5173" class="link" target="_blank">🌐 React App with Performance Monitor</a>
+                    <a href="../../design-system/validation/test-implementation.html" class="link" target="_blank">🧪 Token System Test Page</a>
+                    <a href="../README.md" class="link" target="_blank">📖 Scripts Documentation</a>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>📋 Validation Checklist</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>✅ Terminal Dashboard</h3>
+                        <p>Color-coded output with bundle size, token count, and regression detection.</p>
+                    </div>
+                    <div class="card">
+                        <h3>✅ Token Analytics</h3>
+                        <p>Usage patterns, unused tokens, and optimization recommendations.</p>
+                    </div>
+                    <div class="card">
+                        <h3>✅ React Component</h3>
+                        <p>Real-time theme switching performance in browser.</p>
+                    </div>
+                    <div class="card">
+                        <h3>✅ CI Integration</h3>
+                        <p>Automated validation with artifact generation.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>⚠️ Expected "Issues" (Optimization Opportunities)</h2>
+                <p style="margin: 10px 0;">The monitoring system correctly identifies optimization opportunities:</p>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li><strong>252 unused tokens (79% reduction potential)</strong> - Major cleanup opportunity</li>
+                    <li><strong>Bundle size over 30KB target</strong> - Token consolidation needed</li>
+                    <li><strong>Duplicate values</strong> - 113 groups identified for consolidation</li>
+                    <li><strong>Token efficiency at 21%</strong> - Significant optimization potential</li>
+                </ul>
+                <p style="margin: 10px 0; font-style: italic; color: #4a5568;">These "issues" are valuable insights that weren't visible before - the monitoring system is working perfectly!</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -2,62 +2,62 @@
   "colors": {
     "background": {
       "primary": "{colors.neutralDark.50}",
-      "secondary": "{colors.neutralDark.100}",
+      "secondary": "{colors.neutralDark.50}",
       "elevated": "{colors.neutralDark.300}"
     },
     "text": {
       "primary": "{colors.white}",
-      "secondary": "{colors.neutralDark.700}",
-      "muted": "{colors.neutralDark.800}",
-      "tertiary": "{colors.neutralDark.900}",
+      "secondary": "{colors.white}",
+      "muted": "{colors.white}",
+      "tertiary": "{colors.white}",
       "inverse": "{colors.neutralDark.50}",
       "disabled": "215 16% 35%"
     },
     "border": {
-      "default": "{colors.neutralDark.500}",
-      "header": "{colors.neutralDark.600}",
-      "hover": "{colors.neutralDark.600}",
-      "focus": "{colors.primaryDark.500}"
+      "default": "{colors.neutralDark.50}",
+      "header": "{colors.neutralDark.300}",
+      "hover": "{colors.neutralDark.300}",
+      "focus": "{colors.info.500}"
     },
     "surface": {
-      "card": "{colors.neutralDark.100}",
-      "popover": "{colors.neutralDark.100}",
+      "card": "{colors.neutralDark.50}",
+      "popover": "{colors.neutralDark.50}",
       "input": "{colors.neutralDark.300}",
       "hover": "{colors.neutralDark.300}",
       "selected": "{colors.primaryDark.500}"
     },
     "interactive": {
       "primary": {
-        "background": "{colors.primaryDark.500}",
-        "backgroundHover": "{colors.primaryDark.600}",
+        "background": "{colors.info.500}",
+        "backgroundHover": "{colors.info.500}",
         "text": "{colors.neutralDark.50}"
       },
       "secondary": {
         "background": "{colors.neutralDark.300}",
-        "backgroundHover": "{colors.neutralDark.400}",
-        "text": "{colors.neutralDark.700}"
+        "backgroundHover": "{colors.neutralDark.300}",
+        "text": "{colors.white}"
       },
       "destructive": {
-        "background": "{colors.error.700}",
-        "backgroundHover": "{colors.error.600}",
+        "background": "{colors.error.500}",
+        "backgroundHover": "{colors.error.500}",
         "text": "{colors.neutralDark.50}"
       },
       "accent": {
         "background": "{colors.neutralDark.300}",
-        "backgroundHover": "{colors.neutralDark.400}",
-        "text": "{colors.neutralDark.700}"
+        "backgroundHover": "{colors.neutralDark.300}",
+        "text": "{colors.white}"
       }
     },
     "table": {
-      "container": "{colors.neutralDark.100}",
+      "container": "{colors.neutralDark.50}",
       "containerElevated": "{colors.neutralDark.300}",
-      "header": "{colors.neutralDark.200}",
+      "header": "{colors.neutralDark.50}",
       "headerElevated": "{colors.neutralDark.300}",
-      "groupHeader": "{colors.neutralDark.400}",
+      "groupHeader": "{colors.neutralDark.300}",
       "groupHeaderLine": "217 20% 30%",
-      "row": "{colors.neutralDark.400}",
+      "row": "{colors.neutralDark.300}",
       "rowHover": "217 25% 18%",
-      "border": "{colors.neutralDark.500}",
+      "border": "{colors.neutralDark.50}",
       "shadow": "{shadows.cardDark}",
       "shadowElevated": "{shadows.cardHoverDark}",
       "freezeShadow": "{shadows.freezeDark}"
@@ -69,54 +69,54 @@
         "border": "215 20% 26%"
       },
       "success": {
-        "background": "{colors.success.50}",
-        "text": "{colors.success.600}",
-        "border": "{colors.success.100}"
+        "background": "{colors.success.500}",
+        "text": "{colors.white}",
+        "border": "{colors.success.500}"
       },
       "warning": {
-        "background": "{colors.warning.600}",
-        "text": "{colors.warning.800}",
-        "border": "{colors.warning.700}"
+        "background": "{colors.warning.500}",
+        "text": "{colors.white}",
+        "border": "{colors.warning.500}"
       },
       "error": {
-        "background": "{colors.error.700}",
-        "text": "{colors.neutralDark.50}",
-        "border": "{colors.error.600}"
+        "background": "{colors.error.500}",
+        "text": "{colors.white}",
+        "border": "{colors.error.500}"
       },
       "info": {
-        "background": "{colors.info.600}",
-        "text": "{colors.neutralDark.50}",
-        "border": "{colors.info.700}"
+        "background": "{colors.info.500}",
+        "text": "{colors.white}",
+        "border": "{colors.info.500}"
       },
       "gradeA": {
-        "background": "{colors.success.50}",
-        "text": "{colors.success.600}",
-        "border": "{colors.success.100}"
+        "background": "{colors.success.500}",
+        "text": "{colors.white}",
+        "border": "{colors.success.500}"
       },
       "gradeB": {
-        "background": "{colors.info.50}",
-        "text": "{colors.info.500}",
-        "border": "{colors.info.100}"
+        "background": "{colors.info.500}",
+        "text": "{colors.white}",
+        "border": "{colors.info.500}"
       },
       "gradeC": {
-        "background": "{colors.warning.50}",
-        "text": "{colors.warning.500}",
-        "border": "{colors.warning.100}"
+        "background": "{colors.warning.500}",
+        "text": "{colors.white}",
+        "border": "{colors.warning.500}"
       },
       "gradeD": {
         "background": "{colors.warning.600}",
-        "text": "{colors.warning.800}",
-        "border": "{colors.warning.700}"
+        "text": "{colors.white}",
+        "border": "{colors.warning.600}"
       },
       "gradeF": {
-        "background": "{colors.error.50}",
-        "text": "{colors.error.600}",
-        "border": "{colors.error.100}"
+        "background": "{colors.error.500}",
+        "text": "{colors.white}",
+        "border": "{colors.error.500}"
       },
       "neutral": {
-        "background": "{colors.neutralDark.500}",
-        "text": "{colors.neutralDark.100}",
-        "border": "{colors.neutralDark.600}"
+        "background": "215 25% 27%",
+        "text": "210 20% 96%",
+        "border": "215 20% 32%"
       }
     },
     "placeholder": {

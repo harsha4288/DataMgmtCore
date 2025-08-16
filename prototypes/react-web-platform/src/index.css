@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "./design-system/buiclsld/dynamic/tokens.css";
+@import "./design-system/build/dynamic/tokens.css";
 
 @layer base {
   /* Essential base styles only - no semantic aliases */

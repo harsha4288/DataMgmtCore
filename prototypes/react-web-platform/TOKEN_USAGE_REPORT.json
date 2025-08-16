@@ -1,0 +1,4048 @@
+{
+  "timestamp": "2025-08-15T20:55:51.966Z",
+  "summary": {
+    "totalTokens": 294,
+    "usedTokens": 67,
+    "unusedTokens": 227,
+    "usageRate": 22.8,
+    "duplicateGroups": 97,
+    "potentialSavings": 282
+  },
+  "tokenRegistry": [
+    {
+      "name": "--colors-neutral-50",
+      "value": "220 13% 98%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-neutral-100",
+      "value": "220 13% 95%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-neutral-200",
+      "value": "220 13% 91%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-neutral-300",
+      "value": "220 13% 82%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-neutral-400",
+      "value": "220 13% 69%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-neutral-600",
+      "value": "220 13% 45%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-neutral-700",
+      "value": "220 13% 35%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-neutralDark-50",
+      "value": "225 44% 7%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-neutralDark-300",
+      "value": "217 25% 15%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-primary-50",
+      "value": "201 100% 95%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-primary-500",
+      "value": "201 96% 32%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-primary-600",
+      "value": "201 96% 25%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-primaryDark-500",
+      "value": "201 96% 32%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-success-50",
+      "value": "120 60% 95%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-success-100",
+      "value": "120 60% 90%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-success-500",
+      "value": "142 76% 36%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-success-600",
+      "value": "142 76% 30%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-success-700",
+      "value": "142 76% 25%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-warning-50",
+      "value": "32 95% 95%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-warning-100",
+      "value": "32 95% 90%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-warning-500",
+      "value": "32 81% 29%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-warning-600",
+      "value": "32 81% 25%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-warning-700",
+      "value": "32 81% 20%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-warning-800",
+      "value": "32 81% 15%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-error-50",
+      "value": "0 85% 95%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-error-100",
+      "value": "0 85% 90%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-error-500",
+      "value": "0 84.2% 60.2%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-error-600",
+      "value": "0 84.2% 50.2%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-info-50",
+      "value": "201 100% 95%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-info-100",
+      "value": "201 100% 90%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-info-500",
+      "value": "201 96% 32%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-info-600",
+      "value": "201 96% 25%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-info-700",
+      "value": "201 96% 20%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-white",
+      "value": "0 0% 100%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-black",
+      "value": "0 0% 10%",
+      "source": "primitives",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontFamily-sans-0",
+      "value": "-apple-system",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontFamily-sans-1",
+      "value": "BlinkMacSystemFont",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontFamily-sans-2",
+      "value": "Segoe UI",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontFamily-sans-3",
+      "value": "Roboto",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontFamily-sans-4",
+      "value": "sans-serif",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontFamily-mono-0",
+      "value": "JetBrains Mono",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontFamily-mono-1",
+      "value": "Consolas",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontFamily-mono-2",
+      "value": "Monaco",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontFamily-mono-3",
+      "value": "monospace",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontSize-xs",
+      "value": "12px",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontSize-sm",
+      "value": "13px",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontSize-base",
+      "value": "14px",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontSize-lg",
+      "value": "16px",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontSize-xl",
+      "value": "18px",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontSize-2xl",
+      "value": "20px",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontWeight-normal",
+      "value": "400",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontWeight-medium",
+      "value": "500",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontWeight-semibold",
+      "value": "600",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontWeight-bold",
+      "value": "700",
+      "source": "primitives",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-lineHeight-tight",
+      "value": "1.25",
+      "source": "primitives",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-lineHeight-normal",
+      "value": "1.5",
+      "source": "primitives",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-lineHeight-relaxed",
+      "value": "1.75",
+      "source": "primitives",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--borderRadius-none",
+      "value": "0",
+      "source": "primitives",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--borderRadius-sm",
+      "value": "0.125rem",
+      "source": "primitives",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--borderRadius-md",
+      "value": "0.375rem",
+      "source": "primitives",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--borderRadius-lg",
+      "value": "0.5rem",
+      "source": "primitives",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--borderRadius-xl",
+      "value": "0.75rem",
+      "source": "primitives",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--borderRadius-full",
+      "value": "9999px",
+      "source": "primitives",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--shadows-sm",
+      "value": "0 1px 3px rgba(0, 0, 0, 0.1)",
+      "source": "primitives",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--shadows-md",
+      "value": "0 4px 6px rgba(0, 0, 0, 0.1)",
+      "source": "primitives",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--shadows-lg",
+      "value": "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+      "source": "primitives",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--shadows-freeze",
+      "value": "2px 0 6px rgba(0, 0, 0, 0.15)",
+      "source": "primitives",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--shadows-freezeDark",
+      "value": "2px 0 8px rgba(0, 0, 0, 0.4)",
+      "source": "primitives",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--shadows-card",
+      "value": "{shadows.cardDark}",
+      "source": "dark-theme",
+      "category": "border",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--shadows-cardHover",
+      "value": "{shadows.cardHoverDark}",
+      "source": "dark-theme",
+      "category": "border",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--shadows-cardDark",
+      "value": "0 2px 4px rgba(0, 0, 0, 0.3)",
+      "source": "primitives",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--shadows-cardHoverDark",
+      "value": "0 4px 8px rgba(0, 0, 0, 0.3)",
+      "source": "primitives",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-table-headerHeight",
+      "value": "{layout.table.headerHeight}",
+      "source": "dark-theme",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-table-groupHeaderHeight",
+      "value": "{layout.table.groupHeaderHeight}",
+      "source": "dark-theme",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-table-rowHeight",
+      "value": "{layout.table.rowHeight}",
+      "source": "dark-theme",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-table-cellPaddingX",
+      "value": "{layout.table.cellPaddingX}",
+      "source": "dark-theme",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-table-cellPaddingY",
+      "value": "{layout.table.cellPaddingY}",
+      "source": "dark-theme",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-table-groupHeaderPaddingY",
+      "value": "{layout.table.groupHeaderPaddingY}",
+      "source": "dark-theme",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-table-groupHeaderPaddingX",
+      "value": "{layout.table.groupHeaderPaddingX}",
+      "source": "dark-theme",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-table-borderWidth",
+      "value": "{layout.table.borderWidth}",
+      "source": "dark-theme",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-table-textIndent",
+      "value": "{layout.table.textIndent}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-table-subtextIndent",
+      "value": "{layout.table.subtextIndent}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-interactive-buttonSize",
+      "value": "{layout.interactive.buttonSize}",
+      "source": "dark-theme",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-interactive-buttonPadding",
+      "value": "{layout.interactive.buttonPadding}",
+      "source": "dark-theme",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-interactive-buttonRadius",
+      "value": "{layout.interactive.buttonRadius}",
+      "source": "dark-theme",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-interactive-buttonHoverScale",
+      "value": "{layout.interactive.buttonHoverScale}",
+      "source": "dark-theme",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-interactive-minTouchTarget",
+      "value": "{layout.interactive.minTouchTarget}",
+      "source": "dark-theme",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-badge-borderRadius",
+      "value": "{layout.badge.borderRadius}",
+      "source": "dark-theme",
+      "category": "border",
+      "usageCount": 3,
+      "components": [
+        "index.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--layout-badge-fontSize",
+      "value": "{layout.badge.fontSize}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-badge-fontWeight",
+      "value": "{layout.badge.fontWeight}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-badge-textTransform",
+      "value": "{layout.badge.textTransform}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-label-padding",
+      "value": "{layout.label.padding}",
+      "source": "dark-theme",
+      "category": "spacing",
+      "usageCount": 2,
+      "components": [
+        "index.css"
+      ]
+    },
+    {
+      "name": "--layout-label-borderRadius",
+      "value": "{layout.label.borderRadius}",
+      "source": "dark-theme",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-label-fontSize",
+      "value": "{layout.label.fontSize}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-label-fontWeight",
+      "value": "{layout.label.fontWeight}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-label-textTransform",
+      "value": "{layout.label.textTransform}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-percentage-fontSize",
+      "value": "{layout.percentage.fontSize}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-percentage-fontWeight",
+      "value": "{layout.percentage.fontWeight}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--layout-percentage-gap",
+      "value": "{layout.percentage.gap}",
+      "source": "dark-theme",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-background-primary",
+      "value": "{colors.neutralDark.50}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 4,
+      "components": [
+        "index.css",
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-background-page",
+      "value": "{colors.background.primary}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-background-card",
+      "value": "{colors.background.primary}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-background-popover",
+      "value": "{colors.background.primary}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-background-table-container",
+      "value": "{colors.background.primary}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-background-table-containerElevated",
+      "value": "{colors.background.primary}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-background-table-header",
+      "value": "{colors.neutral.300}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-background-table-headerElevated",
+      "value": "{colors.neutral.100}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-background-table-groupHeader",
+      "value": "{colors.neutral.200}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-background-table-groupHeaderLine",
+      "value": "{colors.neutral.300}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-background-table-row",
+      "value": "{colors.neutral.50}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-background-table-rowHover",
+      "value": "{colors.neutral.100}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-foreground-primary",
+      "value": "{colors.black}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-foreground-card",
+      "value": "{colors.black}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-foreground-popover",
+      "value": "{colors.black}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-interactive-primary",
+      "value": "{colors.info.500}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-interactive-primaryForeground",
+      "value": "{colors.neutral.50}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-interactive-secondary",
+      "value": "{colors.neutral.50}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-interactive-secondaryForeground",
+      "value": "{colors.black}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-interactive-accent",
+      "value": "{colors.interactive.secondary}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-interactive-accentForeground",
+      "value": "{colors.black}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-interactive-muted",
+      "value": "{colors.interactive.secondary}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-interactive-mutedForeground",
+      "value": "{colors.black}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-interactive-destructive",
+      "value": "{colors.error.500}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-interactive-destructiveForeground",
+      "value": "{colors.neutral.50}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-content-primary",
+      "value": "{colors.black}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-content-secondary",
+      "value": "{colors.black}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-content-tertiary",
+      "value": "{colors.black}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-content-inverse",
+      "value": "{colors.neutral.50}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-content-disabled",
+      "value": "{colors.black}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-border-default",
+      "value": "{colors.neutralDark.50}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "index.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-border-header",
+      "value": "{colors.neutralDark.300}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-border-input",
+      "value": "{colors.border.default}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-border-table",
+      "value": "{colors.neutral.200}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-border-ring",
+      "value": "{colors.info.500}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-placeholder-text",
+      "value": "{colors.black}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-placeholder-background",
+      "value": "transparent",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-placeholder-symbol",
+      "value": "–",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-percentage-positive",
+      "value": "{colors.success.500}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-empty-badge-text",
+      "value": "{colors.black}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-empty-badge-background",
+      "value": "{colors.neutral.50}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-empty-badge-border",
+      "value": "{colors.border.default}",
+      "source": "intent-based",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--shadows-table-default",
+      "value": "{shadows.sm}",
+      "source": "intent-based",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--shadows-table-elevated",
+      "value": "{shadows.md}",
+      "source": "intent-based",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--shadows-table-freeze",
+      "value": "{shadows.freeze}",
+      "source": "intent-based",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--shadows-card-default",
+      "value": "{shadows.card}",
+      "source": "intent-based",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--shadows-card-hover",
+      "value": "{shadows.cardHover}",
+      "source": "intent-based",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontFamily",
+      "value": "{typography.fontFamily.sans}",
+      "source": "intent-based",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-table-header-fontSize",
+      "value": "{typography.fontSize.base}",
+      "source": "intent-based",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-table-header-fontWeight",
+      "value": "{typography.fontWeight.semibold}",
+      "source": "intent-based",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-table-groupHeader-fontSize",
+      "value": "{typography.fontSize.base}",
+      "source": "intent-based",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-table-groupHeader-fontWeight",
+      "value": "{typography.fontWeight.semibold}",
+      "source": "intent-based",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-table-body-fontSize",
+      "value": "{typography.fontSize.base}",
+      "source": "intent-based",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-table-body-fontWeight",
+      "value": "{typography.fontWeight.normal}",
+      "source": "intent-based",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-table-body-lineHeight",
+      "value": "{typography.lineHeight.normal}",
+      "source": "intent-based",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-badge-fontSize",
+      "value": "{typography.fontSize.sm}",
+      "source": "intent-based",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-badge-fontWeight",
+      "value": "{typography.fontWeight.semibold}",
+      "source": "intent-based",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-percentage-fontSize",
+      "value": "{typography.fontSize.sm}",
+      "source": "intent-based",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-percentage-fontWeight",
+      "value": "{typography.fontWeight.medium}",
+      "source": "intent-based",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-background-secondary",
+      "value": "{colors.neutralDark.50}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-background-elevated",
+      "value": "{colors.neutralDark.300}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-text-primary",
+      "value": "{colors.white}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 4,
+      "components": [
+        "index.css",
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-text-secondary",
+      "value": "{colors.white}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-text-muted",
+      "value": "{colors.white}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 6,
+      "components": [
+        "index.css",
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-text-tertiary",
+      "value": "{colors.white}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-text-inverse",
+      "value": "{colors.neutralDark.50}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-text-disabled",
+      "value": "215 16% 35%",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-border-hover",
+      "value": "{colors.neutralDark.300}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-border-focus",
+      "value": "{colors.info.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 4,
+      "components": [
+        "index.css"
+      ]
+    },
+    {
+      "name": "--colors-surface-card",
+      "value": "{colors.neutralDark.50}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-surface-popover",
+      "value": "{colors.neutralDark.50}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-surface-input",
+      "value": "{colors.neutralDark.300}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-surface-hover",
+      "value": "{colors.neutralDark.300}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-surface-selected",
+      "value": "{colors.primaryDark.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-interactive-primary-background",
+      "value": "{colors.info.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 24,
+      "components": [
+        "index.css",
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-interactive-primary-backgroundHover",
+      "value": "{colors.info.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-interactive-primary-text",
+      "value": "{colors.neutralDark.50}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 4,
+      "components": [
+        "index.css",
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-interactive-secondary-background",
+      "value": "{colors.neutralDark.300}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-interactive-secondary-backgroundHover",
+      "value": "{colors.neutralDark.300}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-interactive-secondary-text",
+      "value": "{colors.white}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-interactive-destructive-background",
+      "value": "{colors.error.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-interactive-destructive-backgroundHover",
+      "value": "{colors.error.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-interactive-destructive-text",
+      "value": "{colors.neutralDark.50}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-interactive-accent-background",
+      "value": "{colors.neutralDark.300}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-interactive-accent-backgroundHover",
+      "value": "{colors.neutralDark.300}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-interactive-accent-text",
+      "value": "{colors.white}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-table-container",
+      "value": "{colors.neutralDark.50}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-table-containerElevated",
+      "value": "{colors.neutralDark.300}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-table-header",
+      "value": "{colors.neutralDark.50}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-table-headerElevated",
+      "value": "{colors.neutralDark.300}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-table-groupHeader",
+      "value": "{colors.neutralDark.300}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-table-groupHeaderLine",
+      "value": "217 20% 30%",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-table-row",
+      "value": "{colors.neutralDark.300}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-table-rowHover",
+      "value": "217 25% 18%",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-table-border",
+      "value": "{colors.neutralDark.50}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-table-shadow",
+      "value": "{shadows.cardDark}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-table-shadowElevated",
+      "value": "{shadows.cardHoverDark}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-table-freezeShadow",
+      "value": "{shadows.freezeDark}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--colors-badge-default-background",
+      "value": "220 23% 21%",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 2,
+      "components": [
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-default-text",
+      "value": "{colors.white}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 2,
+      "components": [
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-default-border",
+      "value": "215 20% 26%",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 1,
+      "components": [
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-success-background",
+      "value": "{colors.success.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-success-text",
+      "value": "{colors.white}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-success-border",
+      "value": "{colors.success.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-warning-background",
+      "value": "{colors.warning.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-warning-text",
+      "value": "{colors.white}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-warning-border",
+      "value": "{colors.warning.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-error-background",
+      "value": "{colors.error.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-error-text",
+      "value": "{colors.white}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-error-border",
+      "value": "{colors.error.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-info-background",
+      "value": "{colors.info.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-info-text",
+      "value": "{colors.white}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-info-border",
+      "value": "{colors.info.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-gradeA-background",
+      "value": "{colors.success.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-gradeA-text",
+      "value": "{colors.white}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-gradeA-border",
+      "value": "{colors.success.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-gradeB-background",
+      "value": "{colors.info.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-gradeB-text",
+      "value": "{colors.white}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-gradeB-border",
+      "value": "{colors.info.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-gradeC-background",
+      "value": "{colors.warning.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-gradeC-text",
+      "value": "{colors.white}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-gradeC-border",
+      "value": "{colors.warning.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-gradeD-background",
+      "value": "{colors.warning.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-gradeD-text",
+      "value": "{colors.white}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-gradeD-border",
+      "value": "{colors.warning.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-gradeF-background",
+      "value": "{colors.error.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-gradeF-text",
+      "value": "{colors.white}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-gradeF-border",
+      "value": "{colors.error.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-neutral-background",
+      "value": "{colors.neutralDark.300}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-neutral-text",
+      "value": "{colors.white}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-badge-neutral-border",
+      "value": "{colors.neutralDark.300}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--colors-placeholder-color",
+      "value": "215 20% 45%",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-empty-badgeColor",
+      "value": "215 20% 35%",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-empty-badgeBackground",
+      "value": "220 23% 18%",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-empty-badgeBorder",
+      "value": "215 20% 26%",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--colors-percentage-color",
+      "value": "{colors.success.500}",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontFamily-base",
+      "value": "{typography.fontFamily.sans}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontFamily-badge",
+      "value": "inherit",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontSize-tableHeader",
+      "value": "{typography.fontSize.base}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontSize-tableGroupHeader",
+      "value": "{typography.fontSize.base}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontSize-tableBody",
+      "value": "{typography.fontSize.base}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--typography-fontSize-badge",
+      "value": "{typography.fontSize.sm}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 5,
+      "components": [
+        "index.css",
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--typography-fontSize-label",
+      "value": "{typography.fontSize.xs}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--typography-fontSize-percentage",
+      "value": "{typography.fontSize.sm}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontWeight-tableHeader",
+      "value": "{typography.fontWeight.semibold}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontWeight-tableGroupHeader",
+      "value": "{typography.fontWeight.semibold}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-fontWeight-tableBody",
+      "value": "{typography.fontWeight.normal}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--typography-fontWeight-badge",
+      "value": "{typography.fontWeight.semibold}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 5,
+      "components": [
+        "index.css",
+        "tokens.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--typography-fontWeight-label",
+      "value": "{typography.fontWeight.medium}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--typography-fontWeight-percentage",
+      "value": "{typography.fontWeight.medium}",
+      "source": "dark-theme",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-lineHeight-tableBody",
+      "value": "{typography.lineHeight.normal}",
+      "source": "dark-theme",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-textTransform-tableHeader",
+      "value": "none",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--typography-textTransform-badge",
+      "value": "uppercase",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 3,
+      "components": [
+        "index.css",
+        "Badge.tsx"
+      ]
+    },
+    {
+      "name": "--typography-textTransform-label",
+      "value": "none",
+      "source": "dark-theme",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--shadows-table",
+      "value": "{shadows.cardDark}",
+      "source": "dark-theme",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--shadows-tableElevated",
+      "value": "{shadows.cardHoverDark}",
+      "source": "dark-theme",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--shadows-tableFreeze",
+      "value": "{shadows.freezeDark}",
+      "source": "dark-theme",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--borderRadius-base",
+      "value": "{borderRadius.lg}",
+      "source": "dark-theme",
+      "category": "border",
+      "usageCount": 2,
+      "components": [
+        "tokens.css"
+      ]
+    },
+    {
+      "name": "--surface-card-padding",
+      "value": "{spacing.component.lg}",
+      "source": "patterns",
+      "category": "spacing",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--surface-card-borderRadius",
+      "value": "{borderRadius.lg}",
+      "source": "patterns",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--surface-card-background",
+      "value": "{colors.surface.base}",
+      "source": "patterns",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--surface-card-shadow",
+      "value": "{elevation.sm}",
+      "source": "patterns",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--surface-card-shadowHover",
+      "value": "{elevation.md}",
+      "source": "patterns",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--surface-modal-padding",
+      "value": "{spacing.component.lg}",
+      "source": "patterns",
+      "category": "spacing",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--surface-modal-borderRadius",
+      "value": "{borderRadius.lg}",
+      "source": "patterns",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--surface-modal-background",
+      "value": "{colors.surface.base}",
+      "source": "patterns",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--surface-modal-shadow",
+      "value": "{elevation.lg}",
+      "source": "patterns",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--surface-modal-overlay",
+      "value": "{colors.background.overlay}",
+      "source": "patterns",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--surface-popover-padding",
+      "value": "{spacing.component.md}",
+      "source": "patterns",
+      "category": "spacing",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--surface-popover-borderRadius",
+      "value": "{borderRadius.md}",
+      "source": "patterns",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--surface-popover-background",
+      "value": "{colors.surface.elevated}",
+      "source": "patterns",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--surface-popover-shadow",
+      "value": "{elevation.md}",
+      "source": "patterns",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--interactive-button-height",
+      "value": "{layout.interactive.minTouchTarget}",
+      "source": "patterns",
+      "category": "size",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--interactive-button-paddingX",
+      "value": "{spacing.component.md}",
+      "source": "patterns",
+      "category": "spacing",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--interactive-button-borderRadius",
+      "value": "{borderRadius.md}",
+      "source": "patterns",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--interactive-button-fontSize",
+      "value": "{typography.fontSize.base}",
+      "source": "patterns",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--interactive-button-fontWeight",
+      "value": "{typography.fontWeight.medium}",
+      "source": "patterns",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--interactive-button-transition",
+      "value": "all 200ms ease-out",
+      "source": "patterns",
+      "category": "animation",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--interactive-input-height",
+      "value": "{layout.interactive.minTouchTarget}",
+      "source": "patterns",
+      "category": "size",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--interactive-input-paddingX",
+      "value": "{spacing.component.md}",
+      "source": "patterns",
+      "category": "spacing",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--interactive-input-borderRadius",
+      "value": "{borderRadius.md}",
+      "source": "patterns",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--interactive-input-fontSize",
+      "value": "{typography.fontSize.base}",
+      "source": "patterns",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--interactive-input-border",
+      "value": "1px solid {colors.interactive.secondary.background}",
+      "source": "patterns",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--feedback-badge-paddingX",
+      "value": "{spacing.component.sm}",
+      "source": "patterns",
+      "category": "spacing",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--feedback-badge-paddingY",
+      "value": "{spacing.xs}",
+      "source": "patterns",
+      "category": "spacing",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--feedback-badge-borderRadius",
+      "value": "{layout.badge.borderRadius}",
+      "source": "patterns",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--feedback-badge-fontSize",
+      "value": "{layout.badge.fontSize}",
+      "source": "patterns",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--feedback-badge-fontWeight",
+      "value": "{layout.badge.fontWeight}",
+      "source": "patterns",
+      "category": "typography",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--feedback-badge-textTransform",
+      "value": "{layout.badge.textTransform}",
+      "source": "patterns",
+      "category": "color",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--feedback-badge-minHeight",
+      "value": "20px",
+      "source": "patterns",
+      "category": "other",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--feedback-badge-border",
+      "value": "1px solid",
+      "source": "patterns",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--feedback-notification-padding",
+      "value": "{spacing.component.md}",
+      "source": "patterns",
+      "category": "spacing",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--feedback-notification-borderRadius",
+      "value": "{borderRadius.md}",
+      "source": "patterns",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--feedback-notification-shadow",
+      "value": "{elevation.md}",
+      "source": "patterns",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    },
+    {
+      "name": "--feedback-notification-border",
+      "value": "1px solid",
+      "source": "patterns",
+      "category": "border",
+      "usageCount": 0,
+      "components": []
+    }
+  ],
+  "usageFrequency": [
+    [
+      "--colors-interactive-primary-background",
+      24
+    ],
+    [
+      "--colors-border-focus",
+      4
+    ],
+    [
+      "--colors-border-default",
+      3
+    ],
+    [
+      "--colors-background-primary",
+      4
+    ],
+    [
+      "--colors-text-primary",
+      4
+    ],
+    [
+      "--colors-text-muted",
+      6
+    ],
+    [
+      "--colors-interactive-primary-text",
+      4
+    ],
+    [
+      "--layout-label-padding",
+      2
+    ],
+    [
+      "--layout-badge-borderRadius",
+      3
+    ],
+    [
+      "--typography-fontSize-badge",
+      5
+    ],
+    [
+      "--typography-fontWeight-badge",
+      5
+    ],
+    [
+      "--typography-textTransform-badge",
+      3
+    ],
+    [
+      "--typography-fontSize-label",
+      2
+    ],
+    [
+      "--typography-fontSize-tableBody",
+      2
+    ],
+    [
+      "--typography-fontWeight-tableBody",
+      2
+    ],
+    [
+      "--typography-fontWeight-label",
+      2
+    ],
+    [
+      "--colors-interactive-secondary-background",
+      2
+    ],
+    [
+      "--colors-surface-card",
+      2
+    ],
+    [
+      "--colors-interactive-secondary-text",
+      2
+    ],
+    [
+      "--colors-badge-gradeA-background",
+      3
+    ],
+    [
+      "--colors-badge-gradeA-text",
+      3
+    ],
+    [
+      "--colors-badge-gradeA-border",
+      3
+    ],
+    [
+      "--colors-badge-gradeB-background",
+      3
+    ],
+    [
+      "--colors-badge-gradeB-text",
+      3
+    ],
+    [
+      "--colors-badge-gradeB-border",
+      3
+    ],
+    [
+      "--colors-badge-gradeC-background",
+      3
+    ],
+    [
+      "--colors-badge-gradeC-text",
+      3
+    ],
+    [
+      "--colors-badge-gradeC-border",
+      3
+    ],
+    [
+      "--colors-badge-gradeD-background",
+      3
+    ],
+    [
+      "--colors-badge-gradeD-text",
+      3
+    ],
+    [
+      "--colors-badge-gradeD-border",
+      3
+    ],
+    [
+      "--colors-badge-gradeF-background",
+      3
+    ],
+    [
+      "--colors-badge-gradeF-text",
+      3
+    ],
+    [
+      "--colors-badge-gradeF-border",
+      3
+    ],
+    [
+      "--colors-badge-success-background",
+      3
+    ],
+    [
+      "--colors-badge-success-text",
+      3
+    ],
+    [
+      "--colors-badge-success-border",
+      3
+    ],
+    [
+      "--colors-badge-warning-background",
+      3
+    ],
+    [
+      "--colors-badge-warning-text",
+      3
+    ],
+    [
+      "--colors-badge-warning-border",
+      3
+    ],
+    [
+      "--colors-badge-error-background",
+      3
+    ],
+    [
+      "--colors-badge-error-text",
+      3
+    ],
+    [
+      "--colors-badge-error-border",
+      3
+    ],
+    [
+      "--colors-badge-info-background",
+      3
+    ],
+    [
+      "--colors-badge-info-text",
+      3
+    ],
+    [
+      "--colors-badge-info-border",
+      3
+    ],
+    [
+      "--colors-badge-neutral-background",
+      3
+    ],
+    [
+      "--colors-badge-neutral-text",
+      3
+    ],
+    [
+      "--colors-badge-neutral-border",
+      3
+    ],
+    [
+      "--colors-table-container",
+      2
+    ],
+    [
+      "--colors-table-containerElevated",
+      2
+    ],
+    [
+      "--colors-table-header",
+      2
+    ],
+    [
+      "--colors-table-headerElevated",
+      2
+    ],
+    [
+      "--colors-table-groupHeader",
+      2
+    ],
+    [
+      "--colors-table-row",
+      2
+    ],
+    [
+      "--colors-table-rowHover",
+      2
+    ],
+    [
+      "--colors-table-border",
+      2
+    ],
+    [
+      "--colors-table-groupHeaderLine",
+      2
+    ],
+    [
+      "--borderRadius-base",
+      2
+    ],
+    [
+      "--shadows-card",
+      2
+    ],
+    [
+      "--shadows-cardHover",
+      2
+    ],
+    [
+      "--colors-table-shadow",
+      2
+    ],
+    [
+      "--colors-table-shadowElevated",
+      2
+    ],
+    [
+      "--colors-table-freezeShadow",
+      2
+    ],
+    [
+      "--colors-badge-default-border",
+      1
+    ],
+    [
+      "--colors-badge-default-background",
+      2
+    ],
+    [
+      "--colors-badge-default-text",
+      2
+    ]
+  ],
+  "componentUsage": [
+    {
+      "component": "index.css",
+      "tokens": [
+        "--colors-interactive-primary-background",
+        "--colors-border-focus",
+        "--colors-border-default",
+        "--colors-background-primary",
+        "--colors-text-primary",
+        "--colors-text-muted",
+        "--colors-interactive-primary-text",
+        "--layout-label-padding",
+        "--layout-badge-borderRadius",
+        "--typography-fontSize-badge",
+        "--typography-fontWeight-badge",
+        "--typography-textTransform-badge"
+      ]
+    },
+    {
+      "component": "tokens.css",
+      "tokens": [
+        "--typography-fontSize-label",
+        "--typography-fontSize-badge",
+        "--typography-fontSize-tableBody",
+        "--typography-fontWeight-tableBody",
+        "--typography-fontWeight-label",
+        "--typography-fontWeight-badge",
+        "--colors-interactive-primary-background",
+        "--colors-interactive-secondary-background",
+        "--colors-surface-card",
+        "--colors-background-primary",
+        "--colors-interactive-primary-text",
+        "--colors-interactive-secondary-text",
+        "--colors-text-primary",
+        "--colors-text-muted",
+        "--colors-badge-gradeA-background",
+        "--colors-badge-gradeA-text",
+        "--colors-badge-gradeA-border",
+        "--colors-badge-gradeB-background",
+        "--colors-badge-gradeB-text",
+        "--colors-badge-gradeB-border",
+        "--colors-badge-gradeC-background",
+        "--colors-badge-gradeC-text",
+        "--colors-badge-gradeC-border",
+        "--colors-badge-gradeD-background",
+        "--colors-badge-gradeD-text",
+        "--colors-badge-gradeD-border",
+        "--colors-badge-gradeF-background",
+        "--colors-badge-gradeF-text",
+        "--colors-badge-gradeF-border",
+        "--colors-badge-success-background",
+        "--colors-badge-success-text",
+        "--colors-badge-success-border",
+        "--colors-badge-warning-background",
+        "--colors-badge-warning-text",
+        "--colors-badge-warning-border",
+        "--colors-badge-error-background",
+        "--colors-badge-error-text",
+        "--colors-badge-error-border",
+        "--colors-badge-info-background",
+        "--colors-badge-info-text",
+        "--colors-badge-info-border",
+        "--colors-badge-neutral-background",
+        "--colors-badge-neutral-text",
+        "--colors-badge-neutral-border",
+        "--colors-table-container",
+        "--colors-table-containerElevated",
+        "--colors-table-header",
+        "--colors-table-headerElevated",
+        "--colors-table-groupHeader",
+        "--colors-table-row",
+        "--colors-table-rowHover",
+        "--colors-table-border",
+        "--colors-table-groupHeaderLine",
+        "--borderRadius-base",
+        "--shadows-card",
+        "--shadows-cardHover",
+        "--colors-table-shadow",
+        "--colors-table-shadowElevated",
+        "--colors-table-freezeShadow"
+      ]
+    },
+    {
+      "component": "Badge.tsx",
+      "tokens": [
+        "--colors-badge-default-border",
+        "--colors-border-default",
+        "--colors-badge-success-border",
+        "--colors-badge-warning-border",
+        "--colors-badge-error-border",
+        "--colors-badge-info-border",
+        "--colors-badge-gradeA-border",
+        "--colors-badge-gradeB-border",
+        "--colors-badge-gradeC-border",
+        "--colors-badge-gradeD-border",
+        "--colors-badge-gradeF-border",
+        "--colors-badge-neutral-border",
+        "--colors-badge-default-background",
+        "--colors-badge-default-text",
+        "--colors-badge-success-background",
+        "--colors-badge-success-text",
+        "--colors-badge-warning-background",
+        "--colors-badge-warning-text",
+        "--colors-badge-error-background",
+        "--colors-badge-error-text",
+        "--colors-badge-info-background",
+        "--colors-badge-info-text",
+        "--colors-badge-gradeA-background",
+        "--colors-badge-gradeA-text",
+        "--colors-badge-gradeB-background",
+        "--colors-badge-gradeB-text",
+        "--colors-badge-gradeC-background",
+        "--colors-badge-gradeC-text",
+        "--colors-badge-gradeD-background",
+        "--colors-badge-gradeD-text",
+        "--colors-badge-gradeF-background",
+        "--colors-badge-gradeF-text",
+        "--colors-badge-neutral-background",
+        "--colors-badge-neutral-text",
+        "--typography-fontSize-badge",
+        "--typography-fontWeight-badge",
+        "--typography-textTransform-badge",
+        "--layout-badge-borderRadius"
+      ]
+    }
+  ],
+  "unusedTokens": [
+    "--colors-neutral-50",
+    "--colors-neutral-100",
+    "--colors-neutral-200",
+    "--colors-neutral-300",
+    "--colors-neutral-400",
+    "--colors-neutral-600",
+    "--colors-neutral-700",
+    "--colors-neutralDark-50",
+    "--colors-neutralDark-300",
+    "--colors-primary-50",
+    "--colors-primary-500",
+    "--colors-primary-600",
+    "--colors-primaryDark-500",
+    "--colors-success-50",
+    "--colors-success-100",
+    "--colors-success-500",
+    "--colors-success-600",
+    "--colors-success-700",
+    "--colors-warning-50",
+    "--colors-warning-100",
+    "--colors-warning-500",
+    "--colors-warning-600",
+    "--colors-warning-700",
+    "--colors-warning-800",
+    "--colors-error-50",
+    "--colors-error-100",
+    "--colors-error-500",
+    "--colors-error-600",
+    "--colors-info-50",
+    "--colors-info-100",
+    "--colors-info-500",
+    "--colors-info-600",
+    "--colors-info-700",
+    "--colors-white",
+    "--colors-black",
+    "--typography-fontFamily-sans-0",
+    "--typography-fontFamily-sans-1",
+    "--typography-fontFamily-sans-2",
+    "--typography-fontFamily-sans-3",
+    "--typography-fontFamily-sans-4",
+    "--typography-fontFamily-mono-0",
+    "--typography-fontFamily-mono-1",
+    "--typography-fontFamily-mono-2",
+    "--typography-fontFamily-mono-3",
+    "--typography-fontSize-xs",
+    "--typography-fontSize-sm",
+    "--typography-fontSize-base",
+    "--typography-fontSize-lg",
+    "--typography-fontSize-xl",
+    "--typography-fontSize-2xl",
+    "--typography-fontWeight-normal",
+    "--typography-fontWeight-medium",
+    "--typography-fontWeight-semibold",
+    "--typography-fontWeight-bold",
+    "--typography-lineHeight-tight",
+    "--typography-lineHeight-normal",
+    "--typography-lineHeight-relaxed",
+    "--borderRadius-none",
+    "--borderRadius-sm",
+    "--borderRadius-md",
+    "--borderRadius-lg",
+    "--borderRadius-xl",
+    "--borderRadius-full",
+    "--shadows-sm",
+    "--shadows-md",
+    "--shadows-lg",
+    "--shadows-freeze",
+    "--shadows-freezeDark",
+    "--shadows-cardDark",
+    "--shadows-cardHoverDark",
+    "--layout-table-headerHeight",
+    "--layout-table-groupHeaderHeight",
+    "--layout-table-rowHeight",
+    "--layout-table-cellPaddingX",
+    "--layout-table-cellPaddingY",
+    "--layout-table-groupHeaderPaddingY",
+    "--layout-table-groupHeaderPaddingX",
+    "--layout-table-borderWidth",
+    "--layout-table-textIndent",
+    "--layout-table-subtextIndent",
+    "--layout-interactive-buttonSize",
+    "--layout-interactive-buttonPadding",
+    "--layout-interactive-buttonRadius",
+    "--layout-interactive-buttonHoverScale",
+    "--layout-interactive-minTouchTarget",
+    "--layout-badge-fontSize",
+    "--layout-badge-fontWeight",
+    "--layout-badge-textTransform",
+    "--layout-label-borderRadius",
+    "--layout-label-fontSize",
+    "--layout-label-fontWeight",
+    "--layout-label-textTransform",
+    "--layout-percentage-fontSize",
+    "--layout-percentage-fontWeight",
+    "--layout-percentage-gap",
+    "--colors-background-page",
+    "--colors-background-card",
+    "--colors-background-popover",
+    "--colors-background-table-container",
+    "--colors-background-table-containerElevated",
+    "--colors-background-table-header",
+    "--colors-background-table-headerElevated",
+    "--colors-background-table-groupHeader",
+    "--colors-background-table-groupHeaderLine",
+    "--colors-background-table-row",
+    "--colors-background-table-rowHover",
+    "--colors-foreground-primary",
+    "--colors-foreground-card",
+    "--colors-foreground-popover",
+    "--colors-interactive-primary",
+    "--colors-interactive-primaryForeground",
+    "--colors-interactive-secondary",
+    "--colors-interactive-secondaryForeground",
+    "--colors-interactive-accent",
+    "--colors-interactive-accentForeground",
+    "--colors-interactive-muted",
+    "--colors-interactive-mutedForeground",
+    "--colors-interactive-destructive",
+    "--colors-interactive-destructiveForeground",
+    "--colors-content-primary",
+    "--colors-content-secondary",
+    "--colors-content-tertiary",
+    "--colors-content-inverse",
+    "--colors-content-disabled",
+    "--colors-border-header",
+    "--colors-border-input",
+    "--colors-border-table",
+    "--colors-border-ring",
+    "--colors-placeholder-text",
+    "--colors-placeholder-background",
+    "--colors-placeholder-symbol",
+    "--colors-percentage-positive",
+    "--colors-empty-badge-text",
+    "--colors-empty-badge-background",
+    "--colors-empty-badge-border",
+    "--shadows-table-default",
+    "--shadows-table-elevated",
+    "--shadows-table-freeze",
+    "--shadows-card-default",
+    "--shadows-card-hover",
+    "--typography-fontFamily",
+    "--typography-table-header-fontSize",
+    "--typography-table-header-fontWeight",
+    "--typography-table-groupHeader-fontSize",
+    "--typography-table-groupHeader-fontWeight",
+    "--typography-table-body-fontSize",
+    "--typography-table-body-fontWeight",
+    "--typography-table-body-lineHeight",
+    "--typography-badge-fontSize",
+    "--typography-badge-fontWeight",
+    "--typography-percentage-fontSize",
+    "--typography-percentage-fontWeight",
+    "--colors-background-secondary",
+    "--colors-background-elevated",
+    "--colors-text-secondary",
+    "--colors-text-tertiary",
+    "--colors-text-inverse",
+    "--colors-text-disabled",
+    "--colors-border-hover",
+    "--colors-surface-popover",
+    "--colors-surface-input",
+    "--colors-surface-hover",
+    "--colors-surface-selected",
+    "--colors-interactive-primary-backgroundHover",
+    "--colors-interactive-secondary-backgroundHover",
+    "--colors-interactive-destructive-background",
+    "--colors-interactive-destructive-backgroundHover",
+    "--colors-interactive-destructive-text",
+    "--colors-interactive-accent-background",
+    "--colors-interactive-accent-backgroundHover",
+    "--colors-interactive-accent-text",
+    "--colors-placeholder-color",
+    "--colors-empty-badgeColor",
+    "--colors-empty-badgeBackground",
+    "--colors-empty-badgeBorder",
+    "--colors-percentage-color",
+    "--typography-fontFamily-base",
+    "--typography-fontFamily-badge",
+    "--typography-fontSize-tableHeader",
+    "--typography-fontSize-tableGroupHeader",
+    "--typography-fontSize-percentage",
+    "--typography-fontWeight-tableHeader",
+    "--typography-fontWeight-tableGroupHeader",
+    "--typography-fontWeight-percentage",
+    "--typography-lineHeight-tableBody",
+    "--typography-textTransform-tableHeader",
+    "--typography-textTransform-label",
+    "--shadows-table",
+    "--shadows-tableElevated",
+    "--shadows-tableFreeze",
+    "--surface-card-padding",
+    "--surface-card-borderRadius",
+    "--surface-card-background",
+    "--surface-card-shadow",
+    "--surface-card-shadowHover",
+    "--surface-modal-padding",
+    "--surface-modal-borderRadius",
+    "--surface-modal-background",
+    "--surface-modal-shadow",
+    "--surface-modal-overlay",
+    "--surface-popover-padding",
+    "--surface-popover-borderRadius",
+    "--surface-popover-background",
+    "--surface-popover-shadow",
+    "--interactive-button-height",
+    "--interactive-button-paddingX",
+    "--interactive-button-borderRadius",
+    "--interactive-button-fontSize",
+    "--interactive-button-fontWeight",
+    "--interactive-button-transition",
+    "--interactive-input-height",
+    "--interactive-input-paddingX",
+    "--interactive-input-borderRadius",
+    "--interactive-input-fontSize",
+    "--interactive-input-border",
+    "--feedback-badge-paddingX",
+    "--feedback-badge-paddingY",
+    "--feedback-badge-borderRadius",
+    "--feedback-badge-fontSize",
+    "--feedback-badge-fontWeight",
+    "--feedback-badge-textTransform",
+    "--feedback-badge-minHeight",
+    "--feedback-badge-border",
+    "--feedback-notification-padding",
+    "--feedback-notification-borderRadius",
+    "--feedback-notification-shadow",
+    "--feedback-notification-border"
+  ],
+  "duplicateValues": [
+    [
+      "201 100% 95%",
+      [
+        "--colors-primary-50",
+        "--colors-info-50"
+      ]
+    ],
+    [
+      "201 96% 32%",
+      [
+        "--colors-primary-500",
+        "--colors-primaryDark-500",
+        "--colors-info-500"
+      ]
+    ],
+    [
+      "201 96% 25%",
+      [
+        "--colors-primary-600",
+        "--colors-info-600"
+      ]
+    ],
+    [
+      "12px",
+      [
+        "--typography-fontSize-xs",
+        "--layout-table-cellPaddingX",
+        "--layout-table-groupHeaderPaddingX",
+        "--layout-label-fontSize"
+      ]
+    ],
+    [
+      "13px",
+      [
+        "--typography-fontSize-sm",
+        "--layout-badge-fontSize",
+        "--layout-percentage-fontSize"
+      ]
+    ],
+    [
+      "20px",
+      [
+        "--typography-fontSize-2xl",
+        "--layout-interactive-buttonSize",
+        "--feedback-badge-minHeight"
+      ]
+    ],
+    [
+      "500",
+      [
+        "--typography-fontWeight-medium",
+        "--layout-label-fontWeight",
+        "--layout-percentage-fontWeight"
+      ]
+    ],
+    [
+      "600",
+      [
+        "--typography-fontWeight-semibold",
+        "--layout-badge-fontWeight"
+      ]
+    ],
+    [
+      "0 1px 3px rgba(0, 0, 0, 0.1)",
+      [
+        "--shadows-sm",
+        "--shadows-card"
+      ]
+    ],
+    [
+      "0 4px 6px rgba(0, 0, 0, 0.1)",
+      [
+        "--shadows-md",
+        "--shadows-cardHover"
+      ]
+    ],
+    [
+      "40px",
+      [
+        "--layout-table-headerHeight",
+        "--layout-table-rowHeight"
+      ]
+    ],
+    [
+      "8px",
+      [
+        "--layout-table-cellPaddingY",
+        "--layout-interactive-buttonPadding"
+      ]
+    ],
+    [
+      "0px",
+      [
+        "--layout-table-textIndent",
+        "--layout-table-subtextIndent"
+      ]
+    ],
+    [
+      "4px",
+      [
+        "--layout-interactive-buttonRadius",
+        "--layout-percentage-gap"
+      ]
+    ],
+    [
+      "6px",
+      [
+        "--layout-badge-borderRadius",
+        "--layout-label-borderRadius"
+      ]
+    ],
+    [
+      "uppercase",
+      [
+        "--layout-badge-textTransform",
+        "--typography-textTransform-badge",
+        "--typography-textTransform-badge"
+      ]
+    ],
+    [
+      "none",
+      [
+        "--layout-label-textTransform",
+        "--typography-textTransform-tableHeader",
+        "--typography-textTransform-label",
+        "--typography-textTransform-tableHeader",
+        "--typography-textTransform-label"
+      ]
+    ],
+    [
+      "{colors.white}",
+      [
+        "--colors-background-primary",
+        "--colors-background-primary",
+        "--colors-background-elevated",
+        "--colors-surface-card",
+        "--colors-surface-popover",
+        "--colors-table-container",
+        "--colors-table-containerElevated",
+        "--colors-text-primary",
+        "--colors-text-secondary",
+        "--colors-text-muted",
+        "--colors-text-tertiary",
+        "--colors-interactive-secondary-text",
+        "--colors-interactive-accent-text",
+        "--colors-badge-default-text",
+        "--colors-badge-success-text",
+        "--colors-badge-warning-text",
+        "--colors-badge-error-text",
+        "--colors-badge-info-text",
+        "--colors-badge-gradeA-text",
+        "--colors-badge-gradeB-text",
+        "--colors-badge-gradeC-text",
+        "--colors-badge-gradeD-text",
+        "--colors-badge-gradeF-text",
+        "--colors-badge-neutral-text"
+      ]
+    ],
+    [
+      "{colors.background.primary}",
+      [
+        "--colors-background-page",
+        "--colors-background-card",
+        "--colors-background-popover",
+        "--colors-background-table-container",
+        "--colors-background-table-containerElevated"
+      ]
+    ],
+    [
+      "{colors.neutral.300}",
+      [
+        "--colors-background-table-header",
+        "--colors-background-table-groupHeaderLine",
+        "--colors-border-header",
+        "--colors-border-header",
+        "--colors-border-hover",
+        "--colors-interactive-secondary-backgroundHover",
+        "--colors-interactive-accent-backgroundHover",
+        "--colors-table-header",
+        "--colors-table-groupHeaderLine",
+        "--colors-badge-default-border"
+      ]
+    ],
+    [
+      "{colors.neutral.100}",
+      [
+        "--colors-background-table-headerElevated",
+        "--colors-background-table-rowHover",
+        "--colors-table-headerElevated",
+        "--colors-badge-default-background",
+        "--colors-badge-neutral-background"
+      ]
+    ],
+    [
+      "{colors.neutral.200}",
+      [
+        "--colors-background-table-groupHeader",
+        "--colors-border-default",
+        "--colors-border-table",
+        "--colors-border-default",
+        "--colors-surface-input",
+        "--colors-interactive-secondary-background",
+        "--colors-interactive-accent-background",
+        "--colors-table-groupHeader",
+        "--colors-table-border",
+        "--colors-badge-neutral-border"
+      ]
+    ],
+    [
+      "{colors.neutral.50}",
+      [
+        "--colors-background-table-row",
+        "--colors-interactive-primaryForeground",
+        "--colors-interactive-secondary",
+        "--colors-interactive-destructiveForeground",
+        "--colors-content-inverse",
+        "--colors-empty-badge-background",
+        "--colors-background-secondary",
+        "--colors-text-inverse",
+        "--colors-surface-hover",
+        "--colors-interactive-primary-text",
+        "--colors-interactive-destructive-text",
+        "--colors-badge-error-text",
+        "--colors-badge-info-text",
+        "--colors-empty-badgeBackground"
+      ]
+    ],
+    [
+      "{colors.black}",
+      [
+        "--colors-foreground-primary",
+        "--colors-foreground-card",
+        "--colors-foreground-popover",
+        "--colors-interactive-secondaryForeground",
+        "--colors-interactive-accentForeground",
+        "--colors-interactive-mutedForeground",
+        "--colors-content-primary",
+        "--colors-content-secondary",
+        "--colors-content-tertiary",
+        "--colors-content-disabled",
+        "--colors-placeholder-text",
+        "--colors-empty-badge-text",
+        "--colors-text-primary",
+        "--colors-badge-default-text"
+      ]
+    ],
+    [
+      "{colors.info.500}",
+      [
+        "--colors-interactive-primary",
+        "--colors-border-ring",
+        "--colors-badge-gradeB-text",
+        "--colors-border-focus",
+        "--colors-interactive-primary-background",
+        "--colors-interactive-primary-backgroundHover",
+        "--colors-badge-info-background",
+        "--colors-badge-info-border",
+        "--colors-badge-gradeB-background",
+        "--colors-badge-gradeB-border"
+      ]
+    ],
+    [
+      "{colors.interactive.secondary}",
+      [
+        "--colors-interactive-accent",
+        "--colors-interactive-muted"
+      ]
+    ],
+    [
+      "{colors.error.500}",
+      [
+        "--colors-interactive-destructive",
+        "--colors-interactive-destructive-background",
+        "--colors-badge-error-background",
+        "--colors-interactive-destructive-background",
+        "--colors-interactive-destructive-backgroundHover",
+        "--colors-badge-error-background",
+        "--colors-badge-error-border",
+        "--colors-badge-gradeF-background",
+        "--colors-badge-gradeF-border"
+      ]
+    ],
+    [
+      "{colors.border.default}",
+      [
+        "--colors-border-input",
+        "--colors-empty-badge-border"
+      ]
+    ],
+    [
+      "transparent",
+      [
+        "--colors-placeholder-background",
+        "--colors-placeholder-background",
+        "--colors-placeholder-background"
+      ]
+    ],
+    [
+      "–",
+      [
+        "--colors-placeholder-symbol",
+        "--colors-placeholder-symbol",
+        "--colors-placeholder-symbol"
+      ]
+    ],
+    [
+      "{colors.success.500}",
+      [
+        "--colors-percentage-positive",
+        "--colors-percentage-color",
+        "--colors-badge-success-background",
+        "--colors-badge-success-border",
+        "--colors-badge-gradeA-background",
+        "--colors-badge-gradeA-border",
+        "--colors-percentage-color"
+      ]
+    ],
+    [
+      "{shadows.sm}",
+      [
+        "--shadows-table-default",
+        "--colors-table-shadow",
+        "--shadows-table"
+      ]
+    ],
+    [
+      "{shadows.md}",
+      [
+        "--shadows-table-elevated",
+        "--colors-table-shadowElevated",
+        "--shadows-tableElevated"
+      ]
+    ],
+    [
+      "{shadows.freeze}",
+      [
+        "--shadows-table-freeze",
+        "--colors-table-freezeShadow",
+        "--shadows-tableFreeze"
+      ]
+    ],
+    [
+      "{shadows.card}",
+      [
+        "--shadows-card-default",
+        "--shadows-card"
+      ]
+    ],
+    [
+      "{shadows.cardHover}",
+      [
+        "--shadows-card-hover",
+        "--shadows-cardHover"
+      ]
+    ],
+    [
+      "{layout.table.headerHeight}",
+      [
+        "--layout-table-headerHeight",
+        "--layout-table-headerHeight",
+        "--layout-table-headerHeight"
+      ]
+    ],
+    [
+      "{layout.table.groupHeaderHeight}",
+      [
+        "--layout-table-groupHeaderHeight",
+        "--layout-table-groupHeaderHeight",
+        "--layout-table-groupHeaderHeight"
+      ]
+    ],
+    [
+      "{layout.table.rowHeight}",
+      [
+        "--layout-table-rowHeight",
+        "--layout-table-rowHeight",
+        "--layout-table-rowHeight"
+      ]
+    ],
+    [
+      "{layout.table.cellPaddingX}",
+      [
+        "--layout-table-cellPaddingX",
+        "--layout-table-cellPaddingX",
+        "--layout-table-cellPaddingX"
+      ]
+    ],
+    [
+      "{layout.table.cellPaddingY}",
+      [
+        "--layout-table-cellPaddingY",
+        "--layout-table-cellPaddingY",
+        "--layout-table-cellPaddingY"
+      ]
+    ],
+    [
+      "{layout.table.borderWidth}",
+      [
+        "--layout-table-borderWidth",
+        "--layout-table-borderWidth",
+        "--layout-table-borderWidth"
+      ]
+    ],
+    [
+      "{layout.interactive.buttonSize}",
+      [
+        "--layout-interactive-buttonSize",
+        "--layout-interactive-buttonSize",
+        "--layout-interactive-buttonSize"
+      ]
+    ],
+    [
+      "{layout.interactive.minTouchTarget}",
+      [
+        "--layout-interactive-minTouchTarget",
+        "--layout-interactive-minTouchTarget",
+        "--layout-interactive-minTouchTarget",
+        "--interactive-button-height",
+        "--interactive-input-height"
+      ]
+    ],
+    [
+      "{layout.badge.borderRadius}",
+      [
+        "--layout-badge-borderRadius",
+        "--layout-badge-borderRadius",
+        "--layout-badge-borderRadius",
+        "--feedback-badge-borderRadius"
+      ]
+    ],
+    [
+      "{layout.badge.fontSize}",
+      [
+        "--layout-badge-fontSize",
+        "--layout-badge-fontSize",
+        "--layout-badge-fontSize",
+        "--feedback-badge-fontSize"
+      ]
+    ],
+    [
+      "{layout.badge.fontWeight}",
+      [
+        "--layout-badge-fontWeight",
+        "--layout-badge-fontWeight",
+        "--layout-badge-fontWeight",
+        "--feedback-badge-fontWeight"
+      ]
+    ],
+    [
+      "{layout.badge.textTransform}",
+      [
+        "--layout-badge-textTransform",
+        "--layout-badge-textTransform",
+        "--layout-badge-textTransform",
+        "--feedback-badge-textTransform"
+      ]
+    ],
+    [
+      "{typography.fontFamily.sans}",
+      [
+        "--typography-fontFamily",
+        "--typography-fontFamily-base",
+        "--typography-fontFamily-base"
+      ]
+    ],
+    [
+      "{typography.fontSize.base}",
+      [
+        "--typography-table-header-fontSize",
+        "--typography-table-groupHeader-fontSize",
+        "--typography-table-body-fontSize",
+        "--typography-fontSize-tableHeader",
+        "--typography-fontSize-tableGroupHeader",
+        "--typography-fontSize-tableBody",
+        "--typography-fontSize-tableHeader",
+        "--typography-fontSize-tableGroupHeader",
+        "--typography-fontSize-tableBody",
+        "--interactive-button-fontSize",
+        "--interactive-input-fontSize"
+      ]
+    ],
+    [
+      "{typography.fontWeight.semibold}",
+      [
+        "--typography-table-header-fontWeight",
+        "--typography-table-groupHeader-fontWeight",
+        "--typography-badge-fontWeight",
+        "--typography-fontWeight-tableHeader",
+        "--typography-fontWeight-tableGroupHeader",
+        "--typography-fontWeight-badge",
+        "--typography-fontWeight-tableHeader",
+        "--typography-fontWeight-tableGroupHeader",
+        "--typography-fontWeight-badge"
+      ]
+    ],
+    [
+      "{typography.fontWeight.normal}",
+      [
+        "--typography-table-body-fontWeight",
+        "--typography-fontWeight-tableBody",
+        "--typography-fontWeight-tableBody"
+      ]
+    ],
+    [
+      "{typography.lineHeight.normal}",
+      [
+        "--typography-table-body-lineHeight",
+        "--typography-lineHeight-tableBody",
+        "--typography-lineHeight-tableBody"
+      ]
+    ],
+    [
+      "{typography.fontSize.sm}",
+      [
+        "--typography-badge-fontSize",
+        "--typography-percentage-fontSize",
+        "--typography-fontSize-badge",
+        "--typography-fontSize-percentage",
+        "--typography-fontSize-badge",
+        "--typography-fontSize-percentage"
+      ]
+    ],
+    [
+      "{typography.fontWeight.medium}",
+      [
+        "--typography-percentage-fontWeight",
+        "--typography-fontWeight-label",
+        "--typography-fontWeight-percentage",
+        "--typography-fontWeight-label",
+        "--typography-fontWeight-percentage",
+        "--interactive-button-fontWeight"
+      ]
+    ],
+    [
+      "{colors.neutral.600}",
+      [
+        "--colors-text-secondary",
+        "--colors-badge-neutral-text"
+      ]
+    ],
+    [
+      "215.4 16.3% 65%",
+      [
+        "--colors-text-tertiary",
+        "--colors-placeholder-color"
+      ]
+    ],
+    [
+      "215.4 16.3% 75%",
+      [
+        "--colors-text-disabled",
+        "--colors-empty-badgeColor"
+      ]
+    ],
+    [
+      "{colors.primary.500}",
+      [
+        "--colors-border-focus",
+        "--colors-interactive-primary-background"
+      ]
+    ],
+    [
+      "{colors.neutral.700}",
+      [
+        "--colors-interactive-secondary-text",
+        "--colors-interactive-accent-text"
+      ]
+    ],
+    [
+      "{colors.error.600}",
+      [
+        "--colors-interactive-destructive-backgroundHover",
+        "--colors-badge-error-border",
+        "--colors-badge-gradeF-text"
+      ]
+    ],
+    [
+      "{colors.success.50}",
+      [
+        "--colors-badge-success-background",
+        "--colors-badge-gradeA-background"
+      ]
+    ],
+    [
+      "{colors.success.100}",
+      [
+        "--colors-badge-success-border",
+        "--colors-badge-gradeA-border"
+      ]
+    ],
+    [
+      "{colors.warning.600}",
+      [
+        "--colors-badge-warning-background",
+        "--colors-badge-gradeD-background"
+      ]
+    ],
+    [
+      "{colors.warning.800}",
+      [
+        "--colors-badge-warning-text",
+        "--colors-badge-gradeD-text"
+      ]
+    ],
+    [
+      "{colors.warning.700}",
+      [
+        "--colors-badge-warning-border",
+        "--colors-badge-gradeD-border"
+      ]
+    ],
+    [
+      "{colors.warning.500}",
+      [
+        "--colors-badge-gradeC-text",
+        "--colors-badge-warning-background",
+        "--colors-badge-warning-border",
+        "--colors-badge-gradeC-background",
+        "--colors-badge-gradeC-border",
+        "--colors-badge-gradeD-background",
+        "--colors-badge-gradeD-border"
+      ]
+    ],
+    [
+      "inherit",
+      [
+        "--typography-fontFamily-badge",
+        "--typography-fontFamily-badge"
+      ]
+    ],
+    [
+      "{typography.fontSize.xs}",
+      [
+        "--typography-fontSize-label",
+        "--typography-fontSize-label"
+      ]
+    ],
+    [
+      "{layout.table.groupHeaderPaddingY}",
+      [
+        "--layout-table-groupHeaderPaddingY",
+        "--layout-table-groupHeaderPaddingY"
+      ]
+    ],
+    [
+      "{layout.table.groupHeaderPaddingX}",
+      [
+        "--layout-table-groupHeaderPaddingX",
+        "--layout-table-groupHeaderPaddingX"
+      ]
+    ],
+    [
+      "{layout.table.textIndent}",
+      [
+        "--layout-table-textIndent",
+        "--layout-table-textIndent"
+      ]
+    ],
+    [
+      "{layout.table.subtextIndent}",
+      [
+        "--layout-table-subtextIndent",
+        "--layout-table-subtextIndent"
+      ]
+    ],
+    [
+      "{layout.interactive.buttonPadding}",
+      [
+        "--layout-interactive-buttonPadding",
+        "--layout-interactive-buttonPadding"
+      ]
+    ],
+    [
+      "{layout.interactive.buttonRadius}",
+      [
+        "--layout-interactive-buttonRadius",
+        "--layout-interactive-buttonRadius"
+      ]
+    ],
+    [
+      "{layout.interactive.buttonHoverScale}",
+      [
+        "--layout-interactive-buttonHoverScale",
+        "--layout-interactive-buttonHoverScale"
+      ]
+    ],
+    [
+      "{layout.label.padding}",
+      [
+        "--layout-label-padding",
+        "--layout-label-padding"
+      ]
+    ],
+    [
+      "{layout.label.borderRadius}",
+      [
+        "--layout-label-borderRadius",
+        "--layout-label-borderRadius"
+      ]
+    ],
+    [
+      "{layout.label.fontSize}",
+      [
+        "--layout-label-fontSize",
+        "--layout-label-fontSize"
+      ]
+    ],
+    [
+      "{layout.label.fontWeight}",
+      [
+        "--layout-label-fontWeight",
+        "--layout-label-fontWeight"
+      ]
+    ],
+    [
+      "{layout.label.textTransform}",
+      [
+        "--layout-label-textTransform",
+        "--layout-label-textTransform"
+      ]
+    ],
+    [
+      "{layout.percentage.fontSize}",
+      [
+        "--layout-percentage-fontSize",
+        "--layout-percentage-fontSize"
+      ]
+    ],
+    [
+      "{layout.percentage.fontWeight}",
+      [
+        "--layout-percentage-fontWeight",
+        "--layout-percentage-fontWeight"
+      ]
+    ],
+    [
+      "{layout.percentage.gap}",
+      [
+        "--layout-percentage-gap",
+        "--layout-percentage-gap"
+      ]
+    ],
+    [
+      "{borderRadius.lg}",
+      [
+        "--borderRadius-base",
+        "--borderRadius-base",
+        "--surface-card-borderRadius",
+        "--surface-modal-borderRadius"
+      ]
+    ],
+    [
+      "{colors.neutralDark.50}",
+      [
+        "--colors-background-primary",
+        "--colors-background-secondary",
+        "--colors-text-inverse",
+        "--colors-border-default",
+        "--colors-surface-card",
+        "--colors-surface-popover",
+        "--colors-interactive-primary-text",
+        "--colors-interactive-destructive-text",
+        "--colors-table-container",
+        "--colors-table-header",
+        "--colors-table-border"
+      ]
+    ],
+    [
+      "{colors.neutralDark.300}",
+      [
+        "--colors-background-elevated",
+        "--colors-border-header",
+        "--colors-border-hover",
+        "--colors-surface-input",
+        "--colors-surface-hover",
+        "--colors-interactive-secondary-background",
+        "--colors-interactive-secondary-backgroundHover",
+        "--colors-interactive-accent-background",
+        "--colors-interactive-accent-backgroundHover",
+        "--colors-table-containerElevated",
+        "--colors-table-headerElevated",
+        "--colors-table-groupHeader",
+        "--colors-table-row",
+        "--colors-badge-neutral-background",
+        "--colors-badge-neutral-border"
+      ]
+    ],
+    [
+      "{shadows.cardDark}",
+      [
+        "--colors-table-shadow",
+        "--shadows-card",
+        "--shadows-table"
+      ]
+    ],
+    [
+      "{shadows.cardHoverDark}",
+      [
+        "--colors-table-shadowElevated",
+        "--shadows-cardHover",
+        "--shadows-tableElevated"
+      ]
+    ],
+    [
+      "{shadows.freezeDark}",
+      [
+        "--colors-table-freezeShadow",
+        "--shadows-tableFreeze"
+      ]
+    ],
+    [
+      "215 20% 26%",
+      [
+        "--colors-badge-default-border",
+        "--colors-empty-badgeBorder"
+      ]
+    ],
+    [
+      "{spacing.component.lg}",
+      [
+        "--surface-card-padding",
+        "--surface-modal-padding"
+      ]
+    ],
+    [
+      "{colors.surface.base}",
+      [
+        "--surface-card-background",
+        "--surface-modal-background"
+      ]
+    ],
+    [
+      "{elevation.md}",
+      [
+        "--surface-card-shadowHover",
+        "--surface-popover-shadow",
+        "--feedback-notification-shadow"
+      ]
+    ],
+    [
+      "{spacing.component.md}",
+      [
+        "--surface-popover-padding",
+        "--interactive-button-paddingX",
+        "--interactive-input-paddingX",
+        "--feedback-notification-padding"
+      ]
+    ],
+    [
+      "{borderRadius.md}",
+      [
+        "--surface-popover-borderRadius",
+        "--interactive-button-borderRadius",
+        "--interactive-input-borderRadius",
+        "--feedback-notification-borderRadius"
+      ]
+    ],
+    [
+      "1px solid",
+      [
+        "--feedback-badge-border",
+        "--feedback-notification-border"
+      ]
+    ]
+  ],
+  "recommendations": [
+    {
+      "priority": "high",
+      "action": "Remove unused tokens",
+      "impact": "Bundle size reduction",
+      "effort": "low",
+      "tokens": 10
+    },
+    {
+      "priority": "medium",
+      "action": "Consolidate duplicate values",
+      "impact": "Token count reduction",
+      "effort": "medium",
+      "savings": 282
+    }
+  ]
+}

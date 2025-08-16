@@ -15,7 +15,14 @@
     "validate-tokens": "npm run build:tokens && npm run monitor",
     "validate-references": "grep -r 'var(--colors-' src/index.css && echo '✅ Token references found'",
     "check-hardcoded": "grep -r ': [0-9].*%' src/index.css || echo '✅ Minimal hardcoded values'",
-    "test-tokens": "npm run validate-tokens && npm run validate-references && npm run check-hardcoded"
+    "test-tokens": "npm run validate-tokens && npm run validate-references && npm run check-hardcoded",
+    "analyze-tokens": "node scripts/token-usage-analytics.js",
+    "analyze-impact": "node scripts/component-impact-analysis.js",
+    "analyze-performance": "node scripts/performance-analysis.js",
+    "analyze-simple": "node scripts/simple-analysis.js",
+    "performance-check": "npm run monitor && npm run analyze-tokens",
+    "ci-check": "node scripts/ci-performance-check.js",
+    "analysis-suite": "npm run analyze-simple && npm run analyze-performance && npm run analyze-impact && npm run analyze-tokens"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",

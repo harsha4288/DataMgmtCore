@@ -9,6 +9,7 @@ import { ErrorBoundary } from './components/ErrorBoundary'
 import { PWAStatus } from './components/behaviors/PWAStatus'
 import { PWADebugTracker } from './components/debug/PWADebugTracker'
 import { OfflineBanner, OfflineIndicator } from './components/behaviors/OfflineBanner'
+import { PerformanceMonitor } from './components/debug/PerformanceMonitor'
 
 
 function AppContent() {
@@ -25,6 +26,16 @@ function AppContent() {
         <div className="grid gap-6">
           <ThemeToggle />
           <PWAStatus />
+          
+          {/* Performance Monitor - Task 6.4 Implementation */}
+          <div className="p-4 bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg">
+            <h3 className="text-lg font-bold text-blue-800 dark:text-blue-200 mb-3">🎯 Task 6.4: Performance Monitor</h3>
+            <PerformanceMonitor enabled={true} showDetails={true} />
+            <p className="text-sm text-blue-700 dark:text-blue-300 mt-2">
+              Real-time theme switching performance tracking. Toggle theme to see measurements!
+            </p>
+          </div>
+          
           <div className="p-4 bg-red-100 dark:bg-red-900 border-2 border-red-500 rounded-lg">
             <h3 className="text-lg font-bold text-red-800 dark:text-red-200">🔴 CACHE TEST - If you see this, the changes are working!</h3>
             <p className="text-red-700 dark:text-red-300">This should appear immediately if caching issues are resolved.</p>

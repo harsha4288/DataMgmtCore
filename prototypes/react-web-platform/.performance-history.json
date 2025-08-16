@@ -1,0 +1,88 @@
+{
+  "measurements": [
+    {
+      "timestamp": "2025-08-15T19:43:58.785Z",
+      "metrics": {
+        "tokenCount": {
+          "src": 132,
+          "designSystem": 60,
+          "total": 192
+        },
+        "bundleSize": {
+          "tokens": 18710,
+          "index": 12473,
+          "total": 31183
+        },
+        "fileCount": {
+          "core": 1,
+          "semantic": 3,
+          "components": 1,
+          "total": 5
+        }
+      }
+    },
+    {
+      "timestamp": "2025-08-15T20:28:42.325Z",
+      "metrics": {
+        "tokenCount": {
+          "src": 132,
+          "designSystem": 60,
+          "total": 192
+        },
+        "bundleSize": {
+          "tokens": 18710,
+          "index": 12470,
+          "total": 31180
+        },
+        "fileCount": {
+          "core": 1,
+          "semantic": 3,
+          "components": 1,
+          "total": 5
+        }
+      }
+    },
+    {
+      "timestamp": "2025-08-15T20:34:03.327Z",
+      "metrics": {
+        "tokenCount": {
+          "src": 132,
+          "designSystem": 60,
+          "total": 192
+        },
+        "bundleSize": {
+          "tokens": 18710,
+          "index": 12470,
+          "total": 31180
+        },
+        "fileCount": {
+          "core": 1,
+          "semantic": 3,
+          "components": 1,
+          "total": 5
+        }
+      }
+    },
+    {
+      "timestamp": "2025-08-15T20:38:17.301Z",
+      "metrics": {
+        "tokenCount": {
+          "src": 132,
+          "designSystem": 60,
+          "total": 192
+        },
+        "bundleSize": {
+          "tokens": 19026,
+          "index": 12470,
+          "total": 31496
+        },
+        "fileCount": {
+          "core": 1,
+          "semantic": 3,
+          "components": 1,
+          "total": 5
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Styling Test</title>
+    <link rel="stylesheet" href="./src/design-system/build/dynamic/tokens.css">
+    <link rel="stylesheet" href="./src/index.css">
+    <style>
+        body { 
+            margin: 20px; 
+            font-family: var(--typography-fontFamily-base-0), var(--typography-fontFamily-base-1), var(--typography-fontFamily-base-2);
+            background: hsl(var(--colors-background-primary));
+            color: hsl(var(--colors-text-primary));
+        }
+        .test-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: hsl(var(--colors-table-container));
+            border: 1px solid hsl(var(--colors-table-border));
+            box-shadow: var(--shadows-table);
+        }
+        .test-table th {
+            background: hsl(var(--colors-table-header));
+            color: hsl(var(--colors-text-primary));
+            padding: var(--layout-table-cellPaddingY) var(--layout-table-cellPaddingX);
+            border-bottom: var(--layout-table-borderWidth) solid hsl(var(--colors-table-border));
+            border-right: 1px solid hsl(var(--colors-table-border));
+            font-weight: var(--typography-fontWeight-tableHeader);
+            font-size: var(--typography-fontSize-tableHeader);
+            text-align: left;
+        }
+        .test-table td {
+            padding: var(--layout-table-cellPaddingY) var(--layout-table-cellPaddingX);
+            border-bottom: 1px solid hsl(var(--colors-table-border));
+            border-right: 1px solid hsl(var(--colors-table-border));
+            font-size: var(--typography-fontSize-tableBody);
+        }
+        .test-table tbody tr:hover {
+            background: hsl(var(--colors-table-rowHover));
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: var(--layout-badge-borderRadius);
+            font-size: var(--typography-fontSize-badge);
+            font-weight: var(--typography-fontWeight-badge);
+            text-transform: var(--typography-textTransform-badge);
+        }
+        .badge-success {
+            background: hsl(var(--colors-badge-success-background));
+            color: hsl(var(--colors-badge-success-text));
+            border: 1px solid hsl(var(--colors-badge-success-border));
+        }
+        .badge-info {
+            background: hsl(var(--colors-badge-info-background));
+            color: hsl(var(--colors-badge-info-text));
+            border: 1px solid hsl(var(--colors-badge-info-border));
+        }
+        .badge-warning {
+            background: hsl(var(--colors-badge-warning-background));
+            color: hsl(var(--colors-badge-warning-text));
+            border: 1px solid hsl(var(--colors-badge-warning-border));
+        }
+        .checkbox {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+        }
+        .frozen-column {
+            position: sticky;
+            left: 0;
+            background: hsl(var(--colors-table-header));
+            z-index: 2;
+            box-shadow: var(--shadows-tableFreeze);
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <h1>Table Styling Validation Test</h1>
+    
+    <table class="test-table">
+        <thead>
+            <tr>
+                <th class="frozen-column">
+                    <input type="checkbox" class="checkbox"> Volunteer Name
+                </th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>PREFS</th>
+                <th>👕 S</th>
+                <th>👕 M</th>
+                <th>👕 L</th>
+                <th>👕 XL</th>
+                <th>👕 2XL</th>
+                <th>Events</th>
+                <th>Hours</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="frozen-column">
+                    <input type="checkbox" class="checkbox"> Sarah Johnson
+                </td>
+                <td><span class="badge badge-success">TEAM LEAD</span></td>
+                <td><span class="badge badge-success">ACTIVE</span></td>
+                <td><span class="badge badge-warning">11/19</span></td>
+                <td>1</td>
+                <td>3</td>
+                <td>5</td>
+                <td>2</td>
+                <td>—</td>
+                <td><span class="badge badge-info">4</span></td>
+                <td>24</td>
+            </tr>
+            <tr>
+                <td class="frozen-column">
+                    <input type="checkbox" class="checkbox"> Mike Chen
+                </td>
+                <td><span class="badge badge-info">COORDINATOR</span></td>
+                <td><span class="badge badge-success">ACTIVE</span></td>
+                <td><span class="badge badge-warning">10/16</span></td>
+                <td>1</td>
+                <td>2</td>
+                <td>4</td>
+                <td>3</td>
+                <td>1</td>
+                <td><span class="badge badge-info">6</span></td>
+                <td>32</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div style="margin-top: 20px;">
+        <h3>Current Token Values:</h3>
+        <ul>
+            <li>Table Header BG: <code>var(--colors-table-header)</code></li>
+            <li>Table Border: <code>var(--colors-table-border)</code></li>
+            <li>Table Header Font Size: <code>var(--typography-fontSize-tableHeader)</code></li>
+        </ul>
+    </div>
+</body>
+</html>

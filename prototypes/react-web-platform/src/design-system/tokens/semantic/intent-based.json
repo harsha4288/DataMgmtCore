@@ -1,15 +1,16 @@
 {
   "colors": {
     "background": {
-      "page": "{colors.white}",
-      "card": "{colors.white}",
-      "popover": "{colors.white}",
+      "primary": "{colors.white}",
+      "page": "{colors.background.primary}",
+      "card": "{colors.background.primary}",
+      "popover": "{colors.background.primary}",
       "table": {
-        "container": "{colors.white}",
-        "containerElevated": "{colors.white}",
-        "header": "{colors.white}",
+        "container": "{colors.background.primary}",
+        "containerElevated": "{colors.background.primary}",
+        "header": "{colors.neutral.300}",
         "headerElevated": "{colors.neutral.100}",
-        "groupHeader": "{colors.neutral.100}",
+        "groupHeader": "{colors.neutral.200}",
         "groupHeaderLine": "{colors.neutral.300}",
         "row": "{colors.neutral.50}",
         "rowHover": "{colors.neutral.100}"
@@ -17,37 +18,37 @@
     },
     "foreground": {
       "primary": "{colors.black}",
-      "card": "{colors.neutral.600}",
-      "popover": "{colors.neutral.600}"
+      "card": "{colors.black}",
+      "popover": "{colors.black}"
     },
     "interactive": {
-      "primary": "{colors.primary.500}",
+      "primary": "{colors.info.500}",
       "primaryForeground": "{colors.neutral.50}",
-      "secondary": "{colors.neutral.200}",
-      "secondaryForeground": "{colors.neutral.600}",
-      "accent": "{colors.neutral.200}",
-      "accentForeground": "{colors.neutral.600}",
-      "muted": "{colors.neutral.200}",
-      "mutedForeground": "{colors.neutral.500}",
+      "secondary": "{colors.neutral.50}",
+      "secondaryForeground": "{colors.black}",
+      "accent": "{colors.interactive.secondary}",
+      "accentForeground": "{colors.black}",
+      "muted": "{colors.interactive.secondary}",
+      "mutedForeground": "{colors.black}",
       "destructive": "{colors.error.500}",
       "destructiveForeground": "{colors.neutral.50}"
     },
     "content": {
-      "primary": "{colors.neutral.600}",
-      "secondary": "{colors.neutral.500}",
-      "tertiary": "{colors.neutral.400}",
+      "primary": "{colors.black}",
+      "secondary": "{colors.black}",
+      "tertiary": "{colors.black}",
       "inverse": "{colors.neutral.50}",
-      "disabled": "{colors.neutral.400}"
+      "disabled": "{colors.black}"
     },
     "border": {
       "default": "{colors.neutral.200}",
       "header": "{colors.neutral.300}",
-      "input": "{colors.neutral.200}",
+      "input": "{colors.border.default}",
       "table": "{colors.neutral.200}",
-      "ring": "{colors.primary.500}"
+      "ring": "{colors.info.500}"
     },
     "placeholder": {
-      "text": "{colors.neutral.400}",
+      "text": "{colors.black}",
       "background": "transparent",
       "symbol": "–"
     },
@@ -56,9 +57,9 @@
     },
     "empty": {
       "badge": {
-        "text": "{colors.neutral.400}",
+        "text": "{colors.black}",
         "background": "{colors.neutral.50}",
-        "border": "{colors.neutral.200}"
+        "border": "{colors.border.default}"
       }
     }
   },

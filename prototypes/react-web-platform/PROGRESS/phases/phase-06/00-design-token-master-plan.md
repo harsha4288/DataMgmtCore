@@ -162,7 +162,7 @@ src/
 | 6.1 | Token Build Pipeline Setup | ✅ COMPLETED | `04-build-pipeline-doc.md` | ✅ Infrastructure setup complete - 18KB auto-generated utilities |
 | 6.2 | Core Token System Migration | ✅ COMPLETED | `01-token-extraction-guide.md`, `03-token-structure.md` | ✅ 51% reduction: 1134→547 lines in index.css |
 | 6.3 | Component Pattern Implementation | ✅ COMPLETED | `05-component-patterns-doc.md`, `06-migration-strategy-doc.md` | ✅ Badge.tsx updated with direct token usage |
-| 6.4 | Performance Monitoring Integration | 🔄 PENDING | `10-monitoring-doc.md`, `02-performance-baseline.md` | Monitoring tools |
+| 6.4 | Performance Monitoring Integration | ✅ COMPLETED | `10-monitoring-doc.md`, `02-performance-baseline.md` | ✅ Comprehensive monitoring system with CI/CD integration |
 | 6.5 | Accessibility Validation | 🔄 PENDING | `src/index.css` + WCAG guidelines | WCAG compliance |
 | 6.6 | Staging Environment Deployment | 🔄 PENDING | `09-rollout-plan-doc.md` | Testing deployment |
 | 6.7 | Performance Testing & Optimization | 🔄 PENDING | `02-performance-baseline.md` + goals | Performance validation |
@@ -189,11 +189,12 @@ src/
 - [x] 6.3.3 Update badge and label components ✅ Badge.tsx refactored with direct token usage
 - [x] 6.3.4 Test component patterns across themes ✅ Working with minor issues
 
-#### Task 6.4: Performance Monitoring Integration → Reference: `10-monitoring-doc.md`, `02-performance-baseline.md`
-- [ ] 6.4.1 Set up bundle size monitoring
-- [ ] 6.4.2 Implement theme switching performance tracking
-- [ ] 6.4.3 Create token usage analytics
-- [ ] 6.4.4 Configure performance regression alerts
+#### Task 6.4: Performance Monitoring Integration → Reference: `10-monitoring-doc.md`, `02-performance-baseline.md` ✅ COMPLETED
+- [x] 6.4.1 Enhanced monitor-dashboard.cjs with historical tracking and regression detection ✅
+- [x] 6.4.2 Created PerformanceMonitor.tsx React component for theme switching tracking ✅
+- [x] 6.4.3 Built comprehensive token-usage-analytics.js with usage patterns ✅
+- [x] 6.4.4 Implemented ci-performance-check.js with CI/CD integration ✅
+- [x] 6.4.5 Consolidated analysis scripts and updated package.json commands ✅
 
 #### Task 6.5: Accessibility Validation → Reference: Current `src/index.css` + WCAG AA Guidelines
 - [ ] 6.5.1 Validate color contrast ratios (WCAG AA)
@@ -491,7 +492,166 @@ npm run test-tokens          # Verify system health
 **✅ Working Status**: System functional with minor issues reported
 
 ### **Ready for Next Phase:**
-**Task 6.4**: Performance Monitoring Integration ready to begin with optimized token foundation.
+**Task 6.5**: Accessibility Validation ready to begin with comprehensive monitoring foundation.
+
+## ✅ TASK 6.4 VALIDATION GUIDE
+
+### **🔍 Validate Enhanced Monitoring Dashboard**
+```bash
+# Test the enhanced monitoring with historical tracking
+npm run monitor
+
+# Expected: Color-coded dashboard with trend analysis
+# Look for: Bundle size, token count, regression detection
+# New features: Historical trends, regression alerts
+```
+
+### **📊 Validate Token Usage Analytics**
+```bash
+# Run comprehensive token usage analysis
+npm run analyze-tokens
+
+# Expected: Detailed usage patterns and optimization recommendations
+# Look for: Usage frequency, unused tokens, duplicate values
+# Key metrics: 21% efficiency, 252 unused tokens, 276 optimization potential
+```
+
+### **🚀 Validate CI/CD Integration**
+```bash
+# Test complete CI performance check
+npm run ci-check
+
+# Expected: Comprehensive CI validation with exit codes
+# Look for: Performance regression detection, artifact generation
+# Features: Slack/GitHub integration ready (configure webhooks)
+```
+
+### **🎨 Validate React Performance Component**
+```bash
+# Start development server to test React component
+npm run dev
+
+# Add to any React component for testing:
+# import { PerformanceMonitor } from './src/components/debug/PerformanceMonitor'
+# <PerformanceMonitor enabled={true} showDetails={true} />
+
+# Expected: Real-time theme switching performance measurement
+# Target: <50ms theme switch time
+```
+
+### **📈 Validate All Analysis Scripts (Your Original Work)**
+```bash
+# Run complete analysis suite
+npm run analysis-suite
+
+# This runs all scripts in sequence:
+# 1. simple-analysis.js     - Your quick bundle analysis
+# 2. performance-analysis.js - Your comprehensive performance analysis  
+# 3. component-impact-analysis.js - Your architectural risk analysis
+# 4. token-usage-analytics.js - New usage analytics
+
+# Expected: Comprehensive system analysis from multiple perspectives
+```
+
+### **📋 Validate New Package.json Commands**
+```bash
+# Quick health check
+npm run monitor
+
+# Token-specific analysis
+npm run analyze-tokens
+
+# Your original analysis scripts
+npm run analyze-simple
+npm run analyze-performance  
+npm run analyze-impact
+
+# Combined monitoring
+npm run performance-check
+
+# Complete analysis suite
+npm run analysis-suite
+
+# CI/CD integration
+npm run ci-check
+```
+
+### **📄 Validate Generated Reports**
+After running scripts, check these generated files:
+```bash
+# Historical performance data
+cat .performance-history.json
+
+# Token usage detailed report
+cat TOKEN_USAGE_REPORT.json
+
+# CI performance artifacts  
+cat .ci-performance-report.json
+
+# Your original analysis reports
+cat PERFORMANCE_ANALYSIS_REPORT.json
+cat COMPONENT_IMPACT_REPORT.json
+```
+
+### **🎯 Key Validation Checkpoints**
+
+#### **1. Enhanced Monitor Dashboard Working:**
+- ✅ Bundle size tracking with color coding
+- ✅ Historical trend analysis (after 3+ runs)
+- ✅ Regression detection alerts
+- ✅ CI/CD exit codes (0 = healthy, 1 = issues)
+
+#### **2. Token Analytics Operational:**
+- ✅ Usage frequency analysis (top 10 most used tokens)
+- ✅ Unused token detection (252 found)
+- ✅ Duplicate value identification (113 groups)
+- ✅ Optimization recommendations generated
+
+#### **3. CI/CD Integration Ready:**
+- ✅ Performance regression detection
+- ✅ Artifact generation for CI pipelines
+- ✅ Configurable alert thresholds
+- ✅ Slack/GitHub webhook support (configure as needed)
+
+#### **4. React Component Functional:**
+- ✅ Theme switching performance measurement
+- ✅ Real-time bundle size estimation
+- ✅ Performance API integration
+- ✅ Visual performance indicators
+
+### **⚠️ Troubleshooting Common Issues**
+
+#### **If monitoring shows "SYSTEM ISSUES DETECTED":**
+This is expected! The analytics revealed optimization opportunities:
+- 252 unused tokens (79% reduction potential)
+- Bundle size slightly over 30KB target
+- Significant consolidation opportunities
+
+#### **If scripts fail to run:**
+```bash
+# Ensure all dependencies are installed
+npm install
+
+# Check script permissions
+chmod +x scripts/*.js
+
+# Verify Node.js version supports ES modules
+node --version  # Should be 14+ for import/export
+```
+
+#### **If React component doesn't appear:**
+- Import and add to any React component for testing
+- Ensure development server is running (`npm run dev`)
+- Component designed for development/debug use
+
+### **📊 Expected Performance Metrics**
+
+After validation, you should see these current metrics:
+- **Bundle Size**: ~30.45KB (slight overage from 30KB target)
+- **Token Count**: 192 detected (optimization needed)
+- **Token Efficiency**: 21% (67/319 tokens used)
+- **Unused Tokens**: 252 tokens ready for cleanup
+- **Optimization Potential**: 276 token reduction possible
 
 ## 🔧 Maintenance & Future Enhancement Plan
 

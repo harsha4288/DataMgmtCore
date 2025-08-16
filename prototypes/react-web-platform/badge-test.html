@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Badge Test</title>
+    <link rel="stylesheet" href="./src/design-system/build/dynamic/tokens.css">
+    <style>
+        body { 
+            margin: 20px; 
+            font-family: var(--typography-fontFamily-base-0), var(--typography-fontFamily-base-1);
+            background: hsl(var(--colors-background-primary));
+            color: hsl(var(--colors-text-primary));
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            margin: 4px;
+            border-radius: var(--layout-badge-borderRadius);
+            font-size: var(--typography-fontSize-badge);
+            font-weight: var(--typography-fontWeight-badge);
+            text-transform: var(--typography-textTransform-badge);
+            border: 1px solid;
+        }
+        .grade-a {
+            background: hsl(var(--colors-badge-gradeA-background));
+            color: hsl(var(--colors-badge-gradeA-text));
+            border-color: hsl(var(--colors-badge-gradeA-border));
+        }
+        .grade-b {
+            background: hsl(var(--colors-badge-gradeB-background));
+            color: hsl(var(--colors-badge-gradeB-text));
+            border-color: hsl(var(--colors-badge-gradeB-border));
+        }
+        .grade-c {
+            background: hsl(var(--colors-badge-gradeC-background));
+            color: hsl(var(--colors-badge-gradeC-text));
+            border-color: hsl(var(--colors-badge-gradeC-border));
+        }
+        .grade-d {
+            background: hsl(var(--colors-badge-gradeD-background));
+            color: hsl(var(--colors-badge-gradeD-text));
+            border-color: hsl(var(--colors-badge-gradeD-border));
+        }
+        .grade-f {
+            background: hsl(var(--colors-badge-gradeF-background));
+            color: hsl(var(--colors-badge-gradeF-text));
+            border-color: hsl(var(--colors-badge-gradeF-border));
+        }
+        .theme-toggle {
+            padding: 8px 16px;
+            background: hsl(var(--colors-interactive-primary-background));
+            color: hsl(var(--colors-interactive-primary-text));
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <h1>Badge Styling Test</h1>
+    
+    <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+    
+    <h2>Grade Badges:</h2>
+    <div>
+        <span class="badge grade-a">TEAM LEAD</span>
+        <span class="badge grade-b">COORDINATOR</span>
+        <span class="badge grade-c">PENDING</span>
+        <span class="badge grade-d">SPECIALIST</span>
+        <span class="badge grade-f">FAILED</span>
+    </div>
+    
+    <h2>Role Examples from Volunteer Dashboard:</h2>
+    <div>
+        <span class="badge grade-a">ACTIVE</span>
+        <span class="badge grade-c">PENDING</span>
+        <span class="badge grade-f">INACTIVE</span>
+    </div>
+    
+    <h2>All Grade Badges (Original Professional Colors Restored):</h2>
+    <div>
+        <span class="badge grade-a">A+ EXCELLENT</span>
+        <span class="badge grade-b">B GOOD</span>  
+        <span class="badge grade-c">C AVERAGE</span>
+        <span class="badge grade-d">D BELOW</span>
+        <span class="badge grade-f">F FAILING</span>
+    </div>
+    
+    <div style="margin-top: 20px; padding: 15px; background: hsl(var(--colors-background-secondary)); border-radius: 8px;">
+        <h3>✅ Badge Issues Fixed:</h3>
+        <ul style="margin: 10px 0; line-height: 1.6;">
+            <li><strong>Light Theme:</strong> All grades now use soft background + dark text (professional appearance)</li>
+            <li><strong>Dark Theme:</strong> All grades use solid colors + white text (proper dark theme contrast)</li>
+            <li><strong>Original Colors:</strong> Restored exact HSL values from pre-optimization git history</li>
+            <li><strong>Grade D:</strong> Fixed to use proper light orange background (not dark like before)</li>
+        </ul>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', newTheme);
+            console.log(`Theme switched to: ${newTheme}`);
+        }
+    </script>
+</body>
+</html>

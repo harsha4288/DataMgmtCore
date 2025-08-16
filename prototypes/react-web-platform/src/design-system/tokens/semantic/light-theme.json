@@ -51,9 +51,9 @@
     "table": {
       "container": "{colors.white}",
       "containerElevated": "{colors.white}",
-      "header": "{colors.white}",
+      "header": "{colors.neutral.300}",
       "headerElevated": "{colors.neutral.100}",
-      "groupHeader": "220 43% 96%",
+      "groupHeader": "{colors.neutral.200}",
       "groupHeaderLine": "{colors.neutral.300}",
       "row": "220 9% 98%",
       "rowHover": "220 14% 96%",
@@ -89,34 +89,34 @@
         "border": "{colors.info.700}"
       },
       "gradeA": {
-        "background": "{colors.success.50}",
-        "text": "{colors.success.600}",
-        "border": "{colors.success.100}"
+        "background": "{colors.success.original}",
+        "text": "{colors.success.originalText}",
+        "border": "{colors.success.originalBorder}"
       },
       "gradeB": {
-        "background": "{colors.info.50}",
-        "text": "{colors.info.500}",
-        "border": "{colors.info.100}"
+        "background": "{colors.info.original}",
+        "text": "{colors.info.originalText}",
+        "border": "{colors.info.originalBorder}"
       },
       "gradeC": {
-        "background": "{colors.warning.50}",
-        "text": "{colors.warning.500}",
-        "border": "{colors.warning.100}"
+        "background": "{colors.warning.originalC}",
+        "text": "{colors.warning.originalCText}",
+        "border": "{colors.warning.originalCBorder}"
       },
       "gradeD": {
-        "background": "{colors.warning.600}",
-        "text": "{colors.warning.800}",
-        "border": "{colors.warning.700}"
+        "background": "{colors.warning.originalD}",
+        "text": "{colors.warning.originalDText}",
+        "border": "{colors.warning.originalDBorder}"
       },
       "gradeF": {
-        "background": "{colors.error.50}",
-        "text": "{colors.error.600}",
-        "border": "{colors.error.100}"
+        "background": "{colors.error.original}",
+        "text": "{colors.error.originalText}",
+        "border": "{colors.error.originalBorder}"
       },
       "neutral": {
-        "background": "{colors.neutral.100}",
-        "text": "{colors.neutral.600}",
-        "border": "{colors.neutral.200}"
+        "background": "{colors.neutral.original}",
+        "text": "{colors.neutral.originalText}",
+        "border": "{colors.neutral.originalBorder}"
       }
     },
     "placeholder": {
