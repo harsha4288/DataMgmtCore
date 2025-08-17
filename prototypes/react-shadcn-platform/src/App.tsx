@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Toaster } from '@/components/ui/toaster'
 import { ThemeProvider } from '@/lib/theme/provider'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import { ThemedButton, ThemedCard, ThemedCardContent, ThemedCardDescription, ThemedCardHeader, ThemedCardTitle } from '@/components/theme'
 import { useTheme } from '@/lib/theme/hooks'
+import ComponentShowcase from '@/components/ComponentShowcase'
 import './App.css'
 
 function AppContent() {
@@ -187,6 +189,19 @@ function AppContent() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Component Showcase */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Task 1.3: Core shadcn/ui Components Setup</CardTitle>
+              <CardDescription>
+                Comprehensive component library integration and testing
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ComponentShowcase />
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
@@ -197,6 +212,7 @@ function App() {
   return (
     <ThemeProvider>
       <AppContent />
+      <Toaster />
     </ThemeProvider>
   )
 }
