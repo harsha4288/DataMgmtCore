@@ -110,6 +110,7 @@ export const defaultTheme: ThemeConfiguration = {
       headerBg: '#ffffff',
       rowHoverBg: 'rgba(245, 158, 11, 0.05)',
       borderColor: '#e5e7eb',
+      groupHeaderBg: '#f9fafb',
     },
   },
 };

@@ -25,7 +25,21 @@ export const cssVariableMap = {
   // Shadow colors
   '--shadow': 'colors.shadow',
   '--frozen-shadow': 'colors.frozenShadow',
-  
+
+  // Table-specific variables (from proven react-web-platform implementation)
+  '--table-container': 'colors.bgPrimary',
+  '--table-container-elevated': 'colors.bgSecondary',
+  '--table-header': 'colors.bgHeader',
+  '--table-header-elevated': 'colors.bgHeaderGroup',
+  '--table-group-header': 'colors.bgHeaderGroup',
+  '--table-group-header-line': 'colors.borderHeader',
+  '--table-row': 'colors.bgSecondary',
+  '--table-row-hover': 'colors.hoverBg',
+  '--table-border': 'colors.borderColor',
+  '--table-shadow': 'colors.shadow',
+  '--table-shadow-elevated': 'colors.shadow',
+  '--table-freeze-shadow': 'colors.frozenShadow',
+
   // Badge colors
   '--badge-grade-a': 'colors.badgeGradeA',
   '--badge-grade-a-foreground': 'colors.badgeGradeAForeground',

@@ -127,6 +127,7 @@ export interface ComponentOverrides {
     headerBg?: string;
     rowHoverBg?: string;
     borderColor?: string;
+    groupHeaderBg?: string;
   };
 }
 

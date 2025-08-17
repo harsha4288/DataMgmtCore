@@ -110,6 +110,7 @@ export const gitaTheme: ThemeConfiguration = {
       headerBg: '#f8f6f1',
       rowHoverBg: 'rgba(217, 119, 6, 0.08)',
       borderColor: '#e8dcc8',
+      groupHeaderBg: '#f5f2e8',
     },
   },
 };

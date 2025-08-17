@@ -110,6 +110,7 @@ export const professionalTheme: ThemeConfiguration = {
       headerBg: '#ffffff',
       rowHoverBg: 'rgba(37, 99, 235, 0.05)',
       borderColor: '#e2e8f0',
+      groupHeaderBg: '#f8fafc',
     },
   },
 };

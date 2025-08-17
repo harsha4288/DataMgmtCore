@@ -110,6 +110,7 @@ export const darkTheme: ThemeConfiguration = {
       headerBg: '#1f2937',
       rowHoverBg: 'rgba(251, 191, 36, 0.05)',
       borderColor: '#374151',
+      groupHeaderBg: '#111827',
     },
   },
 };

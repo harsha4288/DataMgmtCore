@@ -19,6 +19,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  EnhancedTable,
+  type ColumnDef,
+  type SelectionConfig,
   Tabs,
   TabsContent,
   TabsList,
@@ -105,6 +108,23 @@ const ComponentShowcase: React.FC = () => {
                 <Badge variant="destructive">Destructive</Badge>
               </div>
 
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Grade Variants:</p>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="grade-a">Grade A</Badge>
+                  <Badge variant="grade-b">Grade B</Badge>
+                  <Badge variant="grade-c">Grade C</Badge>
+                  <Badge variant="grade-d">Grade D</Badge>
+                  <Badge variant="grade-f">Grade F</Badge>
+                  <Badge variant="neutral">Neutral</Badge>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="grade-a" size="sm">Small</Badge>
+                  <Badge variant="grade-b" size="default">Default</Badge>
+                  <Badge variant="grade-c" size="lg">Large</Badge>
+                </div>
+              </div>
+
               <Separator />
 
               <div className="flex items-center space-x-4">
@@ -154,6 +174,18 @@ const ComponentShowcase: React.FC = () => {
                   ))}
                 </TableBody>
               </Table>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Enhanced Table with Selection & Grade Badges</CardTitle>
+              <CardDescription>
+                Advanced table with selection checkboxes, group headers, and grade badge variants
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <EnhancedTableDemo />
             </CardContent>
           </Card>
         </TabsContent>
@@ -257,5 +289,162 @@ const ComponentShowcase: React.FC = () => {
     </div>
   );
 };
+
+// Enhanced Table Demo Component (based on VolunteerDashboard patterns)
+function EnhancedTableDemo() {
+  const [selectedRows, setSelectedRows] = useState<any[]>([]);
+
+  // Sample data with volunteer-like structure
+  const volunteerData = [
+    {
+      id: 1,
+      name: 'Sarah Johnson',
+      role: 'Team Lead',
+      status: 'active',
+      events: 4,
+      hours: 24,
+      preferences: '11/19'
+    },
+    {
+      id: 2,
+      name: 'Mike Chen',
+      role: 'Coordinator',
+      status: 'active',
+      events: 6,
+      hours: 32,
+      preferences: '11/16'
+    },
+    {
+      id: 3,
+      name: 'Emily Rodriguez',
+      role: 'Volunteer',
+      status: 'pending',
+      events: 2,
+      hours: 8,
+      preferences: '3/15'
+    },
+    {
+      id: 4,
+      name: 'David Park',
+      role: 'Specialist',
+      status: 'active',
+      events: 5,
+      hours: 28,
+      preferences: '14/17'
+    }
+  ];
+
+  // Column definitions with group headers and badge variants
+  const columns: ColumnDef[] = [
+    {
+      key: 'name',
+      label: 'Volunteer Name',
+      groupHeader: 'Personal Information',
+      width: 150,
+      align: 'left'
+    },
+    {
+      key: 'role',
+      label: 'Role',
+      groupHeader: 'Role & Status',
+      width: 120,
+      align: 'center',
+      render: (value) => (
+        <Badge
+          variant={
+            value === 'Team Lead' ? 'grade-a' :
+            value === 'Coordinator' ? 'grade-b' :
+            value === 'Specialist' ? 'grade-c' : 'neutral'
+          }
+        >
+          {value}
+        </Badge>
+      )
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      groupHeader: 'Role & Status',
+      width: 100,
+      align: 'center',
+      render: (value) => (
+        <Badge
+          variant={
+            value === 'active' ? 'grade-a' :
+            value === 'pending' ? 'grade-c' : 'grade-f'
+          }
+          size="sm"
+        >
+          {value.toUpperCase()}
+        </Badge>
+      )
+    },
+    {
+      key: 'preferences',
+      label: 'PREFS',
+      groupHeader: 'Activity Summary',
+      width: 100,
+      align: 'center',
+      render: (value) => (
+        <Badge variant="grade-d" size="sm" className="font-mono">
+          {value}
+        </Badge>
+      )
+    },
+    {
+      key: 'events',
+      label: 'Events',
+      groupHeader: 'Activity Summary',
+      width: 90,
+      align: 'center',
+      render: (value) => (
+        <Badge variant="neutral" size="sm" className="font-mono">
+          {value}
+        </Badge>
+      )
+    },
+    {
+      key: 'hours',
+      label: 'Hours',
+      groupHeader: 'Activity Summary',
+      width: 90,
+      align: 'center',
+      render: (value) => (
+        <span className="font-mono font-semibold">{value}</span>
+      )
+    }
+  ];
+
+  const selectionConfig: SelectionConfig = {
+    enabled: true,
+    selectedRows,
+    onSelectionChange: setSelectedRows,
+    getRowId: (row) => row.id
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">
+          {selectedRows.length > 0 ? `${selectedRows.length} volunteers selected` : 'Select volunteers to see actions'}
+        </p>
+        {selectedRows.length > 0 && (
+          <Button size="sm" variant="outline">
+            Export Selected ({selectedRows.length})
+          </Button>
+        )}
+      </div>
+
+      <EnhancedTable
+        data={volunteerData}
+        columns={columns}
+        selection={selectionConfig}
+        frozenColumns={1} // Freeze name column
+        onRowClick={(row) => console.log('Clicked row:', row)}
+        className="border rounded-lg"
+      />
+    </div>
+  );
+}
 
 export default ComponentShowcase;

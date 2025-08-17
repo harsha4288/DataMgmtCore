@@ -52,6 +52,13 @@ export {
   TableHeader,
   TableRow
 } from './table'
+export {
+  EnhancedTable,
+  generateGroupHeaders,
+  type ColumnDef,
+  type GroupHeader,
+  type SelectionConfig
+} from './enhanced-table'
 export { Badge, badgeVariants } from './badge'
 export { Avatar, AvatarImage, AvatarFallback } from './avatar'
 
