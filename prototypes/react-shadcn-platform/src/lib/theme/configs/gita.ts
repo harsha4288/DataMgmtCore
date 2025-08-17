@@ -28,31 +28,16 @@ export const gitaTheme: ThemeConfiguration = {
     // Shadow colors - warm shadows
     shadow: '0 1px 3px 0 rgba(45, 27, 14, 0.1)',
     frozenShadow: '2px 0 4px rgba(45, 27, 14, 0.08)',
-    
-    // Badge colors - spiritual color palette
-    badgeGradeA: '#ecfdf5',
-    badgeGradeAForeground: '#065f46',
-    badgeGradeABorder: '#a7f3d0',
-    
-    badgeGradeB: '#eff6ff',
-    badgeGradeBForeground: '#1e40af',
-    badgeGradeBBorder: '#bfdbfe',
-    
-    badgeGradeC: '#fffbeb',
-    badgeGradeCForeground: '#d97706',
-    badgeGradeCBorder: '#fed7aa',
-    
-    badgeGradeD: '#fef3c7',
-    badgeGradeDForeground: '#b45309',
-    badgeGradeDBorder: '#fde68a',
-    
-    badgeGradeF: '#fef2f2',
-    badgeGradeFForeground: '#dc2626',
-    badgeGradeFBorder: '#fecaca',
-    
-    badgeNeutral: '#f8f6f1',
-    badgeNeutralForeground: '#6b4f3a',
-    badgeNeutralBorder: '#e8dcc8',
+
+    // Enhanced table selection colors
+    selectionBg: 'rgba(217, 119, 6, 0.08)',
+    selectionBorder: 'rgba(217, 119, 6, 0.2)',
+
+    // Grade-specific colors (semantic approach)
+    gradeABg: 'rgba(34, 197, 94, 0.1)',
+    gradeAText: '#166534',
+    gradeFBg: 'rgba(239, 68, 68, 0.1)',
+    gradeFText: '#991b1b',
   },
   typography: {
     fontFamily: {

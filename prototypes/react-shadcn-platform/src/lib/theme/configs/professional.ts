@@ -28,31 +28,16 @@ export const professionalTheme: ThemeConfiguration = {
     // Shadow colors - subtle shadows
     shadow: '0 1px 3px 0 rgba(15, 23, 42, 0.08)',
     frozenShadow: '2px 0 4px rgba(15, 23, 42, 0.06)',
-    
-    // Badge colors - professional color palette
-    badgeGradeA: '#f0fdf4',
-    badgeGradeAForeground: '#166534',
-    badgeGradeABorder: '#bbf7d0',
-    
-    badgeGradeB: '#eff6ff',
-    badgeGradeBForeground: '#1d4ed8',
-    badgeGradeBBorder: '#bfdbfe',
-    
-    badgeGradeC: '#fffbeb',
-    badgeGradeCForeground: '#d97706',
-    badgeGradeCBorder: '#fed7aa',
-    
-    badgeGradeD: '#fef3c7',
-    badgeGradeDForeground: '#b45309',
-    badgeGradeDBorder: '#fde68a',
-    
-    badgeGradeF: '#fef2f2',
-    badgeGradeFForeground: '#dc2626',
-    badgeGradeFBorder: '#fecaca',
-    
-    badgeNeutral: '#f8fafc',
-    badgeNeutralForeground: '#475569',
-    badgeNeutralBorder: '#e2e8f0',
+
+    // Enhanced table selection colors
+    selectionBg: 'rgba(37, 99, 235, 0.05)',
+    selectionBorder: 'rgba(37, 99, 235, 0.2)',
+
+    // Grade-specific colors (semantic approach)
+    gradeABg: 'rgba(34, 197, 94, 0.1)',
+    gradeAText: '#166534',
+    gradeFBg: 'rgba(239, 68, 68, 0.1)',
+    gradeFText: '#991b1b',
   },
   typography: {
     fontFamily: {

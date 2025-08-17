@@ -46,6 +46,9 @@ import {
   Separator,
   useToast
 } from './ui';
+import { DataTable, createSortableHeader, createSelectionColumn, createActionColumn } from "@/components/ui/data-table"
+import { AdvancedDataTable, createBadgeColumn, createNumericColumn, createDateColumn } from "@/components/ui/advanced-data-table"
+import { ColumnDef as TanStackColumnDef } from "@tanstack/react-table"
 
 const ComponentShowcase: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -186,6 +189,30 @@ const ComponentShowcase: React.FC = () => {
             </CardHeader>
             <CardContent>
               <EnhancedTableDemo />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>TanStack DataTable</CardTitle>
+              <CardDescription>
+                Professional data table with TanStack Table and shadcn/ui patterns
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <TanStackTableDemo />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Advanced DataTable (Recommended)</CardTitle>
+              <CardDescription>
+                Single, extensible table leveraging TanStack + shadcn/ui with helper utilities
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AdvancedTableDemo />
             </CardContent>
           </Card>
         </TabsContent>
@@ -442,6 +469,264 @@ function EnhancedTableDemo() {
         frozenColumns={1} // Freeze name column
         onRowClick={(row) => console.log('Clicked row:', row)}
         className="border rounded-lg"
+      />
+    </div>
+  );
+}
+
+// TanStack Table Demo Component
+function TanStackTableDemo() {
+  // Sample data for TanStack Table
+  const data = [
+    {
+      id: "1",
+      name: "John Doe",
+      email: "john@example.com",
+      role: "Team Lead",
+      status: "Active",
+      department: "Engineering",
+    },
+    {
+      id: "2",
+      name: "Jane Smith",
+      email: "jane@example.com",
+      role: "Coordinator",
+      status: "Active",
+      department: "Marketing",
+    },
+    {
+      id: "3",
+      name: "Bob Johnson",
+      email: "bob@example.com",
+      role: "Specialist",
+      status: "Pending",
+      department: "Sales",
+    },
+    {
+      id: "4",
+      name: "Alice Brown",
+      email: "alice@example.com",
+      role: "Volunteer",
+      status: "Inactive",
+      department: "Support",
+    },
+  ];
+
+  // TanStack Table column definitions
+  const columns: TanStackColumnDef<typeof data[0]>[] = [
+    createSelectionColumn(),
+    {
+      accessorKey: "name",
+      header: createSortableHeader("Name"),
+      cell: ({ row }) => (
+        <div className="font-medium">{row.getValue("name")}</div>
+      ),
+    },
+    {
+      accessorKey: "email",
+      header: createSortableHeader("Email"),
+      cell: ({ row }) => (
+        <div className="lowercase">{row.getValue("email")}</div>
+      ),
+    },
+    {
+      accessorKey: "role",
+      header: "Role",
+      cell: ({ row }) => {
+        const role = row.getValue("role") as string;
+        const variant =
+          role === 'Team Lead' ? 'grade-a' :
+          role === 'Coordinator' ? 'grade-b' :
+          role === 'Specialist' ? 'grade-c' : 'neutral';
+
+        return <Badge variant={variant}>{role}</Badge>;
+      },
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.getValue("status") as string;
+        const variant =
+          status === 'Active' ? 'grade-a' :
+          status === 'Pending' ? 'grade-c' : 'grade-f';
+
+        return <Badge variant={variant} size="sm">{status}</Badge>;
+      },
+    },
+    {
+      accessorKey: "department",
+      header: createSortableHeader("Department"),
+    },
+    createActionColumn(
+      (row) => console.log('Edit:', row),
+      (row) => console.log('Delete:', row),
+      (row) => console.log('View:', row)
+    ),
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="text-sm text-muted-foreground">
+        Professional data table with sorting, filtering, pagination, and row selection
+      </div>
+      <DataTable
+        columns={columns}
+        data={data}
+        searchKey="name"
+        searchPlaceholder="Filter by name..."
+      />
+    </div>
+  );
+}
+
+// Advanced Table Demo - Shows the power of helper utilities
+function AdvancedTableDemo() {
+  const [selectedRows, setSelectedRows] = React.useState<any[]>([]);
+
+  // Sample data with more realistic fields
+  const data = [
+    {
+      id: "EMP001",
+      name: "John Doe",
+      email: "john@company.com",
+      role: "Team Lead",
+      status: "Active",
+      department: "Engineering",
+      salary: 95000,
+      joinDate: "2022-01-15",
+      performance: 0.92,
+    },
+    {
+      id: "EMP002",
+      name: "Jane Smith",
+      email: "jane@company.com",
+      role: "Coordinator",
+      status: "Active",
+      department: "Marketing",
+      salary: 75000,
+      joinDate: "2022-03-20",
+      performance: 0.88,
+    },
+    {
+      id: "EMP003",
+      name: "Bob Johnson",
+      email: "bob@company.com",
+      role: "Specialist",
+      status: "Pending",
+      department: "Sales",
+      salary: 65000,
+      joinDate: "2023-06-10",
+      performance: 0.75,
+    },
+    {
+      id: "EMP004",
+      name: "Alice Brown",
+      email: "alice@company.com",
+      role: "Volunteer",
+      status: "Inactive",
+      department: "Support",
+      salary: 45000,
+      joinDate: "2021-11-05",
+      performance: 0.82,
+    },
+  ];
+
+  // Define columns using helper utilities - much cleaner!
+  const columns = [
+    {
+      accessorKey: "id",
+      header: "Employee ID",
+      cell: ({ row }: { row: any }) => (
+        <div className="font-mono text-sm">{row.getValue("id")}</div>
+      ),
+    },
+    {
+      accessorKey: "name",
+      header: createSortableHeader("Name"),
+      cell: ({ row }: { row: any }) => (
+        <div className="font-medium">{row.getValue("name")}</div>
+      ),
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+      cell: ({ row }: { row: any }) => (
+        <div className="text-muted-foreground">{row.getValue("email")}</div>
+      ),
+    },
+    // Using helper utility for badge column
+    createBadgeColumn("role", "Role"),
+    createBadgeColumn("status", "Status"),
+    {
+      accessorKey: "department",
+      header: createSortableHeader("Department"),
+    },
+    // Using helper utility for currency formatting
+    createNumericColumn("salary", "Salary", "currency"),
+    // Using helper utility for date formatting
+    createDateColumn("joinDate", "Join Date", "short"),
+    // Using helper utility for percentage formatting
+    createNumericColumn("performance", "Performance", "percentage"),
+    // Using helper utility for actions
+    createActionColumn({
+      onView: (row: any) => console.log('View employee:', row),
+      onEdit: (row: any) => console.log('Edit employee:', row),
+      onDelete: (row: any) => console.log('Delete employee:', row),
+      onCustom: [
+        { label: "Send Email", action: (row: any) => console.log('Email:', row.email) },
+        { label: "View Profile", action: (row: any) => console.log('Profile:', row.id) },
+      ]
+    }),
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="text-sm text-muted-foreground">
+          Extensible table with automatic badges, formatting, and actions
+        </div>
+        {selectedRows.length > 0 && (
+          <div className="text-sm font-medium">
+            {selectedRows.length} employee(s) selected
+          </div>
+        )}
+      </div>
+
+      <AdvancedDataTable
+        columns={columns}
+        data={data}
+        searchKey="name"
+        searchPlaceholder="Search employees..."
+        // Enhanced selection configuration
+        selection={{
+          enabled: true,
+          mode: 'multiple',
+          showSelectAll: true,
+          selectAllText: "Select all employees",
+          selectedRowClassName: "bg-primary/5 border-l-2 border-primary"
+        }}
+        onSelectionChange={setSelectedRows}
+        // Enhanced group headers
+        groupHeaders={[
+          { label: "Personal Information", columns: ["name", "email"] },
+          { label: "Work Details", columns: ["role", "department", "status"] },
+          { label: "Performance", columns: ["salary", "performance", "joinDate"] }
+        ]}
+        // Frozen columns for better UX
+        frozenColumns={{
+          count: 2,
+          shadowIntensity: 'medium'
+        }}
+        // Mobile optimization
+        mobile={{
+          enabled: true,
+          hideColumns: ["department", "joinDate"],
+          touchFriendly: true
+        }}
+        pageSize={5}
+        enablePagination={true}
+        onRowClick={(row) => console.log('Clicked employee:', row)}
       />
     </div>
   );

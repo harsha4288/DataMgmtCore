@@ -3,28 +3,55 @@
 > **Sub-task Type:** Enhancement & Feature Development
 > **Parent Task:** 1.3 - Core shadcn/ui Components Setup
 > **Priority:** High
-> **Estimated Duration:** 1-2 days
-> **Status:** Not Started 🟡
+> **Estimated Duration:** 4 days (3 phases)
+> **Status:** In Progress 🟡
+> **New Attempt:** August 2025 - Refined CSS Variables + Enhanced AdvancedDataTable
 
 ## 📋 Sub-task Overview
 
-This sub-task focuses on **enhancing the existing excellent theme system** with minor adjustments to match the inspiration screenshots and **extending the current DataTable component** with selection, grouping, and advanced features. The goal is to build upon the proven architecture from `react-web-platform` that already successfully implements these patterns.
+This sub-task focuses on **enhancing the existing excellent AdvancedDataTable and theme system** with targeted improvements to match the inspiration screenshots. Building on the proven TanStack Table foundation with optimized CSS variables and mobile-first design.
 
-## 🎯 Objectives
+## 🎯 **NEW APPROACH: Refined Enhancement Strategy**
 
-### Primary Goals
-- [ ] **Minor theme adjustments** to match inspiration screenshot styling
-- [ ] **Extend existing DataTable** with selection checkboxes and group headers
-- [ ] **Leverage existing badge system** (A, B, C, D, F, Neutral variants already implemented)
-- [ ] **Add missing table features** like frozen columns and enhanced interactions
+### **Current State Analysis (August 2025)**
+✅ **Excellent Foundation**: 4 themes, AdvancedDataTable with TanStack, helper utilities
+✅ **Performance**: < 200ms theme switching already achieved
+✅ **Architecture**: Proven patterns with semantic colors and CSS variables
+
+### **Enhancement Goals**
+🔧 **Visual Polish**: Match inspiration screenshots exactly
+🔧 **Advanced Features**: Group headers, frozen columns, enhanced selection
+🔧 **Mobile Optimization**: Touch-friendly, responsive design
+🔧 **Performance**: Maintain excellent performance while adding features
+
+## 🎯 Enhanced Objectives (New Approach)
+
+### **Phase 1: CSS Variables Refinement (1 day)**
+- [ ] **Audit current CSS variables** and optimize for table styling
+- [ ] **Create focused variable set** (12 essential table variables)
+- [ ] **Update all 4 theme configs** with new table-specific variables
+- [ ] **Maintain performance** (< 200ms theme switching)
+
+### **Phase 2: AdvancedDataTable Enhancement (2 days)**
+- [ ] **Group headers** with multi-level support and visual hierarchy
+- [ ] **Enhanced frozen columns** with improved shadows and sticky positioning
+- [ ] **Improved selection UX** with better checkbox styling and feedback
+- [ ] **Row interactions** with enhanced hover states and selection indicators
+
+### **Phase 3: Mobile Optimization (1 day)**
+- [ ] **Responsive design** with column hiding and stacking on mobile
+- [ ] **Touch-friendly interactions** with larger touch targets
+- [ ] **Performance optimization** for mobile rendering
+- [ ] **Cross-device testing** and validation
 
 ### Success Criteria
-- [ ] DataTable matches inspiration screenshots functionality
-- [ ] Selection system with checkboxes (individual and select-all)
-- [ ] Group headers with proper styling and spacing
-- [ ] Frozen columns for name/selection columns
-- [ ] All features work seamlessly across existing 4 themes
-- [ ] Performance maintained (< 200ms theme switching - already achieved)
+- [ ] **Perfect visual match** to inspiration screenshots
+- [ ] **Enhanced selection system** with improved UX
+- [ ] **Professional group headers** with proper hierarchy
+- [ ] **Smooth frozen columns** with enhanced shadow effects
+- [ ] **Excellent mobile experience** with touch-friendly design
+- [ ] **All features work seamlessly** across existing 4 themes
+- [ ] **Performance maintained** (< 200ms theme switching, < 100ms table rendering)
 
 ## 🖼️ Design Inspiration & Reference Implementation
 
@@ -45,128 +72,177 @@ This sub-task focuses on **enhancing the existing excellent theme system** with 
 5. **Enhanced Styling**: Professional borders, shadows, hover states ✅ *Already implemented in reference*
 6. **Theme Consistency**: Seamless light/dark mode switching ✅ *Already working*
 
-## 📊 Sub-sub-task Breakdown
+## 📊 Enhanced Implementation Plan (3-Phase Approach)
 
-### Sub-sub-task 1.3.4.1: Theme System Integration (0/3)
-**Focus**: Integrate proven theme patterns from react-web-platform
-
-**Implementation Tasks:**
-1. **CSS Variable Integration**
-   - Copy proven CSS variables from `react-web-platform/src/index.css`
-   - Integrate table-specific variables (--table-header, --table-row, etc.)
-   - Ensure badge grade variables (A, B, C, D, F, Neutral) are properly mapped
-
-2. **Theme Configuration Updates**
-   - Update `dark.ts` and `default.ts` with any missing table-specific colors
-   - Ensure componentOverrides.table includes all necessary properties
-   - Validate theme switching performance remains < 200ms
-
-3. **shadcn/ui Integration**
-   - Ensure CSS variables properly map to shadcn/ui components
-   - Test theme switching across all existing components
-   - Validate accessibility and contrast ratios
-
-### Sub-sub-task 1.3.4.2: Badge System Enhancement (0/2)
-**Focus**: Leverage existing badge system with minor enhancements
+### **Phase 1: CSS Variables Refinement (1 day)**
+**Focus**: Optimize existing CSS variables for enhanced table styling
 
 **Implementation Tasks:**
-1. **Badge Component Integration**
-   - Use existing Badge component from shadcn/ui
-   - Implement grade variants (A, B, C, D, F, Neutral) using existing theme colors
-   - Add size variants (sm, md, lg) if needed
-   - Ensure proper TypeScript types for all variants
+1. **Variable Audit & Optimization**
+   - Audit current ~30 CSS variables for table-specific needs
+   - Create focused set of 12 essential table variables
+   - Map variables to shadcn/ui semantic color system
+   - Ensure theme-aware responsive values
 
-2. **Badge Usage Patterns**
-   - Create reusable badge mapping functions (like in VolunteerDashboard.tsx)
-   - Document badge usage patterns for different data types
-   - Test badge rendering across all themes
-   - Ensure accessibility compliance
+2. **Theme Configuration Enhancement**
+   - Update all 4 theme configs (default, dark, gita, professional)
+   - Add table-specific variables for group headers, frozen columns
+   - Implement mobile-responsive variable values
+   - Validate performance impact (maintain < 200ms switching)
 
-### Sub-sub-task 1.3.4.3: DataTable Feature Extension (0/4)
-**Focus**: Extend existing Table component with proven patterns
+3. **Integration Testing**
+   - Test variable changes across all existing components
+   - Validate theme switching performance
+   - Ensure backward compatibility
+   - Check accessibility and contrast ratios
+
+### **Phase 2: AdvancedDataTable Enhancement (2 days)**
+**Focus**: Enhance existing AdvancedDataTable with inspiration screenshot features
 
 **Implementation Tasks:**
-1. **Selection System Integration**
-   - Add checkbox column to existing Table component
-   - Implement select-all functionality in table header
-   - Add selection state management hooks
-   - Support bulk actions (based on VolunteerDashboard.tsx patterns)
+1. **Group Headers System**
+   - Implement multi-level header support with proper TypeScript types
+   - Add visual hierarchy with enhanced styling
+   - Support colspan and rowspan for complex headers
+   - Ensure responsive behavior on mobile
 
-2. **Group Headers Implementation**
-   - Add multi-level header support to Table component
-   - Implement group header styling (based on DarkTheme.html)
-   - Add proper spacing and alignment for grouped columns
-   - Support colspan for group headers
+2. **Enhanced Frozen Columns**
+   - Improve sticky positioning with better z-index management
+   - Add enhanced shadow effects for visual separation
+   - Implement smooth scrolling with frozen column interaction
+   - Add mobile-specific frozen column behavior
 
-3. **Frozen Columns Support**
-   - Add sticky positioning for first columns (selection + name)
-   - Implement proper z-index layering
-   - Add shadow effects for frozen column separation
-   - Ensure responsive behavior
+3. **Selection UX Improvements**
+   - Enhance checkbox styling with better visual feedback
+   - Improve select-all functionality with indeterminate states
+   - Add selection indicators (row highlighting, borders)
+   - Implement keyboard navigation for selection
 
-4. **Enhanced Table Features**
-   - Add hover states and row highlighting
-   - Implement proper table borders and spacing
-   - Add loading states and empty state handling
-   - Ensure keyboard navigation and accessibility
+4. **Advanced Interactions**
+   - Enhanced hover states with smooth transitions
+   - Better row highlighting and selection feedback
+   - Improved loading states and empty state handling
+   - Touch-friendly interactions for mobile
 
-## 🔧 Technical Implementation Plan
+### **Phase 3: Mobile Optimization (1 day)**
+**Focus**: Ensure excellent mobile experience
 
-### Phase 1: Theme Integration (Based on Proven Patterns)
-```typescript
-// Use existing ThemeConfiguration - no changes needed!
-// Current theme system already supports:
-interface ThemeConfiguration {
-  colors: {
-    // Badge colors already defined: A, B, C, D, F, Neutral
-    badgeGradeA: string;
-    badgeGradeB: string;
-    // ... etc
-  };
-  componentOverrides?: {
-    table: {
-      borderRadius?: string;
-      headerBg?: string;
-      rowHoverBg?: string;
-      borderColor?: string;
-    };
-  };
-}
+**Implementation Tasks:**
+1. **Responsive Design**
+   - Implement column hiding/showing based on screen size
+   - Add column stacking for very small screens
+   - Optimize table layout for mobile viewports
+   - Ensure horizontal scrolling works smoothly
+
+2. **Touch Interactions**
+   - Larger touch targets for checkboxes and buttons
+   - Swipe gestures for row actions
+   - Touch-friendly dropdown menus and filters
+   - Haptic feedback for selection actions
+
+3. **Performance Optimization**
+   - Optimize rendering for mobile devices
+   - Implement virtual scrolling for large datasets
+   - Reduce bundle size impact
+   - Ensure 60fps scrolling performance
+
+4. **Cross-Device Testing**
+   - Test across different screen sizes and orientations
+   - Validate touch interactions on various devices
+   - Ensure accessibility on mobile screen readers
+   - Performance testing on lower-end devices
+
+## 🔧 Enhanced Technical Implementation
+
+### **Refined CSS Variables Strategy (12 Essential Variables)**
+```css
+/* Core table structure - theme-aware */
+--table-bg: hsl(var(--background));
+--table-header-bg: hsl(var(--muted));
+--table-group-header-bg: hsl(var(--muted/50));
+--table-row-hover: hsl(var(--accent/10));
+
+/* Borders and shadows - responsive */
+--table-border: hsl(var(--border));
+--table-frozen-shadow: 2px 0 4px hsl(var(--shadow/10));
+
+/* Selection states - accessible */
+--table-selection-bg: hsl(var(--primary/5));
+--table-selection-border: hsl(var(--primary/20));
+
+/* Grade-specific (reuse semantic colors) */
+--grade-a-bg: hsl(var(--success/10));
+--grade-a-text: hsl(var(--success-foreground));
+--grade-f-bg: hsl(var(--destructive/10));
+--grade-f-text: hsl(var(--destructive-foreground));
 ```
 
-### Phase 2: DataTable Enhancement (Extend Existing)
+### **Enhanced AdvancedDataTable Interface**
 ```typescript
-// Extend existing Table component with selection
-interface EnhancedTableProps extends React.ComponentProps<typeof Table> {
-  data: any[];
-  columns: ColumnDef[];
-  selection?: {
-    enabled: boolean;
-    selectedRows: any[];
-    onSelectionChange: (rows: any[]) => void;
-  };
-  groupHeaders?: {
-    enabled: boolean;
-    groups: GroupHeader[];
-  };
-  frozenColumns?: number; // Number of columns to freeze
+// Enhanced props building on existing AdvancedDataTable
+interface EnhancedAdvancedDataTableProps<TData, TValue>
+  extends AdvancedDataTableProps<TData, TValue> {
+
+  // Group headers with visual hierarchy
+  groupHeaders?: GroupHeaderConfig[];
+
+  // Enhanced frozen columns
+  frozenColumns?: FrozenColumnConfig;
+
+  // Improved selection system
+  selection?: EnhancedSelectionConfig;
+
+  // Mobile optimization
+  mobile?: MobileConfig;
 }
 
-// Reuse proven patterns from VolunteerDashboard.tsx
-interface ColumnDef {
-  key: string;
+interface GroupHeaderConfig {
   label: string;
-  groupHeader?: string; // For multi-level headers
-  render?: (value: any, row: any) => React.ReactNode;
-  // ... other existing properties
+  columns: string[];
+  level?: number; // For multi-level headers
+  className?: string;
+}
+
+interface FrozenColumnConfig {
+  count: number;
+  shadowIntensity?: 'light' | 'medium' | 'strong';
+  mobileBreakpoint?: number;
+}
+
+interface EnhancedSelectionConfig {
+  enabled: boolean;
+  mode?: 'single' | 'multiple';
+  showSelectAll?: boolean;
+  selectAllText?: string;
+  selectedRowClassName?: string;
+  onSelectionChange?: (rows: any[]) => void;
+}
+
+interface MobileConfig {
+  enabled: boolean;
+  stackColumns?: boolean;
+  hideColumns?: string[];
+  touchFriendly?: boolean;
+  swipeActions?: boolean;
 }
 ```
 
-### Phase 3: Integration and Testing
-- Copy proven CSS patterns from react-web-platform
-- Test theme switching performance (should remain < 200ms)
-- Validate accessibility compliance
-- Test across all 4 existing themes
+### **Mobile-First Responsive Design**
+```css
+/* Mobile-optimized touch targets */
+@media (max-width: 768px) {
+  --table-cell-padding: 12px 16px;
+  --table-checkbox-size: 20px;
+  --table-action-button-size: 44px;
+  --table-frozen-shadow: none; /* Disable on mobile */
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  --table-border: hsl(var(--foreground/30));
+  --table-selection-border: hsl(var(--primary/50));
+}
+```
 
 ## 📁 File Structure & Reference Files
 
@@ -235,40 +311,78 @@ prototypes/react-web-platform/src/
 3. Ensure accessibility compliance
 4. Test across all existing themes
 
-## 🎯 Success Metrics (Realistic & Achievable)
+## 🎯 Enhanced Success Metrics
 
-### Quality Targets
-- **Accessibility**: WCAG 2.1 AA compliance (maintain existing standards)
-- **Performance**: < 200ms theme switching (already achieved)
-- **TypeScript**: 100% type coverage (maintain existing standards)
-- **Implementation**: Reuse 90%+ of proven patterns
-- **Bundle Size**: Minimal increase (< 10KB additional)
+### **Performance Targets**
+- **Theme switching**: < 200ms (maintain current excellence)
+- **Table rendering**: < 100ms for 100 rows
+- **Mobile scrolling**: 60fps smooth scrolling
+- **Bundle size**: < 5KB additional overhead
+- **Memory usage**: No memory leaks during theme switching
 
-### Feature Completeness
-- [ ] Selection checkboxes match inspiration screenshots
-- [ ] Group headers properly styled and functional
-- [ ] Badge system working with existing A, B, C, D, F, Neutral variants
-- [ ] Frozen columns implemented with proper shadows
-- [ ] Theme consistency across all 4 existing themes
-- [ ] Hover states and interactions match reference implementation
+### **Feature Completeness Checklist**
+- [ ] **Perfect visual match** to inspiration screenshots
+- [ ] **Group headers** with proper visual hierarchy and spacing
+- [ ] **Enhanced frozen columns** with smooth shadows and sticky positioning
+- [ ] **Improved selection UX** with better checkboxes and feedback
+- [ ] **Mobile-optimized design** with touch-friendly interactions
+- [ ] **Theme consistency** across all 4 existing themes (default, dark, gita, professional)
+- [ ] **Accessibility compliance** (WCAG 2.1 AA maintained)
+- [ ] **TypeScript coverage** (100% type safety maintained)
 
-## 🚀 Key Advantages of This Approach
+### **Quality Assurance**
+- [ ] **Cross-browser testing** (Chrome, Firefox, Safari, Edge)
+- [ ] **Mobile device testing** (iOS Safari, Android Chrome)
+- [ ] **Screen reader compatibility** (NVDA, JAWS, VoiceOver)
+- [ ] **Performance profiling** (Chrome DevTools, Lighthouse)
+- [ ] **Theme switching stress testing** (rapid switching, memory leaks)
 
-### ✅ **Proven Architecture**
-- Building on successful VolunteerDashboard.tsx implementation
-- Reusing working theme system from react-web-platform
-- Leveraging existing badge system with A, B, C, D, F, Neutral variants
+## 🚀 Key Advantages of Enhanced Approach
 
-### ✅ **Minimal Risk**
-- No major architectural changes needed
-- Theme system already supports all required features
-- Performance already optimized (< 200ms theme switching)
+### ✅ **Builds on Excellence**
+- **Proven AdvancedDataTable**: TanStack-based with helper utilities already working
+- **Optimized theme system**: 4 themes with < 200ms switching already achieved
+- **Semantic color system**: Badge variants using shadcn/ui colors already implemented
+- **Performance foundation**: Solid architecture ready for enhancement
 
-### ✅ **Fast Implementation**
-- Copy proven CSS patterns
-- Extend existing components rather than rebuild
-- Reuse existing badge and theme systems
+### ✅ **Targeted Enhancements**
+- **Focused improvements**: Only what's needed to match inspiration screenshots
+- **Minimal disruption**: No architectural rewrites or breaking changes
+- **Incremental delivery**: 3 clear phases with measurable outcomes
+- **Risk mitigation**: Building on proven patterns and existing code
+
+### ✅ **Future-Proof Design**
+- **Mobile-first approach**: Touch-friendly design from the start
+- **Responsive CSS variables**: Theme-aware and device-optimized
+- **Extensible architecture**: Ready for React Native migration
+- **Community standards**: Following TanStack and shadcn/ui best practices
+
+### ✅ **Developer Experience**
+- **Clear migration path**: Enhance existing code, don't replace
+- **Comprehensive documentation**: Updated examples and guides
+- **Type safety**: Full TypeScript support with enhanced interfaces
+- **Testing coverage**: Unit tests for all new features
 
 ---
 
-*This approach builds upon the excellent existing architecture while adding the specific features shown in the inspiration screenshots.*
+## 📋 **Implementation Timeline**
+
+### **Week 1: Phase 1 - CSS Variables Refinement**
+- **Day 1**: Variable audit and optimization
+- **Day 2**: Theme config updates and testing
+
+### **Week 2: Phase 2 - AdvancedDataTable Enhancement**
+- **Day 1-2**: Group headers and frozen columns
+- **Day 3-4**: Selection UX and interactions
+
+### **Week 3: Phase 3 - Mobile Optimization**
+- **Day 1**: Responsive design implementation
+- **Day 2**: Touch interactions and performance testing
+
+### **Week 4: Integration & Polish**
+- **Day 1-2**: Cross-browser and device testing
+- **Day 3-4**: Documentation and team training
+
+---
+
+*This enhanced approach delivers exactly what's needed while building on the excellent foundation that already exists.*

@@ -1,0 +1,123 @@
+/* Enhanced AdvancedDataTable Styles */
+/* Frozen columns support and enhanced table styling */
+
+.advanced-data-table {
+  --frozen-count: 0;
+  --frozen-shadow: 2px 0 4px rgba(0,0,0,0.1);
+}
+
+/* Frozen columns styling */
+.advanced-data-table[data-frozen-columns] {
+  overflow-x: auto;
+}
+
+.advanced-data-table[data-frozen-columns] thead th:nth-child(-n+var(--frozen-count)),
+.advanced-data-table[data-frozen-columns] tbody td:nth-child(-n+var(--frozen-count)) {
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  background: var(--table-header-bg, hsl(var(--background)));
+  box-shadow: var(--frozen-shadow);
+}
+
+.advanced-data-table[data-frozen-columns] tbody td:nth-child(-n+var(--frozen-count)) {
+  background: var(--table-bg, hsl(var(--background)));
+}
+
+/* Enhanced selection styling */
+.advanced-data-table .table-row-selected {
+  background: var(--table-selection-bg, hsl(var(--primary/5)));
+  border-left: 2px solid var(--table-selection-border, hsl(var(--primary/20)));
+}
+
+/* Enhanced hover effects */
+.advanced-data-table tbody tr:hover {
+  background: var(--table-row-hover, hsl(var(--muted/50)));
+}
+
+/* Group header styling */
+.advanced-data-table .group-header {
+  background: var(--table-group-header-bg, hsl(var(--muted)));
+  border-bottom: 2px solid var(--table-border, hsl(var(--border)));
+  font-weight: 600;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .advanced-data-table.mobile-optimized {
+    --table-cell-padding: 12px 16px;
+    --table-checkbox-size: 20px;
+    --table-action-button-size: 44px;
+  }
+
+  .advanced-data-table .mobile-hidden {
+    display: none;
+  }
+
+  .advanced-data-table.mobile-optimized .mobile-stack {
+    display: block;
+    width: 100%;
+  }
+
+  .advanced-data-table.mobile-optimized .mobile-stack td {
+    display: block;
+    text-align: left;
+    border: none;
+    padding: 8px 16px;
+  }
+
+  .advanced-data-table.mobile-optimized .mobile-stack td:before {
+    content: attr(data-label) ": ";
+    font-weight: 600;
+    display: inline-block;
+    width: 120px;
+  }
+
+  /* Hide columns marked for mobile hiding */
+  .advanced-data-table.mobile-optimized [data-hide-on-mobile="true"] {
+    display: none;
+  }
+
+  /* Improve table scrolling on mobile */
+  .advanced-data-table.mobile-optimized {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Better spacing for mobile */
+  .advanced-data-table.mobile-optimized th,
+  .advanced-data-table.mobile-optimized td {
+    padding: var(--table-cell-padding, 12px 16px);
+  }
+}
+
+/* Touch-friendly interactions */
+@media (hover: none) and (pointer: coarse) {
+  .advanced-data-table button,
+  .advanced-data-table [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .advanced-data-table input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Enhanced grade badge styling using CSS variables */
+.grade-badge-a {
+  background: var(--grade-a-bg, rgba(34, 197, 94, 0.1));
+  color: var(--grade-a-text, #166534);
+}
+
+.grade-badge-f {
+  background: var(--grade-f-bg, rgba(239, 68, 68, 0.1));
+  color: var(--grade-f-text, #991b1b);
+}
+
+/* Smooth transitions for theme switching */
+.advanced-data-table,
+.advanced-data-table * {
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}

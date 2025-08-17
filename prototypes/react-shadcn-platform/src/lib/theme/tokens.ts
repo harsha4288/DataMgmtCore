@@ -26,89 +26,30 @@ export const cssVariableMap = {
   '--shadow': 'colors.shadow',
   '--frozen-shadow': 'colors.frozenShadow',
 
-  // Table-specific variables (from proven react-web-platform implementation)
-  '--table-container': 'colors.bgPrimary',
-  '--table-container-elevated': 'colors.bgSecondary',
-  '--table-header': 'colors.bgHeader',
-  '--table-header-elevated': 'colors.bgHeaderGroup',
-  '--table-group-header': 'colors.bgHeaderGroup',
-  '--table-group-header-line': 'colors.borderHeader',
-  '--table-row': 'colors.bgSecondary',
+  // Enhanced Table Variables (12 Essential) - Refined for inspiration screenshots
+  '--table-bg': 'colors.bgPrimary',
+  '--table-header-bg': 'colors.bgHeader',
+  '--table-group-header-bg': 'colors.bgHeaderGroup',
   '--table-row-hover': 'colors.hoverBg',
   '--table-border': 'colors.borderColor',
-  '--table-shadow': 'colors.shadow',
-  '--table-shadow-elevated': 'colors.shadow',
-  '--table-freeze-shadow': 'colors.frozenShadow',
+  '--table-frozen-shadow': 'colors.frozenShadow',
+  '--table-selection-bg': 'colors.selectionBg',
+  '--table-selection-border': 'colors.selectionBorder',
+  '--grade-a-bg': 'colors.gradeABg',
+  '--grade-a-text': 'colors.gradeAText',
+  '--grade-f-bg': 'colors.gradeFBg',
+  '--grade-f-text': 'colors.gradeFText',
 
-  // Badge colors
-  '--badge-grade-a': 'colors.badgeGradeA',
-  '--badge-grade-a-foreground': 'colors.badgeGradeAForeground',
-  '--badge-grade-a-border': 'colors.badgeGradeABorder',
+  // Badge colors - removed (now using semantic colors)
   
-  '--badge-grade-b': 'colors.badgeGradeB',
-  '--badge-grade-b-foreground': 'colors.badgeGradeBForeground',
-  '--badge-grade-b-border': 'colors.badgeGradeBBorder',
-  
-  '--badge-grade-c': 'colors.badgeGradeC',
-  '--badge-grade-c-foreground': 'colors.badgeGradeCForeground',
-  '--badge-grade-c-border': 'colors.badgeGradeCBorder',
-  
-  '--badge-grade-d': 'colors.badgeGradeD',
-  '--badge-grade-d-foreground': 'colors.badgeGradeDForeground',
-  '--badge-grade-d-border': 'colors.badgeGradeDBorder',
-  
-  '--badge-grade-f': 'colors.badgeGradeF',
-  '--badge-grade-f-foreground': 'colors.badgeGradeFForeground',
-  '--badge-grade-f-border': 'colors.badgeGradeFBorder',
-  
-  '--badge-neutral': 'colors.badgeNeutral',
-  '--badge-neutral-foreground': 'colors.badgeNeutralForeground',
-  '--badge-neutral-border': 'colors.badgeNeutralBorder',
-  
-  // Typography
+  // Typography - essential only
   '--font-family-primary': 'typography.fontFamily.primary',
-  '--font-family-secondary': 'typography.fontFamily.secondary',
   '--font-family-mono': 'typography.fontFamily.mono',
-  
-  '--font-size-xs': 'typography.fontSize.xs',
-  '--font-size-sm': 'typography.fontSize.sm',
-  '--font-size-base': 'typography.fontSize.base',
-  '--font-size-lg': 'typography.fontSize.lg',
-  '--font-size-xl': 'typography.fontSize.xl',
-  '--font-size-2xl': 'typography.fontSize.2xl',
-  '--font-size-3xl': 'typography.fontSize.3xl',
-  
-  '--font-weight-normal': 'typography.fontWeight.normal',
-  '--font-weight-medium': 'typography.fontWeight.medium',
-  '--font-weight-semibold': 'typography.fontWeight.semibold',
-  '--font-weight-bold': 'typography.fontWeight.bold',
-  
-  '--line-height-tight': 'typography.lineHeight.tight',
-  '--line-height-normal': 'typography.lineHeight.normal',
-  '--line-height-relaxed': 'typography.lineHeight.relaxed',
-  
-  // Spacing
-  '--spacing-xs': 'spacing.xs',
+
+  // Spacing - essential only
   '--spacing-sm': 'spacing.sm',
   '--spacing-md': 'spacing.md',
   '--spacing-lg': 'spacing.lg',
-  '--spacing-xl': 'spacing.xl',
-  '--spacing-2xl': 'spacing.2xl',
-  '--spacing-3xl': 'spacing.3xl',
-  
-  // Border radius
-  '--radius-none': 'borderRadius.none',
-  '--radius-sm': 'borderRadius.sm',
-  '--radius-md': 'borderRadius.md',
-  '--radius-lg': 'borderRadius.lg',
-  '--radius-xl': 'borderRadius.xl',
-  '--radius-full': 'borderRadius.full',
-  
-  // Shadows
-  '--shadow-sm': 'shadows.sm',
-  '--shadow-md': 'shadows.md',
-  '--shadow-lg': 'shadows.lg',
-  '--shadow-xl': 'shadows.xl',
 } as const;
 
 // shadcn/ui CSS variable mappings for theme integration

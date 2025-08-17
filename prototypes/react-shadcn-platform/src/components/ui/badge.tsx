@@ -15,13 +15,13 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-foreground",
-        // Grade variants using CSS variables from theme system
-        "grade-a": "border-transparent bg-[var(--badge-grade-a)] text-[var(--badge-grade-a-foreground)] hover:bg-[var(--badge-grade-a)]/80",
-        "grade-b": "border-transparent bg-[var(--badge-grade-b)] text-[var(--badge-grade-b-foreground)] hover:bg-[var(--badge-grade-b)]/80",
-        "grade-c": "border-transparent bg-[var(--badge-grade-c)] text-[var(--badge-grade-c-foreground)] hover:bg-[var(--badge-grade-c)]/80",
-        "grade-d": "border-transparent bg-[var(--badge-grade-d)] text-[var(--badge-grade-d-foreground)] hover:bg-[var(--badge-grade-d)]/80",
-        "grade-f": "border-transparent bg-[var(--badge-grade-f)] text-[var(--badge-grade-f-foreground)] hover:bg-[var(--badge-grade-f)]/80",
-        neutral: "border-transparent bg-[var(--badge-neutral)] text-[var(--badge-neutral-foreground)] hover:bg-[var(--badge-neutral)]/80",
+        // Grade variants using shadcn/ui semantic colors
+        "grade-a": "border-transparent bg-green-100 text-green-800 hover:bg-green-100/80 dark:bg-green-900 dark:text-green-100",
+        "grade-b": "border-transparent bg-blue-100 text-blue-800 hover:bg-blue-100/80 dark:bg-blue-900 dark:text-blue-100",
+        "grade-c": "border-transparent bg-yellow-100 text-yellow-800 hover:bg-yellow-100/80 dark:bg-yellow-900 dark:text-yellow-100",
+        "grade-d": "border-transparent bg-orange-100 text-orange-800 hover:bg-orange-100/80 dark:bg-orange-900 dark:text-orange-100",
+        "grade-f": "border-transparent bg-red-100 text-red-800 hover:bg-red-100/80 dark:bg-red-900 dark:text-red-100",
+        neutral: "border-transparent bg-gray-100 text-gray-800 hover:bg-gray-100/80 dark:bg-gray-800 dark:text-gray-100",
       },
       size: {
         default: "px-2.5 py-0.5 text-xs",

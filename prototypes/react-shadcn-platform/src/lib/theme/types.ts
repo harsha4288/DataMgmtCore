@@ -25,31 +25,16 @@ export interface ColorPalette {
   // Shadow colors
   shadow: string;
   frozenShadow: string;
-  
-  // Badge colors for different grades/statuses
-  badgeGradeA: string;
-  badgeGradeAForeground: string;
-  badgeGradeABorder: string;
-  
-  badgeGradeB: string;
-  badgeGradeBForeground: string;
-  badgeGradeBBorder: string;
-  
-  badgeGradeC: string;
-  badgeGradeCForeground: string;
-  badgeGradeCBorder: string;
-  
-  badgeGradeD: string;
-  badgeGradeDForeground: string;
-  badgeGradeDBorder: string;
-  
-  badgeGradeF: string;
-  badgeGradeFForeground: string;
-  badgeGradeFBorder: string;
-  
-  badgeNeutral: string;
-  badgeNeutralForeground: string;
-  badgeNeutralBorder: string;
+
+  // Enhanced table selection colors
+  selectionBg: string;
+  selectionBorder: string;
+
+  // Grade-specific colors (semantic approach)
+  gradeABg: string;
+  gradeAText: string;
+  gradeFBg: string;
+  gradeFText: string;
 }
 
 export interface TypographySystem {
