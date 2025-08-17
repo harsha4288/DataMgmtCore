@@ -540,7 +540,7 @@
   
   .from-primary {
     --tw-gradient-from: hsl(var(--primary));
-    --tw-gradient-to: hsl(var(--primary) / 0);;
+    --tw-gradient-to: hsl(var(--primary) / 0);
     --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
   }
   
