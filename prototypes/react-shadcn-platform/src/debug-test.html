@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frozen Columns Debug Test</title>
+    <style>
+        /* CSS variables from our theme */
+        :root {
+            --bg-primary: #ffffff;
+            --bg-header: #ffffff;
+            --border-color: #e5e7eb;
+            --frozen-shadow: 2px 0 4px rgba(0,0,0,0.05);
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 20px;
+            background: #f9fafb;
+        }
+
+        .container {
+            width: 500px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            position: relative;
+            width: 100%;
+            overflow: auto;
+            max-height: 400px;
+        }
+
+        /* Table layout consistency for frozen columns */
+        table {
+            table-layout: fixed;
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            min-width: 800px;
+            background: transparent;
+        }
+
+        th, td {
+            box-sizing: border-box;
+            border-right: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+            background: var(--bg-primary);
+        }
+
+        th {
+            background: var(--bg-header);
+            font-weight: 500;
+            border-bottom: 1px solid var(--border-color);
+            height: 48px;
+        }
+
+        /* Frozen column styles exactly like our CSS */
+        .frozen-column-0 {
+            position: sticky !important;
+            left: 0px !important;
+            z-index: 54 !important;
+            background-color: var(--bg-header) !important;
+            border-right: 1px solid var(--border-color) !important;
+            box-shadow: var(--frozen-shadow) !important;
+            width: 48px;
+        }
+
+        .frozen-column-1 {
+            position: sticky !important;
+            left: 48px !important;
+            z-index: 50 !important;
+            background-color: var(--bg-header) !important;
+            border-right: 1px solid var(--border-color) !important;
+            box-shadow: var(--frozen-shadow) !important;
+            width: 150px;
+        }
+
+        /* Frozen column styles for data cells */
+        tbody .frozen-column-0 {
+            background-color: var(--bg-primary) !important;
+        }
+
+        tbody .frozen-column-1 {
+            background-color: var(--bg-primary) !important;
+        }
+
+        .highlight {
+            background: #fef3c7 !important;
+            border: 2px solid #f59e0b !important;
+        }
+    </style>
+</head>
+<body>
+    <h1>Frozen Columns Debug Test</h1>
+    <p>This tests the exact CSS being used in the React component. Scroll horizontally to see frozen columns.</p>
+    
+    <div class="container">
+        <h3>Test: Frozen Selection + Name Columns</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="frozen-column-0 highlight">☐</th>
+                        <th class="frozen-column-1 highlight">Volunteer Name</th>
+                        <th style="width: 120px;">Role</th>
+                        <th style="width: 120px;">Department</th>
+                        <th style="width: 180px;">Email Address</th>
+                        <th style="width: 120px;">Phone</th>
+                        <th style="width: 90px;">Events</th>
+                        <th style="width: 90px;">Hours</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="frozen-column-0 highlight">☐</td>
+                        <td class="frozen-column-1 highlight">Sarah Johnson</td>
+                        <td>Team Lead</td>
+                        <td>Operations</td>
+                        <td>sarah@example.com</td>
+                        <td>555-0101</td>
+                        <td>4</td>
+                        <td>24</td>
+                    </tr>
+                    <tr>
+                        <td class="frozen-column-0 highlight">☐</td>
+                        <td class="frozen-column-1 highlight">Mike Chen</td>
+                        <td>Coordinator</td>
+                        <td>Marketing</td>
+                        <td>mike@example.com</td>
+                        <td>555-0102</td>
+                        <td>6</td>
+                        <td>32</td>
+                    </tr>
+                    <tr>
+                        <td class="frozen-column-0 highlight">☐</td>
+                        <td class="frozen-column-1 highlight">Emily Rodriguez</td>
+                        <td>Volunteer</td>
+                        <td>Events</td>
+                        <td>emily@example.com</td>
+                        <td>555-0103</td>
+                        <td>2</td>
+                        <td>8</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div style="margin-top: 20px; padding: 15px; background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px;">
+        <h4>Instructions:</h4>
+        <ol>
+            <li>Scroll horizontally in the table above</li>
+            <li>The highlighted yellow columns (checkbox and name) should stay fixed</li>
+            <li>The other columns should scroll past them</li>
+            <li>If this works, then our CSS classes are correct</li>
+        </ol>
+        
+        <h4>CSS Classes Applied:</h4>
+        <ul>
+            <li><code>.frozen-column-0</code> - Selection column at left: 0px</li>
+            <li><code>.frozen-column-1</code> - Name column at left: 48px</li>
+        </ul>
+    </div>
+</body>
+</html>

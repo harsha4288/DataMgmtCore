@@ -9,7 +9,7 @@ import {
   TableRow 
 } from "./table"
 import { Checkbox } from "./checkbox"
-import { Badge } from "./badge"
+// import { Badge } from "./badge"
 
 // Enhanced table interfaces based on proven VolunteerDashboard patterns
 export interface ColumnDef<T = any> {
@@ -93,23 +93,23 @@ export function EnhancedTable<T = any>({
   // Use internal state if no external selection config provided
   const selectedRows = selection?.selectedRows ?? internalSelectedRows
   const onSelectionChange = selection?.onSelectionChange ?? setInternalSelectedRows
-  const getRowId = selection?.getRowId ?? ((row: T, index: number) => index)
+  const getRowId = selection?.getRowId ?? ((_row: T, index: number) => index)
   
   // Generate group headers from columns if not provided
   const computedGroupHeaders = groupHeaders ?? generateGroupHeaders(columns)
   
   // Selection handlers
-  const isRowSelected = (row: T) => {
-    const rowId = getRowId(row)
-    return selectedRows.some(selectedRow => getRowId(selectedRow) === rowId)
+  const isRowSelected = (row: T, index: number) => {
+    const rowId = getRowId(row, index)
+    return selectedRows.some((selectedRow, idx) => getRowId(selectedRow, idx) === rowId)
   }
-  
-  const toggleRowSelection = (row: T) => {
-    const rowId = getRowId(row)
-    const isSelected = isRowSelected(row)
-    
+
+  const toggleRowSelection = (row: T, index: number) => {
+    const rowId = getRowId(row, index)
+    const isSelected = isRowSelected(row, index)
+
     if (isSelected) {
-      onSelectionChange(selectedRows.filter(selectedRow => getRowId(selectedRow) !== rowId))
+      onSelectionChange(selectedRows.filter((selectedRow, idx) => getRowId(selectedRow, idx) !== rowId))
     } else {
       onSelectionChange([...selectedRows, row])
     }
@@ -185,7 +185,7 @@ export function EnhancedTable<T = any>({
                 <Checkbox
                   checked={isAllSelected}
                   ref={(el) => {
-                    if (el) el.indeterminate = isIndeterminate
+                    if (el) (el as any).indeterminate = isIndeterminate
                   }}
                   onCheckedChange={toggleAllSelection}
                 />
@@ -238,17 +238,17 @@ export function EnhancedTable<T = any>({
           ) : (
             data.map((row, rowIndex) => (
               <TableRow
-                key={getRowId(row)}
+                key={getRowId(row, rowIndex)}
                 className={cn(
                   "transition-colors hover:bg-[var(--table-row-hover)]",
-                  isRowSelected(row) && "bg-[var(--table-row-hover)]",
+                  isRowSelected(row, rowIndex) && "bg-[var(--table-row-hover)]",
                   onRowClick && "cursor-pointer"
                 )}
                 onClick={() => onRowClick?.(row)}
-                data-state={isRowSelected(row) ? "selected" : undefined}
+                data-state={isRowSelected(row, rowIndex) ? "selected" : undefined}
               >
                 {selection?.enabled && (
-                  <TableCell 
+                  <TableCell
                     className={cn(
                       "w-12 text-center",
                       getFrozenColumnStyle(0)
@@ -257,14 +257,14 @@ export function EnhancedTable<T = any>({
                     onClick={(e) => e.stopPropagation()}
                   >
                     <Checkbox
-                      checked={isRowSelected(row)}
-                      onCheckedChange={() => toggleRowSelection(row)}
+                      checked={isRowSelected(row, rowIndex)}
+                      onCheckedChange={() => toggleRowSelection(row, rowIndex)}
                     />
                   </TableCell>
                 )}
                 {columns.map((column, columnIndex) => (
                   <TableCell
-                    key={`${getRowId(row)}-${column.key}`}
+                    key={`${getRowId(row, rowIndex)}-${column.key}`}
                     className={cn(
                       column.align === 'center' && "text-center",
                       column.align === 'right' && "text-right",
@@ -289,4 +289,4 @@ export function EnhancedTable<T = any>({
 }
 
 // Export helper functions and types
-export { type ColumnDef, type GroupHeader, type SelectionConfig }
+// Note: Types are exported from advanced-data-table.tsx to avoid conflicts

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Frozen Columns</title>
+    <style>
+        /* CSS variables from our theme */
+        :root {
+            --bg-primary: #ffffff;
+            --bg-header: #ffffff;
+            --border-color: #e5e7eb;
+        }
+
+        /* Table layout consistency for frozen columns */
+        table {
+            table-layout: fixed;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        th, td {
+            box-sizing: border-box;
+            border-right: 1px solid var(--border-color);
+            padding: 12px;
+        }
+
+        .container {
+            width: 600px;
+            border: 1px solid #ccc;
+            margin: 20px;
+        }
+
+        .table-container {
+            position: relative;
+            width: 100%;
+            overflow: auto;
+        }
+
+        .frozen-column {
+            position: sticky;
+            background-color: var(--bg-header);
+            border-right: 1px solid var(--border-color);
+            box-shadow: 2px 0 4px rgba(0,0,0,0.15);
+        }
+
+        .selection-column {
+            left: 0px;
+            z-index: 52;
+            width: 48px;
+        }
+
+        .name-column {
+            left: 48px;
+            z-index: 50;
+            width: 150px;
+        }
+
+        .test-table {
+            width: 100%;
+            min-width: 800px;
+            background: transparent;
+        }
+    </style>
+</head>
+<body>
+    <h1>Debug Frozen Columns</h1>
+    
+    <div class="container">
+        <h3>Test 1: Basic Sticky Positioning</h3>
+        <div class="table-container">
+            <table class="test-table">
+                <thead>
+                    <tr>
+                        <th class="frozen-column selection-column">☐</th>
+                        <th class="frozen-column name-column">Name</th>
+                        <th style="width: 120px;">Role</th>
+                        <th style="width: 100px;">Status</th>
+                        <th style="width: 90px;">Events</th>
+                        <th style="width: 90px;">Hours</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="frozen-column selection-column">☐</td>
+                        <td class="frozen-column name-column">Sarah Johnson</td>
+                        <td>Team Lead</td>
+                        <td>ACTIVE</td>
+                        <td>4</td>
+                        <td>24</td>
+                    </tr>
+                    <tr>
+                        <td class="frozen-column selection-column">☐</td>
+                        <td class="frozen-column name-column">Mike Chen</td>
+                        <td>Coordinator</td>
+                        <td>ACTIVE</td>
+                        <td>6</td>
+                        <td>32</td>
+                    </tr>
+                    <tr>
+                        <td class="frozen-column selection-column">☐</td>
+                        <td class="frozen-column name-column">Emily Rodriguez</td>
+                        <td>Volunteer</td>
+                        <td>PENDING</td>
+                        <td>2</td>
+                        <td>8</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="container">
+        <h3>Test 2: Inline Styles (like our React component)</h3>
+        <div class="table-container">
+            <table class="test-table">
+                <thead>
+                    <tr>
+                        <th style="position: sticky; left: 0px; z-index: 52; background-color: var(--bg-header); box-shadow: 2px 0 4px rgba(0,0,0,0.15); border-right: 1px solid var(--border-color); width: 48px;">☐</th>
+                        <th style="position: sticky; left: 48px; z-index: 50; background-color: var(--bg-header); box-shadow: 2px 0 4px rgba(0,0,0,0.15); border-right: 1px solid var(--border-color); width: 150px;">Name</th>
+                        <th style="width: 120px;">Role</th>
+                        <th style="width: 100px;">Status</th>
+                        <th style="width: 90px;">Events</th>
+                        <th style="width: 90px;">Hours</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="position: sticky; left: 0px; z-index: 52; background-color: var(--bg-primary); border-right: 1px solid var(--border-color); width: 48px;">☐</td>
+                        <td style="position: sticky; left: 48px; z-index: 50; background-color: var(--bg-primary); border-right: 1px solid var(--border-color); width: 150px;">Sarah Johnson</td>
+                        <td>Team Lead</td>
+                        <td>ACTIVE</td>
+                        <td>4</td>
+                        <td>24</td>
+                    </tr>
+                    <tr>
+                        <td style="position: sticky; left: 0px; z-index: 52; background-color: var(--bg-primary); border-right: 1px solid var(--border-color); width: 48px;">☐</td>
+                        <td style="position: sticky; left: 48px; z-index: 50; background-color: var(--bg-primary); border-right: 1px solid var(--border-color); width: 150px;">Mike Chen</td>
+                        <td>Coordinator</td>
+                        <td>ACTIVE</td>
+                        <td>6</td>
+                        <td>32</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <p><strong>Instructions:</strong> Scroll horizontally in each table container. The first two columns (checkbox and name) should remain fixed while other columns scroll.</p>
+</body>
+</html>

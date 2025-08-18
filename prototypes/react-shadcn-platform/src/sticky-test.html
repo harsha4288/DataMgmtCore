@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sticky Position Test</title>
+    <style>
+        .container {
+            width: 600px;
+            height: 300px;
+            border: 2px solid #000;
+            overflow: auto;
+            margin: 20px;
+        }
+
+        .content {
+            width: 1200px;
+            height: 200px;
+            background: linear-gradient(to right, #f0f0f0, #e0e0e0);
+            position: relative;
+        }
+
+        .sticky-element {
+            position: sticky;
+            left: 0;
+            top: 0;
+            width: 100px;
+            height: 50px;
+            background: red;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            border: 2px solid blue;
+        }
+
+        .table-test {
+            width: 600px;
+            border: 2px solid #000;
+            margin: 20px;
+        }
+
+        .table-container {
+            overflow: auto;
+            max-height: 300px;
+        }
+
+        .test-table {
+            width: 100%;
+            min-width: 1000px;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .test-table th,
+        .test-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .sticky-col {
+            position: sticky;
+            left: 0;
+            background: yellow;
+            z-index: 5;
+            border-right: 3px solid red;
+        }
+
+        .sticky-col2 {
+            position: sticky;
+            left: 100px;
+            background: lightblue;
+            z-index: 4;
+            border-right: 3px solid blue;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sticky Position Tests</h1>
+    
+    <h2>Test 1: Basic Sticky Element</h2>
+    <div class="container">
+        <div class="content">
+            <div class="sticky-element">STICKY</div>
+            <p style="margin-left: 120px; margin-top: 60px;">Scroll horizontally to test sticky positioning</p>
+        </div>
+    </div>
+
+    <h2>Test 2: Sticky Table Columns</h2>
+    <div class="table-test">
+        <div class="table-container">
+            <table class="test-table">
+                <thead>
+                    <tr>
+                        <th class="sticky-col" style="width: 100px;">Col 1 (Sticky)</th>
+                        <th class="sticky-col2" style="width: 100px;">Col 2 (Sticky)</th>
+                        <th style="width: 150px;">Col 3</th>
+                        <th style="width: 150px;">Col 4</th>
+                        <th style="width: 150px;">Col 5</th>
+                        <th style="width: 150px;">Col 6</th>
+                        <th style="width: 150px;">Col 7</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="sticky-col">Row 1 A</td>
+                        <td class="sticky-col2">Row 1 B</td>
+                        <td>Row 1 C</td>
+                        <td>Row 1 D</td>
+                        <td>Row 1 E</td>
+                        <td>Row 1 F</td>
+                        <td>Row 1 G</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col">Row 2 A</td>
+                        <td class="sticky-col2">Row 2 B</td>
+                        <td>Row 2 C</td>
+                        <td>Row 2 D</td>
+                        <td>Row 2 E</td>
+                        <td>Row 2 F</td>
+                        <td>Row 2 G</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col">Row 3 A</td>
+                        <td class="sticky-col2">Row 3 B</td>
+                        <td>Row 3 C</td>
+                        <td>Row 3 D</td>
+                        <td>Row 3 E</td>
+                        <td>Row 3 F</td>
+                        <td>Row 3 G</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <p><strong>Instructions:</strong></p>
+    <ul>
+        <li>Scroll horizontally in both test areas</li>
+        <li>The red "STICKY" element should stay at the left edge</li>
+        <li>The yellow and light blue table columns should stay fixed while other columns scroll</li>
+        <li>If these don't work, there's a browser compatibility issue</li>
+    </ul>
+</body>
+</html>

@@ -11,16 +11,14 @@ import {
   ColumnFiltersState,
   SortingState,
   RowSelectionState,
+  ColumnOrderState,
+  ColumnSizingState,
+  Header,
+  Table,
 } from "@tanstack/react-table"
 import { cn } from "@/lib"
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "./table"
+// Note: Using native HTML elements instead of shadcn/ui Table components
+// to avoid double overflow wrapper that breaks sticky positioning
 import { Checkbox } from "./checkbox"
 import { Button } from "./button"
 import { Input } from "./input"
@@ -30,7 +28,11 @@ import {
   ChevronsUpDown,
   Search,
   Filter,
-  Download
+  Download,
+  GripVertical,
+  Edit2,
+  Check,
+  X
 } from "lucide-react"
 
 // Advanced table interfaces based on TanStack Table and proven patterns
@@ -60,6 +62,29 @@ export interface MobileConfig {
   touchOptimized?: boolean
 }
 
+// Column resizing configuration
+export interface ResizingConfig {
+  enabled: boolean
+  minSize?: number
+  maxSize?: number
+  defaultSize?: number
+}
+
+// Column reordering configuration
+export interface ReorderingConfig {
+  enabled: boolean
+  onReorder?: (fromIndex: number, toIndex: number) => void
+}
+
+// Inline editing configuration
+export interface EditingConfig<T = any> {
+  enabled: boolean
+  mode?: 'cell' | 'row'
+  onSave?: (rowIndex: number, columnId: string, value: any, row: T) => Promise<void>
+  onCancel?: () => void
+  validation?: (value: any, columnId: string, row: T) => boolean | string
+}
+
 export interface AdvancedDataTableProps<T = any> {
   data: T[]
   columns: ColumnDef<T>[]
@@ -67,6 +92,9 @@ export interface AdvancedDataTableProps<T = any> {
   groupHeaders?: GroupHeaderConfig[]
   frozenColumns?: FrozenColumnsConfig
   mobile?: MobileConfig
+  resizing?: ResizingConfig
+  reordering?: ReorderingConfig
+  editing?: EditingConfig<T>
   searchable?: boolean
   filterable?: boolean
   sortable?: boolean
@@ -78,6 +106,7 @@ export interface AdvancedDataTableProps<T = any> {
   emptyMessage?: string
   exportable?: boolean
   onExport?: (data: T[]) => void
+  maxHeight?: string
 }
 
 // Helper function to generate group headers from column definitions
@@ -103,32 +132,99 @@ export function generateGroupHeaders<T>(
   return groupHeaders
 }
 
-// Helper function to get frozen column styles
-function getFrozenColumnStyle(
-  columnIndex: number, 
-  frozenCount: number, 
+// Helper function to check if column is frozen (based on reference implementation)
+function isFrozenColumn(columnIndex: number, frozenCount: number, hasSelection: boolean): boolean {
+  // Simple approach: freeze the first 'frozenCount' columns (including selection if enabled)
+  return columnIndex < frozenCount
+}
+
+// Calculate cumulative frozen column widths for positioning
+function calculateFrozenColumnOffsets<T>(
+  columns: ColumnDef<T>[],
+  frozenCount: number,
   hasSelection: boolean,
-  shadowIntensity: 'light' | 'medium' | 'heavy' = 'medium'
-): React.CSSProperties | undefined {
-  const adjustedIndex = hasSelection ? columnIndex + 1 : columnIndex
+  columnSizing: ColumnSizingState
+): Record<number, number> {
+  const offsets: Record<number, number> = {}
+  let cumulativeWidth = hasSelection ? 48 : 0 // Selection column width
   
-  if (adjustedIndex < frozenCount) {
-    const shadowMap = {
-      light: 'var(--table-freeze-shadow, 1px 0 3px rgba(0,0,0,0.1))',
-      medium: 'var(--table-freeze-shadow, 2px 0 4px rgba(0,0,0,0.15))',
-      heavy: 'var(--table-freeze-shadow, 3px 0 6px rgba(0,0,0,0.2))'
-    }
-    
-    return {
-      position: 'sticky',
-      left: adjustedIndex === 0 ? 0 : `${adjustedIndex * 120}px`, // Approximate column width
-      zIndex: 10,
-      backgroundColor: 'var(--table-header)',
-      boxShadow: adjustedIndex === frozenCount - 1 ? shadowMap[shadowIntensity] : undefined
-    }
+  for (let i = 0; i < frozenCount && i < columns.length; i++) {
+    offsets[i] = cumulativeWidth
+    const columnId = (columns[i] as any).id || (columns[i] as any).accessorKey
+    const width = columnSizing[columnId] || (columns[i] as any).size || 150
+    cumulativeWidth += width
   }
   
-  return undefined
+  return offsets
+}
+
+// Helper function to get frozen column left position (simplified for debugging)
+// Currently unused but kept for future dynamic width calculation
+// function getFrozenLeft(
+//   columnIndex: number,
+//   frozenCount: number,
+//   hasSelection: boolean,
+//   tableColumns: any[]
+// ): number {
+//   if (!isFrozenColumn(columnIndex, frozenCount, hasSelection)) return 0
+
+//   // Simplified calculation for debugging
+//   if (hasSelection) {
+//     if (columnIndex === 0) return 0      // Selection column
+//     if (columnIndex === 1) return 60     // Name column after selection (updated to match CSS)
+//   } else {
+//     if (columnIndex === 0) return 0      // First column
+//     if (columnIndex === 1) return 150    // Second column
+//   }
+
+//   return 0
+// }
+
+// Dynamic inline editing component for cells
+function InlineEditor<T>({ 
+  value, 
+  onSave, 
+  onCancel, 
+  type = 'text' 
+}: { 
+  value: any
+  onSave: (value: any) => void
+  onCancel: () => void
+  type?: 'text' | 'number' | 'select'
+}) {
+  const [editValue, setEditValue] = React.useState(value)
+
+  return (
+    <div className="flex items-center gap-1">
+      <Input
+        type={type === 'number' ? 'number' : 'text'}
+        value={editValue}
+        onChange={(e) => setEditValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') onSave(editValue)
+          if (e.key === 'Escape') onCancel()
+        }}
+        className="h-8 text-sm"
+        autoFocus
+      />
+      <Button
+        size="sm"
+        variant="ghost"
+        className="h-8 w-8 p-0"
+        onClick={() => onSave(editValue)}
+      >
+        <Check className="h-4 w-4" />
+      </Button>
+      <Button
+        size="sm"
+        variant="ghost"
+        className="h-8 w-8 p-0"
+        onClick={onCancel}
+      >
+        <X className="h-4 w-4" />
+      </Button>
+    </div>
+  )
 }
 
 // Main AdvancedDataTable component
@@ -139,6 +235,9 @@ export function AdvancedDataTable<T = any>({
   groupHeaders = [],
   frozenColumns,
   mobile,
+  resizing,
+  reordering,
+  editing,
   searchable = true,
   filterable = false,
   sortable = true,
@@ -149,25 +248,37 @@ export function AdvancedDataTable<T = any>({
   loading = false,
   emptyMessage = "No data available",
   exportable = false,
-  onExport
+  onExport,
+  maxHeight
 }: AdvancedDataTableProps<T>) {
+  // Table ref for dynamic width calculation
+  const tableRef = React.useRef<HTMLTableElement>(null)
+
   // Table state
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({})
   const [globalFilter, setGlobalFilter] = React.useState("")
-
-  // Mobile responsive column hiding
+  const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>([])
+  const [columnSizing, setColumnSizing] = React.useState<ColumnSizingState>({})
+  
+  // Editing state
+  const [editingCell, setEditingCell] = React.useState<{ rowIndex: number; columnId: string } | null>(null)
+  const [editingValue, setEditingValue] = React.useState<any>(null)
+  
+  // Initialize column sizing from column definitions (only for columns with explicit sizes)
   React.useEffect(() => {
-    if (mobile?.enabled && mobile.hideColumns) {
-      const hiddenColumns: VisibilityState = {}
-      mobile.hideColumns.forEach(columnId => {
-        hiddenColumns[columnId] = false
-      })
-      setColumnVisibility(hiddenColumns)
-    }
-  }, [mobile])
+    const initialSizing: ColumnSizingState = {}
+    columns.forEach(col => {
+      const columnId = (col as any).id || (col as any).accessorKey
+      // Only set size if explicitly defined
+      if (columnId && (col as any).size) {
+        initialSizing[columnId] = (col as any).size
+      }
+    })
+    setColumnSizing(initialSizing)
+  }, [columns])
 
   // Prepare columns with selection if enabled
   const tableColumns = React.useMemo(() => {
@@ -202,7 +313,37 @@ export function AdvancedDataTable<T = any>({
     return cols
   }, [columns, selection?.enabled])
 
-  // Initialize table
+  // Calculate frozen column offsets for proper positioning
+  const frozenOffsets = React.useMemo(() => {
+    const offsets: Record<number, number> = {}
+    let cumulativeWidth = 0
+    
+    // Calculate offsets for all potentially frozen columns
+    const maxFrozen = selection?.enabled ? (frozenColumns?.count || 0) + 1 : (frozenColumns?.count || 0)
+    
+    for (let i = 0; i < maxFrozen && i < tableColumns.length; i++) {
+      offsets[i] = cumulativeWidth
+      const column = tableColumns[i]
+      const columnId = (column as any).id || (column as any).accessorKey
+      const width = columnSizing[columnId] || (column as any).size || 150
+      cumulativeWidth += width
+    }
+    
+    return offsets
+  }, [frozenColumns, tableColumns, selection?.enabled, columnSizing])
+
+  // Mobile responsive column hiding
+  React.useEffect(() => {
+    if (mobile?.enabled && mobile.hideColumns) {
+      const hiddenColumns: VisibilityState = {}
+      mobile.hideColumns.forEach(columnId => {
+        hiddenColumns[columnId] = false
+      })
+      setColumnVisibility(hiddenColumns)
+    }
+  }, [mobile])
+
+  // Initialize table with advanced features
   const table = useReactTable({
     data,
     columns: tableColumns,
@@ -215,13 +356,19 @@ export function AdvancedDataTable<T = any>({
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     onGlobalFilterChange: setGlobalFilter,
+    onColumnOrderChange: setColumnOrder,
+    onColumnSizingChange: setColumnSizing,
     globalFilterFn: "includesString",
+    columnResizeMode: "onChange",
+    enableColumnResizing: resizing?.enabled ?? false,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
       globalFilter,
+      columnOrder,
+      columnSizing,
       pagination: pagination ? { pageIndex: 0, pageSize } : undefined,
     },
     initialState: {
@@ -250,6 +397,78 @@ export function AdvancedDataTable<T = any>({
         ? selectedRows.map(row => row.original)
         : table.getFilteredRowModel().rows.map(row => row.original)
       onExport(dataToExport)
+    }
+  }
+
+  // Inline editing handlers
+  const handleEditCell = (rowIndex: number, columnId: string, value: any) => {
+    setEditingCell({ rowIndex, columnId })
+    setEditingValue(value)
+  }
+
+  const handleSaveEdit = async () => {
+    if (!editingCell || !editing?.onSave) return
+    
+    try {
+      const row = table.getRowModel().rows[editingCell.rowIndex]
+      if (row) {
+        // Validate if validation function provided
+        if (editing.validation) {
+          const validationResult = editing.validation(editingValue, editingCell.columnId, row.original)
+          if (typeof validationResult === 'string') {
+            console.error('Validation error:', validationResult)
+            return
+          }
+          if (!validationResult) {
+            console.error('Validation failed')
+            return
+          }
+        }
+        
+        await editing.onSave(editingCell.rowIndex, editingCell.columnId, editingValue, row.original)
+        setEditingCell(null)
+        setEditingValue(null)
+      }
+    } catch (error) {
+      console.error('Error saving edit:', error)
+    }
+  }
+
+  const handleCancelEdit = () => {
+    setEditingCell(null)
+    setEditingValue(null)
+    editing?.onCancel?.()
+  }
+
+  // Column reordering with drag and drop
+  const handleDragStart = (e: React.DragEvent<HTMLTableCellElement>, header: Header<T, unknown>) => {
+    if (!reordering?.enabled) return
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('text/plain', header.column.id)
+  }
+
+  const handleDragOver = (e: React.DragEvent<HTMLTableCellElement>) => {
+    if (!reordering?.enabled) return
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+  }
+
+  const handleDrop = (e: React.DragEvent<HTMLTableCellElement>, targetHeader: Header<T, unknown>) => {
+    if (!reordering?.enabled) return
+    e.preventDefault()
+    
+    const sourceColumnId = e.dataTransfer.getData('text/plain')
+    if (sourceColumnId !== targetHeader.column.id) {
+      const newColumnOrder = [...table.getState().columnOrder]
+      const sourceIndex = newColumnOrder.indexOf(sourceColumnId)
+      const targetIndex = newColumnOrder.indexOf(targetHeader.column.id)
+      
+      if (sourceIndex !== -1 && targetIndex !== -1) {
+        newColumnOrder.splice(sourceIndex, 1)
+        newColumnOrder.splice(targetIndex, 0, sourceColumnId)
+        setColumnOrder(newColumnOrder)
+        reordering.onReorder?.(sourceIndex, targetIndex)
+      }
     }
   }
 
@@ -296,136 +515,226 @@ export function AdvancedDataTable<T = any>({
       )}
 
       {/* Table Container */}
-      <div className="rounded-md border bg-[var(--table-container)] overflow-hidden">
-        <div className="relative overflow-auto">
-          <Table>
-            <TableHeader>
+      <div className="rounded-md border bg-background">
+        <div className="relative w-full overflow-auto" style={{ maxHeight: maxHeight || '600px' }}>
+          <table
+            ref={tableRef}
+            className="w-full caption-bottom text-sm bg-transparent text-foreground"
+            style={{ minWidth: '800px', tableLayout: 'auto' }}
+          >
+            <thead className="[&_tr]:border-b sticky top-0 z-[52]">
               {/* Group Headers */}
               {computedGroupHeaders.length > 0 && (
-                <TableRow className="bg-[var(--table-group-header)] border-b border-[var(--table-border)]">
+                <tr className="border-b sticky top-0 z-[53] bg-background">
                   {selection?.enabled && (
-                    <TableHead className="w-[40px]" />
+                    <th className="w-[40px] h-12 px-4 text-left align-middle font-medium text-foreground sticky left-0 z-[54] bg-background border-r border-border" />
                   )}
-                  {computedGroupHeaders.map((group, index) => (
-                    <TableHead
-                      key={`group-${index}`}
-                      colSpan={group.colSpan}
-                      className="text-center font-semibold text-[var(--text-header)] bg-[var(--table-group-header)]"
-                    >
-                      {group.label}
-                    </TableHead>
-                  ))}
-                </TableRow>
+                  {computedGroupHeaders.map((group, index) => {
+                    // Determine if this group header spans any frozen columns
+                    const groupStartIndex = group.startIndex
+                    const isFrozen = frozenColumns && groupStartIndex < frozenColumns.count
+                    const frozenLeft = isFrozen ? frozenOffsets[groupStartIndex] : undefined
+                    
+                    return (
+                      <th
+                        key={`group-${index}`}
+                        colSpan={group.colSpan}
+                        className={cn(
+                          "h-12 px-4 text-center align-middle font-semibold text-foreground border-r border-border bg-background",
+                          isFrozen && "sticky z-[54] shadow-[2px_0_4px_rgba(0,0,0,0.05)] bg-background"
+                        )}
+                        style={{
+                          ...(isFrozen && { left: `${frozenLeft}px` })
+                        }}
+                      >
+                        {group.label}
+                      </th>
+                    )
+                  })}
+                </tr>
               )}
 
               {/* Column Headers */}
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className="bg-[var(--table-header)] border-b border-[var(--table-border)]">
+                <tr key={headerGroup.id} className="border-b sticky z-[52] bg-background" style={{ top: computedGroupHeaders.length > 0 ? '48px' : '0' }}>
                   {headerGroup.headers.map((header, columnIndex) => {
-                    const frozenStyle = frozenColumns ? getFrozenColumnStyle(
-                      columnIndex,
-                      frozenColumns.count,
-                      selection?.enabled || false,
-                      frozenColumns.shadowIntensity
-                    ) : undefined
+                    // Selection column (index 0) is always frozen if enabled
+                    const isSelectionColumn = selection?.enabled && columnIndex === 0
+                    const adjustedFrozenCount = selection?.enabled ? (frozenColumns?.count || 0) + 1 : (frozenColumns?.count || 0)
+                    const isFrozen = isSelectionColumn || (frozenColumns && columnIndex < adjustedFrozenCount)
+                    const frozenLeft = isFrozen ? frozenOffsets[columnIndex] : undefined
+                    const columnSize = header.column.getSize()
 
                     return (
-                      <TableHead
+                      <th
                         key={header.id}
-                        style={frozenStyle}
                         className={cn(
-                          "text-[var(--text-header)] bg-[var(--table-header)]",
-                          frozenStyle && "sticky"
+                          "h-12 px-2 text-left align-middle font-medium text-foreground border-r border-border relative group bg-background",
+                          isFrozen && "sticky z-[54] shadow-[2px_0_4px_rgba(0,0,0,0.05)] bg-background",
+                          header.column.getCanSort() && "cursor-pointer hover:bg-muted/50"
                         )}
+                        style={{
+                          ...(columnSize && { width: columnSize }),
+                          ...(isFrozen && { left: `${frozenLeft}px` })
+                        }}
+                        draggable={reordering?.enabled}
+                        onDragStart={(e) => handleDragStart(e, header)}
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleDrop(e, header)}
                       >
                         {header.isPlaceholder ? null : (
-                          <div
-                            className={cn(
-                              "flex items-center space-x-2",
-                              header.column.getCanSort() && "cursor-pointer select-none"
-                            )}
-                            onClick={header.column.getToggleSortingHandler()}
-                          >
-                            <span>
-                              {flexRender(header.column.columnDef.header, header.getContext())}
-                            </span>
-                            {header.column.getCanSort() && (
-                              <span className="ml-2">
-                                {header.column.getIsSorted() === "desc" ? (
-                                  <ChevronDown className="h-4 w-4" />
-                                ) : header.column.getIsSorted() === "asc" ? (
-                                  <ChevronUp className="h-4 w-4" />
-                                ) : (
-                                  <ChevronsUpDown className="h-4 w-4" />
-                                )}
+                          <div className="flex items-center justify-between">
+                            <div
+                              className={cn(
+                                "flex items-center space-x-2 flex-1",
+                                header.column.getCanSort() && "select-none"
+                              )}
+                              onClick={header.column.getToggleSortingHandler()}
+                            >
+                              {reordering?.enabled && (
+                                <GripVertical className="h-4 w-4 opacity-0 group-hover:opacity-50 cursor-grab" />
+                              )}
+                              <span>
+                                {flexRender(header.column.columnDef.header, header.getContext())}
                               </span>
+                              {header.column.getCanSort() && (
+                                <span className="ml-2">
+                                  {header.column.getIsSorted() === "desc" ? (
+                                    <ChevronDown className="h-4 w-4" />
+                                  ) : header.column.getIsSorted() === "asc" ? (
+                                    <ChevronUp className="h-4 w-4" />
+                                  ) : (
+                                    <ChevronsUpDown className="h-4 w-4 opacity-50" />
+                                  )}
+                                </span>
+                              )}
+                            </div>
+                            {resizing?.enabled && (
+                              <div
+                                onMouseDown={header.getResizeHandler()}
+                                onTouchStart={header.getResizeHandler()}
+                                className={cn(
+                                  "absolute right-0 top-0 h-full w-1 cursor-col-resize opacity-0 hover:opacity-100 bg-primary",
+                                  header.column.getIsResizing() && "opacity-100"
+                                )}
+                              />
                             )}
                           </div>
                         )}
-                      </TableHead>
+                      </th>
                     )
                   })}
-                </TableRow>
+                </tr>
               ))}
-            </TableHeader>
+            </thead>
 
-            <TableBody>
+            <tbody className="[&_tr:last-child]:border-0">
               {loading ? (
-                <TableRow>
-                  <TableCell
+                <tr>
+                  <td
                     colSpan={table.getVisibleFlatColumns().length}
-                    className="text-center py-8 text-[var(--text-secondary)]"
+                    className="p-4 align-middle text-center py-8 text-muted-foreground"
                   >
                     Loading...
-                  </TableCell>
-                </TableRow>
+                  </td>
+                </tr>
               ) : table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
-                  <TableRow
+                  <tr
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
                     className={cn(
-                      "transition-colors hover:bg-[var(--table-row-hover)] cursor-pointer",
-                      row.getIsSelected() && "bg-[var(--table-row-hover)]",
+                      "border-b transition-colors hover:bg-muted/50 cursor-pointer bg-background",
+                      row.getIsSelected() && "bg-muted/50",
                       mobile?.touchOptimized && "min-h-[44px]"
                     )}
                     onClick={() => onRowClick?.(row.original)}
                   >
                     {row.getVisibleCells().map((cell, columnIndex) => {
-                      const frozenStyle = frozenColumns ? getFrozenColumnStyle(
-                        columnIndex,
-                        frozenColumns.count,
-                        selection?.enabled || false,
-                        frozenColumns.shadowIntensity
-                      ) : undefined
+                      // Selection column (index 0) is always frozen if enabled
+                      const isSelectionColumn = selection?.enabled && columnIndex === 0
+                      const adjustedFrozenCount = selection?.enabled ? (frozenColumns?.count || 0) + 1 : (frozenColumns?.count || 0)
+                      const isFrozen = isSelectionColumn || (frozenColumns && columnIndex < adjustedFrozenCount)
+                      const frozenLeft = isFrozen ? frozenOffsets[columnIndex] : undefined
+                      const isEditing = editingCell?.rowIndex === row.index && 
+                                       editingCell?.columnId === cell.column.id
 
                       return (
-                        <TableCell
+                        <td
                           key={cell.id}
-                          style={frozenStyle}
                           className={cn(
-                            "text-[var(--text-primary)]",
-                            frozenStyle && "sticky bg-[var(--table-container)]"
+                            "p-2 align-middle text-foreground border-r border-border overflow-hidden bg-background",
+                            isFrozen && "sticky z-[50] bg-background shadow-[2px_0_4px_rgba(0,0,0,0.05)]",
+                            "last:border-r-0"
                           )}
+                          style={{
+                            ...(isFrozen && { left: `${frozenLeft}px` })
+                          }}
+                          onDoubleClick={() => {
+                            if (editing?.enabled && cell.column.columnDef.enableSorting !== false) {
+                              handleEditCell(row.index, cell.column.id, cell.getValue())
+                            }
+                          }}
                         >
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </TableCell>
+                          {isEditing ? (
+                            <div className="flex items-center gap-1">
+                              <Input
+                                value={editingValue}
+                                onChange={(e) => setEditingValue(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') handleSaveEdit()
+                                  if (e.key === 'Escape') handleCancelEdit()
+                                }}
+                                className="h-8 text-sm"
+                                autoFocus
+                              />
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-8 w-8 p-0"
+                                onClick={handleSaveEdit}
+                              >
+                                <Check className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-8 w-8 p-0"
+                                onClick={handleCancelEdit}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          ) : (
+                            <div className="flex items-center justify-between group w-full overflow-hidden">
+                              <div className="w-full overflow-hidden">
+                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                              </div>
+                              {editing?.enabled && (
+                                <Edit2 
+                                  className="h-4 w-4 opacity-0 group-hover:opacity-50 cursor-pointer ml-2 flex-shrink-0" 
+                                  onClick={() => handleEditCell(row.index, cell.column.id, cell.getValue())}
+                                />
+                              )}
+                            </div>
+                          )}
+                        </td>
                       )
                     })}
-                  </TableRow>
+                  </tr>
                 ))
               ) : (
-                <TableRow>
-                  <TableCell
+                <tr>
+                  <td
                     colSpan={table.getVisibleFlatColumns().length}
-                    className="text-center py-8 text-[var(--text-secondary)]"
+                    className="p-4 align-middle text-center py-8 text-muted-foreground"
                   >
                     {emptyMessage}
-                  </TableCell>
-                </TableRow>
+                  </td>
+                </tr>
               )}
-            </TableBody>
-          </Table>
+            </tbody>
+          </table>
         </div>
       </div>
 

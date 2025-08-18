@@ -7,6 +7,9 @@ import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import { ThemedButton, ThemedCard, ThemedCardContent, ThemedCardDescription, ThemedCardHeader, ThemedCardTitle } from '@/components/theme'
 import { useTheme } from '@/lib/theme/hooks'
 import ComponentShowcase from '@/components/ComponentShowcase'
+import TestFrozenColumns from '@/test-frozen-columns'
+import AdvancedTableDemo from '@/components/AdvancedTableDemo'
+import { TanStackTableDemo } from '@/components/TanStackTableDemo'
 import './App.css'
 
 function AppContent() {
@@ -187,6 +190,45 @@ function AppContent() {
                   </Button>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* TanStack Advanced Table Demo - NEW IMPLEMENTATION */}
+          <Card>
+            <CardHeader>
+              <CardTitle>🎯 NEW: TanStack Advanced Table - All Prototype 1 Features</CardTitle>
+              <CardDescription>
+                Comprehensive TanStack Table implementation with frozen columns, sorting, resizing, reordering, inline editing, selection, and full theme support
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <TanStackTableDemo />
+            </CardContent>
+          </Card>
+
+          {/* Advanced Table Demo - All Features */}
+          <Card>
+            <CardHeader>
+              <CardTitle>🚀 Original Advanced Data Table - All Features from Prototype 1</CardTitle>
+              <CardDescription>
+                Complete implementation with frozen columns, resizing, reordering, inline editing, and more
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AdvancedTableDemo />
+            </CardContent>
+          </Card>
+
+          {/* Frozen Columns Test */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Frozen Columns Test</CardTitle>
+              <CardDescription>
+                Testing the frozen columns functionality in AdvancedDataTable
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <TestFrozenColumns />
             </CardContent>
           </Card>
 
