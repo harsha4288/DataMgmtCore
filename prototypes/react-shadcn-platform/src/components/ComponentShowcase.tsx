@@ -19,9 +19,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  EnhancedTable,
-  type ColumnDef,
-  type SelectionConfig,
+  AdvancedDataTable,
+  type GroupHeaderConfig,
+  type FrozenColumnsConfig,
+  type MobileConfig,
   Tabs,
   TabsContent,
   TabsList,
@@ -179,13 +180,13 @@ const ComponentShowcase: React.FC = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle>Enhanced Table with Selection & Grade Badges</CardTitle>
+              <CardTitle>Advanced Data Table</CardTitle>
               <CardDescription>
-                Advanced table with selection checkboxes, group headers, and grade badge variants
+                Professional data table with TanStack Table, selection, sorting, filtering, group headers, and frozen columns
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <EnhancedTableDemo />
+              <AdvancedTableDemo />
             </CardContent>
           </Card>
         </TabsContent>
@@ -290,8 +291,8 @@ const ComponentShowcase: React.FC = () => {
   );
 };
 
-// Enhanced Table Demo Component (based on VolunteerDashboard patterns)
-function EnhancedTableDemo() {
+// Advanced Table Demo Component (using TanStack Table)
+function AdvancedTableDemo() {
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
 
   // Sample data with volunteer-like structure
@@ -334,92 +335,125 @@ function EnhancedTableDemo() {
     }
   ];
 
-  // Column definitions with group headers and badge variants
-  const columns: ColumnDef[] = [
+  // TanStack Table column definitions with group headers and badge variants
+  const columns = [
     {
-      key: 'name',
-      label: 'Volunteer Name',
-      groupHeader: 'Personal Information',
-      width: 150,
-      align: 'left'
+      accessorKey: 'name',
+      header: 'Volunteer Name',
+      size: 150,
     },
     {
-      key: 'role',
-      label: 'Role',
-      groupHeader: 'Role & Status',
-      width: 120,
-      align: 'center',
-      render: (value) => (
-        <Badge
-          variant={
-            value === 'Team Lead' ? 'grade-a' :
-            value === 'Coordinator' ? 'grade-b' :
-            value === 'Specialist' ? 'grade-c' : 'neutral'
-          }
-        >
-          {value}
-        </Badge>
-      )
+      accessorKey: 'role',
+      header: 'Role',
+      size: 120,
+      cell: ({ getValue }: any) => {
+        const value = getValue() as string
+        return (
+          <Badge
+            variant={
+              value === 'Team Lead' ? 'grade-a' :
+              value === 'Coordinator' ? 'grade-b' :
+              value === 'Specialist' ? 'grade-c' : 'neutral'
+            }
+          >
+            {value}
+          </Badge>
+        )
+      }
     },
     {
-      key: 'status',
-      label: 'Status',
-      groupHeader: 'Role & Status',
-      width: 100,
-      align: 'center',
-      render: (value) => (
-        <Badge
-          variant={
-            value === 'active' ? 'grade-a' :
-            value === 'pending' ? 'grade-c' : 'grade-f'
-          }
-          size="sm"
-        >
-          {value.toUpperCase()}
-        </Badge>
-      )
+      accessorKey: 'status',
+      header: 'Status',
+      size: 100,
+      cell: ({ getValue }: any) => {
+        const value = getValue() as string
+        return (
+          <Badge
+            variant={
+              value === 'active' ? 'grade-a' :
+              value === 'pending' ? 'grade-c' : 'grade-f'
+            }
+            size="sm"
+          >
+            {value.toUpperCase()}
+          </Badge>
+        )
+      }
     },
     {
-      key: 'preferences',
-      label: 'PREFS',
-      groupHeader: 'Activity Summary',
-      width: 100,
-      align: 'center',
-      render: (value) => (
-        <Badge variant="grade-d" size="sm" className="font-mono">
-          {value}
-        </Badge>
-      )
+      accessorKey: 'events',
+      header: 'Events',
+      size: 90,
+      cell: ({ getValue }: any) => {
+        const value = getValue() as number
+        return (
+          <Badge variant="neutral" size="sm" className="font-mono">
+            {value}
+          </Badge>
+        )
+      }
     },
     {
-      key: 'events',
-      label: 'Events',
-      groupHeader: 'Activity Summary',
-      width: 90,
-      align: 'center',
-      render: (value) => (
-        <Badge variant="neutral" size="sm" className="font-mono">
-          {value}
-        </Badge>
-      )
+      accessorKey: 'hours',
+      header: 'Hours',
+      size: 90,
+      cell: ({ getValue }: any) => {
+        const value = getValue() as number
+        return (
+          <span className="font-mono font-semibold">{value}</span>
+        )
+      }
     },
     {
-      key: 'hours',
-      label: 'Hours',
-      groupHeader: 'Activity Summary',
-      width: 90,
-      align: 'center',
-      render: (value) => (
-        <span className="font-mono font-semibold">{value}</span>
-      )
+      accessorKey: 'preferences',
+      header: 'PREFS',
+      size: 100,
+      cell: ({ getValue }: any) => {
+        const value = getValue() as string
+        return (
+          <Badge variant="grade-d" size="sm" className="font-mono">
+            {value}
+          </Badge>
+        )
+      }
     }
   ];
 
-  const selectionConfig: SelectionConfig = {
+  // Group headers configuration
+  const groupHeaders: GroupHeaderConfig[] = [
+    {
+      label: 'Personal Information',
+      columns: ['name']
+    },
+    {
+      label: 'Role & Status',
+      columns: ['role', 'status']
+    },
+    {
+      label: 'Activity Summary',
+      columns: ['events', 'hours', 'preferences']
+    }
+  ];
+
+  // Selection configuration
+  const selectionConfig = {
     enabled: true,
+    mode: 'multiple' as const,
     selectedRows,
-    onSelectionChange: setSelectedRows,
-    getRowId: (row) => row.id
+    onSelectionChange: setSelectedRows
+  };
+
+  // Frozen columns configuration
+  const frozenColumnsConfig: FrozenColumnsConfig = {
+    count: 2, // Freeze selection and name columns
+    shadowIntensity: 'medium' as const
+  };
+
+  // Mobile configuration
+  const mobileConfig: MobileConfig = {
+    enabled: true,
+    hideColumns: ['preferences'],
+    touchOptimized: true
   };
 
   return (
@@ -435,11 +469,19 @@ function EnhancedTableDemo() {
         )}
       </div>
 
-      <EnhancedTable
+      <AdvancedDataTable
         data={volunteerData}
         columns={columns}
         selection={selectionConfig}
-        frozenColumns={1} // Freeze name column
+        groupHeaders={groupHeaders}
+        frozenColumns={frozenColumnsConfig}
+        mobile={mobileConfig}
+        searchable={true}
+        sortable={true}
+        pagination={true}
+        pageSize={10}
+        exportable={true}
+        onExport={(data) => console.log('Exporting:', data)}
         onRowClick={(row) => console.log('Clicked row:', row)}
         className="border rounded-lg"
       />

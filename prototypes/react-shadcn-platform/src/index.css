@@ -145,4 +145,81 @@
   .bg-accent-color {
     background-color: var(--accent-color);
   }
+
+  /* Advanced Data Table Utilities */
+  .table-frozen-column {
+    position: sticky;
+    z-index: 10;
+    background-color: inherit;
+  }
+
+  .table-frozen-shadow-light {
+    box-shadow: 1px 0 3px rgba(0,0,0,0.1);
+  }
+
+  .table-frozen-shadow-medium {
+    box-shadow: 2px 0 4px rgba(0,0,0,0.15);
+  }
+
+  .table-frozen-shadow-heavy {
+    box-shadow: 3px 0 6px rgba(0,0,0,0.2);
+  }
+
+  /* Mobile touch optimization */
+  .table-touch-optimized {
+    min-height: 44px;
+  }
+
+  .table-touch-optimized td,
+  .table-touch-optimized th {
+    min-height: 44px;
+    padding: 12px 16px;
+  }
+
+  /* Responsive table utilities */
+  @media (max-width: 768px) {
+    .table-mobile-stack {
+      display: block;
+    }
+
+    .table-mobile-stack thead,
+    .table-mobile-stack tbody,
+    .table-mobile-stack th,
+    .table-mobile-stack td,
+    .table-mobile-stack tr {
+      display: block;
+    }
+
+    .table-mobile-stack thead tr {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+
+    .table-mobile-stack tr {
+      border: 1px solid var(--border-color);
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      background: var(--bg-primary);
+    }
+
+    .table-mobile-stack td {
+      border: none;
+      position: relative;
+      padding-left: 50% !important;
+      text-align: left;
+    }
+
+    .table-mobile-stack td:before {
+      content: attr(data-label);
+      position: absolute;
+      left: 6px;
+      width: 45%;
+      padding-right: 10px;
+      white-space: nowrap;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+  }
 }
