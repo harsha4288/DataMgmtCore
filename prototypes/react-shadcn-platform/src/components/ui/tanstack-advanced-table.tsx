@@ -111,6 +111,7 @@ export interface AdvancedDataTableProps<T = any> {
   onRowClick?: (_row: T) => void
   exportable?: boolean
   exportFilename?: string
+  compactMode?: boolean
 }
 
 // Enhanced inline editor component
@@ -301,7 +302,8 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
   maxHeight,
   onRowClick,
   exportable = false,
-  exportFilename = "table-data"
+  exportFilename = "table-data",
+  compactMode = true
 }: AdvancedDataTableProps<T>) {
   // Table state
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -373,24 +375,33 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
       header: ({ column }) => {
         const canSort = sortable && col.enableSorting !== false
         return (
-          <div className="flex items-center justify-between gap-1">
+          <div className="group flex items-center justify-between gap-1">
             <div className="flex items-center gap-1">
-              {reordering.enabled && (
+              {reordering.enabled && !compactMode && (
                 <GripVertical className="h-3 w-3 text-muted-foreground cursor-grab" />
               )}
-              {column.getIsPinned() && (
+              {reordering.enabled && compactMode && (
+                <GripVertical className="h-3 w-3 text-muted-foreground cursor-grab opacity-0 group-hover:opacity-100 transition-opacity" />
+              )}
+              {column.getIsPinned() && !compactMode && (
                 <Pin className="h-3 w-3 text-muted-foreground/60" />
+              )}
+              {column.getIsPinned() && compactMode && (
+                <Pin className="h-3 w-3 text-muted-foreground/60 opacity-0 group-hover:opacity-100 transition-opacity" />
               )}
               <span className="select-none">
                 {typeof col.header === 'function' ? col.header({ column } as any) : col.header}
               </span>
             </div>
-            <div className="flex items-center gap-1">
+            <div className={cn("flex items-center gap-1", compactMode && "w-0 overflow-hidden group-hover:w-auto")}>
               {canSort && (
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-6 w-6 p-0"
+                  className={cn(
+                    "h-6 w-6 p-0",
+                    compactMode && "opacity-0 group-hover:opacity-100 transition-opacity"
+                  )}
                   onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                   {column.getIsSorted() === "asc" ? (
@@ -404,7 +415,10 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
               )}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                  <Button variant="ghost" size="sm" className={cn(
+                    "h-6 w-6 p-0",
+                    compactMode && "opacity-0 group-hover:opacity-100 transition-opacity"
+                  )}>
                     <MoreHorizontal className="h-3 w-3" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -468,7 +482,7 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
     })))
 
     return cols
-  }, [columns, selection.enabled, sortable, reordering.enabled, resizing, editing, editingCell])
+  }, [columns, selection.enabled, sortable, reordering.enabled, resizing, editing, editingCell, compactMode])
 
   const table = useReactTable({
     data,
