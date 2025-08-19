@@ -6,7 +6,7 @@ const Table = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement>
 >(({ className, ...props }, ref) => (
-  <div className="relative w-full overflow-auto">
+  <div className="relative w-full overflow-auto" style={{ boxShadow: 'var(--shadow-sm)' }}>
     <table
       ref={ref}
       className={cn("w-full caption-bottom text-sm", className)}
@@ -76,6 +76,10 @@ const TableHead = React.forwardRef<
       "h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0",
       className
     )}
+    style={{
+      boxShadow: 'var(--shadow-header)',
+      ...props.style
+    }}
     {...props}
   />
 ))

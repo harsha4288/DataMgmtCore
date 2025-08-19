@@ -1,0 +1,174 @@
+{
+  "version": "1.0.0",
+  "description": "Quality gates configuration for automated workflow checks",
+  "gates": {
+    "lint": {
+      "name": "ESLint Check",
+      "command": "npm run lint",
+      "required": true,
+      "blocking": true,
+      "criteria": {
+        "errors": 0,
+        "warnings": 0
+      },
+      "errorMessages": {
+        "failed": "ESLint check failed. Fix all linting errors before proceeding.",
+        "warnings": "ESLint warnings detected. Please resolve them."
+      }
+    },
+    "typeCheck": {
+      "name": "TypeScript Check",
+      "command": "npm run type-check",
+      "required": true,
+      "blocking": true,
+      "criteria": {
+        "errors": 0
+      },
+      "errorMessages": {
+        "failed": "TypeScript errors found. All type errors must be resolved."
+      }
+    },
+    "themeValidation": {
+      "name": "Theme System Validation",
+      "command": "npm run validate:theme",
+      "required": true,
+      "blocking": true,
+      "criteria": {
+        "hardcodedColors": 0,
+        "themeViolations": 0
+      },
+      "errorMessages": {
+        "failed": "Theme validation failed. No hardcoded colors allowed."
+      }
+    },
+    "build": {
+      "name": "Build Verification",
+      "command": "npm run build",
+      "required": true,
+      "blocking": true,
+      "criteria": {
+        "success": true
+      },
+      "errorMessages": {
+        "failed": "Build failed. Project must build successfully."
+      }
+    },
+    "formatting": {
+      "name": "Code Formatting",
+      "command": "npm run format-check",
+      "required": false,
+      "blocking": false,
+      "autoFix": "npm run format",
+      "criteria": {
+        "unformatted": 0
+      },
+      "errorMessages": {
+        "failed": "Code formatting issues detected. Run 'npm run format' to fix."
+      }
+    },
+    "antiPatterns": {
+      "name": "Anti-Pattern Check",
+      "command": "npm run check:anti-patterns",
+      "required": true,
+      "blocking": false,
+      "criteria": {
+        "violations": 0
+      },
+      "errorMessages": {
+        "failed": "Anti-patterns detected. Review and refactor the code."
+      }
+    },
+    "componentSize": {
+      "name": "Component Size Check",
+      "command": "npm run check:large-components",
+      "required": false,
+      "blocking": false,
+      "criteria": {
+        "maxLines": 500
+      },
+      "errorMessages": {
+        "failed": "Large components detected. Consider splitting into smaller components."
+      }
+    },
+    "performance": {
+      "name": "Performance Check",
+      "command": "npm run check:performance",
+      "required": false,
+      "blocking": false,
+      "criteria": {
+        "issues": 0
+      },
+      "errorMessages": {
+        "failed": "Performance issues detected. Review and optimize."
+      }
+    },
+    "accessibility": {
+      "name": "Accessibility Check",
+      "command": "npm run check:accessibility",
+      "required": true,
+      "blocking": false,
+      "criteria": {
+        "violations": 0
+      },
+      "errorMessages": {
+        "failed": "Accessibility issues found. Ensure WCAG 2.1 AA compliance."
+      }
+    }
+  },
+  "stages": {
+    "preImplementation": {
+      "gates": [],
+      "description": "Checks before starting implementation"
+    },
+    "duringDevelopment": {
+      "gates": ["lint", "typeCheck", "themeValidation"],
+      "description": "Continuous checks during development",
+      "frequency": "after_each_change"
+    },
+    "preCommit": {
+      "gates": ["lint", "typeCheck", "themeValidation", "build", "formatting"],
+      "description": "Mandatory checks before committing",
+      "blocking": true
+    },
+    "preMerge": {
+      "gates": ["lint", "typeCheck", "themeValidation", "build", "antiPatterns", "accessibility"],
+      "description": "Comprehensive checks before merging",
+      "blocking": true
+    }
+  },
+  "metrics": {
+    "componentReusability": {
+      "target": 85,
+      "measurement": "percentage",
+      "description": "Percentage of components reused across screens"
+    },
+    "themeSwitchTime": {
+      "target": 200,
+      "measurement": "milliseconds",
+      "description": "Maximum time for theme switching"
+    },
+    "bundleSize": {
+      "target": 300,
+      "measurement": "kilobytes",
+      "description": "Maximum bundle size"
+    },
+    "firstContentfulPaint": {
+      "target": 1.2,
+      "measurement": "seconds",
+      "description": "Target for first contentful paint"
+    }
+  },
+  "reporting": {
+    "outputFormat": "json",
+    "reportPath": "./quality-reports/",
+    "includeTimestamp": true,
+    "verboseMode": false
+  },
+  "automation": {
+    "runOnSave": false,
+    "runOnCommit": true,
+    "runOnPush": true,
+    "failFast": true,
+    "parallel": true
+  }
+}

@@ -1,8 +1,101 @@
-# Claude AI Assistant Instructions
+# Claude AI Assistant Instructions & Workflow Automation
 
 > **Project:** react-shadcn-platform  
-> **Purpose:** Prevent theme system violations while allowing legitimate exceptions  
-> **Critical:** Review EVERY time before making style-related changes
+> **Purpose:** Streamlined development workflow with automated context management  
+> **Critical:** This file provides persistent context and workflow automation rules  
+> **Last Updated:** December 19, 2024
+
+## 🚀 CURRENT PROJECT STATUS
+
+### Active Phase: Phase 1 - Foundation Setup (95% Complete)
+**Current Task:** Ready for Task 1.4 - Entity System Integration  
+**Branch:** Prototype-2-shadcn  
+**Last Completed:** Task 1.3.5 - TanStack Advanced Table UI Fixes
+
+### Next Immediate Tasks:
+1. [ ] Task 1.4: Entity System Integration (Port from Prototype 1)
+2. [ ] Task 1.5: Basic CRUD Operations
+3. [ ] Phase 2: Gita Alumni Mock UI/Wireframes Implementation
+
+## 📋 DEVELOPMENT LIFECYCLE WORKFLOW
+
+### 1. Task Initiation
+**AUTOMATIC ACTIONS WHEN STARTING A TASK:**
+- Check PROGRESS.md for current task details
+- Create task documentation folder if needed
+- Run `npm run workflow:check` to verify environment
+- Create todo list for task breakdown
+- Mark task as "in_progress" in PROGRESS.md
+
+### 2. Implementation Phase
+**DURING DEVELOPMENT:**
+- Follow existing code patterns and conventions
+- Use theme variables (never hardcode colors)
+- Maintain component reusability (>85% target)
+- Update progress incrementally in todo list
+- Run quality checks after each significant change
+
+### 3. Quality Assurance Gates
+**BEFORE MARKING TASK COMPLETE:**
+```bash
+# Mandatory checks - run automatically
+npm run lint              # Must pass with 0 errors
+npm run type-check        # Must pass with 0 errors
+npm run validate:theme    # Must pass theme validation
+npm run check:all         # Comprehensive quality check
+```
+
+### 4. Manual Testing & Approval
+**REQUIRED BEFORE GIT COMMIT:**
+- [ ] Await user's manual testing confirmation
+- [ ] Get explicit approval: "approved", "sign off", or "commit"
+- [ ] Ensure all quality gates have passed
+- [ ] Verify no regression in existing functionality
+
+### 5. Git Commit Process
+**ONLY AFTER MANUAL APPROVAL:**
+```bash
+# Use the automated commit workflow
+npm run workflow:commit
+
+# Or manual with template:
+git add .
+git commit -m "Phase X: Task Y.Z - [Description]
+
+- [Change 1]
+- [Change 2]
+- [Change 3]
+
+Quality Checks: ✅ Lint | ✅ TypeCheck | ✅ Theme | ✅ Manual Testing"
+```
+
+## 🎯 WORKFLOW AUTOMATION RULES
+
+### Context Awareness
+**I WILL AUTOMATICALLY:**
+1. Check current phase and task from PROGRESS.md
+2. Reference relevant documentation and guidelines
+3. Track progress using TodoWrite tool
+4. Run quality checks before suggesting completion
+5. Wait for manual testing approval before commits
+
+### Task Progression
+**AUTOMATIC TASK FLOW:**
+```
+Start Task → Update PROGRESS.md → Implement → Quality Checks → 
+Manual Testing → User Approval → Git Commit → Update PROGRESS.md → Next Task
+```
+
+### Quality Standards
+**NON-NEGOTIABLE REQUIREMENTS:**
+- ✅ Zero ESLint errors/warnings
+- ✅ Zero TypeScript errors
+- ✅ Theme validation passes
+- ✅ Component reusability >85%
+- ✅ Manual testing approved by user
+- ✅ No hardcoded colors or styles
+
+## 🔧 PROJECT-SPECIFIC GUIDELINES
 
 ## 🚨 CRITICAL THEME RULES
 

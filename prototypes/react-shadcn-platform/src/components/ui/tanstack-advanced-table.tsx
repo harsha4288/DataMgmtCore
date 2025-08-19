@@ -619,7 +619,7 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
       </div>
 
       {/* Table */}
-      <div className="relative rounded-md border overflow-auto" style={{ maxHeight }}>
+      <div className="relative rounded-md border overflow-auto" style={{ maxHeight, boxShadow: 'var(--shadow-sm)' }}>
         <table className="w-full caption-bottom text-sm border-collapse">
           <thead className="[&_tr]:border-b">
             {/* Group Headers Row */}
@@ -632,7 +632,7 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
                       "h-6 p-0 text-center align-middle font-medium text-muted-foreground border-r",
                       "sticky left-0 z-40"
                     )}
-                    style={{ width: 40, minWidth: 40, backgroundColor: 'hsl(var(--background))' }}
+                    style={{ width: 40, minWidth: 40, backgroundColor: 'hsl(var(--background))', boxShadow: 'var(--shadow-header)' }}
                   >
                     {/* Empty for selection */}
                   </th>
@@ -654,13 +654,13 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
                 >
                   {/* Empty for Name */}
                 </th>
-                <th className="h-6 p-0 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 110, minWidth: 110, backgroundColor: 'hsl(var(--background))' }}>
+                <th className="h-6 p-0 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 110, minWidth: 110, backgroundColor: 'hsl(var(--background))', boxShadow: 'var(--shadow-header)' }}>
                   {/* Empty for Role */}
                 </th>
-                <th className="h-6 p-0 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 90, minWidth: 90, backgroundColor: 'hsl(var(--background))' }}>
+                <th className="h-6 p-0 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 90, minWidth: 90, backgroundColor: 'hsl(var(--background))', boxShadow: 'var(--shadow-header)' }}>
                   {/* Empty for Status */}
                 </th>
-                <th className="h-6 p-0 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 70, minWidth: 70, backgroundColor: 'hsl(var(--background))' }}>
+                <th className="h-6 p-0 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 70, minWidth: 70, backgroundColor: 'hsl(var(--background))', boxShadow: 'var(--shadow-header)' }}>
                   {/* Empty for PREFS */}
                 </th>
                 
@@ -668,19 +668,19 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
                 <th 
                   colSpan={5}
                   className="h-6 p-0 text-center align-middle font-semibold text-foreground border-r text-xs"
-                  style={{ backgroundColor: 'hsl(var(--background))' }}
+                  style={{ backgroundColor: 'hsl(var(--background))', boxShadow: 'var(--shadow-header)' }}
                 >
                   T-Shirt Inventory (ISSUED/MAX)
                 </th>
                 
                 {/* Remaining columns */}
-                <th className="h-6 p-0 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 70, minWidth: 70, backgroundColor: 'hsl(var(--background))' }}>
+                <th className="h-6 p-0 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 70, minWidth: 70, backgroundColor: 'hsl(var(--background))', boxShadow: 'var(--shadow-header)' }}>
                   {/* Empty for Events */}
                 </th>
-                <th className="h-6 p-0 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 70, minWidth: 70, backgroundColor: 'hsl(var(--background))' }}>
+                <th className="h-6 p-0 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 70, minWidth: 70, backgroundColor: 'hsl(var(--background))', boxShadow: 'var(--shadow-header)' }}>
                   {/* Empty for Hours */}
                 </th>
-                <th className="h-6 p-0 text-center align-middle font-medium text-muted-foreground" style={{ width: 40, minWidth: 40, backgroundColor: 'hsl(var(--background))' }}>
+                <th className="h-6 p-0 text-center align-middle font-medium text-muted-foreground" style={{ width: 40, minWidth: 40, backgroundColor: 'hsl(var(--background))', boxShadow: 'var(--shadow-header)' }}>
                   {/* Empty for Actions */}
                 </th>
               </tr>
@@ -702,6 +702,9 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
                         ...pinningStyles,
                         width: header.getSize(),
                         backgroundColor: header.column.id === 'select' ? 'hsl(var(--background))' : 'hsl(var(--muted))',
+                        boxShadow: pinningStyles.boxShadow 
+                          ? `${pinningStyles.boxShadow}, var(--shadow-header)` 
+                          : 'var(--shadow-header)',
                       }}
                     >
                       {header.isPlaceholder

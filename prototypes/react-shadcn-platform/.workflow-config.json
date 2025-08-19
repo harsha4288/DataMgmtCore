@@ -1,0 +1,111 @@
+{
+  "project": {
+    "name": "react-shadcn-platform",
+    "type": "React + shadcn/ui Platform",
+    "version": "0.0.0",
+    "branch": {
+      "current": "Prototype-2-shadcn",
+      "main": "main"
+    }
+  },
+  "currentStatus": {
+    "phase": "Phase 1 - Foundation Setup",
+    "phaseProgress": 95,
+    "activeTask": "Task 1.4 - Entity System Integration",
+    "lastCompleted": "Task 1.3.5 - TanStack Advanced Table UI Fixes",
+    "lastUpdated": "2024-12-19"
+  },
+  "workflow": {
+    "autoChecks": {
+      "beforeCommit": true,
+      "afterImplementation": true,
+      "onTaskComplete": true
+    },
+    "qualityGates": {
+      "lint": {
+        "command": "npm run lint",
+        "required": true,
+        "maxWarnings": 0
+      },
+      "typeCheck": {
+        "command": "npm run type-check",
+        "required": true
+      },
+      "themeValidation": {
+        "command": "npm run validate:theme",
+        "required": true
+      },
+      "tests": {
+        "command": "npm test",
+        "required": false,
+        "note": "Will be required when tests are implemented"
+      },
+      "build": {
+        "command": "npm run build",
+        "required": true
+      }
+    },
+    "manualApproval": {
+      "required": true,
+      "keywords": ["approved", "sign off", "commit", "lgtm", "ship it"],
+      "reminderAfterMinutes": 5
+    }
+  },
+  "commitTemplate": {
+    "format": "[PHASE]: Task [TASK_ID] - [DESCRIPTION]",
+    "example": "Phase 1: Task 1.4.1 - Port Entity System from Prototype 1",
+    "requiredSections": [
+      "Changes",
+      "Quality Checks",
+      "Testing"
+    ]
+  },
+  "taskTracking": {
+    "progressFile": "PROGRESS.md",
+    "documentationRequired": true,
+    "folderStructure": {
+      "pattern": "PROGRESS/phase-[PHASE_NUM]/task-[TASK_ID]/",
+      "requiredFiles": [
+        "README.md",
+        "implementation-notes.md",
+        "testing-results.md"
+      ]
+    }
+  },
+  "componentStandards": {
+    "reusabilityTarget": 85,
+    "themeSwitchTime": 200,
+    "bundleSizeLimit": 300,
+    "firstContentfulPaint": 1.2
+  },
+  "automation": {
+    "scripts": {
+      "workflowCheck": "node scripts/workflow-check.js",
+      "workflowCommit": "node scripts/workflow-commit.js",
+      "workflowValidate": "npm run check:all",
+      "taskStart": "node scripts/task-start.js",
+      "taskComplete": "node scripts/task-complete.js"
+    },
+    "hooks": {
+      "preCommit": "npm run workflow:validate",
+      "postImplementation": "npm run quality-check"
+    }
+  },
+  "references": {
+    "documentation": [
+      "README.md",
+      "IMPLEMENTATION_PLAN.md",
+      "PROGRESS.md",
+      "TECHNICAL_PLAN.md"
+    ],
+    "guidelines": [
+      "GUIDELINES_THEME_COMPONENT_ENHANCEMENT.md",
+      "TANSTACK_TABLE_ISSUES_ANALYSIS.md"
+    ],
+    "criticalFiles": [
+      "CLAUDE.md",
+      ".workflow-config.json",
+      "quality-gates.json"
+    ]
+  }
+}

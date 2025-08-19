@@ -36,10 +36,10 @@ export function InventoryBadge({ issued, total, className }: InventoryBadgeProps
 
   return (
     <div className={`flex flex-col items-center justify-center gap-0.5 h-full ${className || ''}`}>
-      <Badge variant={getRatioVariant() as any} size="sm" className="font-mono text-[10px] px-1 py-0 min-w-[42px] text-center leading-tight">
+      <Badge variant={getRatioVariant() as any} size="sm" className="font-mono min-w-[42px] text-center">
         {issued}/{total}
       </Badge>
-      <Badge variant={getGradeVariant() as any} size="sm" className="text-[10px] px-1.5 py-0 min-w-[24px] text-center font-bold leading-tight">
+      <Badge variant={getGradeVariant() as any} size="sm" className="min-w-[24px] text-center font-bold">
         {getGrade()}
       </Badge>
     </div>
