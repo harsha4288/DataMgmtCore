@@ -36,15 +36,31 @@ Successfully implemented a comprehensive **AdvancedDataTable** component using T
 
 ## ⚠️ **Known Issues & Next Steps**
 
-### **Critical Issue: Frozen Columns Positioning**
+### **🚨 CRITICAL ISSUE: Table Styling Inconsistencies (Dec 19, 2024)**
 
-The current frozen column implementation has positioning issues where columns don't remain properly sticky during horizontal scrolling. Based on manual testing, the columns scroll with the table content instead of remaining fixed.
+**Status**: ⚠️ **STILL PENDING** - Multiple styling fixes attempted but not visible in browser
 
-### **Root Cause Analysis**
-1. **Fixed Width Assumption**: Current implementation uses `120px` fixed width which doesn't match actual column widths
-2. **Incorrect Left Positioning**: Cumulative width calculation is approximate rather than precise
-3. **Background Inheritance**: Frozen columns may not maintain proper theme background colors
-4. **Shadow Positioning**: Shadow effects aren't properly aligned with frozen column boundaries
+**Key Issues**:
+1. **Header column and frozen column styles not matching** - Should have same bg color, font color and style
+2. **Checkbox/selection column and data rows style inconsistency** - Should have same style
+3. **Hardcoded colors vs global theme-level colors** - ✅ **FIXED** (CSS variable conflicts resolved)
+
+**Investigation Summary**:
+- ✅ **Root Cause Found**: Static CSS variables in `index.css` were overriding theme system
+- ✅ **Fix Applied**: Removed hardcoded shadcn/ui variables from `index.css`
+- ⚠️ **Browser Result**: Styling changes still not visible in browser - requires further investigation
+- 📝 **Documentation**: Added troubleshooting section to theme guidelines
+
+### **✅ RESOLVED: Column Width & Frozen Column Issues (Dec 2024)**
+
+**Solution Applied:**
+- Removed all fixed column widths (e.g., `size: 80`) from T-shirt columns
+- Updated table CSS to use `table-layout: auto` by default
+- Added `min-width: fit-content` to table cells to prevent truncation
+- Fixed sticky positioning with proper z-index layering for frozen columns
+
+**Key Learning:**
+Fixed column widths cause content truncation and overlap issues. Always use auto-sizing for dynamic content like badges and let the table determine optimal column widths based on content.
 
 ### **Reference Implementation Analysis**
 The original VolunteerDashboard.tsx from Prototype1 (`C:\React-Projects\SGSDataMgmtCore\prototypes\react-web-platform\src\domains\volunteers\VolunteerDashboard.tsx`) has a working frozen column implementation that should be studied.

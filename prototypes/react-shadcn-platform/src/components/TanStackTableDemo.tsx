@@ -247,7 +247,7 @@ export function TanStackTableDemo() {
         const [issued, total] = value.split('/').map(Number)
         return <InventoryBadge issued={issued} total={total} />
       },
-      // Auto-size based on content
+      // Auto-size based on content - no fixed width to prevent truncation
     },
     {
       id: 'tshirt_m',
@@ -258,7 +258,7 @@ export function TanStackTableDemo() {
         const [issued, total] = value.split('/').map(Number)
         return <InventoryBadge issued={issued} total={total} />
       },
-      // Auto-size based on content
+      // Auto-size based on content - no fixed width to prevent truncation
     },
     {
       id: 'tshirt_l',
@@ -269,7 +269,7 @@ export function TanStackTableDemo() {
         const [issued, total] = value.split('/').map(Number)
         return <InventoryBadge issued={issued} total={total} />
       },
-      // Auto-size based on content
+      // Auto-size based on content - no fixed width to prevent truncation
     },
     {
       id: 'tshirt_xl',
@@ -280,7 +280,7 @@ export function TanStackTableDemo() {
         const [issued, total] = value.split('/').map(Number)
         return <InventoryBadge issued={issued} total={total} />
       },
-      // Auto-size based on content
+      // Auto-size based on content - no fixed width to prevent truncation
     },
     {
       id: 'tshirt_xxl',
@@ -291,7 +291,7 @@ export function TanStackTableDemo() {
         const [issued, total] = value.split('/').map(Number)
         return <InventoryBadge issued={issued} total={total} />
       },
-      // Auto-size based on content
+      // Auto-size based on content - no fixed width to prevent truncation
     },
     {
       id: 'events',

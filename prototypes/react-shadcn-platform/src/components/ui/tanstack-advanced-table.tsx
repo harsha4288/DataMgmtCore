@@ -267,17 +267,16 @@ function getCommonPinningStyles<T>(column: Column<T, unknown>): CSSProperties {
 
   return {
     boxShadow: isLastLeftPinnedColumn
-      ? '2px 0 6px -2px rgba(0,0,0,0.2), inset -1px 0 0 0 rgba(0,0,0,0.1)'
+      ? '2px 0 4px rgba(0,0,0,0.2)'
       : isFirstRightPinnedColumn
-        ? '-2px 0 6px -2px rgba(0,0,0,0.2), inset 1px 0 0 0 rgba(0,0,0,0.1)'
-        : isPinned 
-          ? 'inset 0 0 0 1px rgba(0,0,0,0.05)'
-          : undefined,
+        ? '-2px 0 4px rgba(0,0,0,0.2)'
+        : undefined,
     left: isPinned === 'left' ? `${column.getStart('left')}px` : undefined,
     right: isPinned === 'right' ? `${column.getAfter('right')}px` : undefined,
     position: isPinned ? 'sticky' : 'relative',
     width: column.getSize(),
-    zIndex: isPinned ? 10 : 0,
+    zIndex: isPinned ? 20 : 0,
+    backgroundColor: isPinned && column.id !== 'select' ? 'hsl(var(--muted))' : undefined,
   }
 }
 
@@ -609,15 +608,15 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
           <thead className="[&_tr]:border-b">
             {/* Group Headers Row */}
             {groupHeaders && groupHeaders.length > 0 && (
-              <tr className="border-b bg-muted/80">
+              <tr className="border-b sticky top-0 z-30" style={{ backgroundColor: 'hsl(var(--background))' }}>
                 {/* Selection column header */}
                 {selection.enabled && (
                   <th 
                     className={cn(
-                      "h-8 px-2 text-center align-middle font-medium text-muted-foreground border-r",
-                      "sticky left-0 z-20 bg-muted/80"
+                      "h-6 px-1 text-center align-middle font-medium text-muted-foreground border-r",
+                      "sticky left-0 z-40"
                     )}
-                    style={{ width: 50, minWidth: 50 }}
+                    style={{ width: 50, minWidth: 50, backgroundColor: 'hsl(var(--background))' }}
                   >
                     {/* Empty for selection */}
                   </th>
@@ -626,43 +625,46 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
                 {/* Non-grouped columns before T-shirt inventory */}
                 <th 
                   className={cn(
-                    "h-8 px-3 text-center align-middle font-medium text-muted-foreground border-r",
-                    "sticky z-20 bg-muted/80"
+                    "h-6 px-2 text-center align-middle font-medium text-muted-foreground border-r",
+                    "sticky z-40"
                   )}
                   style={{ 
                     left: selection.enabled ? '50px' : '0px',
                     width: 160,
-                    minWidth: 160
+                    minWidth: 160,
+                    backgroundColor: 'hsl(var(--background))',
+                    boxShadow: '2px 0 4px rgba(0,0,0,0.2)'
                   }}
                 >
                   {/* Empty for Name */}
                 </th>
-                <th className="h-8 px-3 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 110, minWidth: 110 }}>
+                <th className="h-6 px-1 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 110, minWidth: 110, backgroundColor: 'hsl(var(--background))' }}>
                   {/* Empty for Role */}
                 </th>
-                <th className="h-8 px-3 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 90, minWidth: 90 }}>
+                <th className="h-6 px-1 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 90, minWidth: 90, backgroundColor: 'hsl(var(--background))' }}>
                   {/* Empty for Status */}
                 </th>
-                <th className="h-8 px-3 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 70, minWidth: 70 }}>
+                <th className="h-6 px-1 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 70, minWidth: 70, backgroundColor: 'hsl(var(--background))' }}>
                   {/* Empty for PREFS */}
                 </th>
                 
                 {/* T-Shirt Inventory Group Header */}
                 <th 
                   colSpan={5}
-                  className="h-8 px-3 text-center align-middle font-semibold text-foreground border-r bg-muted/80 text-xs"
+                  className="h-6 px-1 text-center align-middle font-semibold text-foreground border-r text-xs"
+                  style={{ backgroundColor: 'hsl(var(--background))' }}
                 >
                   T-Shirt Inventory (ISSUED/MAX)
                 </th>
                 
                 {/* Remaining columns */}
-                <th className="h-8 px-3 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 70, minWidth: 70 }}>
+                <th className="h-6 px-1 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 70, minWidth: 70, backgroundColor: 'hsl(var(--background))' }}>
                   {/* Empty for Events */}
                 </th>
-                <th className="h-8 px-3 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 70, minWidth: 70 }}>
+                <th className="h-6 px-1 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 70, minWidth: 70, backgroundColor: 'hsl(var(--background))' }}>
                   {/* Empty for Hours */}
                 </th>
-                <th className="h-8 px-3 text-center align-middle font-medium text-muted-foreground" style={{ width: 40, minWidth: 40 }}>
+                <th className="h-8 px-1 text-center align-middle font-medium text-muted-foreground" style={{ width: 40, minWidth: 40, backgroundColor: 'hsl(var(--background))' }}>
                   {/* Empty for Actions */}
                 </th>
               </tr>
@@ -670,21 +672,20 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
             
             {/* Column Headers Row */}
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
+              <tr key={headerGroup.id} className="sticky z-25" style={{ top: groupHeaders && groupHeaders.length > 0 ? '24px' : '0' }}>
                 {headerGroup.headers.map((header) => {
                   const pinningStyles = getCommonPinningStyles(header.column)
                   return (
                     <th
                       key={header.id}
                       className={cn(
-                        "h-12 px-3 text-left align-middle font-medium text-muted-foreground text-xs",
-                        "border-r border-border last:border-r-0 bg-muted/50",
-                        header.column.getIsPinned() && "bg-muted border-r z-10"
+                        header.column.id === 'select' ? "h-10 px-2 text-center align-middle font-medium text-muted-foreground text-xs" : "h-10 px-3 text-left align-middle font-medium text-muted-foreground text-xs",
+                        "border-r border-border last:border-r-0"
                       )}
                       style={{
                         ...pinningStyles,
                         width: header.getSize(),
-                        backgroundColor: header.column.getIsPinned() ? 'hsl(var(--muted) / 0.9)' : 'hsl(var(--muted) / 0.5)',
+                        backgroundColor: header.column.id === 'select' ? 'hsl(var(--background))' : 'hsl(var(--muted))',
                       }}
                     >
                       {header.isPlaceholder
@@ -717,7 +718,7 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                   className={cn(
-                    "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted h-16",
+                    "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted h-12",
                     onRowClick && "cursor-pointer"
                   )}
                   onClick={() => onRowClick?.(row.original)}
@@ -728,15 +729,16 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
                       <td
                         key={cell.id}
                         className={cn(
-                          "p-2 align-middle",
+                          cell.column.id === 'select' ? "px-2 py-1 align-middle" : "px-3 py-1 align-middle",
                           "border-r border-border last:border-r-0",
-                          cell.column.getIsPinned() && "bg-background border-r z-10",
+                          cell.column.getIsPinned() ? "sticky z-10" : "",
                           "overflow-visible"
                         )}
                         style={{
                           ...pinningStyles,
                           width: cell.column.getSize(),
-                          backgroundColor: cell.column.getIsPinned() ? 'hsl(var(--background) / 0.95)' : 'transparent',
+                          backgroundColor: cell.column.id === 'select' ? 'hsl(var(--background))' : 
+                                         cell.column.getIsPinned() ? 'hsl(var(--muted))' : 'hsl(var(--background))',
                         }}
                       >
                         {flexRender(

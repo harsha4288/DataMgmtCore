@@ -515,19 +515,19 @@ export function AdvancedDataTable<T = any>({
       )}
 
       {/* Table Container */}
-      <div className="rounded-md border bg-background">
+      <div className="rounded-md border" style={{ backgroundColor: 'hsl(var(--background))' }}>
         <div className="relative w-full overflow-auto" style={{ maxHeight: maxHeight || '600px' }}>
           <table
             ref={tableRef}
-            className="w-full caption-bottom text-sm bg-transparent text-foreground"
+            className="w-full caption-bottom text-sm"
             style={{ minWidth: '800px', tableLayout: 'auto' }}
           >
-            <thead className="[&_tr]:border-b sticky top-0 z-[52]">
+            <thead className="[&_tr]:border-b sticky top-0 z-[52]" style={{ backgroundColor: 'hsl(var(--muted))' }}>
               {/* Group Headers */}
               {computedGroupHeaders.length > 0 && (
-                <tr className="border-b sticky top-0 z-[53] bg-background">
+                <tr className="border-b sticky top-0 z-[53]" style={{ backgroundColor: 'hsl(var(--muted))' }}>
                   {selection?.enabled && (
-                    <th className="w-[40px] h-12 px-4 text-left align-middle font-medium text-foreground sticky left-0 z-[54] bg-background border-r border-border" />
+                    <th className="w-[40px] h-12 px-4 text-left align-middle font-medium sticky left-0 z-[54] border-r border-border shadow-[2px_0_4px_rgba(0,0,0,0.05)]" style={{ backgroundColor: 'hsl(var(--muted))', color: 'hsl(var(--muted-foreground))' }} />
                   )}
                   {computedGroupHeaders.map((group, index) => {
                     // Determine if this group header spans any frozen columns
@@ -540,10 +540,12 @@ export function AdvancedDataTable<T = any>({
                         key={`group-${index}`}
                         colSpan={group.colSpan}
                         className={cn(
-                          "h-12 px-4 text-center align-middle font-semibold text-foreground border-r border-border bg-background",
-                          isFrozen && "sticky z-[54] shadow-[2px_0_4px_rgba(0,0,0,0.05)] bg-background"
+                          "h-12 px-4 text-center align-middle font-semibold border-r border-border",
+                          isFrozen && "sticky z-[54] shadow-[2px_0_4px_rgba(0,0,0,0.05)]"
                         )}
                         style={{
+                          backgroundColor: 'hsl(var(--muted))',
+                          color: 'hsl(var(--muted-foreground))',
                           ...(isFrozen && { left: `${frozenLeft}px` })
                         }}
                       >
@@ -556,7 +558,7 @@ export function AdvancedDataTable<T = any>({
 
               {/* Column Headers */}
               {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id} className="border-b sticky z-[52] bg-background" style={{ top: computedGroupHeaders.length > 0 ? '48px' : '0' }}>
+                <tr key={headerGroup.id} className="border-b sticky z-[52]" style={{ backgroundColor: 'hsl(var(--muted))', top: computedGroupHeaders.length > 0 ? '48px' : '0' }}>
                   {headerGroup.headers.map((header, columnIndex) => {
                     // Selection column (index 0) is always frozen if enabled
                     const isSelectionColumn = selection?.enabled && columnIndex === 0
@@ -569,11 +571,14 @@ export function AdvancedDataTable<T = any>({
                       <th
                         key={header.id}
                         className={cn(
-                          "h-12 px-2 text-left align-middle font-medium text-foreground border-r border-border relative group bg-background",
-                          isFrozen && "sticky z-[54] shadow-[2px_0_4px_rgba(0,0,0,0.05)] bg-background",
+                          "h-12 px-2 text-left align-middle font-medium border-r border-border relative group",
+                          isFrozen && "sticky z-[54]",
                           header.column.getCanSort() && "cursor-pointer hover:bg-muted/50"
                         )}
                         style={{
+                          backgroundColor: 'hsl(var(--muted))',
+                          color: 'hsl(var(--muted-foreground))',
+                          boxShadow: isFrozen ? '2px 0 4px rgba(0,0,0,0.05)' : undefined,
                           ...(columnSize && { width: columnSize }),
                           ...(isFrozen && { left: `${frozenLeft}px` })
                         }}
@@ -644,11 +649,24 @@ export function AdvancedDataTable<T = any>({
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
                     className={cn(
-                      "border-b transition-colors hover:bg-muted/50 cursor-pointer bg-background",
+                      "border-b transition-colors cursor-pointer",
                       row.getIsSelected() && "bg-muted/50",
                       mobile?.touchOptimized && "min-h-[44px]"
                     )}
                     onClick={() => onRowClick?.(row.original)}
+                    style={{ 
+                      backgroundColor: row.getIsSelected() ? 'hsl(var(--muted) / 0.5)' : 'hsl(var(--background))',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!row.getIsSelected()) {
+                        e.currentTarget.style.backgroundColor = 'hsl(var(--muted) / 0.5)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!row.getIsSelected()) {
+                        e.currentTarget.style.backgroundColor = 'hsl(var(--background))';
+                      }
+                    }}
                   >
                     {row.getVisibleCells().map((cell, columnIndex) => {
                       // Selection column (index 0) is always frozen if enabled
@@ -663,11 +681,14 @@ export function AdvancedDataTable<T = any>({
                         <td
                           key={cell.id}
                           className={cn(
-                            "p-2 align-middle text-foreground border-r border-border overflow-hidden bg-background",
-                            isFrozen && "sticky z-[50] bg-background shadow-[2px_0_4px_rgba(0,0,0,0.05)]",
+                            "p-2 align-middle border-r border-border overflow-hidden",
+                            isFrozen && "sticky z-[50]",
                             "last:border-r-0"
                           )}
                           style={{
+                            backgroundColor: 'inherit',
+                            color: 'hsl(var(--foreground))',
+                            boxShadow: isFrozen ? '2px 0 4px rgba(0,0,0,0.05)' : undefined,
                             ...(isFrozen && { left: `${frozenLeft}px` })
                           }}
                           onDoubleClick={() => {

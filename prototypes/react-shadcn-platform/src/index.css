@@ -4,31 +4,12 @@
 
 @layer base {
   :root {
-    /* shadcn/ui default variables */
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Only non-theme specific variables that don't change */
     --radius: 0.5rem;
     
     /* Essential table variables - max 5 for strict guideline compliance */
     --table-frozen-shadow: 2px 0 4px rgba(0,0,0,0.05);
-    --table-resize-handle: 214.3 31.8% 91.4%;
+    --table-resize-handle-opacity: 0.5;
     --table-row-height: 48px;
     --table-header-height: 48px;
     --table-selection-width: 48px;
@@ -99,17 +80,18 @@
     border-spacing: 0;
   }
   
-  /* Auto-sizing table layout */
-  table.auto-layout {
+  /* Auto-sizing table layout - default for all tables */
+  table {
     table-layout: auto;
   }
 
-  /* Prevent content overflow in table cells - allow content to determine size naturally */
+  /* Allow content to determine cell size naturally */
   table td {
     position: relative;
     vertical-align: middle;
     white-space: nowrap;
     padding: 8px 12px;
+    min-width: fit-content;
   }
   
   table th {
@@ -132,7 +114,7 @@
   .table-resize-handle:hover,
   .table-resize-handle.resizing {
     background-color: hsl(var(--primary));
-    opacity: 0.5;
+    opacity: var(--table-resize-handle-opacity);
   }
 
   /* Inline editing styles */

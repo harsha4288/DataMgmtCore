@@ -11,7 +11,14 @@
     "quality-check": "npm run lint && npm run type-check && npm run build",
     "type-check": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
-    "format-check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\""
+    "format-check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "validate:theme": "node validate-theme-usage.js",
+    "validate:theme:verbose": "node validate-theme-usage.js --verbose",
+    "check:anti-patterns": "bash scripts/check-anti-patterns.sh",
+    "check:large-components": "bash scripts/find-large-components.sh",
+    "check:performance": "bash scripts/find-performance-issues.sh",
+    "check:accessibility": "bash scripts/find-accessibility-issues.sh",
+    "check:all": "npm run lint && npm run type-check && npm run check:anti-patterns"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -37,6 +44,7 @@
     "@tanstack/react-virtual": "^3.13.12",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "glob": "^11.0.3",
     "lucide-react": "^0.303.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

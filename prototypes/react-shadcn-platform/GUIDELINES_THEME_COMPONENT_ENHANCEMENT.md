@@ -256,6 +256,7 @@ export function LazyAdvancedDataTable(props: AdvancedDataTableProps) {
 - Follow the wrapper pattern for complex enhancements
 
 ### ❌ **Don'ts**
+- **Don't override theme CSS variables in static CSS files** (breaks theme switching)
 - Don't create 70+ CSS variables for maintainability
 - Don't replace working components unnecessarily
 - Don't exceed 500 lines per component file
@@ -279,6 +280,49 @@ export function LazyAdvancedDataTable(props: AdvancedDataTableProps) {
 - Touch-friendly interactions for mobile
 - Proper error handling and loading states
 - Comprehensive TypeScript support
+
+### 5. **CSS Variable Management**
+
+#### **Critical Rule: Never Override Theme Variables in CSS**
+```css
+/* ❌ NEVER DO THIS: Static CSS variables break theme switching */
+:root {
+  --muted: 210 40% 96%;          /* Overrides theme system */
+  --background: 0 0% 100%;       /* Prevents dark mode */
+  --foreground: 222.2 84% 4.9%;  /* Breaks theme injection */
+}
+
+/* ✅ CORRECT: Only non-theme static variables */
+:root {
+  --radius: 0.5rem;             /* Layout constant */
+  --table-row-height: 48px;     /* Component constant */
+  --table-selection-width: 48px; /* Component constant */
+}
+```
+
+#### **CSS File Organization**
+```css
+/* index.css structure */
+@layer base {
+  :root {
+    /* ONLY non-theme constants allowed here */
+    --radius: 0.5rem;
+    --table-row-height: 48px;
+    /* NO color variables - managed by theme system */
+  }
+}
+```
+
+#### **Component Styling Rules**
+```typescript
+// ✅ ALWAYS use dynamic CSS variables in components
+<div style={{ backgroundColor: 'hsl(var(--muted))' }}>
+<thead style={{ backgroundColor: 'hsl(var(--muted))' }}>
+
+// ❌ NEVER use hardcoded classes that conflict with theme system
+<div className="bg-gray-100"> // Breaks dark mode
+<thead className="bg-muted">  // May conflict with CSS overrides
+```
 
 ---
 

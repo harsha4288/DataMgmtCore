@@ -5,8 +5,8 @@ interface RoleBadgeProps {
 }
 
 export function RoleBadge({ role }: RoleBadgeProps) {
-  const variant = role === 'Team Lead' ? 'grade-a' : 
-                role === 'Coordinator' ? 'grade-b' : 
-                role === 'Specialist' ? 'grade-c' : 'neutral'
-  return <Badge variant={variant as any}>{role}</Badge>
+  // Match exact behavior from reference DarkTheme.html
+  const variant = (role === 'Team Lead' || role === 'Coordinator') ? 'grade-b' :  // Blue
+                  'neutral'  // All others (Volunteer, Specialist) use neutral
+  return <Badge variant={variant as any}>{role.toUpperCase()}</Badge>
 }

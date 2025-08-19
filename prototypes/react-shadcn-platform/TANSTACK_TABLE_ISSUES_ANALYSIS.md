@@ -131,22 +131,30 @@ This document provides a comprehensive analysis of issues found in the current T
 ### **Phase 2: Styling Consistency (Medium Priority)**
 
 #### **Task 2.1: Header Column Style Matching**
-- ❌ **Status**: INCOMPLETE - Styling inconsistencies remain
-- **Files**: CSS styling, theme variables
+- ⚠️ **Status**: FIX ATTEMPTED BUT NOT VISIBLE - Multiple styling fixes applied but not visible in browser
+- **Files**: `index.css`, `advanced-data-table.tsx`, theme configuration files
 - **Issues**: Header, frozen, selection columns have mismatched styling
-- **Next Action**: Unify styling across all column types
+- **Investigation (Dec 19, 2024)**:
+  - ✅ **Root Cause Found**: Static CSS variables in `index.css` overriding theme system
+  - ✅ **Fix Applied**: Removed hardcoded shadcn/ui variables from `index.css`
+  - ⚠️ **Browser Result**: Changes still not visible - requires further debugging
+- **Next Action**: Debug why CSS variable changes aren't taking effect
 
 #### **Task 2.2: Selection Elements Styling**
-- ❌ **Status**: INCOMPLETE - Inconsistent styling across elements
-- **Files**: Selection-related CSS and component styling
+- ⚠️ **Status**: FIX ATTEMPTED BUT NOT VISIBLE - Styling fixes applied but not visible in browser
+- **Files**: Selection-related CSS and component styling, theme variables
 - **Issues**: Selection column, data rows, group headers have different appearances
-- **Next Action**: Apply consistent styling theme across all selection elements
+- **Investigation (Dec 19, 2024)**:
+  - ✅ **Component Analysis**: Reviewed 796-line advanced-data-table.tsx
+  - ✅ **CSS Variable Updates**: Changed hardcoded classes to `hsl(var(--muted))`
+  - ⚠️ **Browser Result**: Changes still not visible - theme injection may need verification
+- **Next Action**: Verify theme variable injection is working properly
 
 #### **Task 2.3: Table Layout Alignment**
-- ❌ **Status**: INCOMPLETE - Content truncation issues
+- ✅ **Status**: COMPLETED - Fixed by removing fixed column widths
 - **Files**: Table CSS, theme variables, column sizing
-- **Issues**: T-shirt size column content being cut off
-- **Next Action**: Fix cell content clipping and ensure proper content display
+- **Solution**: Removed fixed widths (size: 80) from T-shirt columns to allow auto-sizing
+- **Key Learning**: Fixed column widths cause content truncation - use auto-layout instead
 
 ### **Phase 3: Guidelines Compliance (Medium Priority)**
 

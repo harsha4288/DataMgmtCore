@@ -182,10 +182,16 @@ import { AdvancedDataTable } from '@/components/ui'
 ### Sub-sub-task 1.3.4.4: TanStack Table UI/UX Refinements 🔄 **IN PROGRESS**
 - [ ] **Selection Column Implementation** - Ensure checkbox column is first and always frozen
 - [ ] **Group Headers Rendering** - Properly display group header row visually
-- [ ] **Header Styling Consistency** - Match header and frozen column styles to Prototype 1
-- [ ] **Selection Elements Styling** - Consistent styling for checkboxes, data rows, and group headers
+- [⚠️] **Header Styling Consistency** - ⚠️ **STILL PENDING** - Header and frozen column styles not matching
+- [⚠️] **Selection Elements Styling** - ⚠️ **STILL PENDING** - Checkbox/selection column and data rows style inconsistency
 - [ ] **Guidelines Compliance** - Fix badge system and component size per enhancement guidelines
 - [ ] **Table Layout Alignment** - Match row heights, borders, and overall appearance to original
+
+**🔍 Investigation Status (Dec 19, 2024)**:
+- ✅ **Root Cause Found**: Static CSS variables in `index.css` were overriding theme system
+- ✅ **Fix Applied**: Removed hardcoded shadcn/ui variables from `index.css`
+- ⚠️ **Browser Result**: Styling changes still not visible in browser - requires further investigation
+- 📝 **Documentation**: Added troubleshooting section to theme guidelines
 
 **Reference Document**: `TANSTACK_TABLE_ISSUES_ANALYSIS.md` - Comprehensive analysis of all issues and fix plan
 
