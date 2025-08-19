@@ -377,18 +377,20 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
         return (
           <div className="group flex items-center justify-between gap-1">
             <div className="flex items-center gap-1">
-              {reordering.enabled && !compactMode && (
-                <GripVertical className="h-3 w-3 text-muted-foreground cursor-grab" />
-              )}
-              {reordering.enabled && compactMode && (
-                <GripVertical className="h-3 w-3 text-muted-foreground cursor-grab opacity-0 group-hover:opacity-100 transition-opacity" />
-              )}
-              {column.getIsPinned() && !compactMode && (
-                <Pin className="h-3 w-3 text-muted-foreground/60" />
-              )}
-              {column.getIsPinned() && compactMode && (
-                <Pin className="h-3 w-3 text-muted-foreground/60 opacity-0 group-hover:opacity-100 transition-opacity" />
-              )}
+              <div className={cn("flex items-center gap-1", compactMode && "w-0 overflow-hidden group-hover:w-auto")}>
+                {reordering.enabled && (
+                  <GripVertical className={cn(
+                    "h-3 w-3 text-muted-foreground cursor-grab",
+                    compactMode && "opacity-0 group-hover:opacity-100 transition-opacity"
+                  )} />
+                )}
+                {column.getIsPinned() && (
+                  <Pin className={cn(
+                    "h-3 w-3 text-muted-foreground/60",
+                    compactMode && "opacity-0 group-hover:opacity-100 transition-opacity"
+                  )} />
+                )}
+              </div>
               <span className="select-none">
                 {typeof col.header === 'function' ? col.header({ column } as any) : col.header}
               </span>
