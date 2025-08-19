@@ -362,7 +362,7 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
         enableSorting: false,
         enableHiding: false,
         enablePinning: true,
-        size: 50,
+        size: 40,
         enableResizing: false,
       })
     }
@@ -616,7 +616,7 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
                       "h-6 px-1 text-center align-middle font-medium text-muted-foreground border-r",
                       "sticky left-0 z-40"
                     )}
-                    style={{ width: 50, minWidth: 50, backgroundColor: 'hsl(var(--background))' }}
+                    style={{ width: 40, minWidth: 40, backgroundColor: 'hsl(var(--background))' }}
                   >
                     {/* Empty for selection */}
                   </th>
@@ -629,7 +629,7 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
                     "sticky z-40"
                   )}
                   style={{ 
-                    left: selection.enabled ? '50px' : '0px',
+                    left: selection.enabled ? '40px' : '0px',
                     width: 160,
                     minWidth: 160,
                     backgroundColor: 'hsl(var(--background))',
