@@ -19,15 +19,15 @@
     "check:performance": "bash scripts/find-performance-issues.sh",
     "check:accessibility": "bash scripts/find-accessibility-issues.sh",
     "check:all": "npm run lint && npm run type-check && npm run check:anti-patterns",
-    "workflow:check": "node scripts/workflow-check.js",
+    "workflow:check": "node scripts/workflow-check.cjs",
     "workflow:validate": "npm run lint && npm run type-check && npm run validate:theme && npm run build",
-    "workflow:commit": "node scripts/workflow-commit.js",
-    "workflow:status": "node scripts/workflow-status.js",
-    "task:start": "node scripts/task-start.js",
-    "task:complete": "node scripts/task-complete.js",
-    "task:checklist": "node scripts/task-checklist.js",
-    "gates:check": "node scripts/quality-gates-check.js",
-    "gates:report": "node scripts/quality-gates-report.js"
+    "workflow:commit": "node scripts/workflow-commit.cjs",
+    "workflow:status": "node scripts/workflow-status.cjs",
+    "task:start": "node scripts/task-start.cjs",
+    "task:complete": "node scripts/task-complete.cjs",
+    "task:checklist": "node scripts/task-checklist.cjs",
+    "gates:check": "node scripts/quality-gates-check.cjs",
+    "gates:report": "node scripts/quality-gates-report.cjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

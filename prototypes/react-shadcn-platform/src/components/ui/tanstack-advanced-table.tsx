@@ -370,9 +370,9 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
     }
 
     // Add main columns with enhanced functionality
-    cols.push(...columns.map((col): ColumnDef<T> => ({
+    cols.push(...columns.map((col): any => ({
       ...col,
-      header: ({ column }) => {
+      header: ({ column }: any) => {
         const canSort = sortable && col.enableSorting !== false
         return (
           <div className="group flex items-center justify-between gap-1">
@@ -443,7 +443,7 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
           </div>
         )
       },
-      cell: ({ row, column, getValue }) => {
+      cell: ({ row, column, getValue }: any) => {
         const value = getValue()
         const isEditing = editingCell?.rowIndex === row.index && editingCell?.columnId === column.id
 
