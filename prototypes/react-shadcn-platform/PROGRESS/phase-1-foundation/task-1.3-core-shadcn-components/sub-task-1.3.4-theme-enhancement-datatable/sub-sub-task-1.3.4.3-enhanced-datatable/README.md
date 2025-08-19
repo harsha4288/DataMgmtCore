@@ -62,6 +62,26 @@ Successfully implemented a comprehensive **AdvancedDataTable** component using T
 **Key Learning:**
 Fixed column widths cause content truncation and overlap issues. Always use auto-sizing for dynamic content like badges and let the table determine optimal column widths based on content.
 
+### **✅ RESOLVED: Checkbox Column Width & Group Header Spacing (Dec 19, 2024)**
+
+**Issue:** Large gap between checkbox column and first frozen column (Volunteer Name)
+
+**Solution Applied:**
+1. **Checkbox column width reduced** from 50px to 40px in three places:
+   - Column definition `size: 40`
+   - Group header selection column `width: 40, minWidth: 40`
+   - Name column left position `left: selection.enabled ? '40px' : '0px'`
+
+2. **Group header row spacing fixed** by changing all padding from `px-1`/`px-2` to `p-0` (zero padding) for minimal spacing
+
+**Files Modified:**
+- `src/components/ui/tanstack-advanced-table.tsx`
+
+**Key Changes:**
+- Lines 365: Changed checkbox column size from 50 to 40
+- Lines 619, 632: Updated width from 50px to 40px  
+- Lines 616, 628, 641, 644, 647, 654, 661, 664, 667: Changed padding to `p-0` for minimal spacing
+
 ### **Reference Implementation Analysis**
 The original VolunteerDashboard.tsx from Prototype1 (`C:\React-Projects\SGSDataMgmtCore\prototypes\react-web-platform\src\domains\volunteers\VolunteerDashboard.tsx`) has a working frozen column implementation that should be studied.
 

@@ -613,7 +613,7 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
                 {selection.enabled && (
                   <th 
                     className={cn(
-                      "h-6 px-1 text-center align-middle font-medium text-muted-foreground border-r",
+                      "h-6 p-0 text-center align-middle font-medium text-muted-foreground border-r",
                       "sticky left-0 z-40"
                     )}
                     style={{ width: 40, minWidth: 40, backgroundColor: 'hsl(var(--background))' }}
@@ -625,7 +625,7 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
                 {/* Non-grouped columns before T-shirt inventory */}
                 <th 
                   className={cn(
-                    "h-6 px-2 text-center align-middle font-medium text-muted-foreground border-r",
+                    "h-6 p-0 text-center align-middle font-medium text-muted-foreground border-r",
                     "sticky z-40"
                   )}
                   style={{ 
@@ -638,33 +638,33 @@ export function TanStackAdvancedTable<T extends Record<string, unknown>>({
                 >
                   {/* Empty for Name */}
                 </th>
-                <th className="h-6 px-1 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 110, minWidth: 110, backgroundColor: 'hsl(var(--background))' }}>
+                <th className="h-6 p-0 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 110, minWidth: 110, backgroundColor: 'hsl(var(--background))' }}>
                   {/* Empty for Role */}
                 </th>
-                <th className="h-6 px-1 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 90, minWidth: 90, backgroundColor: 'hsl(var(--background))' }}>
+                <th className="h-6 p-0 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 90, minWidth: 90, backgroundColor: 'hsl(var(--background))' }}>
                   {/* Empty for Status */}
                 </th>
-                <th className="h-6 px-1 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 70, minWidth: 70, backgroundColor: 'hsl(var(--background))' }}>
+                <th className="h-6 p-0 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 70, minWidth: 70, backgroundColor: 'hsl(var(--background))' }}>
                   {/* Empty for PREFS */}
                 </th>
                 
                 {/* T-Shirt Inventory Group Header */}
                 <th 
                   colSpan={5}
-                  className="h-6 px-1 text-center align-middle font-semibold text-foreground border-r text-xs"
+                  className="h-6 p-0 text-center align-middle font-semibold text-foreground border-r text-xs"
                   style={{ backgroundColor: 'hsl(var(--background))' }}
                 >
                   T-Shirt Inventory (ISSUED/MAX)
                 </th>
                 
                 {/* Remaining columns */}
-                <th className="h-6 px-1 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 70, minWidth: 70, backgroundColor: 'hsl(var(--background))' }}>
+                <th className="h-6 p-0 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 70, minWidth: 70, backgroundColor: 'hsl(var(--background))' }}>
                   {/* Empty for Events */}
                 </th>
-                <th className="h-6 px-1 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 70, minWidth: 70, backgroundColor: 'hsl(var(--background))' }}>
+                <th className="h-6 p-0 text-center align-middle font-medium text-muted-foreground border-r" style={{ width: 70, minWidth: 70, backgroundColor: 'hsl(var(--background))' }}>
                   {/* Empty for Hours */}
                 </th>
-                <th className="h-8 px-1 text-center align-middle font-medium text-muted-foreground" style={{ width: 40, minWidth: 40, backgroundColor: 'hsl(var(--background))' }}>
+                <th className="h-6 p-0 text-center align-middle font-medium text-muted-foreground" style={{ width: 40, minWidth: 40, backgroundColor: 'hsl(var(--background))' }}>
                   {/* Empty for Actions */}
                 </th>
               </tr>
