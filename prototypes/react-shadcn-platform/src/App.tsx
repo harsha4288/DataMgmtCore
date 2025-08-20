@@ -23,6 +23,7 @@ import PreferencesPage from './pages/preferences'
 import ChatPage from './pages/chat'
 import ModerationDashboard from './pages/moderation-dashboard'
 import AnalyticsDashboard from './pages/analytics-dashboard'
+import RealWorkflowDashboardPage from './pages/real-workflow-dashboard'
 
 // Auth Guard Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -61,7 +62,7 @@ function PhaseSelection() {
               Select which phase of the platform you'd like to explore
             </p>
 
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-3 gap-8">
               {/* Phase 1 Card */}
               <div className="group cursor-pointer" onClick={() => window.location.href = '/phase1'}>
                 <div className="border rounded-lg p-8 hover:shadow-lg transition-all duration-200 group-hover:scale-[1.02]">
@@ -130,6 +131,42 @@ function PhaseSelection() {
 
                   <Button className="w-full mt-6 group-hover:bg-primary/90">
                     Start Phase 2 Demo
+                  </Button>
+                </div>
+              </div>
+
+              {/* Workflow Dashboard Card */}
+              <div className="group cursor-pointer" onClick={() => window.location.href = '/workflow-dashboard'}>
+                <div className="border rounded-lg p-8 hover:shadow-lg transition-all duration-200 group-hover:scale-[1.02] border-blue-500/50">
+                  <div className="mb-4">
+                    <Badge variant="outline" className="mb-2 bg-blue-50 text-blue-600">Live Tool</Badge>
+                    <h3 className="text-2xl font-bold mb-2">Workflow Dashboard</h3>
+                    <p className="text-muted-foreground">
+                      Real-time task tracking, quality monitoring, and Claude Code integration
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-2 text-sm text-left">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                      <span>Live Task Tracking</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                      <span>Real-time Quality Reports</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                      <span>Claude Code Interface</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                      <span>Git Status Monitoring</span>
+                    </div>
+                  </div>
+
+                  <Button className="w-full mt-6 group-hover:bg-blue-600 bg-blue-500">
+                    Open Dashboard
                   </Button>
                 </div>
               </div>
@@ -263,6 +300,14 @@ function App() {
             <ProtectedRoute>
               <ChatPage />
             </ProtectedRoute>
+            <Toaster />
+          </ThemeProvider>
+        } />
+        
+        {/* Real Workflow Dashboard - Development Tool */}
+        <Route path="/workflow-dashboard" element={
+          <ThemeProvider>
+            <RealWorkflowDashboardPage />
             <Toaster />
           </ThemeProvider>
         } />

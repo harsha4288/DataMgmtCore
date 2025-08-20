@@ -18,7 +18,10 @@
       "Bash(mkdir:*)",
       "Bash(rm:*)",
       "Bash(npm run hook:validate:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(git checkout:*)",
+      "Bash(netsh advfirewall firewall show rule:*)",
+      "Bash(netsh:*)"
     ],
     "deny": [],
     "ask": []
