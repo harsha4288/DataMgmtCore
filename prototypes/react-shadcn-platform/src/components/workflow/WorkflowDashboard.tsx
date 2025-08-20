@@ -9,21 +9,29 @@ import { Separator } from '@/components/ui/separator';
 import { 
   CheckCircle, 
   Circle, 
- 
   PlayCircle, 
   MessageSquare, 
   GitBranch, 
   Terminal,
   AlertCircle,
   TrendingUp,
-  FileText
+  FileText,
+  ChevronDown,
+  ChevronRight,
+  Pause,
+  Eye,
+  Edit,
+  History as HistoryIcon,
+  Plus,
+  Navigation,
+  FileEdit
 } from 'lucide-react';
 
 interface Task {
   id: string;
   title: string;
   description: string;
-  status: 'pending' | 'in_progress' | 'completed' | 'blocked';
+  status: 'pending' | 'in_progress' | 'completed' | 'blocked' | 'on_hold';
   priority: 'low' | 'medium' | 'high' | 'critical';
   assignee: string;
   dueDate: string;
@@ -32,6 +40,17 @@ interface Task {
   dependencies: string[];
   estimatedHours: number;
   actualHours?: number;
+  documentPath?: string;
+  enhancementRequests?: string[];
+  history?: TaskHistory[];
+}
+
+interface TaskHistory {
+  id: string;
+  timestamp: string;
+  action: string;
+  user: string;
+  details?: string;
 }
 
 interface TaskComment {
@@ -45,15 +64,22 @@ interface TaskComment {
 interface Phase {
   id: string;
   name: string;
-  status: 'pending' | 'in_progress' | 'completed';
+  status: 'pending' | 'in_progress' | 'completed' | 'on_hold';
   progress: number;
   tasks: Task[];
   startDate: string;
   endDate?: string;
   description: string;
+  collapsed?: boolean;
 }
 
 const WorkflowDashboard: React.FC = () => {
+  const [showCompletedTasks, setShowCompletedTasks] = useState(false);
+  const [selectedPhaseId, setSelectedPhaseId] = useState<string>('1');
+  const [viewMode, setViewMode] = useState<'board' | 'list'>('board');
+  const [taskDocumentContent, setTaskDocumentContent] = useState<string>('');
+  const [showDocumentViewer, setShowDocumentViewer] = useState(false);
+  
   const [phases, setPhases] = useState<Phase[]>([
     {
       id: '1',
@@ -62,6 +88,7 @@ const WorkflowDashboard: React.FC = () => {
       progress: 95,
       description: 'Setting up the core foundation with shadcn/ui components and theme system',
       startDate: '2024-12-01',
+      collapsed: false,
       tasks: [
         {
           id: '1.4',
@@ -74,6 +101,11 @@ const WorkflowDashboard: React.FC = () => {
           estimatedHours: 8,
           actualHours: 6,
           dependencies: ['1.3.5'],
+          documentPath: '/docs/tasks/1.4-entity-integration.md',
+          history: [
+            { id: 'h1', timestamp: '2024-12-19T09:00:00Z', action: 'Task created', user: 'User', details: 'Initial task definition' },
+            { id: 'h2', timestamp: '2024-12-19T10:00:00Z', action: 'Status changed', user: 'Claude Code', details: 'Changed from pending to in_progress' }
+          ],
           comments: [
             {
               id: 'c1',
@@ -121,7 +153,25 @@ const WorkflowDashboard: React.FC = () => {
       progress: 0,
       description: 'Implement wireframes and mockups for Gita Alumni system',
       startDate: '2024-12-21',
-      tasks: []
+      collapsed: false,
+      tasks: [
+        {
+          id: '2.1',
+          title: 'Design User Dashboard',
+          description: 'Create mockup for user dashboard',
+          status: 'completed',
+          priority: 'high',
+          assignee: 'Claude Code',
+          dueDate: '2024-12-22',
+          estimatedHours: 4,
+          actualHours: 3,
+          dependencies: [],
+          comments: [],
+          subtasks: [],
+          documentPath: '/docs/tasks/2.1-dashboard.md',
+          enhancementRequests: ['Add dark mode toggle', 'Include analytics widget']
+        }
+      ]
     }
   ]);
 
@@ -137,9 +187,57 @@ const WorkflowDashboard: React.FC = () => {
         return <PlayCircle className="h-4 w-4 text-blue-500" />;
       case 'blocked':
         return <AlertCircle className="h-4 w-4 text-red-500" />;
+      case 'on_hold':
+        return <Pause className="h-4 w-4 text-yellow-500" />;
       default:
         return <Circle className="h-4 w-4 text-gray-400" />;
     }
+  };
+
+  const switchToTask = (phaseId: string, taskId: string) => {
+    const phase = phases.find(p => p.id === phaseId);
+    const task = phase?.tasks.find(t => t.id === taskId);
+    if (task) {
+      setSelectedPhaseId(phaseId);
+      setActiveTask(task);
+    }
+  };
+
+  const togglePhaseCollapse = (phaseId: string) => {
+    setPhases(phases.map(phase => 
+      phase.id === phaseId 
+        ? { ...phase, collapsed: !phase.collapsed }
+        : phase
+    ));
+  };
+
+  const changeTaskStatus = (taskId: string, newStatus: Task['status']) => {
+    setPhases(phases.map(phase => ({
+      ...phase,
+      tasks: phase.tasks.map(task => 
+        task.id === taskId 
+          ? { ...task, status: newStatus }
+          : task
+      )
+    })));
+  };
+
+  const viewTaskDocument = (task: Task) => {
+    if (task.documentPath) {
+      setTaskDocumentContent(`# ${task.title}\n\n${task.description}\n\n## Implementation Details\n[Task documentation would be loaded from: ${task.documentPath}]`);
+      setShowDocumentViewer(true);
+    }
+  };
+
+  const addEnhancementRequest = (taskId: string, request: string) => {
+    setPhases(phases.map(phase => ({
+      ...phase,
+      tasks: phase.tasks.map(task => 
+        task.id === taskId 
+          ? { ...task, enhancementRequests: [...(task.enhancementRequests || []), request] }
+          : task
+      )
+    })));
   };
 
   const getPriorityColor = (priority: string) => {
@@ -222,12 +320,56 @@ const WorkflowDashboard: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Panel - Project Overview */}
           <div className="lg:col-span-2">
+            <div className="mb-4 flex justify-between items-center">
+              <div className="flex gap-2">
+                <Button
+                  variant={viewMode === 'board' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('board')}
+                >
+                  Board View
+                </Button>
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                >
+                  List View
+                </Button>
+                <Button
+                  variant={showCompletedTasks ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setShowCompletedTasks(!showCompletedTasks)}
+                >
+                  <Eye className="h-4 w-4 mr-1" />
+                  {showCompletedTasks ? 'Hide' : 'Show'} Completed
+                </Button>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <label className="text-sm">Active Phase:</label>
+                <select 
+                  value={selectedPhaseId}
+                  onChange={(e) => setSelectedPhaseId(e.target.value)}
+                  className="px-2 py-1 border rounded text-sm"
+                  style={{ borderColor: 'hsl(var(--border))' }}
+                >
+                  {phases.map(phase => (
+                    <option key={phase.id} value={phase.id}>
+                      {phase.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             <Tabs defaultValue="phases" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="phases">Phases</TabsTrigger>
                 <TabsTrigger value="tasks">Tasks</TabsTrigger>
                 <TabsTrigger value="metrics">Metrics</TabsTrigger>
                 <TabsTrigger value="git">Git Status</TabsTrigger>
+                <TabsTrigger value="history">History</TabsTrigger>
               </TabsList>
 
               <TabsContent value="phases" className="space-y-4">
@@ -235,16 +377,39 @@ const WorkflowDashboard: React.FC = () => {
                   <Card key={phase.id}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle className="flex items-center gap-2">
-                          {getStatusIcon(phase.status)}
-                          {phase.name}
-                        </CardTitle>
-                        <Badge variant={phase.status === 'completed' ? 'default' : 'secondary'}>
-                          {phase.progress}%
-                        </Badge>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="p-0 h-6 w-6"
+                            onClick={() => togglePhaseCollapse(phase.id)}
+                          >
+                            {phase.collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                          </Button>
+                          <CardTitle className="flex items-center gap-2">
+                            {getStatusIcon(phase.status)}
+                            {phase.name}
+                          </CardTitle>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {phase.status === 'in_progress' && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => changeTaskStatus(phase.id, 'on_hold')}
+                            >
+                              <Pause className="h-3 w-3 mr-1" />
+                              Hold
+                            </Button>
+                          )}
+                          <Badge variant={phase.status === 'completed' ? 'default' : 'secondary'}>
+                            {phase.progress}%
+                          </Badge>
+                        </div>
                       </div>
                       <CardDescription>{phase.description}</CardDescription>
                     </CardHeader>
+                    {!phase.collapsed && (
                     <CardContent>
                       <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
                         <div 
@@ -253,7 +418,9 @@ const WorkflowDashboard: React.FC = () => {
                         />
                       </div>
                       <div className="space-y-2">
-                        {phase.tasks.map((task) => (
+                        {phase.tasks
+                          .filter(task => showCompletedTasks || task.status !== 'completed')
+                          .map((task) => (
                           <div
                             key={task.id}
                             className="flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50"
@@ -262,16 +429,44 @@ const WorkflowDashboard: React.FC = () => {
                           >
                             <div className="flex items-center gap-3">
                               {getStatusIcon(task.status)}
-                              <div>
+                              <div className="flex-1">
                                 <p className="font-medium" style={{ color: 'hsl(var(--foreground))' }}>
                                   {task.title}
                                 </p>
                                 <p className="text-sm" style={{ color: 'hsl(var(--muted-foreground))' }}>
                                   {task.description}
                                 </p>
+                                {task.enhancementRequests && task.enhancementRequests.length > 0 && (
+                                  <div className="flex items-center gap-1 mt-1">
+                                    <Plus className="h-3 w-3 text-blue-500" />
+                                    <span className="text-xs text-blue-500">{task.enhancementRequests.length} enhancements</span>
+                                  </div>
+                                )}
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
+                              {task.documentPath && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    viewTaskDocument(task);
+                                  }}
+                                >
+                                  <FileText className="h-3 w-3" />
+                                </Button>
+                              )}
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  switchToTask(phase.id, task.id);
+                                }}
+                              >
+                                <Navigation className="h-3 w-3" />
+                              </Button>
                               <Badge variant={getPriorityColor(task.priority)}>
                                 {task.priority}
                               </Badge>
@@ -286,6 +481,7 @@ const WorkflowDashboard: React.FC = () => {
                         ))}
                       </div>
                     </CardContent>
+                    )}
                   </Card>
                 ))}
               </TabsContent>
@@ -314,6 +510,52 @@ const WorkflowDashboard: React.FC = () => {
                   </Card>
                 </div>
               </TabsContent>
+
+              <TabsContent value="history" className="space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <HistoryIcon className="h-5 w-5" />
+                      Task History & Audit Trail
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ScrollArea className="h-96">
+                      <div className="space-y-2">
+                        {phases.flatMap(phase => 
+                          phase.tasks.flatMap(task => 
+                            (task.history || []).map(h => ({
+                              ...h,
+                              taskTitle: task.title,
+                              taskId: task.id
+                            }))
+                          )
+                        ).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+                        .map((entry) => (
+                          <div key={entry.id} className="flex items-start gap-3 p-3 border rounded-lg">
+                            <HistoryIcon className="h-4 w-4 mt-1 text-gray-400" />
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-medium text-sm">{entry.action}</span>
+                                <Badge variant="outline" size="sm">
+                                  Task {entry.taskId}
+                                </Badge>
+                                <span className="text-xs text-muted-foreground">
+                                  by {entry.user} • {new Date(entry.timestamp).toLocaleString()}
+                                </span>
+                              </div>
+                              {entry.details && (
+                                <p className="text-sm text-muted-foreground">{entry.details}</p>
+                              )}
+                              <p className="text-xs mt-1">Task: {entry.taskTitle}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  </CardContent>
+                </Card>
+              </TabsContent>
             </Tabs>
           </div>
 
@@ -331,31 +573,73 @@ const WorkflowDashboard: React.FC = () => {
                     <CardDescription>{activeTask.description}</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Priority</span>
-                      <Badge variant={getPriorityColor(activeTask.priority)}>
-                        {activeTask.priority}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Estimated</span>
-                      <span className="text-sm">{activeTask.estimatedHours}h</span>
-                    </div>
-                    {activeTask.actualHours && (
+                    <div className="grid grid-cols-2 gap-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground">Actual</span>
-                        <span className="text-sm">{activeTask.actualHours}h</span>
+                        <span className="text-sm text-muted-foreground">Priority</span>
+                        <Badge variant={getPriorityColor(activeTask.priority)}>
+                          {activeTask.priority}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Status</span>
+                        <select
+                          value={activeTask.status}
+                          onChange={(e) => changeTaskStatus(activeTask.id, e.target.value as Task['status'])}
+                          className="px-2 py-1 text-xs border rounded"
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="in_progress">In Progress</option>
+                          <option value="completed">Completed</option>
+                          <option value="blocked">Blocked</option>
+                          <option value="on_hold">On Hold</option>
+                        </select>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Estimated</span>
+                        <span className="text-sm">{activeTask.estimatedHours}h</span>
+                      </div>
+                      {activeTask.actualHours && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-muted-foreground">Actual</span>
+                          <span className="text-sm">{activeTask.actualHours}h</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Document Actions */}
+                    {activeTask.documentPath && (
+                      <div className="flex gap-2 pt-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => viewTaskDocument(activeTask)}
+                        >
+                          <FileText className="h-3 w-3 mr-1" />
+                          View Document
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                        >
+                          <Edit className="h-3 w-3 mr-1" />
+                          Edit .md
+                        </Button>
                       </div>
                     )}
                     
-                    {/* Approval Buttons */}
-                    {activeTask.status === 'in_progress' && (
-                      <div className="flex gap-2 pt-4">
+                    {/* Enhanced Approval Buttons */}
+                    <div className="space-y-2 pt-4">
+                      <div className="text-sm font-medium">Quick Approval Commands:</div>
+                      <div className="grid grid-cols-2 gap-2">
                         <Button 
                           size="sm" 
                           variant="default"
-                          onClick={() => handleApproval(activeTask.id, true)}
+                          onClick={() => {
+                            handleApproval(activeTask.id, true);
+                            sendCommand();
+                          }}
                         >
+                          <CheckCircle className="h-3 w-3 mr-1" />
                           Approve & Commit
                         </Button>
                         <Button 
@@ -363,12 +647,71 @@ const WorkflowDashboard: React.FC = () => {
                           variant="outline"
                           onClick={() => handleApproval(activeTask.id, false)}
                         >
+                          <AlertCircle className="h-3 w-3 mr-1" />
                           Needs Revision
                         </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => changeTaskStatus(activeTask.id, 'on_hold')}
+                        >
+                          <Pause className="h-3 w-3 mr-1" />
+                          Put On Hold
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => {
+                            setCommandInput('Continue with ' + activeTask.title);
+                            sendCommand();
+                          }}
+                        >
+                          <PlayCircle className="h-3 w-3 mr-1" />
+                          Continue Task
+                        </Button>
                       </div>
-                    )}
+                    </div>
                   </CardContent>
                 </Card>
+
+                {/* Enhancement Requests for Completed Tasks */}
+                {activeTask.status === 'completed' && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Plus className="h-5 w-5" />
+                        Enhancement Requests
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {activeTask.enhancementRequests && activeTask.enhancementRequests.length > 0 ? (
+                        <div className="space-y-2 mb-3">
+                          {activeTask.enhancementRequests.map((req, idx) => (
+                            <div key={idx} className="p-2 border rounded text-sm">
+                              {req}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground mb-3">No enhancement requests yet</p>
+                      )}
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="Add enhancement request..."
+                          onKeyPress={(e) => {
+                            if (e.key === 'Enter' && e.currentTarget.value) {
+                              addEnhancementRequest(activeTask.id, e.currentTarget.value);
+                              e.currentTarget.value = '';
+                            }
+                          }}
+                        />
+                        <Button size="sm" variant="outline">
+                          Add
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
 
                 {/* Subtasks */}
                 {activeTask.subtasks.length > 0 && (
@@ -461,6 +804,32 @@ const WorkflowDashboard: React.FC = () => {
                   </div>
                 </CardContent>
               </Card>
+            )}
+
+            {/* Document Viewer Modal */}
+            {showDocumentViewer && (
+              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                <Card className="w-3/4 max-w-4xl h-3/4 flex flex-col">
+                  <CardHeader className="flex flex-row items-center justify-between">
+                    <CardTitle className="flex items-center gap-2">
+                      <FileEdit className="h-5 w-5" />
+                      Task Documentation
+                    </CardTitle>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowDocumentViewer(false)}
+                    >
+                      ✕
+                    </Button>
+                  </CardHeader>
+                  <CardContent className="flex-1 overflow-auto">
+                    <pre className="whitespace-pre-wrap font-mono text-sm">
+                      {taskDocumentContent}
+                    </pre>
+                  </CardContent>
+                </Card>
+              </div>
             )}
           </div>
         </div>

@@ -14,7 +14,10 @@ import {
   Clock,
   FileText,
   GitCommit,
-  Play
+  Play,
+  Code,
+  FileJson,
+  AlignLeft
 } from 'lucide-react';
 
 interface Message {
@@ -38,6 +41,7 @@ interface ClaudeSession {
 }
 
 const ClaudeCodeInterface: React.FC = () => {
+  const [outputFormat, setOutputFormat] = useState<'raw' | 'formatted' | 'code'>('formatted');
   const [sessions, setSessions] = useState<ClaudeSession[]>([
     {
       id: '1',
@@ -188,6 +192,54 @@ const ClaudeCodeInterface: React.FC = () => {
     'Review code changes'
   ];
 
+  const formatClaudeOutput = (content: string, format: string) => {
+    if (format === 'raw') return content;
+    
+    if (format === 'code') {
+      // Check if content contains code blocks
+      const codePattern = /```[\s\S]*?```/g;
+      if (codePattern.test(content)) {
+        return (
+          <div className="space-y-2">
+            {content.split(codePattern).map((text, idx) => {
+              const codeMatch = content.match(codePattern)?.[idx];
+              return (
+                <div key={idx}>
+                  {text && <p className="text-sm">{text}</p>}
+                  {codeMatch && (
+                    <pre className="bg-gray-900 text-gray-100 p-3 rounded-lg overflow-x-auto">
+                      <code className="text-xs">{codeMatch.replace(/```\w*\n?|```/g, '')}</code>
+                    </pre>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        );
+      }
+    }
+    
+    // Formatted view with better structure
+    if (format === 'formatted') {
+      return (
+        <div className="space-y-2">
+          {content.split('\n').map((line, idx) => {
+            if (line.startsWith('- ')) {
+              return <li key={idx} className="ml-4 text-sm">{line.substring(2)}</li>;
+            } else if (line.startsWith('# ')) {
+              return <h3 key={idx} className="font-bold text-sm mt-2">{line.substring(2)}</h3>;
+            } else if (line.trim()) {
+              return <p key={idx} className="text-sm">{line}</p>;
+            }
+            return null;
+          })}
+        </div>
+      );
+    }
+    
+    return content;
+  };
+
   return (
     <div className="h-full flex flex-col" style={{ backgroundColor: 'hsl(var(--background))' }}>
       {/* Header */}
@@ -205,6 +257,32 @@ const ClaudeCodeInterface: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 border rounded px-2 py-1">
+              <Button
+                variant={outputFormat === 'formatted' ? 'default' : 'ghost'}
+                size="sm"
+                className="h-6 px-2"
+                onClick={() => setOutputFormat('formatted')}
+              >
+                <AlignLeft className="h-3 w-3" />
+              </Button>
+              <Button
+                variant={outputFormat === 'code' ? 'default' : 'ghost'}
+                size="sm"
+                className="h-6 px-2"
+                onClick={() => setOutputFormat('code')}
+              >
+                <Code className="h-3 w-3" />
+              </Button>
+              <Button
+                variant={outputFormat === 'raw' ? 'default' : 'ghost'}
+                size="sm"
+                className="h-6 px-2"
+                onClick={() => setOutputFormat('raw')}
+              >
+                <FileJson className="h-3 w-3" />
+              </Button>
+            </div>
             <Badge variant={activeSession.status === 'executing' ? 'default' : 'secondary'}>
               {activeSession.status}
             </Badge>
@@ -247,7 +325,9 @@ const ClaudeCodeInterface: React.FC = () => {
                         border: message.type !== 'user' ? '1px solid hsl(var(--border))' : 'none'
                       }}
                     >
-                      {message.content}
+                      {message.type === 'claude' 
+                        ? formatClaudeOutput(message.content, outputFormat)
+                        : message.content}
                     </div>
                     {message.metadata?.taskId && (
                       <Badge variant="outline" className="mt-2" size="sm">

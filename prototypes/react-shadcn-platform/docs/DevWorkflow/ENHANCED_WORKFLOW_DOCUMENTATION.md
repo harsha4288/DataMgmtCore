@@ -11,12 +11,19 @@ This document outlines the comprehensive web-based development workflow system d
 - **Visual Task Management**: Hierarchical task structure with subtasks
 - **Interactive Task Selection**: Click-to-focus task management
 - **Progress Visualization**: Phase completion bars and status indicators
+- **Collapsible Views**: Show/hide completed tasks and collapse phases
+- **Task Navigation**: Quick switch between phases and tasks
+- **Board/List Views**: Toggle between different visualization modes
+- **On Hold Status**: Mark tasks and phases as on hold when needed
 
 ### 2. **Integrated Claude Code Interface**
 - **Real-time Chat Interface**: Direct communication with Claude Code
 - **Command Execution**: Quick command buttons and terminal-style input
 - **Session Management**: Persistent conversation history
 - **Status Monitoring**: Live execution status and results
+- **Output Formatting**: Toggle between formatted, code, and raw views
+- **Smart Code Display**: Automatic syntax highlighting for code blocks
+- **Structured Messages**: Better readability with formatted Claude responses
 
 ### 3. **Quality Gates Integration**
 - **Automated Checks**: ESLint, TypeScript, Theme validation, Build checks
@@ -32,9 +39,13 @@ This document outlines the comprehensive web-based development workflow system d
 
 ### 5. **Testing & Approval System**
 - **Manual Testing Interface**: Testing notes and status tracking
-- **Approval Workflow**: Approve/reject with comments
+- **Enhanced Approval Workflow**: Quick approval commands with multiple options
 - **Command Interface**: Send instructions to Claude Code
-- **History Tracking**: Full communication history
+- **History Tracking**: Full audit trail with task history
+- **Task Documents**: View and edit task-specific .md files
+- **Enhancement Requests**: Add improvement suggestions to completed tasks
+- **Status Management**: Change task status directly from dashboard
+- **Bulk Actions**: Quick commands for approve, hold, continue tasks
 
 ## 🏗️ Architecture
 
@@ -53,20 +64,32 @@ interface Task {
   id: string;
   title: string;
   description: string;
-  status: 'pending' | 'in_progress' | 'completed' | 'blocked';
+  status: 'pending' | 'in_progress' | 'completed' | 'blocked' | 'on_hold';
   priority: 'low' | 'medium' | 'high' | 'critical';
   subtasks: Task[];
   comments: TaskComment[];
   estimatedHours: number;
   actualHours?: number;
+  documentPath?: string;
+  enhancementRequests?: string[];
+  history?: TaskHistory[];
 }
 
 interface Phase {
   id: string;
   name: string;
-  status: 'pending' | 'in_progress' | 'completed';
+  status: 'pending' | 'in_progress' | 'completed' | 'on_hold';
   progress: number;
   tasks: Task[];
+  collapsed?: boolean;
+}
+
+interface TaskHistory {
+  id: string;
+  timestamp: string;
+  action: string;
+  user: string;
+  details?: string;
 }
 ```
 
@@ -185,6 +208,38 @@ All components use theme variables:
 - **Error Rate**: <5% with guided workflow
 - **Satisfaction**: >90% approval rating
 - **Productivity**: 3x faster task iteration
+
+## ✨ NEW Enhanced Features (Latest Update)
+
+### Visual Improvements
+- **Collapsible Phase Cards**: Expand/collapse phases to manage screen space
+- **Completed Task Filtering**: Toggle visibility of completed tasks
+- **Task Document Viewer**: Modal view for task-specific .md files
+- **Enhancement Tracking**: Add and view enhancement requests on completed tasks
+
+### Navigation & Control
+- **Phase Selector**: Quick dropdown to switch between phases
+- **Task Navigation**: Jump to specific tasks with navigation buttons
+- **Board/List View Toggle**: Switch between different view modes
+- **On Hold Status**: New status option for tasks and phases
+
+### Claude Output Formatting
+- **Three Display Modes**: Formatted, Code, and Raw views
+- **Smart Code Highlighting**: Automatic syntax highlighting for code blocks
+- **Structured Output**: Better formatting for lists and headers
+- **Toggle Controls**: Easy switching between output formats
+
+### Enhanced Approval System
+- **Quick Commands**: Four approval options (Approve, Revise, Hold, Continue)
+- **Status Dropdown**: Change task status directly from details panel
+- **Bulk Actions**: Execute multiple commands with single clicks
+- **Command Prefilling**: Auto-populate common commands
+
+### History & Audit Trail
+- **Dedicated History Tab**: View all task changes and actions
+- **Chronological Ordering**: Latest activities shown first
+- **Action Details**: Track who did what and when
+- **Task Context**: See which task each action belongs to
 
 ## 🔮 Future Enhancements
 
