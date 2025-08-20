@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -18,9 +18,16 @@ import {
   AlertCircle,
   CheckCircle,
   Loader2,
-  GitBranch
+  GitBranch,
+  Users,
+  Trophy,
+  Star,
+  Clock,
+  Heart,
+  ArrowRight
 } from 'lucide-react'
 import { mockUsers } from '@/lib/mock-data/auth'
+import { cn } from '@/lib/utils'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -42,6 +49,48 @@ export default function LoginPage() {
     password?: 'valid' | 'invalid'
   }>({})
 
+  // Animated counter effect for metrics
+  const [counters, setCounters] = useState({
+    alumni: 0,
+    successRate: 0,
+    connections: 0,
+    responseTime: 0
+  })
+
+  useEffect(() => {
+    // Animate counters on mount
+    const duration = 2000 // 2 seconds
+    const steps = 60
+    const interval = duration / steps
+
+    const targets = {
+      alumni: 2573,
+      successRate: 94,
+      connections: 1287,
+      responseTime: 24
+    }
+
+    let currentStep = 0
+    const timer = setInterval(() => {
+      currentStep++
+      const progress = currentStep / steps
+      
+      setCounters({
+        alumni: Math.floor(targets.alumni * progress),
+        successRate: Math.floor(targets.successRate * progress),
+        connections: Math.floor(targets.connections * progress),
+        responseTime: Math.floor(targets.responseTime * progress)
+      })
+
+      if (currentStep >= steps) {
+        clearInterval(timer)
+        setCounters(targets)
+      }
+    }, interval)
+
+    return () => clearInterval(timer)
+  }, [])
+
   // Validation functions
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -49,13 +98,11 @@ export default function LoginPage() {
   }
 
   const validateUsername = (username: string): boolean => {
-    // 10-character alphanumeric requirement
     const usernameRegex = /^[a-zA-Z0-9]{10}$/
     return usernameRegex.test(username)
   }
 
   const validatePassword = (password: string): boolean => {
-    // 6-12 characters with mixed types
     return password.length >= 6 && password.length <= 12 && 
            /[a-zA-Z]/.test(password) && 
            /[0-9]/.test(password)
@@ -64,14 +111,12 @@ export default function LoginPage() {
   const handleIdentifierChange = (value: string) => {
     setFormData(prev => ({ ...prev, identifier: value }))
     
-    // Real-time validation
     if (value.length === 0) {
       setValidationStatus(prev => ({ ...prev, identifier: undefined }))
       setErrors(prev => ({ ...prev, identifier: undefined }))
       return
     }
 
-    // Auto-detect login method
     if (value.includes('@')) {
       setLoginMethod('email')
       if (validateEmail(value)) {
@@ -85,7 +130,6 @@ export default function LoginPage() {
       setLoginMethod('username')
       setValidationStatus(prev => ({ ...prev, identifier: 'checking' }))
       
-      // Simulate checking username format
       setTimeout(() => {
         if (validateUsername(value)) {
           setValidationStatus(prev => ({ ...prev, identifier: 'valid' }))
@@ -122,16 +166,13 @@ export default function LoginPage() {
     setErrors({ general: undefined })
 
     try {
-      // Simulate authentication
       await new Promise(resolve => setTimeout(resolve, 1500))
 
-      // Find user in mock data
       const user = mockUsers.find(u => 
         u.email === formData.identifier || u.username === formData.identifier
       )
 
       if (user && user.profiles.length > 0) {
-        // Store authentication state
         localStorage.setItem('authenticated', 'true')
         localStorage.setItem('currentUser', JSON.stringify(user))
         
@@ -139,9 +180,7 @@ export default function LoginPage() {
           localStorage.setItem('rememberMe', 'true')
         }
 
-        // Navigate based on profile count
         if (user.profiles.length === 1) {
-          // Single profile - go directly to dashboard
           localStorage.setItem('currentProfile', JSON.stringify(user.profiles[0]))
           const profile = user.profiles[0]
           
@@ -156,7 +195,6 @@ export default function LoginPage() {
               navigate('/member-dashboard')
           }
         } else {
-          // Multiple profiles - go to profile selection
           navigate('/profile-selection')
         }
       } else {
@@ -175,43 +213,89 @@ export default function LoginPage() {
                      formData.password
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <div className="flex items-center justify-center space-x-2">
-            <GitBranch className="h-8 w-8 text-primary" />
-            <h1 className="text-2xl font-bold">Gita Alumni Connect</h1>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
+      </div>
+
+      <div className="w-full max-w-md space-y-6 relative z-10">
+        {/* Header with animation */}
+        <div className="text-center space-y-4">
+          <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-full mb-4">
+            <GitBranch className="h-10 w-10 text-primary" />
           </div>
-          <p className="text-muted-foreground">
-            Welcome back! Please sign in to your account.
-          </p>
-          <Badge variant="secondary" className="text-xs">
-            Phase 2 Demo - Mock Authentication
-          </Badge>
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold tracking-tight">Gita Alumni Connect</h1>
+            <p className="text-muted-foreground text-lg">
+              Where alumni help alumni succeed
+            </p>
+          </div>
+          
+          {/* Trust Metrics - Professional appearance */}
+          <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto">
+            <div className="bg-card/50 backdrop-blur border rounded-lg p-3 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-center gap-2">
+                <Users className="h-4 w-4 text-blue-500" />
+                <div className="text-left">
+                  <div className="text-xl font-bold text-foreground">{counters.alumni.toLocaleString()}+</div>
+                  <div className="text-xs text-muted-foreground">Active Alumni</div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-card/50 backdrop-blur border rounded-lg p-3 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-center gap-2">
+                <Trophy className="h-4 w-4 text-green-500" />
+                <div className="text-left">
+                  <div className="text-xl font-bold text-foreground">{counters.successRate}%</div>
+                  <div className="text-xs text-muted-foreground">Success Rate</div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-card/50 backdrop-blur border rounded-lg p-3 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-center gap-2">
+                <Heart className="h-4 w-4 text-purple-500" />
+                <div className="text-left">
+                  <div className="text-xl font-bold text-foreground">{counters.connections.toLocaleString()}+</div>
+                  <div className="text-xs text-muted-foreground">Connections</div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-card/50 backdrop-blur border rounded-lg p-3 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-center gap-2">
+                <Clock className="h-4 w-4 text-orange-500" />
+                <div className="text-left">
+                  <div className="text-xl font-bold text-foreground">{counters.responseTime}hr</div>
+                  <div className="text-xs text-muted-foreground">Avg Response</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Login Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-xl">Sign In</CardTitle>
-            <CardDescription>
-              Use your email address or username to access your account
+        {/* Login Card with enhanced styling */}
+        <Card className="backdrop-blur bg-card/95 shadow-xl border-border/50">
+          <CardHeader className="space-y-1 pb-4">
+            <CardTitle className="text-2xl font-semibold">Welcome back</CardTitle>
+            <CardDescription className="text-sm">
+              Sign in to connect with your alumni network
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Email/Username Field */}
               <div className="space-y-2">
-                <Label htmlFor="identifier" className="flex items-center gap-2">
+                <Label htmlFor="identifier" className="flex items-center gap-2 text-sm font-medium">
                   {loginMethod === 'email' ? (
-                    <Mail className="h-4 w-4" />
+                    <Mail className="h-4 w-4 text-muted-foreground" />
                   ) : (
-                    <User className="h-4 w-4" />
+                    <User className="h-4 w-4 text-muted-foreground" />
                   )}
                   {loginMethod === 'email' ? 'Email Address' : 'Username'}
                   {validationStatus.identifier === 'checking' && (
-                    <Loader2 className="h-3 w-3 animate-spin" />
+                    <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />
                   )}
                   {validationStatus.identifier === 'valid' && (
                     <CheckCircle className="h-3 w-3 text-green-500" />
@@ -223,14 +307,14 @@ export default function LoginPage() {
                 <Input
                   id="identifier"
                   type="text"
-                  placeholder={loginMethod === 'email' ? 'Enter your email' : 'Enter your username'}
+                  placeholder={loginMethod === 'email' ? 'name@example.com' : 'username123'}
                   value={formData.identifier}
                   onChange={(e) => handleIdentifierChange(e.target.value)}
-                  className={
-                    validationStatus.identifier === 'valid' ? 'border-green-500 focus:ring-green-500' :
-                    validationStatus.identifier === 'invalid' ? 'border-red-500 focus:ring-red-500' :
-                    ''
-                  }
+                  className={cn(
+                    "transition-colors",
+                    validationStatus.identifier === 'valid' && 'border-green-500 focus-visible:ring-green-500',
+                    validationStatus.identifier === 'invalid' && 'border-red-500 focus-visible:ring-red-500'
+                  )}
                 />
                 {errors.identifier && (
                   <p className="text-sm text-red-500 flex items-center gap-1">
@@ -242,8 +326,8 @@ export default function LoginPage() {
 
               {/* Password Field */}
               <div className="space-y-2">
-                <Label htmlFor="password" className="flex items-center gap-2">
-                  <Lock className="h-4 w-4" />
+                <Label htmlFor="password" className="flex items-center gap-2 text-sm font-medium">
+                  <Lock className="h-4 w-4 text-muted-foreground" />
                   Password
                   {validationStatus.password === 'valid' && (
                     <CheckCircle className="h-3 w-3 text-green-500" />
@@ -259,11 +343,11 @@ export default function LoginPage() {
                     placeholder="Enter your password"
                     value={formData.password}
                     onChange={(e) => handlePasswordChange(e.target.value)}
-                    className={
-                      validationStatus.password === 'valid' ? 'border-green-500 focus:ring-green-500' :
-                      validationStatus.password === 'invalid' ? 'border-red-500 focus:ring-red-500' :
-                      ''
-                    }
+                    className={cn(
+                      "pr-10 transition-colors",
+                      validationStatus.password === 'valid' && 'border-green-500 focus-visible:ring-green-500',
+                      validationStatus.password === 'invalid' && 'border-red-500 focus-visible:ring-red-500'
+                    )}
                   />
                   <Button
                     type="button"
@@ -302,7 +386,7 @@ export default function LoginPage() {
                     Remember me
                   </Label>
                 </div>
-                <Button variant="link" className="px-0 text-sm">
+                <Button variant="link" className="px-0 text-sm font-normal">
                   Forgot password?
                 </Button>
               </div>
@@ -315,57 +399,110 @@ export default function LoginPage() {
                 </Alert>
               )}
 
-              {/* Submit Button */}
+              {/* Submit Button with enhanced styling */}
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full h-11 font-medium transition-all hover:shadow-lg"
                 disabled={!isFormValid || isLoading}
               >
                 {isLoading ? (
                   <div className="flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    Signing in...
+                    Authenticating...
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
-                    <Shield className="h-4 w-4" />
-                    Sign In
+                    Sign In Securely
+                    <ArrowRight className="h-4 w-4" />
                   </div>
                 )}
               </Button>
             </form>
 
-            <Separator className="my-6" />
-
-            {/* Demo Account Information */}
-            <div className="space-y-3">
-              <p className="text-sm text-muted-foreground text-center">
-                Demo Accounts (Phase 2 Prototype)
-              </p>
-              <div className="grid gap-2 text-xs">
-                <div className="flex justify-between items-center p-2 bg-muted rounded">
-                  <span className="font-medium">Member:</span>
-                  <code className="bg-background px-2 py-1 rounded">arjun.patel@example.com</code>
-                </div>
-                <div className="flex justify-between items-center p-2 bg-muted rounded">
-                  <span className="font-medium">Moderator:</span>
-                  <code className="bg-background px-2 py-1 rounded">priya.sharma@example.com</code>
-                </div>
-                <div className="flex justify-between items-center p-2 bg-muted rounded">
-                  <span className="font-medium">Admin:</span>
-                  <code className="bg-background px-2 py-1 rounded">admin@gitaalumni.org</code>
-                </div>
-                <p className="text-center text-muted-foreground mt-2">
-                  Any password (6+ characters with letters and numbers)
-                </p>
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <Separator />
               </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">Demo accounts</span>
+              </div>
+            </div>
+
+            {/* Demo Account Information - Enhanced */}
+            <div className="space-y-2">
+              <div className="grid gap-2">
+                <button 
+                  type="button"
+                  onClick={() => {
+                    setFormData({ identifier: 'arjun.patel@example.com', password: 'demo123' })
+                    handleIdentifierChange('arjun.patel@example.com')
+                    handlePasswordChange('demo123')
+                  }}
+                  className="flex items-center justify-between p-2.5 bg-muted/50 hover:bg-muted rounded-lg transition-colors cursor-pointer group"
+                >
+                  <div className="flex items-center gap-3">
+                    <Badge variant="outline" className="text-xs">Member</Badge>
+                    <span className="text-sm font-medium">arjun.patel@example.com</span>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => {
+                    setFormData({ identifier: 'priya.sharma@example.com', password: 'demo123' })
+                    handleIdentifierChange('priya.sharma@example.com')
+                    handlePasswordChange('demo123')
+                  }}
+                  className="flex items-center justify-between p-2.5 bg-muted/50 hover:bg-muted rounded-lg transition-colors cursor-pointer group"
+                >
+                  <div className="flex items-center gap-3">
+                    <Badge variant="secondary" className="text-xs">Moderator</Badge>
+                    <span className="text-sm font-medium">priya.sharma@example.com</span>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => {
+                    setFormData({ identifier: 'admin@gitaalumni.org', password: 'demo123' })
+                    handleIdentifierChange('admin@gitaalumni.org')
+                    handlePasswordChange('demo123')
+                  }}
+                  className="flex items-center justify-between p-2.5 bg-muted/50 hover:bg-muted rounded-lg transition-colors cursor-pointer group"
+                >
+                  <div className="flex items-center gap-3">
+                    <Badge className="text-xs">Admin</Badge>
+                    <span className="text-sm font-medium">admin@gitaalumni.org</span>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                </button>
+              </div>
+              <p className="text-center text-xs text-muted-foreground mt-3">
+                Click any account above to auto-fill • Password: demo123
+              </p>
             </div>
           </CardContent>
         </Card>
 
-        {/* Footer */}
-        <div className="text-center text-sm text-muted-foreground">
-          <p>© 2024 Gita Alumni Connect. Phase 2 Prototype.</p>
+        {/* Footer with trust indicators */}
+        <div className="text-center space-y-3">
+          <div className="flex items-center justify-center gap-6 text-xs text-muted-foreground">
+            <div className="flex items-center gap-1">
+              <Shield className="h-3 w-3" />
+              <span>Secure Login</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <CheckCircle className="h-3 w-3" />
+              <span>Verified Alumni</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Star className="h-3 w-3" />
+              <span>Trusted Platform</span>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            © 2024 Gita Alumni Connect. Building connections that matter.
+          </p>
         </div>
       </div>
     </div>

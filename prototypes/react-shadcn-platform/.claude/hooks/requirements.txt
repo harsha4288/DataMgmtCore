@@ -1,0 +1,15 @@
+# Claude Code Hooks Python Requirements
+# Install with: pip install -r requirements.txt
+
+# Core dependencies
+pydantic>=2.0.0
+rich>=13.0.0
+
+# Testing
+pytest>=7.0.0
+pytest-cov>=4.0.0
+
+# Optional for advanced features
+websockets>=11.0.0  # For dashboard streaming
+aiofiles>=23.0.0    # For async file operations
+watchdog>=3.0.0     # For file monitoring

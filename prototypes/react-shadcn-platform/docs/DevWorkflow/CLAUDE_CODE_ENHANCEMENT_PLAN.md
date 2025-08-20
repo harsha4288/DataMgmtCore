@@ -16,54 +16,99 @@ Transform the current mock WorkflowDashboard into a real, web-based interface th
 ---
 
 ## 📊 Phase A: Immediate Enhancements
-*Focus: Add Claude Code features without breaking existing workflow*
+*Focus: Add Claude Code hooks using proven patterns from disler/claude-code-hooks-mastery*
 
 ### A.1 Claude Code Hooks Configuration
-**Purpose:** Automate quality checks and safety controls
+**Purpose:** Deterministic control, safety, and automation using UV single-file scripts
 
-#### Implementation:
-```json
-// .claude/hooks.json
-{
-  "pre-tool-use": {
-    "script": "hooks/validate-command.sh",
-    "description": "Validate commands before execution",
-    "blocking": true
-  },
-  "post-tool-use": {
-    "script": "hooks/log-action.sh",
-    "description": "Log all tool usage",
-    "blocking": false
-  },
-  "stop": {
-    "script": "hooks/update-progress.sh",
-    "description": "Update PROGRESS.md on task completion"
-  },
-  "sub-agent-stop": {
-    "script": "hooks/notify-completion.sh",
-    "description": "Notify when sub-agent completes"
-  }
+#### Hook Architecture (Based on Hooks Mastery):
+```python
+# .claude/hooks/user_prompt_submit.py
+#!/usr/bin/env uv run
+# /// script
+# dependencies = ["pydantic", "rich"]
+# ///
+import json
+import sys
+from pathlib import Path
+
+def main():
+    # Auto-inject project context
+    claude_md = Path("CLAUDE.md").read_text()
+    progress_md = Path("PROGRESS.md").read_text()
+    
+    # Enhance prompt with context
+    enhanced_prompt = f"""
+    CONTEXT: {claude_md[:500]}
+    CURRENT TASK: {extract_current_task(progress_md)}
+    
+    {original_prompt}
+    """
+    
+    print(json.dumps({"user_prompt": enhanced_prompt}))
+    sys.exit(0)  # Continue with enhanced prompt
+
+if __name__ == "__main__":
+    main()
+```
+
+#### Complete Hook Suite:
+1. **user_prompt_submit.py** - Context injection & prompt enhancement
+2. **pre_tool_use.py** - Safety validation & command blocking
+3. **post_tool_use.py** - Quality checks & progress updates
+4. **session_start.py** - Initialize workspace & load context
+5. **stop.py** - Update PROGRESS.md & sync dashboard
+6. **subagent_stop.py** - Aggregate results & notify completion
+
+#### Security & Safety Patterns:
+```python
+# .claude/hooks/pre_tool_use.py
+BLOCKED_PATTERNS = [
+    r"rm\s+-rf\s+/",
+    r":(){ :|:& };:",  # Fork bomb
+    r"git push.*--force.*main",
+    r"npm publish",
+    r"DELETE FROM",
+]
+
+QUALITY_GATES = {
+    "Edit": ["validate_theme_compliance", "check_imports"],
+    "Write": ["prevent_duplicate_files", "validate_structure"],
+    "Bash": ["validate_command_safety", "check_permissions"],
 }
 ```
 
-#### Hook Scripts:
-1. **validate-command.sh** - Block dangerous operations
-2. **log-action.sh** - Create audit trail
-3. **update-progress.sh** - Auto-update task percentages
-4. **notify-completion.sh** - WebSocket notification to dashboard
+### A.2 Enhanced Custom Commands with Hook Integration
+**Purpose:** Workflow templates that leverage hook automation
 
-### A.2 Custom Slash Commands
-**Purpose:** Reusable workflow templates
-
-#### Directory Structure:
+#### Advanced Command Structure:
 ```
 .claude/commands/
-├── sync.md          # /sync - Restore full context
-├── test.md          # /test - Start TDD workflow
-├── quality.md       # /quality - Run all checks
-├── progress.md      # /progress - Update tracker
-├── agent.md         # /agent - Spawn sub-agent
-└── commit.md        # /commit - Smart git workflow
+├── sync.md          # /sync - Full context restoration with hooks
+├── tdd.md           # /tdd - Test-driven development flow
+├── quality.md       # /quality - Comprehensive validation suite
+├── progress.md      # /progress - Smart progress tracking
+├── review.md        # /review - AI-powered code review
+├── theme.md         # /theme - Theme compliance checker
+└── deploy.md        # /deploy - Safe deployment workflow
+```
+
+#### Hook-Integrated Command Example:
+```markdown
+# /tdd Command - Test-Driven Development
+## Usage: /tdd [component-name]
+
+$ARGUMENTS
+
+Execute TDD workflow with hooks:
+1. [HOOK: session_start] Load testing context
+2. Generate test file for $1
+3. [HOOK: pre_tool_use] Validate test structure
+4. Run tests (should fail)
+5. Create mock implementation
+6. [HOOK: post_tool_use] Verify mock works
+7. Implement real component
+8. [HOOK: stop] Update progress & notify
 ```
 
 #### Example Command Template:
@@ -81,49 +126,73 @@ Execute workflow sync protocol:
 5. Display in YAML format
 ```
 
-### A.3 Enhanced WORKFLOW_SYNC.md
-**New Sections to Add:**
+### A.3 Hook-Powered Workflow Documentation
+**New Documentation with Hooks Mastery Patterns:**
 
-1. **Hooks Configuration Reference**
-   - Available hook types
-   - How to create custom hooks
-   - Integration with web dashboard
+1. **Deterministic Hook Control**
+   - Exit codes for flow control (0=continue, 1=block)
+   - JSON output for complex decisions
+   - Parallel hook execution patterns
+   - Environment variable propagation
 
-2. **Custom Commands Library**
-   - Command syntax and parameters
-   - Creating team-shared commands
-   - Command chaining patterns
+2. **Safety & Security Patterns**
+   - Command validation matrices
+   - File operation safeguards
+   - Production protection rules
+   - Audit logging standards
 
-3. **TDD Workflow Templates**
-   - Test-first development process
-   - Mock generation patterns
-   - Implementation verification
+3. **Automation Workflows**
+   - Context auto-loading strategies
+   - Progress tracking automation
+   - Quality gate enforcement
+   - Smart error recovery
 
-4. **Sub-Agent Task Delegation**
-   - When to use sub-agents
-   - Agent specialization areas
-   - Communication patterns
+4. **Performance Optimization**
+   - UV for fast dependency resolution
+   - Parallel hook processing
+   - Caching strategies
+   - Minimal overhead patterns
+
+5. **Integration Patterns**
+   - WebSocket event streaming
+   - Dashboard real-time updates
+   - Git workflow automation
+   - CI/CD pipeline hooks
 
 ---
 
 ## 🚀 Phase B: Advanced Features
 *Focus: Add new capabilities with web interface integration*
 
-### B.1 Sub-Agent Architecture
-**Purpose:** Specialized agents for complex tasks
+### B.1 Hook-Enhanced Sub-Agent Architecture
+**Purpose:** Specialized agents with hook-based orchestration
 
-#### Configuration:
-```yaml
-# .claude/agents.yaml
-agents:
-  test-writer:
-    model: "claude-3-haiku"  # Fast for tests
-    expertise: "Writing comprehensive tests"
-    context: |
-      - Use Vitest framework
-      - Follow React Testing Library patterns
-      - Include edge cases
-      - Mock external dependencies
+#### Hook-Controlled Agent Configuration:
+```python
+# .claude/hooks/subagent_start.py
+#!/usr/bin/env uv run
+import json
+import sys
+
+def configure_agent(agent_type, task):
+    """Configure agent with context from hooks"""
+    
+    # Load project-specific context
+    context = load_project_context()
+    
+    agents = {
+        "test-writer": {
+            "model": "claude-3-haiku",
+            "pre_hook": "validate_test_requirements",
+            "post_hook": "verify_test_coverage",
+            "context": context["testing_guidelines"]
+        },
+        "theme-validator": {
+            "model": "claude-3-sonnet",
+            "pre_hook": "load_theme_rules",
+            "post_hook": "update_validation_report",
+            "context": context["theme_guidelines"]
+        }
     
   ui-builder:
     model: "claude-3-sonnet"  # Balanced for UI
@@ -144,24 +213,44 @@ agents:
       - Validate best practices
 ```
 
-### B.2 Web Dashboard Real Integration
-**Transform WorkflowDashboard.tsx into functional system**
+### B.2 Hook-Integrated Dashboard System
+**Transform WorkflowDashboard.tsx with real-time hook events**
 
-#### Backend API Layer:
+#### Hook Event Streaming:
+```python
+# .claude/hooks/notification.py
+#!/usr/bin/env uv run
+import json
+import asyncio
+import websockets
+
+async def stream_to_dashboard(event_data):
+    """Stream hook events to web dashboard"""
+    async with websockets.connect('ws://localhost:8765') as ws:
+        await ws.send(json.dumps({
+            "type": "hook_event",
+            "hook": "notification",
+            "data": event_data,
+            "timestamp": datetime.now().isoformat()
+        }))
+```
+
+#### Enhanced API with Hook Integration:
 ```typescript
 // src/lib/workflow-api.ts
-interface WorkflowAPI {
-  // File System Operations
-  readProgress(): Promise<ProgressData>
-  updateTask(taskId: string, status: TaskStatus): Promise<void>
+interface HookAwareAPI {
+  // Hook Management
+  executeHook(name: string, data: any): Promise<HookResult>
+  getHookHistory(): Promise<HookEvent[]>
+  configureHook(name: string, config: HookConfig): Promise<void>
   
-  // Claude Code Bridge
-  sendCommand(command: string): Promise<CommandResult>
-  spawnAgent(agentType: string, task: string): Promise<AgentResult>
+  // Real-time Hook Events
+  onHookEvent(callback: (event: HookEvent) => void): void
+  getHookMetrics(): Promise<HookMetrics>
   
-  // Real-time Events
-  subscribeToHooks(): EventSource
-  getActivityLog(): Promise<Activity[]>
+  // Safety Controls
+  getBlockedCommands(): Promise<string[]>
+  validateCommand(cmd: string): Promise<ValidationResult>
 }
 ```
 
@@ -182,14 +271,22 @@ class WorkflowSocket {
 }
 ```
 
-### B.3 Automated Observability Dashboard
-**Purpose:** Real-time monitoring of all Claude Code activities
+### B.3 Hook-Powered Observability Dashboard
+**Purpose:** Complete visibility through hook event monitoring
 
-#### Features:
-1. **Activity Stream**
-   - All Claude commands and responses
-   - Sub-agent spawning and results
-   - Hook executions and outcomes
+#### Hook-Based Monitoring Features:
+1. **Hook Event Stream**
+   - Pre/post tool use validations
+   - User prompt modifications
+   - Safety blocks and reasons
+   - Quality gate results
+   - Progress auto-updates
+
+2. **Hook Performance Metrics**
+   - Execution time per hook
+   - Success/failure rates
+   - Blocks vs. continues ratio
+   - Context injection efficiency
 
 2. **Performance Metrics**
    - Token usage per task
@@ -203,18 +300,39 @@ class WorkflowSocket {
    - By time range
    - By status
 
-### B.4 TDD Workflow Automation
-**Purpose:** Enforce test-driven development
+### B.4 Hook-Enforced TDD Workflow
+**Purpose:** Mandatory test-first development via hooks
 
-#### NPM Scripts:
+#### TDD Hook Chain:
+```python
+# .claude/hooks/tdd_enforcer.py
+#!/usr/bin/env uv run
+def pre_tool_use_hook(tool, args):
+    """Enforce TDD for new components"""
+    
+    if tool == "Write" and is_new_component(args["file_path"]):
+        test_file = get_test_file_path(args["file_path"])
+        
+        if not Path(test_file).exists():
+            print(json.dumps({
+                "error": "TDD Violation",
+                "message": "Test must exist before implementation",
+                "required_action": f"Create {test_file} first"
+            }))
+            sys.exit(1)  # Block the write
+    
+    sys.exit(0)  # Allow the operation
+```
+
+#### Hook-Integrated NPM Scripts:
 ```json
 {
   "scripts": {
-    "tdd:start": "node scripts/tdd-workflow.js start",
-    "tdd:test": "node scripts/tdd-workflow.js create-test",
-    "tdd:mock": "node scripts/tdd-workflow.js create-mock",
-    "tdd:implement": "node scripts/tdd-workflow.js implement",
-    "tdd:verify": "node scripts/tdd-workflow.js verify"
+    "tdd:init": "claude-code --hook=tdd_start",
+    "tdd:test": "claude-code --hook=create_test",
+    "tdd:verify": "claude-code --hook=verify_coverage",
+    "hook:install": "uv pip install -r .claude/hooks/requirements.txt",
+    "hook:validate": "python .claude/hooks/validate_all.py"
   }
 }
 ```
@@ -250,16 +368,43 @@ class TDDWorkflow {
 ## 🔧 Phase C: Integration & Automation
 *Focus: Complete system integration*
 
-### C.1 Git Hooks Integration
-**Purpose:** Enforce quality at commit level
+### C.1 Claude + Git Hooks Integration
+**Purpose:** Bi-directional hook system for complete automation
 
-#### Git Hooks:
-```bash
-# .git/hooks/pre-commit
-#!/bin/bash
-npm run lint
-npm run type-check
-npm run validate:theme
+#### Integrated Hook System:
+```python
+# .claude/hooks/pre_commit_validator.py
+#!/usr/bin/env uv run
+import subprocess
+import json
+
+def validate_commit():
+    """Claude hook that triggers git pre-commit checks"""
+    
+    checks = [
+        ("npm run lint", "ESLint"),
+        ("npm run type-check", "TypeScript"),
+        ("npm run validate:theme", "Theme"),
+        ("npm run test:coverage", "Tests")
+    ]
+    
+    results = []
+    for cmd, name in checks:
+        result = subprocess.run(cmd, shell=True, capture_output=True)
+        results.append({
+            "check": name,
+            "passed": result.returncode == 0,
+            "output": result.stdout.decode()
+        })
+    
+    if not all(r["passed"] for r in results):
+        print(json.dumps({
+            "error": "Quality gates failed",
+            "results": results
+        }))
+        sys.exit(1)  # Block commit
+    
+    sys.exit(0)  # Allow commit
 ```
 
 ```bash
@@ -269,19 +414,32 @@ node scripts/update-progress.js
 node scripts/notify-dashboard.js
 ```
 
-### C.2 Progress Tracking Automation
-**Purpose:** Eliminate manual progress updates
+### C.2 Hook-Based Progress Automation
+**Purpose:** Zero-touch progress tracking via hooks
 
-#### Auto-Detection System:
-```javascript
-// scripts/progress-tracker.js
-class ProgressTracker {
-  detectCompletion(taskId) {
-    // Check if all subtasks complete
-    // Verify quality gates pass
-    // Update PROGRESS.md automatically
-    // Notify dashboard via WebSocket
-  }
+#### Progress Hook System:
+```python
+# .claude/hooks/progress_tracker.py
+#!/usr/bin/env uv run
+import re
+from pathlib import Path
+
+def post_tool_use_hook(tool, result):
+    """Auto-update progress based on tool results"""
+    
+    progress_indicators = {
+        "Edit": analyze_edit_completion,
+        "Write": analyze_write_completion,
+        "Bash": analyze_command_completion,
+        "MultiEdit": analyze_bulk_changes
+    }
+    
+    if tool in progress_indicators:
+        completion = progress_indicators[tool](result)
+        update_progress_file(completion)
+        stream_to_dashboard(completion)
+    
+    return {"progress_updated": True}
   
   calculatePercentages() {
     // Read task structure
@@ -354,13 +512,19 @@ class FileSync {
 
 ---
 
-## 🎯 Implementation Priorities
+## 🎯 Implementation Priorities (Hook-First Approach)
 
-### High Priority (Week 1)
-1. ✅ Create hook scripts for automation
-2. ✅ Implement custom slash commands
-3. ✅ Set up TDD workflow templates
-4. ✅ Create bridge server MVP
+### Phase 1: Core Hooks (Days 1-3)
+1. ✅ Install UV and hook dependencies
+2. ✅ Implement safety hooks (pre_tool_use)
+3. ✅ Add context injection (user_prompt_submit)
+4. ✅ Setup progress automation (post_tool_use, stop)
+
+### Phase 2: Workflow Automation (Days 4-7)
+1. ✅ Create TDD enforcement hooks
+2. ✅ Implement theme validation hooks
+3. ✅ Add quality gate hooks
+4. ✅ Setup dashboard streaming hooks
 
 ### Medium Priority (Week 2)
 1. ⏳ Connect dashboard to real data
@@ -376,13 +540,19 @@ class FileSync {
 
 ---
 
-## ❓ Questions for Refinement
+## ❓ Questions for Refinement (Hook-Centric)
 
-### Technical Architecture
-1. **Backend Choice:** Node.js server or Python FastAPI?
-2. **Database:** SQLite for local or PostgreSQL for scalability?
-3. **Real-time:** WebSockets or Server-Sent Events?
-4. **Deployment:** Local only or cloud-ready?
+### Hook Architecture
+1. **Script Runtime:** UV (recommended) or Node.js?
+2. **Hook Storage:** File-based or database?
+3. **Event Streaming:** WebSockets (recommended) or SSE?
+4. **Hook Execution:** Sequential or parallel?
+
+### Safety & Security
+1. **Command Blocking:** Regex patterns or AI analysis?
+2. **File Protection:** Whitelist or blacklist approach?
+3. **Audit Level:** Full logging or selective?
+4. **Recovery:** Auto-rollback or manual intervention?
 
 ### Feature Priorities
 1. Which IndyDevDan features are most critical?
@@ -404,13 +574,19 @@ class FileSync {
 
 ---
 
-## 💡 Research Topics Needed
+## 💡 Research Topics (Hooks Mastery Focus)
 
-### 1. Claude Code SDK/API
-- Official SDK capabilities
-- API endpoints and limits
-- Authentication methods
-- Event streaming options
+### 1. Hook Implementation Patterns
+- UV single-file script best practices
+- Exit code conventions (0=continue, 1=block)
+- JSON output formatting standards
+- Environment variable propagation
+
+### 2. Claude Code Hook API
+- Available hook types and triggers
+- Hook execution order and timing
+- Data flow between hooks
+- Performance optimization techniques
 
 ### 2. Real-time Architecture
 - WebSocket vs SSE performance
@@ -432,13 +608,19 @@ class FileSync {
 
 ---
 
-## 🚦 Success Metrics
+## 🚦 Success Metrics (Hook-Enhanced)
 
-### Technical Metrics
-- ✅ < 200ms dashboard update latency
-- ✅ 100% command execution tracking
-- ✅ Zero data loss on sync
-- ✅ < 5s context restoration
+### Hook Performance Metrics
+- ✅ < 50ms hook execution time
+- ✅ 100% dangerous command blocking
+- ✅ Zero false positives in safety checks
+- ✅ < 100ms context injection
+
+### Automation Metrics
+- ✅ 100% automated progress tracking
+- ✅ Zero manual quality checks
+- ✅ 100% TDD compliance enforcement
+- ✅ Real-time dashboard updates
 
 ### Productivity Metrics
 - ✅ 50% reduction in manual updates
@@ -454,35 +636,49 @@ class FileSync {
 
 ---
 
-## 📝 Next Steps
+## 📝 Next Steps (Hook Implementation Path)
 
-1. **Review and refine this plan**
-   - Identify missing requirements
-   - Clarify technical decisions
-   - Set implementation priorities
+### 1. **Install Hook Infrastructure**
+```bash
+# Install UV for Python hooks
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-2. **Research critical unknowns**
-   - Claude Code API documentation
-   - WebSocket implementation patterns
-   - Security best practices
+# Create hooks directory
+mkdir -p .claude/hooks
 
-3. **Create proof of concept**
-   - Basic bridge server
-   - Simple WebSocket connection
-   - Dashboard reading real data
+# Install hook dependencies
+uv pip install pydantic rich websockets
+```
 
-4. **Iterate based on feedback**
-   - Test with real workflows
-   - Gather user feedback
-   - Refine architecture
+### 2. **Implement Core Safety Hooks**
+- Create pre_tool_use.py for command validation
+- Add user_prompt_submit.py for context injection
+- Setup post_tool_use.py for progress tracking
+
+### 3. **Test Hook Integration**
+- Verify blocking of dangerous commands
+- Test context auto-loading
+- Validate progress automation
+
+### 4. **Connect Dashboard**
+- Implement WebSocket server
+- Stream hook events to UI
+- Enable real-time monitoring
+
+### 5. **Document & Share**
+- Create team hook library
+- Document patterns and best practices
+- Share reusable hook templates
 
 ---
 
 ## 🔗 Related Documents
 - `WORKFLOW_SYNC.md` - Current sync protocols
 - `WorkflowDashboard.tsx` - Mock UI to transform
-- `Youtubers_Advices.txt` - IndyDevDan insights
 - `CLAUDE.md` - Current workflow rules
+- [claude-code-hooks-mastery](https://github.com/disler/claude-code-hooks-mastery) - Hook implementation patterns
+- `.claude/hooks/` - Hook scripts directory
+- `validate-theme-usage.js` - Existing validation to hookify
 
 ---
 

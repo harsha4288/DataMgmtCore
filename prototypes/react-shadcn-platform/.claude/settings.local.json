@@ -14,7 +14,8 @@
       "Bash(npx:*)",
       "WebFetch(domain:docs.anthropic.com)",
       "Bash(npm run check:all:*)",
-      "Bash(npm run validate:theme:*)"
+      "Bash(npm run validate:theme:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": [],
     "ask": []
