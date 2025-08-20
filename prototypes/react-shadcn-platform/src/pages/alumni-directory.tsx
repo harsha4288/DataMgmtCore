@@ -49,11 +49,20 @@ export default function AlumniDirectory() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedIndustry, setSelectedIndustry] = useState<string>('')
   const [selectedYear, setSelectedYear] = useState<string>('')
+  const [selectedLocation, setSelectedLocation] = useState<string>('')
   const [selectedMentorStatus, setSelectedMentorStatus] = useState<string>('')
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([])
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showOnlineOnly, setShowOnlineOnly] = useState(false)
+  const [showSearchSuggestions, setShowSearchSuggestions] = useState(false)
+  const [savedSearches, setSavedSearches] = useState<Array<{id: string, name: string, filters: any}>>([
+    // Mock saved searches for demo
+    {id: '1', name: 'Tech Mentors in Bay Area', filters: {industry: 'Technology', location: 'San Francisco', mentorStatus: 'available'}},
+    {id: '2', name: 'Recent Graduates', filters: {year: '2023'}},
+    {id: '3', name: 'Healthcare Professionals', filters: {industry: 'Healthcare', skills: ['Medicine', 'Research']}}
+  ])
 
-  // Get unique values for filters
+  // Get unique values for filters - Enhanced from old app patterns
   const industries = useMemo(() => 
     [...new Set(enhancedAlumniData.map(a => a.industry))].sort(),
     []
@@ -63,6 +72,67 @@ export default function AlumniDirectory() {
     [...new Set(enhancedAlumniData.map(a => a.graduationYear))].sort((a, b) => b - a),
     []
   )
+  
+  const locations = useMemo(() => 
+    [...new Set(enhancedAlumniData.map(a => a.location))].sort(),
+    []
+  )
+  
+  const allSkills = useMemo(() => {
+    const skills = new Set<string>()
+    enhancedAlumniData.forEach(a => {
+      // Mock skills based on industry and job title
+      const jobSkills = {
+        'Software Engineer': ['JavaScript', 'React', 'Node.js', 'Python'],
+        'Product Manager': ['Strategy', 'Analytics', 'Leadership', 'Agile'],
+        'Data Scientist': ['Python', 'Machine Learning', 'Statistics', 'SQL'],
+        'Designer': ['Figma', 'Adobe Creative Suite', 'UX Research', 'Prototyping'],
+        'Doctor': ['Medicine', 'Patient Care', 'Research', 'Surgery'],
+        'Consultant': ['Strategy', 'Analysis', 'Presentation', 'Client Management']
+      }[a.jobTitle] || ['Leadership', 'Communication']
+      
+      jobSkills.forEach(skill => skills.add(skill))
+    })
+    return Array.from(skills).sort()
+  }, [])
+  
+  // Smart search suggestions based on current query
+  const searchSuggestions = useMemo(() => {
+    if (!searchQuery || searchQuery.length < 2) return []
+    
+    const suggestions = new Set<string>()
+    const query = searchQuery.toLowerCase()
+    
+    // Name suggestions
+    enhancedAlumniData.forEach(a => {
+      if (a.name.toLowerCase().includes(query)) {
+        suggestions.add(`👤 ${a.name}`)
+      }
+    })
+    
+    // Industry suggestions
+    industries.forEach(industry => {
+      if (industry.toLowerCase().includes(query)) {
+        suggestions.add(`🏢 ${industry}`)
+      }
+    })
+    
+    // Location suggestions
+    locations.forEach(location => {
+      if (location.toLowerCase().includes(query)) {
+        suggestions.add(`📍 ${location}`)
+      }
+    })
+    
+    // Skills suggestions
+    allSkills.forEach(skill => {
+      if (skill.toLowerCase().includes(query)) {
+        suggestions.add(`⚡ ${skill}`)
+      }
+    })
+    
+    return Array.from(suggestions).slice(0, 8)
+  }, [searchQuery, industries, locations, allSkills])
 
   // Filter alumni based on search and filters
   const filteredAlumni = useMemo(() => {
@@ -84,8 +154,28 @@ export default function AlumniDirectory() {
       filtered = filtered.filter(a => a.graduationYear === parseInt(selectedYear))
     }
 
+    if (selectedLocation) {
+      filtered = filtered.filter(a => a.location === selectedLocation)
+    }
+
     if (selectedMentorStatus) {
       filtered = filtered.filter(a => a.mentorStatus === selectedMentorStatus)
+    }
+
+    if (selectedSkills.length > 0) {
+      // Mock skill filtering based on job title
+      filtered = filtered.filter(a => {
+        const personSkills = {
+          'Software Engineer': ['JavaScript', 'React', 'Node.js', 'Python'],
+          'Product Manager': ['Strategy', 'Analytics', 'Leadership', 'Agile'],
+          'Data Scientist': ['Python', 'Machine Learning', 'Statistics', 'SQL'],
+          'Designer': ['Figma', 'Adobe Creative Suite', 'UX Research', 'Prototyping'],
+          'Doctor': ['Medicine', 'Patient Care', 'Research', 'Surgery'],
+          'Consultant': ['Strategy', 'Analysis', 'Presentation', 'Client Management']
+        }[a.jobTitle] || ['Leadership', 'Communication']
+        
+        return selectedSkills.some(skill => personSkills.includes(skill))
+      })
     }
 
     if (showOnlineOnly) {
@@ -93,7 +183,7 @@ export default function AlumniDirectory() {
     }
 
     return filtered
-  }, [searchQuery, selectedIndustry, selectedYear, selectedMentorStatus, showOnlineOnly])
+  }, [searchQuery, selectedIndustry, selectedYear, selectedLocation, selectedMentorStatus, selectedSkills, showOnlineOnly])
 
   // Statistics with enhanced metrics
   const stats = useMemo(() => ({
@@ -104,15 +194,25 @@ export default function AlumniDirectory() {
     verifiedMembers: filteredAlumni.filter(a => a.verified).length
   }), [filteredAlumni])
 
-  // Active filters for display
+  // Active filters for display - Enhanced with all filter types
   const activeFilters = useMemo(() => {
     const filters = []
-    if (selectedIndustry) filters.push({ type: 'industry', value: selectedIndustry })
-    if (selectedYear) filters.push({ type: 'year', value: `Class of ${selectedYear}` })
-    if (selectedMentorStatus) filters.push({ type: 'mentor', value: 'Available Mentors' })
-    if (showOnlineOnly) filters.push({ type: 'online', value: 'Online Now' })
+    if (selectedIndustry) filters.push({ type: 'industry', value: selectedIndustry, clear: () => setSelectedIndustry('') })
+    if (selectedYear) filters.push({ type: 'year', value: `Class of ${selectedYear}`, clear: () => setSelectedYear('') })
+    if (selectedLocation) filters.push({ type: 'location', value: selectedLocation, clear: () => setSelectedLocation('') })
+    if (selectedMentorStatus) filters.push({ type: 'mentor', value: 'Available Mentors', clear: () => setSelectedMentorStatus('') })
+    if (selectedSkills.length > 0) {
+      selectedSkills.forEach(skill => {
+        filters.push({ 
+          type: 'skill', 
+          value: skill, 
+          clear: () => setSelectedSkills(prev => prev.filter(s => s !== skill)) 
+        })
+      })
+    }
+    if (showOnlineOnly) filters.push({ type: 'online', value: 'Online Now', clear: () => setShowOnlineOnly(false) })
     return filters
-  }, [selectedIndustry, selectedYear, selectedMentorStatus, showOnlineOnly])
+  }, [selectedIndustry, selectedYear, selectedLocation, selectedMentorStatus, selectedSkills, showOnlineOnly])
 
   const clearFilter = (filterType: string) => {
     switch(filterType) {

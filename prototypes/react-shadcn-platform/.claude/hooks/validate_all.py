@@ -240,14 +240,14 @@ def validate_all_hooks() -> Dict[str, Any]:
 
 def main():
     """Main validation entry point"""
-    print("🔍 Validating Claude Code Hooks...")
+    print("Validating Claude Code Hooks...")
     print("-" * 50)
     
     results = validate_all_hooks()
     
     # Print results
     for hook_name, hook_result in results["hooks"].items():
-        status = "✅" if (hook_result["structure_valid"] and hook_result["tests_passed"]) else "❌"
+        status = "[PASS]" if (hook_result["structure_valid"] and hook_result["tests_passed"]) else "[FAIL]"
         print(f"{status} {hook_name}")
         
         if not hook_result["structure_valid"]:
@@ -266,10 +266,10 @@ def main():
     print(f"Summary: {results['summary']['passed']}/{results['summary']['total']} hooks validated successfully")
     
     if not results["valid"]:
-        print("\n⚠️  Some hooks have issues. Please fix them before using.")
+        print("\n[WARNING] Some hooks have issues. Please fix them before using.")
         sys.exit(1)
     else:
-        print("\n✅ All hooks validated successfully!")
+        print("\n[SUCCESS] All hooks validated successfully!")
         sys.exit(0)
 
 if __name__ == "__main__":

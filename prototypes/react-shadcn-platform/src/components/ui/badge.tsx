@@ -37,13 +37,90 @@ const badgeVariants = cva(
 )
 
 export interface BadgeProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof badgeVariants> {}
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'content'>,
+    VariantProps<typeof badgeVariants> {
+  // Enhanced Badge Props from old app analysis
+  count?: number
+  content?: React.ReactNode
+  max?: number
+  showZero?: boolean
+  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
+  standalone?: boolean
+}
 
-function Badge({ className, variant, size, ...props }: BadgeProps) {
+// Badge Content Helper from old app patterns
+const BadgeContent = ({ count, content, max, showZero }: Pick<BadgeProps, 'count' | 'content' | 'max' | 'showZero'>) => {
+  if (content) {
+    return content
+  }
+
+  if (count !== undefined) {
+    if (count === 0 && !showZero) {
+      return null
+    }
+    return count > (max || 99) ? `${max || 99}+` : count
+  }
+
+  return null
+}
+
+// Wrapper Badge Component (for positioning badges on other elements)
+const BadgeWrapper = ({ children, className, ...props }: { 
+  children: React.ReactNode
+  className?: string
+  position?: BadgeProps['position']
+} & React.HTMLAttributes<HTMLDivElement>) => {
   return (
-    <div className={cn(badgeVariants({ variant, size }), className)} {...props} />
+    <div className={cn('relative inline-block', className)} {...props}>
+      {children}
+    </div>
   )
 }
 
-export { Badge, badgeVariants }
+function Badge({ 
+  className, 
+  variant, 
+  size, 
+  count, 
+  content, 
+  max = 99, 
+  showZero = false, 
+  position = 'top-right',
+  standalone = true,
+  children,
+  ...props 
+}: BadgeProps) {
+  const badgeContent = <BadgeContent count={count} content={content} max={max} showZero={showZero} />
+  
+  // If no content to show, return null
+  if (badgeContent === null && !children) {
+    return null
+  }
+  
+  const badgeElement = (
+    <div className={cn(badgeVariants({ variant, size }), className)} {...props}>
+      {badgeContent || children}
+    </div>
+  )
+  
+  // If standalone or no positioning needed
+  if (standalone || (!count && !content)) {
+    return badgeElement
+  }
+  
+  // Positioned badge (for overlaying on other elements)
+  const positionClasses = {
+    'top-right': 'absolute -top-2 -right-2 z-10',
+    'top-left': 'absolute -top-2 -left-2 z-10',
+    'bottom-right': 'absolute -bottom-2 -right-2 z-10', 
+    'bottom-left': 'absolute -bottom-2 -left-2 z-10'
+  }
+  
+  return (
+    <div className={cn(badgeVariants({ variant, size }), positionClasses[position], className)} {...props}>
+      {badgeContent}
+    </div>
+  )
+}
+
+export { Badge, BadgeWrapper, badgeVariants }
