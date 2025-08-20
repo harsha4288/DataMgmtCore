@@ -8,7 +8,13 @@
       "WebFetch(domain:tanstack.com)",
       "Bash(npm run lint)",
       "Bash(npm run build:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(npx:*)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(npm run check:all:*)",
+      "Bash(npm run validate:theme:*)"
     ],
     "deny": [],
     "ask": []
