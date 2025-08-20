@@ -364,3 +364,25 @@ export const getMentorshipStats = () => {
     topExpertise: ['Software Development', 'Data Science', 'Career Growth', 'Leadership']
   }
 }
+
+// Simplified mentor data for the mentorship platform component
+export const mockMentorshipData = {
+  mentors: mockMentors.map(mentor => ({
+    id: mentor.id,
+    name: mentor.name,
+    title: mentor.title,
+    company: mentor.company,
+    avatar: mentor.avatar,
+    bio: mentor.bio,
+    expertise: mentor.expertise,
+    mentees: mentor.totalMentees,
+    sessions: mentor.currentMentees * 8, // Approximate sessions
+    rating: mentor.rating,
+    availability: mentor.availability === 'available' ? 'Available' : mentor.availability === 'limited' ? 'Limited Availability' : 'Unavailable',
+    responseTime: mentor.responseTime,
+    isTopMentor: mentor.rating >= 4.8 && mentor.totalMentees >= 25
+  })),
+  requests: mockMentorshipRequests,
+  sessions: mockMentorshipSessions,
+  stats: getMentorshipStats()
+}

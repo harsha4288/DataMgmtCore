@@ -351,13 +351,29 @@ export default function MemberDashboard() {
                 <Button 
                   className="w-full justify-start group" 
                   variant="default"
+                  onClick={() => navigate('/alumni-directory')}
+                >
+                  <Users className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
+                  Alumni Directory
+                  <Badge variant="secondary" className="ml-auto">
+                    New
+                  </Badge>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start group"
+                  onClick={() => navigate('/mentorship')}
+                >
+                  <GraduationCap className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
+                  Mentorship Platform
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start group"
                   onClick={() => navigate('/browse-postings')}
                 >
                   <Search className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
                   Browse Requests
-                  <Badge variant="secondary" className="ml-auto">
-                    23 new
-                  </Badge>
                 </Button>
                 <Button 
                   variant="outline" 

@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { mockAlumniData, filterAlumni, type AlumniMember } from '@/lib/mock-data/alumni'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -18,6 +19,7 @@ import {
 } from 'lucide-react'
 
 export default function AlumniDirectory() {
+  const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedIndustry, setSelectedIndustry] = useState<string>('')
   const [selectedYear, setSelectedYear] = useState<string>('')
@@ -113,7 +115,12 @@ export default function AlumniDirectory() {
             <Mail className="h-3 w-3 mr-1" />
             Connect
           </Button>
-          <Button size="sm" variant="outline" className="flex-1">
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="flex-1"
+            onClick={() => navigate(`/alumni-profile/${member.id}`)}
+          >
             View Profile
           </Button>
         </div>
@@ -151,7 +158,11 @@ export default function AlumniDirectory() {
           <Button size="sm" variant="ghost">
             <Mail className="h-4 w-4" />
           </Button>
-          <Button size="sm" variant="ghost">
+          <Button 
+            size="sm" 
+            variant="ghost"
+            onClick={() => navigate(`/alumni-profile/${member.id}`)}
+          >
             View
           </Button>
         </div>

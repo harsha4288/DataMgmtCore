@@ -15,6 +15,8 @@ import LoginPage from './pages/login'
 import ProfileSelectionPage from './pages/profile-selection'
 import MemberDashboard from './pages/member-dashboard'
 import AlumniDirectory from './pages/alumni-directory'
+import AlumniProfile from './pages/alumni-profile'
+import MentorshipPlatform from './pages/mentorship-platform'
 import CreatePostingPage from './pages/create-posting'
 import BrowsePostingsPage from './pages/browse-postings'
 import PreferencesPage from './pages/preferences'
@@ -187,6 +189,24 @@ function App() {
           <ThemeProvider>
             <ProtectedRoute>
               <AlumniDirectory />
+            </ProtectedRoute>
+            <Toaster />
+          </ThemeProvider>
+        } />
+        
+        <Route path="/alumni-profile/:id" element={
+          <ThemeProvider>
+            <ProtectedRoute>
+              <AlumniProfile />
+            </ProtectedRoute>
+            <Toaster />
+          </ThemeProvider>
+        } />
+        
+        <Route path="/mentorship" element={
+          <ThemeProvider>
+            <ProtectedRoute>
+              <MentorshipPlatform />
             </ProtectedRoute>
             <Toaster />
           </ThemeProvider>
