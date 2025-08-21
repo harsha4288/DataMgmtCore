@@ -43,6 +43,8 @@ import {
   Separator,
   useToast
 } from './ui';
+import { PlaceholderDash } from './ui/placeholder-dash';
+import { Briefcase, Star, Clock, Eye } from 'lucide-react';
 
 const ComponentShowcase: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -98,27 +100,136 @@ const ComponentShowcase: React.FC = () => {
               
               <Separator />
               
-              <div className="flex flex-wrap gap-2">
-                <Badge>Default</Badge>
-                <Badge variant="secondary">Secondary</Badge>
-                <Badge variant="outline">Outline</Badge>
-                <Badge variant="destructive">Destructive</Badge>
-              </div>
-
-              <div className="space-y-2">
-                <p className="text-sm font-medium">Grade Variants:</p>
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="grade-a">Grade A</Badge>
-                  <Badge variant="grade-b">Grade B</Badge>
-                  <Badge variant="grade-c">Grade C</Badge>
-                  <Badge variant="grade-d">Grade D</Badge>
-                  <Badge variant="grade-f">Grade F</Badge>
-                  <Badge variant="neutral">Neutral</Badge>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm font-medium mb-2">Basic Badge Variants:</p>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge>Default</Badge>
+                    <Badge variant="secondary">Secondary</Badge>
+                    <Badge variant="outline">Outline</Badge>
+                    <Badge variant="destructive">Destructive</Badge>
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="grade-a" size="sm">Small</Badge>
-                  <Badge variant="grade-b" size="default">Default</Badge>
-                  <Badge variant="grade-c" size="lg">Large</Badge>
+
+                <div>
+                  <p className="text-sm font-medium mb-2">Grade Variants:</p>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="grade-a">Grade A</Badge>
+                    <Badge variant="grade-b">Grade B</Badge>
+                    <Badge variant="grade-c">Grade C</Badge>
+                    <Badge variant="grade-d">Grade D</Badge>
+                    <Badge variant="grade-f">Grade F</Badge>
+                    <Badge variant="neutral">Neutral</Badge>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium mb-2">Size Variants:</p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge variant="grade-a" size="sm">Small</Badge>
+                    <Badge variant="grade-b" size="default">Default</Badge>
+                    <Badge variant="grade-c" size="lg">Large</Badge>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium mb-2">Domain & Technology Tags:</p>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="outline">Technology</Badge>
+                    <Badge variant="outline">Software Engineering</Badge>
+                    <Badge variant="outline">Artificial Intelligence</Badge>
+                    <Badge variant="outline">Data Science</Badge>
+                    <Badge variant="outline">Product Management</Badge>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium mb-2">Badges with Icons:</p>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="default">
+                      <Briefcase className="h-4 w-4 mr-1" />
+                      Job Offer
+                    </Badge>
+                    <Badge variant="outline" className="text-yellow-600 border-yellow-600">
+                      <Star className="h-3 w-3 mr-1" />
+                      Featured
+                    </Badge>
+                    <Badge variant="secondary">
+                      <Clock className="h-3 w-3 mr-1" />
+                      Expires in 5 days
+                    </Badge>
+                    <Badge variant="outline">
+                      <Eye className="h-3 w-3 mr-1" />
+                      156 views
+                    </Badge>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium mb-2">Count & Content Props:</p>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge count={5} variant="default" />
+                    <Badge count={12} variant="secondary" />
+                    <Badge count={150} max={99} variant="destructive" />
+                    <Badge content="Technology" variant="outline" />
+                    <Badge content="High Priority" variant="destructive" />
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium mb-2">Real-world Example (Browse Postings Style):</p>
+                  <div className="border rounded-lg p-4 bg-card">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge variant="default">
+                        <Briefcase className="h-4 w-4" />
+                        <span className="ml-1 capitalize">offer</span>
+                      </Badge>
+                      <Badge variant="destructive">
+                        high priority
+                      </Badge>
+                      <Badge variant="outline" className="text-yellow-600 border-yellow-600">
+                        <Star className="h-3 w-3 mr-1" />
+                        Featured
+                      </Badge>
+                    </div>
+                    <h4 className="text-sm font-semibold mb-2">Senior Software Engineer Position</h4>
+                    <div className="flex flex-wrap gap-1 mb-2">
+                      <Badge variant="outline" size="sm">React</Badge>
+                      <Badge variant="outline" size="sm">Node.js</Badge>
+                      <Badge variant="outline" size="sm">AWS</Badge>
+                      <Badge variant="outline" size="sm">Full-time</Badge>
+                    </div>
+                    <div className="flex items-center space-x-3 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        249d ago
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Eye className="h-3 w-3" />
+                        156 views
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium mb-2">Placeholder Dash vs Badge Comparison:</p>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground w-20">Placeholders:</span>
+                      <PlaceholderDash variant="default" />
+                      <PlaceholderDash variant="thick" />
+                      <PlaceholderDash variant="thin" />
+                      <PlaceholderDash variant="dot" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground w-20">Actual Badges:</span>
+                      <Badge variant="outline" size="sm">Technology</Badge>
+                      <Badge variant="default" size="sm">Active</Badge>
+                      <Badge variant="secondary" size="sm">Medium</Badge>
+                      <Badge variant="destructive" size="sm">High</Badge>
+                    </div>
+                  </div>
                 </div>
               </div>
 

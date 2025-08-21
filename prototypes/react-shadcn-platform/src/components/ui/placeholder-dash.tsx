@@ -1,11 +1,12 @@
+import React from 'react'
 import { cn } from '@/lib/index'
 
-interface PlaceholderDashProps {
+interface PlaceholderDashProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string
   variant?: 'default' | 'thick' | 'thin' | 'dot'
 }
 
-export function PlaceholderDash({ className, variant = 'default' }: PlaceholderDashProps) {
+export function PlaceholderDash({ className, variant = 'default', ...props }: PlaceholderDashProps) {
   const variants = {
     default: 'w-4 h-0.5',
     thick: 'w-5 h-1',
@@ -14,13 +15,14 @@ export function PlaceholderDash({ className, variant = 'default' }: PlaceholderD
   }
 
   return (
-    <div 
+    <div
       className={cn(
         'bg-muted-foreground/30 inline-block',
         variants[variant],
         className
       )}
       aria-hidden="true"
+      {...props}
     />
   )
 }

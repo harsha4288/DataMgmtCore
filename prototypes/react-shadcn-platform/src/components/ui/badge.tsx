@@ -77,48 +77,51 @@ const BadgeWrapper = ({ children, className, ...props }: {
   )
 }
 
-function Badge({ 
-  className, 
-  variant, 
-  size, 
-  count, 
-  content, 
-  max = 99, 
-  showZero = false, 
+function Badge({
+  className,
+  variant,
+  size,
+  count,
+  content,
+  max = 99,
+  showZero = false,
   position = 'top-right',
   standalone = true,
   children,
-  ...props 
+  ...props
 }: BadgeProps) {
-  const badgeContent = <BadgeContent count={count} content={content} max={max} showZero={showZero} />
-  
+  const badgeContentValue = BadgeContent({ count, content, max, showZero })
+
+  // Determine what to display: badgeContentValue, children, or nothing
+  const displayContent = badgeContentValue !== null ? badgeContentValue : children
+
   // If no content to show, return null
-  if (badgeContent === null && !children) {
+  if (displayContent === null || displayContent === undefined) {
     return null
   }
-  
+
   const badgeElement = (
     <div className={cn(badgeVariants({ variant, size }), className)} {...props}>
-      {badgeContent || children}
+      {displayContent}
     </div>
   )
-  
-  // If standalone or no positioning needed
+
+  // If standalone or no positioning needed (when using children or simple content)
   if (standalone || (!count && !content)) {
     return badgeElement
   }
-  
-  // Positioned badge (for overlaying on other elements)
+
+  // Positioned badge (for overlaying on other elements) - only for count/content badges
   const positionClasses = {
     'top-right': 'absolute -top-2 -right-2 z-10',
     'top-left': 'absolute -top-2 -left-2 z-10',
-    'bottom-right': 'absolute -bottom-2 -right-2 z-10', 
+    'bottom-right': 'absolute -bottom-2 -right-2 z-10',
     'bottom-left': 'absolute -bottom-2 -left-2 z-10'
   }
-  
+
   return (
     <div className={cn(badgeVariants({ variant, size }), positionClasses[position], className)} {...props}>
-      {badgeContent}
+      {displayContent}
     </div>
   )
 }

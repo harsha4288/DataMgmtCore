@@ -321,7 +321,7 @@ function App() {
             <Toaster />
           </ThemeProvider>
         } />
-        
+
         {/* Catch all - redirect to home */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
