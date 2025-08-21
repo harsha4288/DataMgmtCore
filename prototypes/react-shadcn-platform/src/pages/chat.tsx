@@ -21,7 +21,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Textarea } from '@/components/ui/textarea'
@@ -71,7 +71,7 @@ const mockUsers: ChatUser[] = [
   {
     id: '1',
     name: 'Dr. Sarah Chen',
-    avatar: '/avatars/sarah.jpg',
+    // avatar: '/avatars/sarah.jpg', // Removed to show initials
     lastSeen: 'online',
     isOnline: true,
     role: 'member',
@@ -81,7 +81,7 @@ const mockUsers: ChatUser[] = [
   {
     id: '2',
     name: 'Prof. Michael Kumar',
-    avatar: '/avatars/michael.jpg',
+    // avatar: '/avatars/michael.jpg', // Removed to show initials
     lastSeen: '5 minutes ago',
     isOnline: false,
     role: 'moderator',
@@ -91,7 +91,7 @@ const mockUsers: ChatUser[] = [
   {
     id: '3',
     name: 'Priya Sharma',
-    avatar: '/avatars/priya.jpg',
+    // avatar: '/avatars/priya.jpg', // Removed to show initials
     lastSeen: 'online',
     isOnline: true,
     role: 'member',
@@ -101,7 +101,7 @@ const mockUsers: ChatUser[] = [
   {
     id: '4',
     name: 'Admin Team',
-    avatar: '/avatars/admin.jpg',
+    // avatar: '/avatars/admin.jpg', // Removed to show initials
     lastSeen: '2 hours ago',
     isOnline: false,
     role: 'admin',
@@ -410,15 +410,16 @@ export default function ChatPage() {
                         }`}
                       >
                         <div className="relative">
-                          <Avatar className="h-10 w-10">
-                            <AvatarImage src={getConversationAvatar(conversation)} />
-                            <AvatarFallback>
-                              {conversation.isGroup ? (
+                          <Avatar
+                            className="h-10 w-10"
+                            src={getConversationAvatar(conversation)}
+                            name={conversation.isGroup ? undefined : conversation.participants[0]?.name}
+                          >
+                            {conversation.isGroup && (
+                              <AvatarFallback>
                                 <Users className="h-4 w-4" />
-                              ) : (
-                                conversation.participants[0]?.name.slice(0, 2).toUpperCase()
-                              )}
-                            </AvatarFallback>
+                              </AvatarFallback>
+                            )}
                           </Avatar>
                           {!conversation.isGroup && conversation.participants[0]?.isOnline && (
                             <Circle className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-500 border-2 border-background rounded-full" />
@@ -479,15 +480,16 @@ export default function ChatPage() {
                       </Button>
                       
                       <div className="relative">
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src={getConversationAvatar(selectedConversation)} />
-                          <AvatarFallback>
-                            {selectedConversation.isGroup ? (
+                        <Avatar
+                          className="h-10 w-10"
+                          src={getConversationAvatar(selectedConversation)}
+                          name={selectedConversation.isGroup ? undefined : selectedConversation.participants[0]?.name}
+                        >
+                          {selectedConversation.isGroup && (
+                            <AvatarFallback>
                               <Users className="h-4 w-4" />
-                            ) : (
-                              selectedConversation.participants[0]?.name.slice(0, 2).toUpperCase()
-                            )}
-                          </AvatarFallback>
+                            </AvatarFallback>
+                          )}
                         </Avatar>
                         {!selectedConversation.isGroup && selectedConversation.participants[0]?.isOnline && (
                           <Circle className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-500 border-2 border-background rounded-full" />
@@ -585,12 +587,12 @@ export default function ChatPage() {
                             }`}
                           >
                             {!isCurrentUser && showAvatar && (
-                              <Avatar className="h-8 w-8 mr-2">
-                                <AvatarImage src={selectedConversation.participants[0]?.avatar} />
-                                <AvatarFallback>
-                                  {selectedConversation.participants[0]?.name.slice(0, 2).toUpperCase()}
-                                </AvatarFallback>
-                              </Avatar>
+                              <Avatar
+                                className="h-8 w-8 mr-2"
+                                src={selectedConversation.participants[0]?.avatar}
+                                name={selectedConversation.participants[0]?.name}
+                                size="sm"
+                              />
                             )}
                             
                             {!isCurrentUser && !showAvatar && (

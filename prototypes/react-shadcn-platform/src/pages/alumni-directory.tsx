@@ -1,792 +1,219 @@
 import { useState, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { mockAlumniData } from '@/lib/mock-data/alumni'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { cn } from '@/lib/utils'
-import { 
-  Search, 
-  MapPin, 
-  Building2, 
-  GraduationCap,
-  Users,
-  UserCheck,
-  Clock,
-  Grid3x3,
-  List,
-  X,
-  MessageSquare,
-  Eye,
-  Bookmark,
-  Star,
-  CheckCircle,
-  Trophy,
-  Activity,
-  Shield
-} from 'lucide-react'
-
-// Enhanced mock data with engagement metrics
-const enhancedAlumniData = mockAlumniData.map(member => ({
-  ...member,
-  isOnline: Math.random() > 0.6,
-  lastSeen: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
-  verified: Math.random() > 0.7,
-  topMentor: Math.random() > 0.85,
-  connectionsHelped: Math.floor(Math.random() * 50) + 5,
-  rating: (Math.random() * 2 + 3).toFixed(1),
-  responseTime: ['2 hours', '1 day', '12 hours', '3 hours'][Math.floor(Math.random() * 4)],
-  responseRate: Math.floor(Math.random() * 30) + 70,
-  profileViews: Math.floor(Math.random() * 200) + 50,
-  endorsements: Math.floor(Math.random() * 20) + 3
-}))
+import { Search, MapPin, Briefcase, Calendar, Mail, ExternalLink } from 'lucide-react'
+import { mockAlumniData, AlumniMember, filterAlumni } from '@/lib/mock-data/alumni'
 
 export default function AlumniDirectory() {
-  const navigate = useNavigate()
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
   const [selectedIndustry, setSelectedIndustry] = useState<string>('')
   const [selectedYear, setSelectedYear] = useState<string>('')
-  const [selectedLocation, setSelectedLocation] = useState<string>('')
-  const [selectedMentorStatus, setSelectedMentorStatus] = useState<string>('')
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([])
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [showOnlineOnly, setShowOnlineOnly] = useState(false)
-  const [showSearchSuggestions, setShowSearchSuggestions] = useState(false)
-  // eslint-disable-next-line no-unused-vars
-  const [_savedSearches, _setSavedSearches] = useState<Array<{id: string, name: string, filters: any}>>([
-    // Mock saved searches for demo
-    {id: '1', name: 'Tech Mentors in Bay Area', filters: {industry: 'Technology', location: 'San Francisco', mentorStatus: 'available'}},
-    {id: '2', name: 'Recent Graduates', filters: {year: '2023'}},
-    {id: '3', name: 'Healthcare Professionals', filters: {industry: 'Healthcare', skills: ['Medicine', 'Research']}}
-  ])
 
-  // Get unique values for filters - Enhanced from old app patterns
-  const industries = useMemo(() => 
-    [...new Set(enhancedAlumniData.map(a => a.industry))].sort(),
-    []
-  )
-  
-  const graduationYears = useMemo(() => 
-    [...new Set(enhancedAlumniData.map(a => a.graduationYear))].sort((a, b) => b - a),
-    []
-  )
-  
-  const locations = useMemo(() => 
-    [...new Set(enhancedAlumniData.map(a => a.location))].sort(),
-    []
-  )
-  
-  const allSkills = useMemo(() => {
-    const skills = new Set<string>()
-    enhancedAlumniData.forEach(a => {
-      // Mock skills based on industry and job title
-      const jobSkills = {
-        'Software Engineer': ['JavaScript', 'React', 'Node.js', 'Python'],
-        'Product Manager': ['Strategy', 'Analytics', 'Leadership', 'Agile'],
-        'Data Scientist': ['Python', 'Machine Learning', 'Statistics', 'SQL'],
-        'Designer': ['Figma', 'Adobe Creative Suite', 'UX Research', 'Prototyping'],
-        'Doctor': ['Medicine', 'Patient Care', 'Research', 'Surgery'],
-        'Consultant': ['Strategy', 'Analysis', 'Presentation', 'Client Management']
-      }[a.jobTitle] || ['Leadership', 'Communication']
-      
-      jobSkills.forEach(skill => skills.add(skill))
-    })
-    return Array.from(skills).sort()
+  const industries = useMemo(() => {
+    const allIndustries = mockAlumniData.map(member => member.industry)
+    return [...new Set(allIndustries)].sort()
   }, [])
-  
-  // Smart search suggestions based on current query
-  const searchSuggestions = useMemo(() => {
-    if (!searchQuery || searchQuery.length < 2) return []
-    
-    const suggestions = new Set<string>()
-    const query = searchQuery.toLowerCase()
-    
-    // Name suggestions
-    enhancedAlumniData.forEach(a => {
-      if (a.name.toLowerCase().includes(query)) {
-        suggestions.add(`👤 ${a.name}`)
-      }
-    })
-    
-    // Industry suggestions
-    industries.forEach(industry => {
-      if (industry.toLowerCase().includes(query)) {
-        suggestions.add(`🏢 ${industry}`)
-      }
-    })
-    
-    // Location suggestions
-    locations.forEach(location => {
-      if (location.toLowerCase().includes(query)) {
-        suggestions.add(`📍 ${location}`)
-      }
-    })
-    
-    // Skills suggestions
-    allSkills.forEach(skill => {
-      if (skill.toLowerCase().includes(query)) {
-        suggestions.add(`⚡ ${skill}`)
-      }
-    })
-    
-    return Array.from(suggestions).slice(0, 8)
-  }, [searchQuery, industries, locations, allSkills])
 
-  // Filter alumni based on search and filters
+  const graduationYears = useMemo(() => {
+    const allYears = mockAlumniData.map(member => member.graduationYear)
+    return [...new Set(allYears)].sort((a, b) => b - a)
+  }, [])
+
   const filteredAlumni = useMemo(() => {
-    let filtered = enhancedAlumniData
+    return filterAlumni({
+      name: searchTerm,
+      industry: selectedIndustry || undefined,
+      graduationYear: selectedYear ? parseInt(selectedYear) : undefined
+    })
+  }, [searchTerm, selectedIndustry, selectedYear])
 
-    if (searchQuery) {
-      filtered = filtered.filter(a => 
-        a.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        a.jobTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        a.company.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    }
+  const clearFilters = () => {
+    setSearchTerm('')
+    setSelectedIndustry('')
+    setSelectedYear('')
+  }
 
-    if (selectedIndustry) {
-      filtered = filtered.filter(a => a.industry === selectedIndustry)
-    }
-
-    if (selectedYear) {
-      filtered = filtered.filter(a => a.graduationYear === parseInt(selectedYear))
-    }
-
-    if (selectedLocation) {
-      filtered = filtered.filter(a => a.location === selectedLocation)
-    }
-
-    if (selectedMentorStatus) {
-      filtered = filtered.filter(a => a.mentorStatus === selectedMentorStatus)
-    }
-
-    if (selectedSkills.length > 0) {
-      // Mock skill filtering based on job title
-      filtered = filtered.filter(a => {
-        const personSkills = {
-          'Software Engineer': ['JavaScript', 'React', 'Node.js', 'Python'],
-          'Product Manager': ['Strategy', 'Analytics', 'Leadership', 'Agile'],
-          'Data Scientist': ['Python', 'Machine Learning', 'Statistics', 'SQL'],
-          'Designer': ['Figma', 'Adobe Creative Suite', 'UX Research', 'Prototyping'],
-          'Doctor': ['Medicine', 'Patient Care', 'Research', 'Surgery'],
-          'Consultant': ['Strategy', 'Analysis', 'Presentation', 'Client Management']
-        }[a.jobTitle] || ['Leadership', 'Communication']
-        
-        return selectedSkills.some(skill => personSkills.includes(skill))
-      })
-    }
-
-    if (showOnlineOnly) {
-      filtered = filtered.filter(a => a.isOnline)
-    }
-
-    return filtered
-  }, [searchQuery, selectedIndustry, selectedYear, selectedLocation, selectedMentorStatus, selectedSkills, showOnlineOnly])
-
-  // Statistics with enhanced metrics
-  const stats = useMemo(() => ({
-    total: filteredAlumni.length,
-    mentors: filteredAlumni.filter(a => a.mentorStatus === 'available').length,
-    industries: [...new Set(filteredAlumni.map(a => a.industry))].length,
-    onlineNow: filteredAlumni.filter(a => a.isOnline).length,
-    verifiedMembers: filteredAlumni.filter(a => a.verified).length
-  }), [filteredAlumni])
-
-  // Active filters for display - Enhanced with all filter types
-  const activeFilters = useMemo(() => {
-    const filters = []
-    if (selectedIndustry) filters.push({ type: 'industry', value: selectedIndustry, clear: () => setSelectedIndustry('') })
-    if (selectedYear) filters.push({ type: 'year', value: `Class of ${selectedYear}`, clear: () => setSelectedYear('') })
-    if (selectedLocation) filters.push({ type: 'location', value: selectedLocation, clear: () => setSelectedLocation('') })
-    if (selectedMentorStatus) filters.push({ type: 'mentor', value: 'Available Mentors', clear: () => setSelectedMentorStatus('') })
-    if (selectedSkills.length > 0) {
-      selectedSkills.forEach(skill => {
-        filters.push({ 
-          type: 'skill', 
-          value: skill, 
-          clear: () => setSelectedSkills(prev => prev.filter(s => s !== skill)) 
-        })
-      })
-    }
-    if (showOnlineOnly) filters.push({ type: 'online', value: 'Online Now', clear: () => setShowOnlineOnly(false) })
-    return filters
-  }, [selectedIndustry, selectedYear, selectedLocation, selectedMentorStatus, selectedSkills, showOnlineOnly])
-
-  const clearFilter = (filterType: string) => {
-    switch(filterType) {
-      case 'industry': setSelectedIndustry(''); break
-      case 'year': setSelectedYear(''); break
-      case 'mentor': setSelectedMentorStatus(''); break
-      case 'online': setShowOnlineOnly(false); break
+  const getMentorStatusColor = (status: string) => {
+    switch (status) {
+      case 'available': return 'bg-green-500'
+      case 'busy': return 'bg-yellow-500'
+      case 'unavailable': return 'bg-red-500'
+      default: return 'bg-gray-500'
     }
   }
 
-  const AlumniCard = ({ member }: { member: typeof enhancedAlumniData[0] }) => (
-    <Card 
-      className="group relative overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-200"
-    >
-      {/* Premium/Top Mentor Indicator */}
-      {member.topMentor && (
-        <div className="absolute top-0 right-0 bg-gradient-to-bl from-yellow-400/20 to-transparent w-24 h-24 pointer-events-none" />
-      )}
-      
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center space-x-3">
-            {/* Avatar with status indicator */}
-            <div className="relative">
-              <Avatar className="h-12 w-12 ring-2 ring-background">
-                <AvatarImage src={member.avatar} />
-                <AvatarFallback className="bg-gradient-to-br from-primary/20 to-purple-500/20">
-                  {member.name.split(' ').map(n => n[0]).join('')}
-                </AvatarFallback>
-              </Avatar>
-              <div className={cn(
-                "absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-background",
-                member.isOnline ? "bg-green-500" : "bg-gray-400"
-              )} />
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <CardTitle className="text-lg font-semibold">{member.name}</CardTitle>
-                {member.verified && (
-                  <CheckCircle className="h-4 w-4 text-blue-500" />
-                )}
-                {member.topMentor && (
-                  <Trophy className="h-4 w-4 text-yellow-500" />
-                )}
-              </div>
-              <CardDescription className="text-sm">
-                {member.jobTitle} at {member.company}
-              </CardDescription>
-              {/* Response time indicator */}
-              <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-                <Clock className="h-3 w-3" />
-                <span>Usually responds in {member.responseTime}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </CardHeader>
-      
-      <CardContent className="space-y-3">
-        {/* Bio */}
-        <p className="text-sm text-muted-foreground line-clamp-2">{member.bio}</p>
-        
-        {/* Engagement Metrics */}
-        <div className="grid grid-cols-3 gap-2 py-2">
-          <div className="text-center">
-            <div className="text-lg font-semibold text-primary">{member.connectionsHelped}</div>
-            <div className="text-xs text-muted-foreground">Helped</div>
-          </div>
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-0.5">
-              <span className="text-lg font-semibold text-green-600">{member.rating}</span>
-              <Star className="h-3 w-3 text-yellow-500 fill-current" />
-            </div>
-            <div className="text-xs text-muted-foreground">Rating</div>
-          </div>
-          <div className="text-center">
-            <div className="text-lg font-semibold text-purple-600">{member.responseRate}%</div>
-            <div className="text-xs text-muted-foreground">Response</div>
-          </div>
-        </div>
-        
-        {/* Skills with better styling */}
-        <div className="flex flex-wrap gap-1">
-          {member.skills.slice(0, 3).map(skill => (
-            <Badge key={skill} variant="secondary" className="text-xs bg-secondary/50">
-              {skill}
-            </Badge>
-          ))}
-          {member.skills.length > 3 && (
-            <Badge variant="outline" className="text-xs">
-              +{member.skills.length - 3} more
-            </Badge>
-          )}
-        </div>
-        
-        {/* Location and Graduation */}
-        <div className="flex items-center justify-between text-xs text-muted-foreground pt-1">
-          <div className="flex items-center gap-1">
-            <GraduationCap className="h-3 w-3" />
-            <span>Class of {member.graduationYear}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <MapPin className="h-3 w-3" />
-            <span>{member.location}</span>
-          </div>
-        </div>
-        
-        {/* Mentor Badge */}
-        {member.mentorStatus === 'available' && (
-          <div className="flex items-center justify-center py-2">
-            <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0">
-              <UserCheck className="h-3 w-3 mr-1" />
-              Available for Mentorship
-            </Badge>
-          </div>
-        )}
-        
-        {/* Action Buttons */}
-        <div className="flex items-center gap-2 pt-2">
-          <Button 
-            size="sm" 
-            className="flex-1"
-          >
-            <MessageSquare className="h-3 w-3 mr-1" />
-            Connect
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => navigate(`/alumni-profile/${member.id}`)}
-          >
-            <Eye className="h-4 w-4" />
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-          >
-            <Bookmark className="h-4 w-4" />
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  )
-
-  const AlumniListItem = ({ member }: { member: typeof enhancedAlumniData[0] }) => (
-    <Card 
-      className="hover:bg-accent/50 cursor-pointer transition-all duration-200"
-    >
-      <CardContent className="flex items-center justify-between p-4">
-        <div className="flex items-center space-x-4">
-          {/* Avatar with status */}
-          <div className="relative">
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={member.avatar} />
-              <AvatarFallback className="bg-gradient-to-br from-primary/20 to-purple-500/20">
-                {member.name.split(' ').map(n => n[0]).join('')}
-              </AvatarFallback>
-            </Avatar>
-            <div className={cn(
-              "absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-background",
-              member.isOnline ? "bg-green-500" : "bg-gray-400"
-            )} />
-          </div>
-          
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="font-medium">{member.name}</span>
-              {member.verified && (
-                <CheckCircle className="h-3 w-3 text-blue-500" />
-              )}
-              {member.topMentor && (
-                <Trophy className="h-3 w-3 text-yellow-500" />
-              )}
-              {member.mentorStatus === 'available' && (
-                <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs">
-                  Mentor
-                </Badge>
-              )}
-            </div>
-            <div className="text-sm text-muted-foreground">
-              {member.jobTitle} at {member.company} • {member.location}
-            </div>
-            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <Users className="h-3 w-3" />
-                {member.connectionsHelped} helped
-              </span>
-              <span className="flex items-center gap-1">
-                <Star className="h-3 w-3 text-yellow-500" />
-                {member.rating}
-              </span>
-              <span className="flex items-center gap-1">
-                <Clock className="h-3 w-3" />
-                {member.responseTime}
-              </span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <div className="text-right mr-4">
-            <div className="text-sm font-medium">{member.industry}</div>
-            <div className="text-xs text-muted-foreground">Class of {member.graduationYear}</div>
-          </div>
-          <Button size="sm" variant="ghost" className="hover:bg-primary hover:text-primary-foreground">
-            <MessageSquare className="h-4 w-4" />
-          </Button>
-          <Button 
-            size="sm" 
-            variant="ghost"
-            className="hover:bg-primary hover:text-primary-foreground"
-            onClick={() => navigate(`/alumni-profile/${member.id}`)}
-          >
-            <Eye className="h-4 w-4" />
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  )
+  const getInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase()
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
-      <div className="container mx-auto p-6 space-y-6">
-        {/* Enhanced Header */}
-        <div className="flex flex-col space-y-4">
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              Alumni Directory
-            </h1>
-            <p className="text-lg text-muted-foreground mt-2">
-              Connect with our global network of {enhancedAlumniData.length} verified alumni
-            </p>
-          </div>
-          
-          {/* Enhanced Stats Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            <Card className="hover:shadow-md transition-shadow">
-              <CardContent className="flex items-center justify-between p-4">
-                <div>
-                  <p className="text-xs text-muted-foreground">Total Alumni</p>
-                  <p className="text-2xl font-bold">{stats.total}</p>
-                </div>
-                <Users className="h-8 w-8 text-blue-500 opacity-20" />
-              </CardContent>
-            </Card>
-            <Card className="hover:shadow-md transition-shadow">
-              <CardContent className="flex items-center justify-between p-4">
-                <div>
-                  <p className="text-xs text-muted-foreground">Available Mentors</p>
-                  <p className="text-2xl font-bold text-green-600">{stats.mentors}</p>
-                </div>
-                <UserCheck className="h-8 w-8 text-green-500 opacity-20" />
-              </CardContent>
-            </Card>
-            <Card className="hover:shadow-md transition-shadow">
-              <CardContent className="flex items-center justify-between p-4">
-                <div>
-                  <p className="text-xs text-muted-foreground">Industries</p>
-                  <p className="text-2xl font-bold">{stats.industries}</p>
-                </div>
-                <Building2 className="h-8 w-8 text-purple-500 opacity-20" />
-              </CardContent>
-            </Card>
-            <Card className="hover:shadow-md transition-shadow border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-800">
-              <CardContent className="flex items-center justify-between p-4">
-                <div>
-                  <p className="text-xs text-muted-foreground">Online Now</p>
-                  <p className="text-2xl font-bold text-green-600">{stats.onlineNow}</p>
-                </div>
-                <Activity className="h-8 w-8 text-green-500 opacity-20" />
-              </CardContent>
-            </Card>
-            <Card className="hover:shadow-md transition-shadow">
-              <CardContent className="flex items-center justify-between p-4">
-                <div>
-                  <p className="text-xs text-muted-foreground">Verified</p>
-                  <p className="text-2xl font-bold text-blue-600">{stats.verifiedMembers}</p>
-                </div>
-                <Shield className="h-8 w-8 text-blue-500 opacity-20" />
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold">Alumni Directory</h1>
+        <p className="text-muted-foreground">
+          Connect with our alumni community. Find mentors, network, and discover career opportunities.
+        </p>
+      </div>
 
-        {/* Enhanced Search and Filters */}
-        <Card>
-          <CardContent className="p-4 space-y-4">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search by name, title, company..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => setShowSearchSuggestions(true)}
-                  onBlur={() => setTimeout(() => setShowSearchSuggestions(false), 200)}
-                  className="pl-10"
-                />
-                
-                {/* Search Suggestions Dropdown */}
-                {showSearchSuggestions && searchSuggestions.length > 0 && (
-                  <Card className="absolute top-full left-0 right-0 z-50 mt-1 border shadow-lg">
-                    <CardContent className="p-2">
-                      <div className="space-y-1">
-                        {searchSuggestions.map((suggestion, index) => (
-                          <button
-                            key={index}
-                            onClick={() => {
-                              setSearchQuery(suggestion.replace(/^[👤🏢📍⚡]\s/u, ''))
-                              setShowSearchSuggestions(false)
-                            }}
-                            className="w-full text-left px-3 py-2 text-sm hover:bg-accent rounded-md transition-colors flex items-center gap-2"
-                          >
-                            <span className="text-lg">{suggestion.split(' ')[0]}</span>
-                            <span>{suggestion.split(' ').slice(1).join(' ')}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
-              
-              <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
-                <SelectTrigger className="w-full md:w-[180px]">
-                  <SelectValue placeholder="All Industries" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">All Industries</SelectItem>
-                  {industries.map(industry => (
-                    <SelectItem key={industry} value={industry}>
-                      {industry}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
-              <Select value={selectedYear} onValueChange={setSelectedYear}>
-                <SelectTrigger className="w-full md:w-[140px]">
-                  <SelectValue placeholder="All Years" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">All Years</SelectItem>
-                  {graduationYears.map(year => (
-                    <SelectItem key={year} value={year.toString()}>
-                      Class of {year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
-              <Select value={selectedMentorStatus} onValueChange={setSelectedMentorStatus}>
-                <SelectTrigger className="w-full md:w-[160px]">
-                  <SelectValue placeholder="All Members" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">All Members</SelectItem>
-                  <SelectItem value="available">Available Mentors</SelectItem>
-                  <SelectItem value="unavailable">Not Available</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Button
-                variant={showOnlineOnly ? "default" : "outline"}
-                size="default"
-                onClick={() => setShowOnlineOnly(!showOnlineOnly)}
-                className="whitespace-nowrap"
-              >
-                <Activity className="h-4 w-4 mr-2" />
-                Online Only
-              </Button>
-
-              <div className="flex gap-2">
-                <Button
-                  variant={viewMode === 'grid' ? "default" : "outline"}
-                  size="icon"
-                  onClick={() => setViewMode('grid')}
-                >
-                  <Grid3x3 className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant={viewMode === 'list' ? "default" : "outline"}
-                  size="icon"
-                  onClick={() => setViewMode('list')}
-                >
-                  <List className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-
-            {/* iOS-style Horizontal Scrollable Quick Filters */}
+      {/* Search and Filters */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Search className="h-5 w-5" />
+            Search & Filter
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="relative">
-              <ScrollArea className="w-full whitespace-nowrap">
-                <div className="flex space-x-2 pb-2">
-                  {/* Quick Industry Filters */}
-                  {['Technology', 'Healthcare', 'Finance', 'Education', 'Consulting'].map((industry) => (
-                    <Button
-                      key={industry}
-                      size="sm"
-                      variant={selectedIndustry === industry ? "default" : "outline"}
-                      onClick={() => setSelectedIndustry(selectedIndustry === industry ? '' : industry)}
-                      className="flex-shrink-0 h-8 px-3 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105"
-                    >
-                      {industry}
-                    </Button>
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by name or company..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            
+            <select
+              value={selectedIndustry}
+              onChange={(e) => setSelectedIndustry(e.target.value)}
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            >
+              <option value="">All Industries</option>
+              {industries.map(industry => (
+                <option key={industry} value={industry}>{industry}</option>
+              ))}
+            </select>
+
+            <select
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(e.target.value)}
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            >
+              <option value="">All Years</option>
+              {graduationYears.map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+
+            <Button 
+              variant="outline" 
+              onClick={clearFilters}
+              className="w-full"
+            >
+              Clear Filters
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Results Summary */}
+      <div className="text-sm text-muted-foreground">
+        Showing {filteredAlumni.length} of {mockAlumniData.length} alumni
+      </div>
+
+      {/* Alumni Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredAlumni.map((member: AlumniMember) => (
+          <Card key={member.id} className="h-full hover:shadow-lg transition-shadow">
+            <CardHeader className="pb-4">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-12 w-12">
+                    <AvatarImage src={member.avatar} alt={member.name} />
+                    <AvatarFallback>{getInitials(member.name)}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h3 className="font-semibold text-lg">{member.name}</h3>
+                    <p className="text-sm text-muted-foreground">{member.jobTitle}</p>
+                  </div>
+                </div>
+                <div className={`w-3 h-3 rounded-full ${getMentorStatusColor(member.mentorStatus)}`} 
+                     title={`Mentor Status: ${member.mentorStatus}`} />
+              </div>
+            </CardHeader>
+
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm">
+                  <Briefcase className="h-4 w-4 text-muted-foreground" />
+                  <span>{member.company}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <MapPin className="h-4 w-4 text-muted-foreground" />
+                  <span>{member.location}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <span>Class of {member.graduationYear}</span>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground line-clamp-3">
+                  {member.bio}
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium">Skills</h4>
+                <div className="flex flex-wrap gap-1">
+                  {member.skills.slice(0, 4).map((skill, index) => (
+                    <Badge key={index} variant="secondary" className="text-xs">
+                      {skill}
+                    </Badge>
                   ))}
-
-                  {/* Mentor Status Filter */}
-                  <Button
-                    size="sm"
-                    variant={selectedMentorStatus === 'available' ? "default" : "outline"}
-                    onClick={() => setSelectedMentorStatus(selectedMentorStatus === 'available' ? '' : 'available')}
-                    className="flex-shrink-0 h-8 px-3 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white border-0"
-                  >
-                    <UserCheck className="w-3 h-3 mr-1" />
-                    Mentors Available
-                  </Button>
-
-                  {/* Graduation Year Quick Filters */}
-                  {[2023, 2022, 2021, 2020].map((year) => (
-                    <Button
-                      key={year}
-                      size="sm"
-                      variant={selectedYear === year.toString() ? "default" : "outline"}
-                      onClick={() => setSelectedYear(selectedYear === year.toString() ? '' : year.toString())}
-                      className="flex-shrink-0 h-8 px-3 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105"
-                    >
-                      Class of {year}
-                    </Button>
-                  ))}
-
-                  {/* Location Quick Filters */}
-                  {['San Francisco', 'New York', 'Los Angeles', 'Chicago'].map((location) => (
-                    <Button
-                      key={location}
-                      size="sm"
-                      variant={selectedLocation === location ? "default" : "outline"}
-                      onClick={() => setSelectedLocation(selectedLocation === location ? '' : location)}
-                      className="flex-shrink-0 h-8 px-3 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105"
-                    >
-                      <MapPin className="w-3 h-3 mr-1" />
-                      {location.split(',')[0]}
-                    </Button>
-                  ))}
-
-                  {/* Verified Members Filter */}
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="flex-shrink-0 h-8 px-3 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105 border-blue-200 text-blue-600 hover:bg-blue-50"
-                  >
-                    <CheckCircle className="w-3 h-3 mr-1" />
-                    Verified
-                  </Button>
-
-                  {/* Top Mentors Filter */}
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="flex-shrink-0 h-8 px-3 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105 border-yellow-200 text-yellow-700 hover:bg-yellow-50"
-                  >
-                    <Trophy className="w-3 h-3 mr-1" />
-                    Top Mentors
-                  </Button>
-
-                  {/* Clear All Filters */}
-                  {(selectedIndustry || selectedYear || selectedLocation || selectedMentorStatus || showOnlineOnly) && (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => {
-                        setSelectedIndustry('')
-                        setSelectedYear('')
-                        setSelectedLocation('')
-                        setSelectedMentorStatus('')
-                        setShowOnlineOnly(false)
-                      }}
-                      className="flex-shrink-0 h-8 px-3 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105 text-red-600 hover:text-red-700 hover:bg-red-50"
-                    >
-                      <X className="w-3 h-3 mr-1" />
-                      Clear All
-                    </Button>
+                  {member.skills.length > 4 && (
+                    <Badge variant="outline" className="text-xs">
+                      +{member.skills.length - 4}
+                    </Badge>
                   )}
                 </div>
-              </ScrollArea>
-            </div>
-
-            {/* Active Filters Display */}
-            {activeFilters.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                <span className="text-sm text-muted-foreground">Active filters:</span>
-                {activeFilters.map((filter, index) => (
-                  <Badge key={index} variant="secondary" className="gap-1">
-                    {filter.value}
-                    <button
-                      onClick={() => clearFilter(filter.type)}
-                      className="ml-1 hover:text-destructive"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                ))}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedIndustry('')
-                    setSelectedYear('')
-                    setSelectedMentorStatus('')
-                    setShowOnlineOnly(false)
-                  }}
-                  className="h-6 text-xs"
-                >
-                  Clear all
-                </Button>
               </div>
-            )}
+
+              {member.achievements && member.achievements.length > 0 && (
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium">Achievements</h4>
+                  <div className="space-y-1">
+                    {member.achievements.slice(0, 2).map((achievement, index) => (
+                      <p key={index} className="text-xs text-muted-foreground">
+                        • {achievement}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex gap-2 pt-2">
+                <Button size="sm" className="flex-1">
+                  <Mail className="h-4 w-4 mr-2" />
+                  Contact
+                </Button>
+                {member.linkedIn && (
+                  <Button size="sm" variant="outline">
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {filteredAlumni.length === 0 && (
+        <Card>
+          <CardContent className="text-center py-12">
+            <p className="text-muted-foreground">No alumni found matching your criteria.</p>
+            <Button variant="outline" onClick={clearFilters} className="mt-4">
+              Clear Filters
+            </Button>
           </CardContent>
         </Card>
-
-        {/* Results Count */}
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            Showing {filteredAlumni.length} of {enhancedAlumniData.length} alumni
-          </p>
-          {filteredAlumni.length > 0 && (
-            <p className="text-sm text-muted-foreground">
-              {stats.onlineNow} currently online
-            </p>
-          )}
-        </div>
-
-        {/* Alumni Grid/List */}
-        {viewMode === 'grid' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredAlumni.map(member => (
-              <AlumniCard key={member.id} member={member} />
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {filteredAlumni.map(member => (
-              <AlumniListItem key={member.id} member={member} />
-            ))}
-          </div>
-        )}
-
-        {/* Empty State */}
-        {filteredAlumni.length === 0 && (
-          <Card className="p-12">
-            <div className="text-center space-y-3">
-              <Users className="h-12 w-12 text-muted-foreground mx-auto" />
-              <h3 className="text-lg font-semibold">No alumni found</h3>
-              <p className="text-sm text-muted-foreground">
-                Try adjusting your filters or search query
-              </p>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setSearchQuery('')
-                  setSelectedIndustry('')
-                  setSelectedYear('')
-                  setSelectedMentorStatus('')
-                  setShowOnlineOnly(false)
-                }}
-              >
-                Clear filters
-              </Button>
-            </div>
-          </Card>
-        )}
-      </div>
+      )}
     </div>
   )
 }

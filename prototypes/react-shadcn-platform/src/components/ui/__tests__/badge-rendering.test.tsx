@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { render, screen } from '@testing-library/react';
 import { describe, test, expect } from 'vitest';
 import { Badge } from '../badge';
@@ -120,7 +120,6 @@ describe('CSS Variables Integration', () => {
     );
     
     const badge = screen.getByTestId('grade-a-badge');
-    const styles = window.getComputedStyle(badge);
     
     // Check if CSS variables are being applied
     expect(badge).toHaveClass('bg-[var(--badge-grade-a)]');
@@ -166,7 +165,7 @@ describe('Badge vs PlaceholderDash Rendering Issue', () => {
       { props: { children: 'Technology' }, expected: 'Technology' },
       { props: { content: 'Software Engineering' }, expected: 'Software Engineering' },
       { props: { count: 5 }, expected: '5' },
-      { props: { variant: 'grade-a', children: 'A+' }, expected: 'A+' }
+      { props: { variant: 'grade-a' as const, children: 'A+' }, expected: 'A+' }
     ];
 
     testCases.forEach((testCase, index) => {

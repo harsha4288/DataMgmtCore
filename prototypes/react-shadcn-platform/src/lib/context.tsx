@@ -233,7 +233,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       id: `user_${Date.now()}`,
       name: email === 'admin@gita.org' ? 'Admin User' : 'John Doe',
       email,
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
+      // avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`, // Removed to show initials
       role: email === 'admin@gita.org' ? 'admin' : email.includes('moderator') ? 'moderator' : 'member',
       profile: {
         jobTitle: 'Software Engineer',

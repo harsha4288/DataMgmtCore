@@ -65,7 +65,7 @@ export const mockMentors: MentorProfile[] = [
     id: 'mentor-001',
     alumniId: '1',
     name: 'Arjun Patel',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Arjun',
+    // avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Arjun', // Removed to show initials
     title: 'Senior Software Engineer',
     company: 'Tech Innovations Inc.',
     location: 'San Francisco, CA',
@@ -91,7 +91,7 @@ export const mockMentors: MentorProfile[] = [
     id: 'mentor-002',
     alumniId: '2',
     name: 'Priya Sharma',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Priya',
+    // avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Priya', // Removed to show initials
     title: 'Lead Data Scientist',
     company: 'DataCorp Analytics',
     location: 'New York, NY',
@@ -117,7 +117,7 @@ export const mockMentors: MentorProfile[] = [
     id: 'mentor-003',
     alumniId: '4',
     name: 'Anita Desai',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Anita',
+    // avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Anita', // Removed to show initials
     title: 'Research Director',
     company: 'MedTech Innovations',
     location: 'Boston, MA',
@@ -142,7 +142,7 @@ export const mockMentors: MentorProfile[] = [
     id: 'mentor-004',
     alumniId: '6',
     name: 'Meera Reddy',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Meera',
+    // avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Meera', // Removed to show initials
     title: 'Principal Engineer',
     company: 'Aerospace Dynamics',
     location: 'Seattle, WA',
@@ -168,7 +168,7 @@ export const mockMentors: MentorProfile[] = [
     id: 'mentor-005',
     alumniId: '7',
     name: 'Amit Gupta',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Amit',
+    // avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Amit', // Removed to show initials
     title: 'Sustainability Consultant',
     company: 'Green Earth Solutions',
     location: 'Portland, OR',

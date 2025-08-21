@@ -83,7 +83,7 @@ const Avatar = React.forwardRef<
           "absolute -bottom-0 -right-0 block h-3 w-3 rounded-full border-2 border-background z-10",
           {
             "bg-green-500": status === 'online',
-            "bg-gray-400": status === 'offline', 
+            "bg-muted-foreground": status === 'offline', 
             "bg-yellow-500": status === 'away',
             "bg-red-500": status === 'busy'
           }
@@ -108,19 +108,38 @@ const AvatarImage = React.forwardRef<
 ))
 AvatarImage.displayName = AvatarPrimitive.Image.displayName
 
+// Enhanced AvatarFallback that automatically extracts initials from text content
 const AvatarFallback = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Fallback>,
   React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Fallback
-    ref={ref}
-    className={cn(
-      "flex h-full w-full items-center justify-center rounded-full bg-muted text-muted-foreground font-medium",
-      className
-    )}
-    {...props}
-  />
-))
+>(({ className, children, ...props }, ref) => {
+  // If children is a string that looks like initials (2-3 uppercase letters), use it
+  // Otherwise, try to extract initials from the string
+  let displayContent = children
+
+  if (typeof children === 'string') {
+    // If it's already formatted initials (like "DC", "JK"), use as-is
+    if (/^[A-Z]{1,3}$/.test(children)) {
+      displayContent = children
+    } else {
+      // Try to extract initials from full name
+      displayContent = getInitials(children)
+    }
+  }
+
+  return (
+    <AvatarPrimitive.Fallback
+      ref={ref}
+      className={cn(
+        "flex h-full w-full items-center justify-center rounded-full bg-muted text-muted-foreground font-medium",
+        className
+      )}
+      {...props}
+    >
+      {displayContent || <div className="h-4 w-4 rounded-full bg-muted-foreground/20" />}
+    </AvatarPrimitive.Fallback>
+  )
+})
 AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName
 
 export { Avatar, AvatarImage, AvatarFallback }

@@ -28,7 +28,7 @@ export const mockAlumniData: AlumniMember[] = [
     name: 'Arjun Patel',
     email: 'arjun.patel@example.com',
     phone: '+1 (555) 123-4567',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+    // avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face', // Removed to show initials
     graduationYear: 2018,
     degree: 'Bachelor of Technology',
     major: 'Computer Science',
@@ -51,7 +51,7 @@ export const mockAlumniData: AlumniMember[] = [
     name: 'Priya Sharma',
     email: 'priya.sharma@example.com',
     phone: '+1 (555) 234-5678',
-    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b593?w=150&h=150&fit=crop&crop=face',
+    // avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b593?w=150&h=150&fit=crop&crop=face', // Removed to show initials
     graduationYear: 2019,
     degree: 'Master of Science',
     major: 'Data Science',
@@ -72,7 +72,7 @@ export const mockAlumniData: AlumniMember[] = [
     name: 'Raj Kumar',
     email: 'raj.kumar@example.com',
     phone: '+1 (555) 345-6789',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
+    // avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face', // Removed to show initials
     graduationYear: 2020,
     degree: 'Bachelor of Business',
     major: 'Finance',
@@ -92,7 +92,7 @@ export const mockAlumniData: AlumniMember[] = [
     name: 'Anita Desai',
     email: 'anita.desai@example.com',
     phone: '+1 (555) 456-7890',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+    // avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face', // Removed to show initials
     graduationYear: 2017,
     degree: 'PhD',
     major: 'Biomedical Engineering',
@@ -114,7 +114,7 @@ export const mockAlumniData: AlumniMember[] = [
     name: 'Vikram Singh',
     email: 'vikram.singh@example.com',
     phone: '+1 (555) 567-8901',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+    // avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face', // Removed to show initials
     graduationYear: 2021,
     degree: 'Bachelor of Arts',
     major: 'Marketing',
@@ -135,7 +135,7 @@ export const mockAlumniData: AlumniMember[] = [
     name: 'Meera Reddy',
     email: 'meera.reddy@example.com',
     phone: '+1 (555) 678-9012',
-    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
+    // avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face', // Removed to show initials
     graduationYear: 2016,
     degree: 'Master of Engineering',
     major: 'Mechanical Engineering',
@@ -156,7 +156,7 @@ export const mockAlumniData: AlumniMember[] = [
     name: 'Amit Gupta',
     email: 'amit.gupta@example.com',
     phone: '+1 (555) 789-0123',
-    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face',
+    // avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face', // Removed to show initials
     graduationYear: 2022,
     degree: 'Bachelor of Science',
     major: 'Environmental Science',
@@ -176,7 +176,7 @@ export const mockAlumniData: AlumniMember[] = [
     name: 'Kavita Nair',
     email: 'kavita.nair@example.com',
     phone: '+1 (555) 890-1234',
-    avatar: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=face',
+    // avatar: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=face', // Removed to show initials
     graduationYear: 2015,
     degree: 'JD',
     major: 'Law',

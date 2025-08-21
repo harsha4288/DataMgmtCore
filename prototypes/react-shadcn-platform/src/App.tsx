@@ -225,9 +225,7 @@ function App() {
         
         <Route path="/alumni-directory" element={
           <ThemeProvider>
-            <ProtectedRoute>
-              <AlumniDirectory />
-            </ProtectedRoute>
+            <AlumniDirectory />
             <Toaster />
           </ThemeProvider>
         } />
@@ -243,9 +241,7 @@ function App() {
         
         <Route path="/mentorship" element={
           <ThemeProvider>
-            <ProtectedRoute>
-              <MentorshipPlatform />
-            </ProtectedRoute>
+            <MentorshipPlatform />
             <Toaster />
           </ThemeProvider>
         } />

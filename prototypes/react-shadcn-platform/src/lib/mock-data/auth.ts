@@ -36,7 +36,7 @@ export const mockUsers: User[] = [
         id: 'profile-1',
         userId: 'user-1',
         name: 'Arjun Patel',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+        // avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face', // Removed to show initials
         role: 'member',
         isActive: true,
         lastUsed: '2024-12-19',
@@ -61,7 +61,7 @@ export const mockUsers: User[] = [
         id: 'profile-2',
         userId: 'user-2',
         name: 'Priya Sharma',
-        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b593?w=150&h=150&fit=crop&crop=face',
+        // avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b593?w=150&h=150&fit=crop&crop=face', // Removed to show initials
         role: 'moderator',
         isActive: true,
         lastUsed: '2024-12-19',
@@ -86,7 +86,7 @@ export const mockUsers: User[] = [
         id: 'profile-3',
         userId: 'user-3',
         name: 'System Admin',
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+        // avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face', // Removed to show initials
         role: 'admin',
         isActive: true,
         lastUsed: '2024-12-19',
@@ -111,7 +111,7 @@ export const mockUsers: User[] = [
         id: 'profile-4a',
         userId: 'user-4',
         name: 'Raj Kumar',
-        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
+        // avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face', // Removed to show initials
         role: 'member',
         isActive: true,
         lastUsed: '2024-12-17',
@@ -127,7 +127,7 @@ export const mockUsers: User[] = [
         id: 'profile-4b',
         userId: 'user-4',
         name: 'Raj (Student Profile)',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face&sat=-100',
+        // avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face&sat=-100', // Removed to show initials
         role: 'member',
         isActive: false,
         lastUsed: '2020-12-15',
