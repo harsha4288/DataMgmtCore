@@ -87,7 +87,7 @@ def test_pre_tool_use_hook() -> Tuple[bool, str]:
     for test in test_cases:
         try:
             result = subprocess.run(
-                ["python3", str(hook_path)],
+                ["python", str(hook_path)],
                 input=json.dumps(test["input"]),
                 capture_output=True,
                 text=True
@@ -120,7 +120,7 @@ def test_user_prompt_submit_hook() -> Tuple[bool, str]:
     for test in test_cases:
         try:
             result = subprocess.run(
-                ["python3", str(hook_path)],
+                ["python", str(hook_path)],
                 input=json.dumps(test["input"]),
                 capture_output=True,
                 text=True
@@ -154,7 +154,7 @@ def test_post_tool_use_hook() -> Tuple[bool, str]:
     
     try:
         result = subprocess.run(
-            ["python3", str(hook_path)],
+            ["python", str(hook_path)],
             input=json.dumps(test_input),
             capture_output=True,
             text=True

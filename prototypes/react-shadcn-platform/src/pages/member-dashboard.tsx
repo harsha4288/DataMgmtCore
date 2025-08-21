@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
+import { Switch } from '@/components/ui/switch'
 import { 
   Bell, 
   MessageSquare, 
@@ -46,6 +47,7 @@ import {
 } from 'lucide-react'
 import { type UserProfile } from '@/lib/mock-data/auth'
 import { getDashboardStats, mockPostings, getNotificationsByUser, getConversationsByUser } from '@/lib/mock-data'
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
 
 export default function MemberDashboard() {
   const navigate = useNavigate()
@@ -68,7 +70,7 @@ export default function MemberDashboard() {
       
       // Load notifications
       const userNotifications = getNotificationsByUser(profile.userId)
-      setNotifications(userNotifications.slice(0, 5))
+      setNotifications(userNotifications.slice(0, 8))
       
       // Load conversations
       const userConversations = getConversationsByUser(profile.userId)
@@ -206,6 +208,9 @@ export default function MemberDashboard() {
                 )}
               </Button>
 
+              {/* Theme Toggle */}
+              <ThemeToggle />
+
               <Separator orientation="vertical" className="h-8" />
               
               {/* Profile Section */}
@@ -236,98 +241,109 @@ export default function MemberDashboard() {
 
       <div className="container mx-auto px-6 py-6">
         {/* Hero Welcome Section */}
-        <div className="mb-8">
+        <div className="mb-6">
           <Card className="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20">
-            <CardContent className="p-8">
-              <div className="flex items-start justify-between">
+            <CardContent className="p-4">
+              {/* Top Row - Welcome & Actions */}
+              <div className="flex items-center justify-between mb-3">
                 <div className="flex-1">
-                  <h2 className="text-3xl font-bold mb-2">
+                  <h2 className="text-lg font-semibold mb-1">
                     Welcome back, {currentProfile.name.split(' ')[0]}!
                   </h2>
-                  <p className="text-muted-foreground text-lg mb-6">
+                  <p className="text-sm text-muted-foreground">
                     Connect, collaborate, and grow with the Gita alumni community
                   </p>
-                  
-                  {/* Key Metrics */}
-                  <div className="grid grid-cols-4 gap-6 mb-6">
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-1">Active Connections</p>
-                      <p className="text-2xl font-bold">12</p>
-                      <p className="text-xs text-green-600 flex items-center mt-1">
-                        <TrendingUp className="h-3 w-3 mr-1" />
-                        +3 this week
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-1">Help Provided</p>
-                      <p className="text-2xl font-bold">8</p>
-                      <p className="text-xs text-blue-600 flex items-center mt-1">
-                        <Star className="h-3 w-3 mr-1" />
-                        4.8 rating
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-1">Profile Views</p>
-                      <p className="text-2xl font-bold">45</p>
-                      <p className="text-xs text-purple-600 flex items-center mt-1">
-                        <Eye className="h-3 w-3 mr-1" />
-                        +12% growth
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-1">Engagement Score</p>
-                      <p className="text-2xl font-bold">92%</p>
-                      <Progress value={92} className="h-2 mt-2" />
-                    </div>
-                  </div>
-
-                  {/* Current Mode Indicator */}
-                  <div className="flex items-center space-x-4">
-                    <Badge variant="default" className="py-1.5 px-3">
+                </div>
+                <div className="flex items-center space-x-3">
+                  {/* Status Badges */}
+                  <div className="flex items-center space-x-1">
+                    <Badge variant="default" className="text-xs px-2 py-1">
                       {currentProfile.preferences.supportMode === 'offer' ? (
                         <>
-                          <Users2 className="h-4 w-4 mr-2" />
-                          Offering Support
+                          <Users2 className="h-3 w-3 mr-1" />
+                          Offering
                         </>
                       ) : (
                         <>
-                          <HelpCircle className="h-4 w-4 mr-2" />
-                          Seeking Support
+                          <HelpCircle className="h-3 w-3 mr-1" />
+                          Seeking
                         </>
                       )}
                     </Badge>
-                    <Badge variant="outline" className="py-1.5 px-3">
+                    <Badge variant="outline" className="text-xs px-2 py-1">
                       {currentProfile.preferences.professionalStatus === 'student' ? (
                         <>
-                          <GraduationCap className="h-4 w-4 mr-2" />
+                          <GraduationCap className="h-3 w-3 mr-1" />
                           Student
                         </>
                       ) : (
                         <>
-                          <Briefcase className="h-4 w-4 mr-2" />
+                          <Briefcase className="h-3 w-3 mr-1" />
                           Professional
                         </>
                       )}
                     </Badge>
-                    <Button variant="ghost" size="sm" onClick={() => navigate('/preferences')}>
-                      <Settings className="h-4 w-4 mr-2" />
-                      Update Preferences
-                    </Button>
                   </div>
-                </div>
-
-                {/* Quick Stats Visual */}
-                <div className="hidden xl:block ml-8">
-                  <div className="relative h-32 w-32">
+                  {/* Animated Visual */}
+                  <div className="relative h-12 w-12">
                     <div className="absolute inset-0 bg-primary/20 rounded-full animate-pulse"></div>
-                    <div className="absolute inset-2 bg-primary/30 rounded-full animate-pulse animation-delay-200"></div>
-                    <div className="absolute inset-4 bg-primary/40 rounded-full animate-pulse animation-delay-400"></div>
+                    <div className="absolute inset-1 bg-primary/30 rounded-full animate-pulse" style={{ animationDelay: '200ms' }}></div>
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="text-center">
-                        <p className="text-3xl font-bold">{totalEngagement}</p>
-                        <p className="text-xs text-muted-foreground">Total Reach</p>
+                        <p className="text-sm font-bold">{totalEngagement}</p>
+                        <p className="text-xs text-muted-foreground">Reach</p>
                       </div>
                     </div>
+                  </div>
+                  <Button variant="ghost" size="sm" onClick={() => navigate('/preferences')}>
+                    <Settings className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Bottom Row - Metrics */}
+              <div className="grid grid-cols-4 gap-4">
+                <div className="flex items-center space-x-2">
+                  <div className="p-1.5 bg-green-500/10 rounded">
+                    <TrendingUp className="h-3 w-3 text-green-500" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold">12</p>
+                    <p className="text-xs text-muted-foreground">Connections</p>
+                    <p className="text-xs text-green-600">+3 this week</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <div className="p-1.5 bg-blue-500/10 rounded">
+                    <Star className="h-3 w-3 text-blue-500" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold">8</p>
+                    <p className="text-xs text-muted-foreground">Help Given</p>
+                    <p className="text-xs text-blue-600">4.8 rating</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <div className="p-1.5 bg-purple-500/10 rounded">
+                    <Eye className="h-3 w-3 text-purple-500" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold">45</p>
+                    <p className="text-xs text-muted-foreground">Profile Views</p>
+                    <p className="text-xs text-purple-600">+12% growth</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <div className="p-1.5 bg-primary/10 rounded">
+                    <Activity className="h-3 w-3 text-primary" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold">92%</p>
+                    <p className="text-xs text-muted-foreground">Engagement</p>
+                    <Progress value={92} className="h-1.5 mt-1" />
                   </div>
                 </div>
               </div>
@@ -423,17 +439,26 @@ export default function MemberDashboard() {
                   {currentProfile.preferences.domains.map((domain, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-2 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                      className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-muted/50 transition-colors group"
                     >
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-3">
                         <div className={`${getCategoryColor(domain)}`}>
                           {getDomainIcon(domain)}
                         </div>
                         <span className="text-sm font-medium">{domain}</span>
                       </div>
-                      <Badge variant="outline" className="text-xs">
-                        Active
-                      </Badge>
+                      <div className="flex items-center space-x-2">
+                        <Badge variant="outline" className="text-xs">
+                          Active
+                        </Badge>
+                        <Switch
+                          checked={true}
+                          onCheckedChange={(checked) => {
+                            // Handle toggle logic here
+                            console.log(`Toggle ${domain}: ${checked}`)
+                          }}
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -458,23 +483,56 @@ export default function MemberDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-yellow-50 dark:bg-yellow-950/20">
-                    <span className="text-sm">Review responses</span>
-                    <Badge variant="outline" className="bg-yellow-100 dark:bg-yellow-900/30">
-                      3
-                    </Badge>
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800 group cursor-pointer hover:bg-yellow-100 dark:hover:bg-yellow-950/50 transition-colors">
+                    <div className="flex items-center space-x-3">
+                      <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
+                      <span className="text-sm font-medium text-yellow-800 dark:text-yellow-200">Review responses</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Badge variant="outline" className="bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-200 border-yellow-300 dark:border-yellow-700">
+                        3
+                      </Badge>
+                      <Switch
+                        checked={false}
+                        onCheckedChange={(checked) => {
+                          console.log(`Toggle Review responses: ${checked}`)
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-blue-50 dark:bg-blue-950/20">
-                    <span className="text-sm">Complete profile</span>
-                    <Badge variant="outline" className="bg-blue-100 dark:bg-blue-900/30">
-                      85%
-                    </Badge>
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 group cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-colors">
+                    <div className="flex items-center space-x-3">
+                      <div className="h-2 w-2 rounded-full bg-blue-500"></div>
+                      <span className="text-sm font-medium text-blue-800 dark:text-blue-200">Complete profile</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Badge variant="outline" className="bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 border-blue-300 dark:border-blue-700">
+                        85%
+                      </Badge>
+                      <Switch
+                        checked={true}
+                        onCheckedChange={(checked) => {
+                          console.log(`Toggle Complete profile: ${checked}`)
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-green-50 dark:bg-green-950/20">
-                    <span className="text-sm">Rate helpers</span>
-                    <Badge variant="outline" className="bg-green-100 dark:bg-green-900/30">
-                      2
-                    </Badge>
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 group cursor-pointer hover:bg-green-100 dark:hover:bg-green-950/50 transition-colors">
+                    <div className="flex items-center space-x-3">
+                      <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                      <span className="text-sm font-medium text-green-800 dark:text-green-200">Rate helpers</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Badge variant="outline" className="bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200 border-green-300 dark:border-green-700">
+                        2
+                      </Badge>
+                      <Switch
+                        checked={false}
+                        onCheckedChange={(checked) => {
+                          console.log(`Toggle Rate helpers: ${checked}`)
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -526,7 +584,7 @@ export default function MemberDashboard() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
-                        {notifications.slice(0, 3).map((notification) => (
+                        {notifications.slice(0, 5).map((notification) => (
                           <div key={notification.id} className="flex items-start space-x-3">
                             <div className={`mt-1 h-2 w-2 rounded-full ${
                               notification.isRead ? 'bg-muted' : 'bg-primary'

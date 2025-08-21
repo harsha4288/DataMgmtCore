@@ -21,9 +21,80 @@
       "Bash(npm run:*)",
       "Bash(git checkout:*)",
       "Bash(netsh advfirewall firewall show rule:*)",
-      "Bash(netsh:*)"
+      "Bash(netsh:*)",
+      "Bash(node:*)",
+      "Bash(mv:*)",
+      "Bash(gh:*)",
+      "Bash(winget:*)",
+      "Bash(set GITHUB_TOKEN)",
+      "Bash(cp:*)",
+      "Bash(grep:*)",
+      "Bash(npm audit fix:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/user_prompt_submit.py"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/pre_tool_use.py"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/post_tool_use.py"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/session_start.py"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/stop.py"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/subagent_stop.py"
+          }
+        ]
+      }
+    ]
   }
 }

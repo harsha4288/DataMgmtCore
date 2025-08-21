@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "active_workflows": {
+    "tdd": false,
+    "auto_quality_checks": true,
+    "progress_tracking": true,
+    "context_injection": true
+  },
+  "quality_gates": {
+    "lint": true,
+    "type_check": true,
+    "theme_validation": true,
+    "test_coverage": false
+  }
+}

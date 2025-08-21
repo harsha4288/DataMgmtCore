@@ -23,7 +23,8 @@ import PreferencesPage from './pages/preferences'
 import ChatPage from './pages/chat'
 import ModerationDashboard from './pages/moderation-dashboard'
 import AnalyticsDashboard from './pages/analytics-dashboard'
-import RealWorkflowDashboardPage from './pages/real-workflow-dashboard'
+import MyPostingsPage from './pages/my-postings'
+import WorkflowDashboardPage from './pages/workflow-dashboard'
 
 // Auth Guard Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -304,10 +305,19 @@ function App() {
           </ThemeProvider>
         } />
         
+        <Route path="/my-postings" element={
+          <ThemeProvider>
+            <ProtectedRoute>
+              <MyPostingsPage />
+            </ProtectedRoute>
+            <Toaster />
+          </ThemeProvider>
+        } />
+        
         {/* Real Workflow Dashboard - Development Tool */}
         <Route path="/workflow-dashboard" element={
           <ThemeProvider>
-            <RealWorkflowDashboardPage />
+            <WorkflowDashboardPage />
             <Toaster />
           </ThemeProvider>
         } />

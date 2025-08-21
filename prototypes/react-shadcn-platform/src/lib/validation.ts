@@ -17,7 +17,7 @@ export interface ValidationRule {
   enum?: string[]
   items?: ValidationRule
   properties?: Record<string, ValidationRule>
-  custom?: (value: any) => string | null
+  custom?: (_value: any, _data?: any) => string | null
 }
 
 export interface ValidationSchema {
@@ -104,21 +104,23 @@ export function validateData(data: any, schema: ValidationSchema): ValidationRes
         }
         break
 
-      case 'email':
+      case 'email': {
         const emailError = validateFormat(String(value), 'email', field)
         if (emailError) {
           errors[field] = emailError
           isValid = false
         }
         break
+      }
 
-      case 'url':
+      case 'url': {
         const urlError = validateFormat(String(value), 'url', field)
         if (urlError) {
           errors[field] = urlError
           isValid = false
         }
         break
+      }
 
       case 'array':
         if (!Array.isArray(value)) {
@@ -149,7 +151,7 @@ export function validateData(data: any, schema: ValidationSchema): ValidationRes
           // Recursively validate nested objects
           const nestedResult = validateData(value, rules.properties)
           if (!nestedResult.isValid) {
-            errors[field] = nestedResult.errors
+            errors[field] = Object.values(nestedResult.errors).join(', ')
             isValid = false
           }
         }
@@ -164,7 +166,7 @@ export function validateData(data: any, schema: ValidationSchema): ValidationRes
 
     // Custom validation
     if (rules.custom) {
-      const customError = rules.custom(value)
+      const customError = rules.custom(value, data)
       if (customError) {
         errors[field] = customError
         isValid = false
@@ -180,9 +182,10 @@ export function validateData(data: any, schema: ValidationSchema): ValidationRes
  */
 function validateFormat(value: string, format: string, field: string): string | null {
   switch (format) {
-    case 'email':
+    case 'email': {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       return emailRegex.test(value) ? null : `${field} must be a valid email address`
+    }
     
     case 'url':
       try {
@@ -192,9 +195,10 @@ function validateFormat(value: string, format: string, field: string): string | 
         return `${field} must be a valid URL`
       }
     
-    case 'phone':
-      const phoneRegex = /^\+?[\d\s\-\(\)]{10,}$/
+    case 'phone': {
+      const phoneRegex = /^\+?[\d\s\-()]{10,}$/
       return phoneRegex.test(value) ? null : `${field} must be a valid phone number`
+    }
     
     case 'date':
       return isNaN(Date.parse(value)) ? `${field} must be a valid date` : null

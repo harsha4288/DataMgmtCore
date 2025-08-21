@@ -3,7 +3,7 @@
  * For demo purposes - comprehensive state management system
  */
 
-import { createContext, useContext, useReducer, ReactNode, useEffect } from 'react'
+import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react'
 
 // User types
 export interface User {
@@ -137,7 +137,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
         )
       }
 
-    case 'SWITCH_PROFILE':
+    case 'SWITCH_PROFILE': {
       const newProfile = state.availableProfiles.find(p => p.id === action.payload)
       if (!newProfile) return state
       return {
@@ -145,6 +145,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
         user: newProfile,
         selectedProfile: action.payload
       }
+    }
 
     case 'UPDATE_PREFERENCES':
       if (!state.user) return state
@@ -181,11 +182,11 @@ const AuthContext = createContext<{
   state: AuthState
   dispatch: React.Dispatch<AuthAction>
   // Helper functions
-  login: (email: string, password: string) => Promise<void>
+  login: (_email: string, _password: string) => Promise<void>
   logout: () => void
-  updateProfile: (updates: Partial<User>) => void
-  switchProfile: (profileId: string) => void
-  updatePreferences: (preferences: Partial<User['preferences']>) => void
+  updateProfile: (_updates: Partial<User>) => void
+  switchProfile: (_profileId: string) => void
+  updatePreferences: (_preferences: Partial<User['preferences']>) => void
 } | null>(null)
 
 // Provider component

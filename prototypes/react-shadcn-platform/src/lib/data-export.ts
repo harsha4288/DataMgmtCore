@@ -400,7 +400,3 @@ export function getExportStats(data: ExportData) {
   }
 }
 
-// Error message helper (simplified for this context)
-function showErrorMessage(title: string, description: string) {
-  console.error(`${title}: ${description}`)
-}

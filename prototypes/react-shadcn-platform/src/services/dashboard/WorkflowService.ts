@@ -113,7 +113,7 @@ export interface DashboardState {
 }
 
 class WorkflowService {
-  private listeners: ((state: DashboardState) => void)[] = [];
+  private listeners: ((_state: DashboardState) => void)[] = [];
   private state: DashboardState = {
     phases: [],
     currentPhase: '',
@@ -183,14 +183,9 @@ class WorkflowService {
   }
 
   private async loadProgressData(): Promise<Phase[] | null> {
-    try {
-      // In a real implementation, this would read from PROGRESS.md
-      // For now, return null to use mock data
-      return null;
-    } catch (error) {
-      console.error('Failed to load PROGRESS.md:', error);
-      return null;
-    }
+    // In a real implementation, this would read from PROGRESS.md
+    // For now, return null to use mock data
+    return null;
   }
 
   private getMockPhases(): Phase[] {

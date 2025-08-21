@@ -20,7 +20,7 @@ export interface AppError {
 export type ErrorSeverity = 'low' | 'medium' | 'high' | 'critical'
 
 // Error handling configuration
-interface ErrorConfig {
+export interface ErrorConfig {
   showToast: boolean
   logToConsole: boolean
   reportToService: boolean
@@ -216,7 +216,7 @@ function reportErrorToService(error: AppError, severity: ErrorSeverity): void {
  * Validation error helpers
  */
 export class ValidationError extends Error {
-  constructor(message: string, public field?: string, public details?: any) {
+  constructor(message: string, public _field?: string, public _details?: any) {
     super(message)
     this.name = 'ValidationError'
   }
@@ -235,7 +235,7 @@ export function handleValidationError(
  * Network error helpers
  */
 export class NetworkError extends Error {
-  constructor(message: string, public code?: number, public response?: any) {
+  constructor(message: string, public _code?: number, public _response?: any) {
     super(message)
     this.name = 'NetworkError'
   }
@@ -254,7 +254,7 @@ export function handleNetworkError(
  * Authentication error helpers
  */
 export class AuthError extends Error {
-  constructor(message: string, public code?: string) {
+  constructor(message: string, public _code?: string) {
     super(message)
     this.name = 'AuthError'
   }
@@ -328,7 +328,7 @@ export function getErrorBoundaryFallback(error: Error, errorInfo: any) {
     title: 'Something went wrong',
     description: 'The application encountered an unexpected error. Please refresh the page.',
     action: () => window.location.reload(),
-    details: typeof process !== 'undefined' && process.env.NODE_ENV === 'development' ? {
+    details: typeof window !== 'undefined' && (window as any).process?.env?.NODE_ENV === 'development' ? {
       message: error.message,
       stack: error.stack,
       componentStack: errorInfo.componentStack
@@ -379,7 +379,3 @@ export function clearErrorHistory(): void {
   errorHistory.length = 0
 }
 
-/**
- * Export error types for use in components
- */
-export type { AppError, ErrorSeverity, ErrorConfig }

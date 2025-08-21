@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "hooks": {
+    "user_prompt_submit": true,
+    "pre_tool_use": true,
+    "post_tool_use": true,
+    "session_start": true,
+    "stop": true,
+    "subagent_stop": true
+  },
+  "safety": {
+    "block_dangerous_commands": true,
+    "protect_files": true,
+    "enforce_quality": true
+  }
+}

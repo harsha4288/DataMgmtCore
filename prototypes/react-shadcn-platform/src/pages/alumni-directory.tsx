@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
 import { 
   Search, 
@@ -55,7 +56,8 @@ export default function AlumniDirectory() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showOnlineOnly, setShowOnlineOnly] = useState(false)
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false)
-  const [savedSearches, setSavedSearches] = useState<Array<{id: string, name: string, filters: any}>>([
+  // eslint-disable-next-line no-unused-vars
+  const [_savedSearches, _setSavedSearches] = useState<Array<{id: string, name: string, filters: any}>>([
     // Mock saved searches for demo
     {id: '1', name: 'Tech Mentors in Bay Area', filters: {industry: 'Technology', location: 'San Francisco', mentorStatus: 'available'}},
     {id: '2', name: 'Recent Graduates', filters: {year: '2023'}},
@@ -224,7 +226,9 @@ export default function AlumniDirectory() {
   }
 
   const AlumniCard = ({ member }: { member: typeof enhancedAlumniData[0] }) => (
-    <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+    <Card 
+      className="group relative overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-200"
+    >
       {/* Premium/Top Mentor Indicator */}
       {member.topMentor && (
         <div className="absolute top-0 right-0 bg-gradient-to-bl from-yellow-400/20 to-transparent w-24 h-24 pointer-events-none" />
@@ -332,7 +336,7 @@ export default function AlumniDirectory() {
         <div className="flex items-center gap-2 pt-2">
           <Button 
             size="sm" 
-            className="flex-1 group-hover:shadow-md transition-all"
+            className="flex-1"
           >
             <MessageSquare className="h-3 w-3 mr-1" />
             Connect
@@ -340,7 +344,6 @@ export default function AlumniDirectory() {
           <Button
             size="sm"
             variant="outline"
-            className="group-hover:bg-secondary transition-colors"
             onClick={() => navigate(`/alumni-profile/${member.id}`)}
           >
             <Eye className="h-4 w-4" />
@@ -348,7 +351,6 @@ export default function AlumniDirectory() {
           <Button
             size="sm"
             variant="outline"
-            className="group-hover:bg-secondary transition-colors"
           >
             <Bookmark className="h-4 w-4" />
           </Button>
@@ -358,7 +360,9 @@ export default function AlumniDirectory() {
   )
 
   const AlumniListItem = ({ member }: { member: typeof enhancedAlumniData[0] }) => (
-    <Card className="hover:shadow-lg transition-all duration-200 hover:bg-accent/50">
+    <Card 
+      className="hover:bg-accent/50 cursor-pointer transition-all duration-200"
+    >
       <CardContent className="flex items-center justify-between p-4">
         <div className="flex items-center space-x-4">
           {/* Avatar with status */}
@@ -505,8 +509,33 @@ export default function AlumniDirectory() {
                   placeholder="Search by name, title, company..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setShowSearchSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowSearchSuggestions(false), 200)}
                   className="pl-10"
                 />
+                
+                {/* Search Suggestions Dropdown */}
+                {showSearchSuggestions && searchSuggestions.length > 0 && (
+                  <Card className="absolute top-full left-0 right-0 z-50 mt-1 border shadow-lg">
+                    <CardContent className="p-2">
+                      <div className="space-y-1">
+                        {searchSuggestions.map((suggestion, index) => (
+                          <button
+                            key={index}
+                            onClick={() => {
+                              setSearchQuery(suggestion.replace(/^[👤🏢📍⚡]\s/u, ''))
+                              setShowSearchSuggestions(false)
+                            }}
+                            className="w-full text-left px-3 py-2 text-sm hover:bg-accent rounded-md transition-colors flex items-center gap-2"
+                          >
+                            <span className="text-lg">{suggestion.split(' ')[0]}</span>
+                            <span>{suggestion.split(' ').slice(1).join(' ')}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
               
               <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
@@ -574,6 +603,103 @@ export default function AlumniDirectory() {
                   <List className="h-4 w-4" />
                 </Button>
               </div>
+            </div>
+
+            {/* iOS-style Horizontal Scrollable Quick Filters */}
+            <div className="relative">
+              <ScrollArea className="w-full whitespace-nowrap">
+                <div className="flex space-x-2 pb-2">
+                  {/* Quick Industry Filters */}
+                  {['Technology', 'Healthcare', 'Finance', 'Education', 'Consulting'].map((industry) => (
+                    <Button
+                      key={industry}
+                      size="sm"
+                      variant={selectedIndustry === industry ? "default" : "outline"}
+                      onClick={() => setSelectedIndustry(selectedIndustry === industry ? '' : industry)}
+                      className="flex-shrink-0 h-8 px-3 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105"
+                    >
+                      {industry}
+                    </Button>
+                  ))}
+
+                  {/* Mentor Status Filter */}
+                  <Button
+                    size="sm"
+                    variant={selectedMentorStatus === 'available' ? "default" : "outline"}
+                    onClick={() => setSelectedMentorStatus(selectedMentorStatus === 'available' ? '' : 'available')}
+                    className="flex-shrink-0 h-8 px-3 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white border-0"
+                  >
+                    <UserCheck className="w-3 h-3 mr-1" />
+                    Mentors Available
+                  </Button>
+
+                  {/* Graduation Year Quick Filters */}
+                  {[2023, 2022, 2021, 2020].map((year) => (
+                    <Button
+                      key={year}
+                      size="sm"
+                      variant={selectedYear === year.toString() ? "default" : "outline"}
+                      onClick={() => setSelectedYear(selectedYear === year.toString() ? '' : year.toString())}
+                      className="flex-shrink-0 h-8 px-3 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105"
+                    >
+                      Class of {year}
+                    </Button>
+                  ))}
+
+                  {/* Location Quick Filters */}
+                  {['San Francisco', 'New York', 'Los Angeles', 'Chicago'].map((location) => (
+                    <Button
+                      key={location}
+                      size="sm"
+                      variant={selectedLocation === location ? "default" : "outline"}
+                      onClick={() => setSelectedLocation(selectedLocation === location ? '' : location)}
+                      className="flex-shrink-0 h-8 px-3 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105"
+                    >
+                      <MapPin className="w-3 h-3 mr-1" />
+                      {location.split(',')[0]}
+                    </Button>
+                  ))}
+
+                  {/* Verified Members Filter */}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-shrink-0 h-8 px-3 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105 border-blue-200 text-blue-600 hover:bg-blue-50"
+                  >
+                    <CheckCircle className="w-3 h-3 mr-1" />
+                    Verified
+                  </Button>
+
+                  {/* Top Mentors Filter */}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-shrink-0 h-8 px-3 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105 border-yellow-200 text-yellow-700 hover:bg-yellow-50"
+                  >
+                    <Trophy className="w-3 h-3 mr-1" />
+                    Top Mentors
+                  </Button>
+
+                  {/* Clear All Filters */}
+                  {(selectedIndustry || selectedYear || selectedLocation || selectedMentorStatus || showOnlineOnly) && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        setSelectedIndustry('')
+                        setSelectedYear('')
+                        setSelectedLocation('')
+                        setSelectedMentorStatus('')
+                        setShowOnlineOnly(false)
+                      }}
+                      className="flex-shrink-0 h-8 px-3 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105 text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <X className="w-3 h-3 mr-1" />
+                      Clear All
+                    </Button>
+                  )}
+                </div>
+              </ScrollArea>
             </div>
 
             {/* Active Filters Display */}
