@@ -303,37 +303,38 @@ export default function MyPostingsPage() {
       />
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-3 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <Button 
                 variant="ghost" 
                 size="sm" 
                 onClick={() => navigate('/member-dashboard')}
-                className="flex items-center gap-2"
+                className="flex items-center gap-1 sm:gap-2 min-h-[44px]"
               >
                 <ArrowLeft className="h-4 w-4" />
-                Back
+                <span className="hidden sm:inline">Back</span>
               </Button>
-              <div className="flex items-center space-x-3">
-                <BarChart3 className="h-6 w-6 text-primary" />
-                <h1 className="text-xl font-bold">My Postings</h1>
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <BarChart3 className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+                <h1 className="text-lg sm:text-xl font-bold">My Postings</h1>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
-              <Badge variant="secondary">{postings.length} total postings</Badge>
-              <Button onClick={() => navigate('/create-posting')}>
-                <Plus className="h-4 w-4 mr-2" />
-                Create Posting
+            <div className="flex items-center space-x-1 sm:space-x-3">
+              <Badge variant="secondary" className="hidden sm:inline-flex">{postings.length} total postings</Badge>
+              <Button onClick={() => navigate('/create-posting')} className="min-h-[44px] text-sm sm:text-base">
+                <Plus className="h-4 w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Create Posting</span>
+                <span className="sm:hidden">Create</span>
               </Button>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-3 sm:px-6 py-4 sm:py-8">
         {/* Overview Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center space-x-2">
@@ -384,28 +385,31 @@ export default function MyPostingsPage() {
         </div>
 
         {/* Search and Filters */}
-        <Card className="mb-6">
-          <CardContent className="p-4">
-            <div className="flex flex-col lg:flex-row gap-4">
+        <Card className="mb-4 sm:mb-6">
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex flex-col gap-3 sm:gap-4">
               <div className="flex-1 relative">
                 <Input
                   placeholder="Search your postings..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-4"
+                  className="pl-4 min-h-[44px]"
                 />
               </div>
               <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList>
-                  <TabsTrigger value="all">All ({postings.length})</TabsTrigger>
-                  <TabsTrigger value="active">
-                    Active ({postings.filter(p => p.status === 'active').length})
+                <TabsList className="grid grid-cols-2 sm:grid-cols-4 h-auto w-full">
+                  <TabsTrigger value="all" className="text-xs sm:text-sm p-2 sm:p-3">All ({postings.length})</TabsTrigger>
+                  <TabsTrigger value="active" className="text-xs sm:text-sm p-2 sm:p-3">
+                    <span className="hidden sm:inline">Active ({postings.filter(p => p.status === 'active').length})</span>
+                    <span className="sm:hidden">Active</span>
                   </TabsTrigger>
-                  <TabsTrigger value="paused">
-                    Paused ({postings.filter(p => p.status === 'paused').length})
+                  <TabsTrigger value="paused" className="text-xs sm:text-sm p-2 sm:p-3">
+                    <span className="hidden sm:inline">Paused ({postings.filter(p => p.status === 'paused').length})</span>
+                    <span className="sm:hidden">Paused</span>
                   </TabsTrigger>
-                  <TabsTrigger value="expired">
-                    Expired ({postings.filter(p => p.status === 'expired' || p.status === 'closed').length})
+                  <TabsTrigger value="expired" className="text-xs sm:text-sm p-2 sm:p-3">
+                    <span className="hidden sm:inline">Expired ({postings.filter(p => p.status === 'expired' || p.status === 'closed').length})</span>
+                    <span className="sm:hidden">Expired</span>
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
@@ -519,7 +523,7 @@ export default function MyPostingsPage() {
                     </div>
 
                     {/* Analytics Preview */}
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
+                    <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-4 mb-4">
                       <div className="text-center">
                         <p className="text-lg font-semibold">{posting.analytics.views}</p>
                         <p className="text-xs text-muted-foreground">Views</p>
@@ -723,10 +727,11 @@ export default function MyPostingsPage() {
                                 </div>
                               </div>
                               <p className="text-sm text-muted-foreground mb-2">{response.message}</p>
-                              <div className="flex space-x-2">
+                              <div className="flex flex-wrap gap-1 sm:gap-2">
                                 <Button 
                                   size="sm" 
                                   variant="outline"
+                                  className="text-xs sm:text-sm min-h-[32px] sm:min-h-[36px]"
                                   onClick={() => {
                                     // Reply functionality - placeholder for now
                                     toast({
@@ -740,6 +745,7 @@ export default function MyPostingsPage() {
                                 <Button 
                                   size="sm" 
                                   variant="outline"
+                                  className="text-xs sm:text-sm min-h-[32px] sm:min-h-[36px]"
                                   onClick={() => {
                                     // Mark as reviewed functionality
                                     toast({
@@ -748,11 +754,13 @@ export default function MyPostingsPage() {
                                     })
                                   }}
                                 >
-                                  Mark Reviewed
+                                  <span className="hidden sm:inline">Mark Reviewed</span>
+                                  <span className="sm:hidden">Reviewed</span>
                                 </Button>
                                 <Button 
                                   size="sm" 
                                   variant="outline"
+                                  className="text-xs sm:text-sm min-h-[32px] sm:min-h-[36px]"
                                   onClick={() => navigate('/chat', { state: { recipient: response } })}
                                 >
                                   Contact

@@ -122,12 +122,13 @@ export const mockAlumniOpportunities: AlumniOpportunity[] = [
   {
     id: 'post-001',
     title: 'Yale University Summer Internship 2025',
-    description: 'Exciting opportunity! Apply for the Yale University Summer Internship 2025 in Senator Warnock\'s Office. Study in the USA and gain valuable experience. Visit www.scholarshipsads.com for more details!',
+    description: 'Yale University offers a prestigious summer internship program in collaboration with Senator Warnock\'s Office. This program provides students with valuable experience in government and policy work while studying in the USA. Participants gain exposure to both academic excellence and practical government operations.',
     type: 'internship',
     image: '/images/opportunities/Internship_1.png',
     tags: ['Yale', 'Summer', 'USA', 'Government', 'Political Science'],
     
-    organization: 'Yale University / Senator Warnock\'s Office',
+    organization: 'Yale University',
+    company: 'Senator Warnock\'s Office',
     industryCategory: 'Government / Political Science',
     skillsRequired: ['Academic Excellence', 'Political Interest', 'Communication Skills'],
     experienceLevel: 'entry',
@@ -169,14 +170,14 @@ export const mockAlumniOpportunities: AlumniOpportunity[] = [
     isPriority: true,
     isVerified: true,
     
-    interestLink: 'https://www.scholarshipsads.com',
+    interestLink: 'https://world.yale.edu/internships',
     commentLink: '/opportunities/post-001/comments'
   },
 
   {
     id: 'post-002',
     title: 'CSIS Internships 2025 in USA',
-    description: 'Don\'t miss out on the CSIS Internships 2025 in USA! These are paid opportunities open to students from different countries. Deadlines vary, so check out www.opportunitiescircle.com to apply now!',
+    description: 'The Center for Strategic and International Studies offers paid internship opportunities for students from around the world. These positions provide exposure to policy research and international affairs. Application deadlines vary by program, and international students are encouraged to apply.',
     type: 'internship',
     image: '/images/opportunities/Internship_2.png',
     tags: ['CSIS', 'USA', 'Paid', 'International', 'Policy'],
@@ -221,14 +222,14 @@ export const mockAlumniOpportunities: AlumniOpportunity[] = [
     isPriority: false,
     isVerified: false,
     
-    interestLink: 'https://www.opportunitiescircle.com',
+    interestLink: 'https://www.csis.org/programs/internships-fellowships',
     commentLink: '/opportunities/post-002/comments'
   },
 
   {
     id: 'post-003',
     title: 'WISE Summer 2025 Internships',
-    description: 'Attention engineering students! The WISE Summer 2025 Internships application deadline is 1 February 2025. Ranked one of the best in the U.S. by The Princeton Review. Apply at wise-intern.org!',
+    description: 'Washington Internships for Students of Engineering (WISE) offers summer internship opportunities for engineering students. The program, recognized by The Princeton Review as one of the top programs in the U.S., focuses on the intersection of engineering and public policy. Application deadline is February 1, 2025.',
     type: 'internship',
     image: '/images/opportunities/Internship_3.jpg',
     tags: ['WISE', 'Summer', 'Engineering', 'Princeton Review'],
@@ -265,7 +266,7 @@ export const mockAlumniOpportunities: AlumniOpportunity[] = [
     },
     postedDate: '2025-03-20',
     expiryDate: '2025-02-15',
-    status: 'active',
+    status: 'expired',
     
     views: 230,
     applications: 30,
@@ -319,7 +320,7 @@ export const mockAlumniOpportunities: AlumniOpportunity[] = [
     },
     postedDate: '2025-03-21',
     expiryDate: '2024-12-01',
-    status: 'active',
+    status: 'expired',
     
     views: 112,
     applications: 12,
@@ -559,12 +560,13 @@ export const mockAlumniOpportunities: AlumniOpportunity[] = [
   {
     id: 'post-009',
     title: 'The Speakout Media Scholarship to America',
-    description: 'Fully funded opportunity! The Speakout Media Scholarship to Tulane University in the USA is open. Apply by 5 December 2024. Don\'t miss your chance to study in America!',
+    description: 'The Speakout Media Scholarship provides fully funded educational opportunities at Tulane University in the United States. This scholarship program supports students pursuing studies in media, communications, and related fields. The program includes comprehensive financial support and cultural immersion opportunities.',
     type: 'scholarship',
     image: '/images/opportunities/Scholorship_2.jpeg',
     tags: ['Speakout Media', 'Tulane', 'USA', 'Fully Funded'],
     
-    organization: 'Speakout Media / Tulane University',
+    organization: 'Tulane University',
+    company: 'Speakout Media',
     industryCategory: 'Education / Media',
     skillsRequired: ['Academic Excellence', 'Media Interest', 'Communication'],
     experienceLevel: 'any',
@@ -596,7 +598,7 @@ export const mockAlumniOpportunities: AlumniOpportunity[] = [
     },
     postedDate: '2025-03-22',
     expiryDate: '2024-12-10',
-    status: 'active',
+    status: 'expired',
     
     views: 328,
     applications: 28,

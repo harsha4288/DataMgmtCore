@@ -767,27 +767,29 @@ export default function CreatePostingPage() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b bg-card">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-3 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate('/member-dashboard')}
+                className="min-h-[44px]"
               >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Dashboard
+                <ArrowLeft className="h-4 w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Back to Dashboard</span>
+                <span className="sm:hidden">Back</span>
               </Button>
-              <Separator orientation="vertical" className="h-6" />
-              <h1 className="text-xl font-bold">Create New Posting</h1>
+              <Separator orientation="vertical" className="h-6 hidden sm:block" />
+              <h1 className="text-lg sm:text-xl font-bold">Create New Posting</h1>
             </div>
-            <Badge variant="outline">Phase 2 Demo</Badge>
+            <Badge variant="outline" className="text-xs sm:text-sm">Phase 2 Demo</Badge>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-3 sm:px-6 py-4 sm:py-8">
         <div className="max-w-3xl mx-auto">
           {/* Progress Indicator */}
           <div className="mb-8">
@@ -840,30 +842,33 @@ export default function CreatePostingPage() {
 
             {/* Navigation */}
             <Separator />
-            <CardContent className="pt-6">
-              <div className="flex justify-between">
-                <div className="flex gap-2">
+            <CardContent className="pt-4 sm:pt-6 p-3 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:justify-between gap-3">
+                <div className="flex gap-2 order-2 sm:order-1">
                   {currentStep > 1 && (
                     <Button
                       variant="outline"
                       onClick={handlePrevious}
                       disabled={isSubmitting}
+                      className="min-h-[44px] flex-1 sm:flex-initial"
                     >
-                      <ArrowLeft className="h-4 w-4 mr-2" />
-                      Previous
+                      <ArrowLeft className="h-4 w-4 mr-1 sm:mr-2" />
+                      <span className="hidden sm:inline">Previous</span>
+                      <span className="sm:hidden">Prev</span>
                     </Button>
                   )}
                   <Button
                     variant="ghost"
                     onClick={handleCancel}
                     disabled={isSubmitting}
+                    className="min-h-[44px] flex-1 sm:flex-initial"
                   >
-                    <X className="h-4 w-4 mr-2" />
+                    <X className="h-4 w-4 mr-1 sm:mr-2" />
                     Cancel
                   </Button>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 order-1 sm:order-2">
                   <Button
                     variant="outline"
                     onClick={() => {
@@ -871,31 +876,36 @@ export default function CreatePostingPage() {
                       alert('Draft saved! (Demo only)')
                     }}
                     disabled={isSubmitting}
+                    className="min-h-[44px] flex-1 sm:flex-initial"
                   >
-                    <Save className="h-4 w-4 mr-2" />
-                    Save Draft
+                    <Save className="h-4 w-4 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">Save Draft</span>
+                    <span className="sm:hidden">Save</span>
                   </Button>
 
                   {currentStep < totalSteps ? (
-                    <Button onClick={handleNext} disabled={isSubmitting}>
-                      Next
-                      <ArrowRight className="h-4 w-4 ml-2" />
+                    <Button onClick={handleNext} disabled={isSubmitting} className="min-h-[44px] flex-1 sm:flex-initial">
+                      <span className="hidden sm:inline">Next</span>
+                      <span className="sm:hidden">Next</span>
+                      <ArrowRight className="h-4 w-4 ml-1 sm:ml-2" />
                     </Button>
                   ) : (
                     <Button
                       onClick={handleSubmit}
                       disabled={isSubmitting}
-                      className="min-w-[120px]"
+                      className="min-h-[44px] flex-1 sm:flex-initial min-w-[100px] sm:min-w-[120px]"
                     >
                       {isSubmitting ? (
                         <>
                           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                          Submitting...
+                          <span className="hidden sm:inline">Submitting...</span>
+                          <span className="sm:hidden">Sending...</span>
                         </>
                       ) : (
                         <>
-                          <Send className="h-4 w-4 mr-2" />
-                          Submit for Review
+                          <Send className="h-4 w-4 mr-1 sm:mr-2" />
+                          <span className="hidden sm:inline">Submit for Review</span>
+                          <span className="sm:hidden">Submit</span>
                         </>
                       )}
                     </Button>

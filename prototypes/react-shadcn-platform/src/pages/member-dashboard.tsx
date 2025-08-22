@@ -240,25 +240,28 @@ export default function MemberDashboard() {
 
       {/* Enhanced Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-3">
+        <div className="container mx-auto px-3 sm:px-6 py-3">
           <div className="flex items-center justify-between">
             {/* Logo and Brand */}
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <div className="flex items-center space-x-2 sm:space-x-3">
                 <img
                   src="/images/opportunities/sgsgf-logo.png"
                   alt="SGS Gita Foundation Logo"
-                  className="h-8 w-auto"
+                  className="h-6 sm:h-8 w-auto"
                 />
-                <div>
-                  <h1 className="text-lg font-bold">SGS Gita Connect</h1>
+                <div className="hidden sm:block">
+                  <h1 className="text-sm sm:text-lg font-bold">SGS Gita Connect</h1>
                   <p className="text-xs text-muted-foreground">Alumni Network</p>
+                </div>
+                <div className="sm:hidden">
+                  <h1 className="text-sm font-bold">SGS Connect</h1>
                 </div>
               </div>
             </div>
             
             {/* Navigation and Actions */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4">
               {/* Quick Search */}
               <div className="hidden lg:flex items-center">
                 <Button 
@@ -271,18 +274,29 @@ export default function MemberDashboard() {
                   Search alumni...
                 </Button>
               </div>
+              {/* Mobile Search Icon */}
+              <div className="lg:hidden">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-8 w-8 min-w-[32px]"
+                  onClick={() => navigate('/alumni-directory')}
+                >
+                  <Search className="h-4 w-4" />
+                </Button>
+              </div>
 
               {/* Notifications */}
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="relative"
+                className="relative h-8 w-8 min-w-[32px] sm:h-9 sm:w-9"
                 onClick={() => navigate('/responses')}
               >
-                <Bell className="h-5 w-5" />
+                <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
                 {stats.notifications.unread > 0 && (
-                  <span className="absolute -top-1 -right-1 h-5 w-5 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center font-medium">
-                    {stats.notifications.unread}
+                  <span className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center font-medium">
+                    {stats.notifications.unread > 9 ? '9+' : stats.notifications.unread}
                   </span>
                 )}
               </Button>
@@ -291,41 +305,47 @@ export default function MemberDashboard() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="relative"
+                className="relative h-8 w-8 min-w-[32px] sm:h-9 sm:w-9"
                 onClick={() => navigate('/chat')}
               >
-                <MessageSquare className="h-5 w-5" />
+                <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5" />
                 {stats.chat.totalUnread > 0 && (
-                  <span className="absolute -top-1 -right-1 h-5 w-5 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center font-medium">
-                    {stats.chat.totalUnread}
+                  <span className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center font-medium">
+                    {stats.chat.totalUnread > 9 ? '9+' : stats.chat.totalUnread}
                   </span>
                 )}
               </Button>
 
-              {/* Theme Toggle */}
-              <ThemeToggle />
+              {/* Theme Toggle - Hidden on small mobile */}
+              <div className="hidden sm:block">
+                <ThemeToggle />
+              </div>
 
-              <Separator orientation="vertical" className="h-8" />
+              <Separator orientation="vertical" className="hidden sm:block h-8" />
               
               {/* Profile Section */}
-              <div className="flex items-center space-x-3">
-                <div className="hidden md:block text-right">
-                  <p className="text-sm font-medium">{currentProfile.name}</p>
-                  <p className="text-xs text-muted-foreground capitalize">{currentProfile.preferences.professionalStatus || 'member'} • {currentProfile.role}</p>
+              <div className="flex items-center space-x-1 sm:space-x-2">
+                <div className="hidden lg:block text-right">
+                  <p className="text-sm font-medium truncate max-w-[120px]">{currentProfile.name}</p>
+                  <p className="text-xs text-muted-foreground capitalize truncate max-w-[120px]">{currentProfile.preferences.professionalStatus || 'member'} • {currentProfile.role}</p>
                 </div>
-                <Avatar className="h-9 w-9 border-2 border-primary/20">
+                <Avatar className="h-7 w-7 sm:h-8 sm:w-8 lg:h-9 lg:w-9 border-2 border-primary/20">
                   <AvatarImage src={currentProfile.avatar} />
-                  <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                  <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs">
                     {currentProfile.name.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex items-center space-x-1">
-                  <Button variant="ghost" size="icon" onClick={handleSwitchProfile}>
-                    <UserPlus className="h-4 w-4" />
+                <div className="flex items-center space-x-0.5 sm:space-x-1">
+                  <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8 lg:h-9 lg:w-9" onClick={handleSwitchProfile}>
+                    <UserPlus className="h-3 w-3 sm:h-4 sm:w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={handleLogout}>
-                    <LogOut className="h-4 w-4" />
+                  <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8 lg:h-9 lg:w-9" onClick={handleLogout}>
+                    <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
                   </Button>
+                  {/* Mobile Theme Toggle in dropdown */}
+                  <div className="sm:hidden">
+                    <ThemeToggle />
+                  </div>
                 </div>
               </div>
             </div>
@@ -333,23 +353,23 @@ export default function MemberDashboard() {
         </div>
       </header>
 
-      <div className="container mx-auto px-6 py-6">
+      <div className="container mx-auto px-3 sm:px-6 py-3 sm:py-6">
         {/* Hero Welcome Section */}
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <Card className="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20">
-            <CardContent className="p-4">
+            <CardContent className="p-3 sm:p-4">
               
               {/* Top Row - Welcome & Actions */}
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 space-y-2 sm:space-y-0">
                 <div className="flex-1">
-                  <h2 className="text-lg font-semibold mb-1">
+                  <h2 className="text-base sm:text-lg font-semibold mb-1">
                     Welcome back, {currentProfile.name.split(' ')[0]}!
                   </h2>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs sm:text-sm text-muted-foreground">
                     Connect, collaborate, and grow with the SGS Gita Connect Alumni Network
                   </p>
                 </div>
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2 sm:space-x-3">
                   {/* Status Badges */}
                   <div className="flex items-center space-x-1">
                     <Badge variant="default" className="text-xs px-2 py-1">
@@ -397,47 +417,47 @@ export default function MemberDashboard() {
               </div>
 
               {/* Bottom Row - Metrics */}
-              <div className="grid grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
                 <div className="flex items-center space-x-2">
-                  <div className="p-1.5 bg-green-500/10 rounded">
+                  <div className="p-1 sm:p-1.5 bg-green-500/10 rounded">
                     <TrendingUp className="h-3 w-3 text-green-500" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-semibold">12</p>
-                    <p className="text-xs text-muted-foreground">Connections</p>
-                    <p className="text-xs text-green-600">+3 this week</p>
+                    <p className="text-xs text-muted-foreground truncate">Connections</p>
+                    <p className="text-xs text-green-600 hidden sm:block">+3 this week</p>
                   </div>
                 </div>
                 
                 <div className="flex items-center space-x-2">
-                  <div className="p-1.5 bg-blue-500/10 rounded">
+                  <div className="p-1 sm:p-1.5 bg-blue-500/10 rounded">
                     <Star className="h-3 w-3 text-blue-500" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-semibold">8</p>
-                    <p className="text-xs text-muted-foreground">Help Given</p>
-                    <p className="text-xs text-blue-600">4.8 rating</p>
+                    <p className="text-xs text-muted-foreground truncate">Help Given</p>
+                    <p className="text-xs text-blue-600 hidden sm:block">4.8 rating</p>
                   </div>
                 </div>
                 
                 <div className="flex items-center space-x-2">
-                  <div className="p-1.5 bg-purple-500/10 rounded">
+                  <div className="p-1 sm:p-1.5 bg-purple-500/10 rounded">
                     <Eye className="h-3 w-3 text-purple-500" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-semibold">45</p>
-                    <p className="text-xs text-muted-foreground">Profile Views</p>
-                    <p className="text-xs text-purple-600">+12% growth</p>
+                    <p className="text-xs text-muted-foreground truncate">Profile Views</p>
+                    <p className="text-xs text-purple-600 hidden sm:block">+12% growth</p>
                   </div>
                 </div>
                 
                 <div className="flex items-center space-x-2">
-                  <div className="p-1.5 bg-primary/10 rounded">
+                  <div className="p-1 sm:p-1.5 bg-primary/10 rounded">
                     <Activity className="h-3 w-3 text-primary" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-semibold">92%</p>
-                    <p className="text-xs text-muted-foreground">Engagement</p>
+                    <p className="text-xs text-muted-foreground truncate">Engagement</p>
                     <Progress value={92} className="h-1.5 mt-1" />
                   </div>
                 </div>
@@ -447,60 +467,60 @@ export default function MemberDashboard() {
         </div>
 
         {/* Main Content Area */}
-        <div className="grid grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
           {/* Left Sidebar - Quick Actions & Domains */}
-          <div className="col-span-3 space-y-6">
+          <div className="lg:col-span-3 space-y-4 lg:space-y-6">
             {/* Quick Actions */}
             <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base font-semibold flex items-center">
+              <CardHeader className="pb-2 sm:pb-3">
+                <CardTitle className="text-sm sm:text-base font-semibold flex items-center">
                   <Activity className="h-4 w-4 mr-2 text-primary" />
                   Quick Actions
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="space-y-2 p-3 sm:p-6">
                 <Button 
-                  className="w-full justify-start group" 
+                  className="w-full justify-start group min-h-[44px] text-sm" 
                   variant="default"
                   onClick={() => navigate('/alumni-directory')}
                 >
                   <Users className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
-                  Alumni Directory
-                  <Badge variant="secondary" className="ml-auto">
+                  <span className="truncate">Alumni Directory</span>
+                  <Badge variant="secondary" className="ml-auto hidden sm:flex">
                     New
                   </Badge>
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="w-full justify-start group"
+                  className="w-full justify-start group min-h-[44px] text-sm"
                   onClick={() => navigate('/mentorship')}
                 >
                   <GraduationCap className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
-                  Mentorship Platform
+                  <span className="truncate">Mentorship Platform</span>
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="w-full justify-start group"
+                  className="w-full justify-start group min-h-[44px] text-sm"
                   onClick={() => navigate('/browse-postings')}
                 >
                   <Search className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
-                  Browse Requests
+                  <span className="truncate">Browse Requests</span>
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="w-full justify-start group"
+                  className="w-full justify-start group min-h-[44px] text-sm"
                   onClick={() => navigate('/create-posting')}
                 >
                   <Plus className="h-4 w-4 mr-2 group-hover:rotate-90 transition-transform" />
-                  Create Posting
+                  <span className="truncate">Create Posting</span>
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="w-full justify-start group"
+                  className="w-full justify-start group min-h-[44px] text-sm"
                   onClick={() => navigate('/chat')}
                 >
                   <MessageSquare className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
-                  Start Chat
+                  <span className="truncate">Start Chat</span>
                   {stats.chat.totalUnread > 0 && (
                     <Badge variant="destructive" className="ml-auto">
                       {stats.chat.totalUnread}
@@ -509,11 +529,11 @@ export default function MemberDashboard() {
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="w-full justify-start group"
+                  className="w-full justify-start group min-h-[44px] text-sm"
                   onClick={() => navigate('/express-interest')}
                 >
                   <Star className="h-4 w-4 mr-2 group-hover:rotate-12 transition-transform" />
-                  Express Interest
+                  <span className="truncate">Express Interest</span>
                 </Button>
               </CardContent>
             </Card>
@@ -621,35 +641,37 @@ export default function MemberDashboard() {
           </div>
 
           {/* Main Content - Tabs */}
-          <div className="col-span-9">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-              <TabsList className="grid grid-cols-5 w-full">
-                <TabsTrigger value="overview" className="flex items-center gap-2">
+          <div className="lg:col-span-9">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 lg:space-y-6">
+              <TabsList className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 w-full h-auto p-1">
+                <TabsTrigger value="overview" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
                   <Home className="h-4 w-4" />
-                  Overview
+                  <span className="hidden sm:inline">Overview</span>
+                  <span className="sm:hidden">Home</span>
                 </TabsTrigger>
-                <TabsTrigger value="feed" className="flex items-center gap-2">
+                <TabsTrigger value="feed" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
                   <FileText className="h-4 w-4" />
-                  Feed
+                  <span>Feed</span>
                   {personalizedPosts.length > 0 && (
-                    <Badge variant="secondary" className="ml-1 h-5 px-1.5">
+                    <Badge variant="secondary" className="ml-1 h-4 px-1 text-xs hidden sm:flex">
                       {personalizedPosts.length}
                     </Badge>
                   )}
                 </TabsTrigger>
-                <TabsTrigger value="connections" className="flex items-center gap-2">
+                <TabsTrigger value="connections" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2 hidden lg:flex">
                   <Users className="h-4 w-4" />
                   Network
                 </TabsTrigger>
-                <TabsTrigger value="analytics" className="flex items-center gap-2">
+                <TabsTrigger value="analytics" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2 hidden lg:flex">
                   <BarChart3 className="h-4 w-4" />
                   Analytics
                 </TabsTrigger>
-                <TabsTrigger value="messages" className="flex items-center gap-2 relative">
+                <TabsTrigger value="messages" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
                   <MessageCircle className="h-4 w-4" />
-                  Messages
+                  <span className="hidden sm:inline">Messages</span>
+                  <span className="sm:hidden">Chat</span>
                   {stats.chat.totalUnread > 0 && (
-                    <Badge variant="destructive" className="ml-1 h-5 px-1.5">
+                    <Badge variant="destructive" className="ml-1 h-4 px-1 text-xs">
                       {stats.chat.totalUnread}
                     </Badge>
                   )}
@@ -657,8 +679,8 @@ export default function MemberDashboard() {
               </TabsList>
 
               {/* Overview Tab */}
-              <TabsContent value="overview" className="space-y-6">
-                <div className="grid grid-cols-2 gap-6">
+              <TabsContent value="overview" className="space-y-4 lg:space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
                   {/* Recent Activity */}
                   <Card>
                     <CardHeader>
@@ -751,7 +773,7 @@ export default function MemberDashboard() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       {personalizedPosts.slice(0, 3).map((post) => (
                         <div 
                           key={post.id} 
@@ -1110,7 +1132,7 @@ export default function MemberDashboard() {
                   </CardContent>
                 </Card>
 
-                <div className="grid grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                   {/* Engagement Trends */}
                   <Card className="col-span-2">
                     <CardHeader>
@@ -1215,7 +1237,7 @@ export default function MemberDashboard() {
                 </div>
 
                 {/* Network Growth & Insights */}
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center text-base">
@@ -1226,7 +1248,7 @@ export default function MemberDashboard() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        <div className="grid grid-cols-3 gap-4 text-center">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                           <div>
                             <p className="text-2xl font-bold text-blue-600">42</p>
                             <p className="text-xs text-muted-foreground">Total Connections</p>

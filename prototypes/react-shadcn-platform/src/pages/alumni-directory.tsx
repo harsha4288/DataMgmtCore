@@ -54,7 +54,7 @@ export default function AlumniDirectory() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
       <PageIntroduction 
         title={moduleFeatures.alumniDirectory.title}
         description={moduleFeatures.alumniDirectory.description}
@@ -71,7 +71,7 @@ export default function AlumniDirectory() {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Dashboard
         </Button>
-        <h1 className="text-3xl font-bold">Alumni Directory</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold">Alumni Directory</h1>
       </div>
 
       {/* Search and Filters */}
@@ -82,8 +82,8 @@ export default function AlumniDirectory() {
             Search & Filter
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <CardContent className="space-y-4 p-3 sm:p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
@@ -119,7 +119,7 @@ export default function AlumniDirectory() {
             <Button 
               variant="outline" 
               onClick={clearFilters}
-              className="w-full"
+              className="w-full min-h-[44px] text-sm"
             >
               Clear Filters
             </Button>
@@ -133,10 +133,10 @@ export default function AlumniDirectory() {
       </div>
 
       {/* Alumni Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {filteredAlumni.map((member: AlumniMember) => (
           <Card key={member.id} className="h-full hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-4">
+            <CardHeader className="pb-3 sm:pb-4 p-3 sm:p-6">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-12 w-12">
@@ -158,7 +158,7 @@ export default function AlumniDirectory() {
               </div>
             </CardHeader>
 
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm">
                   <Briefcase className="h-4 w-4 text-muted-foreground" />
@@ -212,16 +212,17 @@ export default function AlumniDirectory() {
               <div className="flex gap-2 pt-2">
                 <Button 
                   size="sm" 
-                  className="flex-1"
+                  className="flex-1 min-h-[44px] text-sm"
                   onClick={() => navigate('/chat', { state: { recipient: member } })}
                 >
                   <Mail className="h-4 w-4 mr-2" />
-                  Contact
+                  <span className="truncate">Contact</span>
                 </Button>
                 {member.linkedIn && (
                   <Button 
                     size="sm" 
                     variant="outline"
+                    className="min-h-[44px] min-w-[44px]"
                     onClick={() => window.open(member.linkedIn, '_blank')}
                   >
                     <ExternalLink className="h-4 w-4" />
@@ -237,7 +238,7 @@ export default function AlumniDirectory() {
         <Card>
           <CardContent className="text-center py-12">
             <p className="text-muted-foreground">No alumni found matching your criteria.</p>
-            <Button variant="outline" onClick={clearFilters} className="mt-4">
+            <Button variant="outline" onClick={clearFilters} className="mt-4 min-h-[44px]">
               Clear Filters
             </Button>
           </CardContent>
