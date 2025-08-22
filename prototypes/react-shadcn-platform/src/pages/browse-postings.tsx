@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
+import { PageIntroduction } from '@/components/ui/page-introduction'
+import { moduleFeatures } from '@/lib/module-features'
 import { 
   Search, 
   Filter, 
@@ -241,6 +243,11 @@ export default function BrowsePostingsPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <PageIntroduction 
+        title={moduleFeatures.browsePostings.title}
+        description={moduleFeatures.browsePostings.description}
+        features={moduleFeatures.browsePostings.features}
+      />
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40">
         <div className="container mx-auto px-6 py-4">
@@ -452,21 +459,74 @@ export default function BrowsePostingsPage() {
                         </div>
 
                         <div className="flex items-center space-x-2">
-                          <Button variant="ghost" size="sm" className="flex items-center gap-1">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="flex items-center gap-1"
+                            onClick={() => {
+                              // Like functionality - placeholder for now
+                              console.log('Liked posting:', posting.id)
+                            }}
+                          >
                             <Heart className="h-4 w-4" />
                             {posting.likes}
                           </Button>
-                          <Button variant="ghost" size="sm" className="flex items-center gap-1">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="flex items-center gap-1"
+                            onClick={() => navigate('/chat', { state: { posting } })}
+                          >
                             <MessageSquare className="h-4 w-4" />
                             {posting.responses}
                           </Button>
-                          <Button variant="ghost" size="sm">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => {
+                              // Bookmark functionality - placeholder for now
+                              console.log('Bookmarked posting:', posting.id)
+                            }}
+                          >
                             <Bookmark className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="sm">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => {
+                              // Share functionality - placeholder for now
+                              if (navigator.share) {
+                                navigator.share({
+                                  title: posting.title,
+                                  text: posting.description,
+                                  url: window.location.href
+                                })
+                              } else {
+                                navigator.clipboard.writeText(window.location.href)
+                                alert('Link copied to clipboard!')
+                              }
+                            }}
+                          >
                             <Share2 className="h-4 w-4" />
                           </Button>
                         </div>
+                      </div>
+
+                      {/* Express Interest Button - Required by Requirements #131-133 */}
+                      <Separator />
+                      <div className="flex items-center gap-3 pt-3">
+                        <Button 
+                          className="flex-1"
+                          onClick={() => navigate('/express-interest', { state: { posting } })}
+                        >
+                          Express Interest
+                        </Button>
+                        <Button 
+                          variant="outline"
+                          onClick={() => navigate(`/alumni-profile/${posting.author.id}`)}
+                        >
+                          View Profile
+                        </Button>
                       </div>
                     </div>
                   </CardContent>

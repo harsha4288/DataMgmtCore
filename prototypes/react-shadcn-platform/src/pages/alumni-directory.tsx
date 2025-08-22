@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -6,8 +7,11 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Search, MapPin, Briefcase, Calendar, Mail, ExternalLink } from 'lucide-react'
 import { mockAlumniData, AlumniMember, filterAlumni } from '@/lib/mock-data/alumni'
+import { PageIntroduction } from '@/components/ui/page-introduction'
+import { moduleFeatures } from '@/lib/module-features'
 
 export default function AlumniDirectory() {
+  const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedIndustry, setSelectedIndustry] = useState<string>('')
   const [selectedYear, setSelectedYear] = useState<string>('')
@@ -51,11 +55,14 @@ export default function AlumniDirectory() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
+      <PageIntroduction 
+        title={moduleFeatures.alumniDirectory.title}
+        description={moduleFeatures.alumniDirectory.description}
+        features={moduleFeatures.alumniDirectory.features}
+      />
+      
       <div className="space-y-2">
         <h1 className="text-3xl font-bold">Alumni Directory</h1>
-        <p className="text-muted-foreground">
-          Connect with our alumni community. Find mentors, network, and discover career opportunities.
-        </p>
       </div>
 
       {/* Search and Filters */}
@@ -128,7 +135,12 @@ export default function AlumniDirectory() {
                     <AvatarFallback>{getInitials(member.name)}</AvatarFallback>
                   </Avatar>
                   <div>
-                    <h3 className="font-semibold text-lg">{member.name}</h3>
+                    <h3 
+                      className="font-semibold text-lg cursor-pointer hover:text-primary transition-colors"
+                      onClick={() => navigate(`/alumni-profile/${member.id}`)}
+                    >
+                      {member.name}
+                    </h3>
                     <p className="text-sm text-muted-foreground">{member.jobTitle}</p>
                   </div>
                 </div>
@@ -189,12 +201,20 @@ export default function AlumniDirectory() {
               )}
 
               <div className="flex gap-2 pt-2">
-                <Button size="sm" className="flex-1">
+                <Button 
+                  size="sm" 
+                  className="flex-1"
+                  onClick={() => navigate('/chat', { state: { recipient: member } })}
+                >
                   <Mail className="h-4 w-4 mr-2" />
                   Contact
                 </Button>
                 {member.linkedIn && (
-                  <Button size="sm" variant="outline">
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => window.open(member.linkedIn, '_blank')}
+                  >
                     <ExternalLink className="h-4 w-4" />
                   </Button>
                 )}

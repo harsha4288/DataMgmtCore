@@ -9,6 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { PageIntroduction } from '@/components/ui/page-introduction'
+import { moduleFeatures } from '@/lib/module-features'
 import { 
   ArrowLeft,
   MapPin, 
@@ -115,6 +117,11 @@ export default function AlumniProfile() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6 max-w-7xl">
+        <PageIntroduction 
+          title={moduleFeatures.alumniProfile.title}
+          description={moduleFeatures.alumniProfile.description}
+          features={moduleFeatures.alumniProfile.features}
+        />
         {/* Back Navigation */}
         <Button 
           variant="ghost" 
@@ -277,19 +284,36 @@ export default function AlumniProfile() {
                   </div>
                   <div className="flex items-center gap-3">
                     <Globe className="h-4 w-4 text-muted-foreground" />
-                    <a href="#" className="text-primary hover:underline">
+                    <a 
+                      href={member.website ? `https://${member.website}` : 'https://portfolio.example.com'} 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
                       {member.website || 'portfolio.example.com'}
                     </a>
                   </div>
                   <Separator className="my-3" />
                   <div className="flex gap-3">
-                    <Button variant="outline" size="icon">
+                    <Button 
+                      variant="outline" 
+                      size="icon"
+                      onClick={() => window.open('https://linkedin.com', '_blank')}
+                    >
                       <Linkedin className="h-4 w-4" />
                     </Button>
-                    <Button variant="outline" size="icon">
+                    <Button 
+                      variant="outline" 
+                      size="icon"
+                      onClick={() => window.open('https://github.com', '_blank')}
+                    >
                       <Github className="h-4 w-4" />
                     </Button>
-                    <Button variant="outline" size="icon">
+                    <Button 
+                      variant="outline" 
+                      size="icon"
+                      onClick={() => window.open('https://twitter.com', '_blank')}
+                    >
                       <Twitter className="h-4 w-4" />
                     </Button>
                   </div>

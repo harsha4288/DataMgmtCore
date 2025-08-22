@@ -386,7 +386,11 @@ export default function LoginPage() {
                     Remember me
                   </Label>
                 </div>
-                <Button variant="link" className="px-0 text-sm font-normal">
+                <Button 
+                  variant="link" 
+                  className="px-0 text-sm font-normal"
+                  onClick={() => navigate('/forgot-password')}
+                >
                   Forgot password?
                 </Button>
               </div>

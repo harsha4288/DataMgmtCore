@@ -28,6 +28,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { PageIntroduction } from '@/components/ui/page-introduction'
+import { moduleFeatures } from '@/lib/module-features'
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -311,6 +313,11 @@ export default function AnalyticsDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
+      <PageIntroduction 
+        title={moduleFeatures.analyticsDashboard.title}
+        description={moduleFeatures.analyticsDashboard.description}
+        features={moduleFeatures.analyticsDashboard.features}
+      />
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-3">
@@ -350,7 +357,24 @@ export default function AnalyticsDashboard() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  // Export analytics data functionality
+                  const data = {
+                    timestamp: new Date().toISOString(),
+                    metrics: 'sample analytics data'
+                  }
+                  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+                  const url = URL.createObjectURL(blob)
+                  const a = document.createElement('a')
+                  a.href = url
+                  a.download = `analytics-export-${new Date().toISOString().split('T')[0]}.json`
+                  a.click()
+                  URL.revokeObjectURL(url)
+                }}
+              >
                 <Download className="h-4 w-4 mr-2" />
                 Export
               </Button>

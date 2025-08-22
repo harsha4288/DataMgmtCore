@@ -33,7 +33,11 @@
       "Bash(find:*)"
     ],
     "deny": [],
-    "ask": []
+    "ask": [],
+    "additionalDirectories": [
+      "C:\\React-Projects\\SGSGitaMahayagna\\public\\images",
+      "C:\\React-Projects\\SGSGitaMahayagna\\src\\assets\\images"
+    ]
   },
   "hooks": {
     "UserPromptSubmit": [

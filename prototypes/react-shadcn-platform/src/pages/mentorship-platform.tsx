@@ -1,10 +1,13 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { PageIntroduction } from '@/components/ui/page-introduction'
+import { moduleFeatures } from '@/lib/module-features'
 import { 
   Users, 
   Star, 
@@ -14,11 +17,15 @@ import {
   UserCheck,
   Trophy,
   Target,
-  CheckCircle
+  CheckCircle,
+  ArrowLeft
 } from 'lucide-react'
 import { mockMentors, getMentorshipStats } from '@/lib/mock-data/mentorship'
+import { useToast } from '@/hooks/use-toast'
 
 export default function MentorshipPlatform() {
+  const navigate = useNavigate()
+  const { toast } = useToast()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedExpertise, setSelectedExpertise] = useState('')
 
@@ -114,11 +121,25 @@ export default function MentorshipPlatform() {
         </div>
 
         <div className="flex gap-2 pt-2">
-          <Button size="sm" className="flex-1">
+          <Button 
+            size="sm" 
+            className="flex-1"
+            onClick={() => {
+              toast({
+                title: "Mentorship Request Sent",
+                description: `Your mentorship request has been sent to ${mentor.name}. They will respond within ${mentor.responseTime}.`,
+              })
+              navigate('/chat', { state: { mentor } })
+            }}
+          >
             <MessageSquare className="h-4 w-4 mr-2" />
             Request Mentorship
           </Button>
-          <Button size="sm" variant="outline">
+          <Button 
+            size="sm" 
+            variant="outline"
+            onClick={() => navigate(`/alumni-profile/${mentor.id}`)}
+          >
             View Profile
           </Button>
         </div>
@@ -130,6 +151,20 @@ export default function MentorshipPlatform() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
+      <PageIntroduction 
+        title={moduleFeatures.mentorshipPlatform.title}
+        description={moduleFeatures.mentorshipPlatform.description}
+        features={moduleFeatures.mentorshipPlatform.features}
+      />
+      <Button
+        variant="ghost"
+        size="sm"
+        className="mb-4"
+        onClick={() => navigate('/member-dashboard')}
+      >
+        <ArrowLeft className="h-4 w-4 mr-2" />
+        Back to Dashboard
+      </Button>
       <div className="space-y-2">
         <h1 className="text-3xl font-bold">Mentorship Platform</h1>
         <p className="text-muted-foreground">
@@ -359,7 +394,11 @@ export default function MentorshipPlatform() {
                               <Badge variant="outline" className="text-xs">
                                 {conversation.expertise}
                               </Badge>
-                              <Button size="sm" variant="default">
+                              <Button 
+                                size="sm" 
+                                variant="default"
+                                onClick={() => navigate('/chat', { state: { conversation } })}
+                              >
                                 <MessageSquare className="h-4 w-4 mr-2" />
                                 Continue Chat
                               </Button>

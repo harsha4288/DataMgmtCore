@@ -12,6 +12,7 @@ import Phase1App from './Phase1App'
 
 // Import Phase 2 Pages
 import LoginPage from './pages/login'
+import ForgotPasswordPage from './pages/forgot-password'
 import ProfileSelectionPage from './pages/profile-selection'
 import MemberDashboard from './pages/member-dashboard'
 import AlumniDirectory from './pages/alumni-directory'
@@ -25,6 +26,7 @@ import ModerationDashboard from './pages/moderation-dashboard'
 import AnalyticsDashboard from './pages/analytics-dashboard'
 import MyPostingsPage from './pages/my-postings'
 import WorkflowDashboardPage from './pages/workflow-dashboard'
+import { AlumniOpportunities } from './pages/alumni-opportunities'
 
 // Auth Guard Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -205,6 +207,13 @@ function App() {
           </ThemeProvider>
         } />
         
+        <Route path="/forgot-password" element={
+          <ThemeProvider>
+            <ForgotPasswordPage />
+            <Toaster />
+          </ThemeProvider>
+        } />
+        
         <Route path="/profile-selection" element={
           <ThemeProvider>
             <ProtectedRoute>
@@ -242,6 +251,13 @@ function App() {
         <Route path="/mentorship" element={
           <ThemeProvider>
             <MentorshipPlatform />
+            <Toaster />
+          </ThemeProvider>
+        } />
+        
+        <Route path="/opportunities" element={
+          <ThemeProvider>
+            <AlumniOpportunities />
             <Toaster />
           </ThemeProvider>
         } />
@@ -296,6 +312,42 @@ function App() {
           <ThemeProvider>
             <ProtectedRoute>
               <ChatPage />
+            </ProtectedRoute>
+            <Toaster />
+          </ThemeProvider>
+        } />
+        
+        <Route path="/express-interest" element={
+          <ThemeProvider>
+            <ProtectedRoute>
+              <CreatePostingPage />
+            </ProtectedRoute>
+            <Toaster />
+          </ThemeProvider>
+        } />
+        
+        <Route path="/responses" element={
+          <ThemeProvider>
+            <ProtectedRoute>
+              <MyPostingsPage />
+            </ProtectedRoute>
+            <Toaster />
+          </ThemeProvider>
+        } />
+        
+        <Route path="/profile" element={
+          <ThemeProvider>
+            <ProtectedRoute>
+              <AlumniProfile />
+            </ProtectedRoute>
+            <Toaster />
+          </ThemeProvider>
+        } />
+        
+        <Route path="/ratings" element={
+          <ThemeProvider>
+            <ProtectedRoute>
+              <MyPostingsPage />
             </ProtectedRoute>
             <Toaster />
           </ThemeProvider>

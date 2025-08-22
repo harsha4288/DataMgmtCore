@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
+import { PageIntroduction } from '@/components/ui/page-introduction'
+import { moduleFeatures } from '@/lib/module-features'
 
 import { 
   Bell, 
@@ -164,6 +166,11 @@ export default function MemberDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
+      <PageIntroduction 
+        title={moduleFeatures.memberDashboard.title}
+        description={moduleFeatures.memberDashboard.description}
+        features={moduleFeatures.memberDashboard.features}
+      />
       {/* Enhanced Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-3">
@@ -185,14 +192,24 @@ export default function MemberDashboard() {
             <div className="flex items-center space-x-4">
               {/* Quick Search */}
               <div className="hidden lg:flex items-center">
-                <Button variant="outline" size="sm" className="text-muted-foreground">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-muted-foreground"
+                  onClick={() => navigate('/alumni-directory')}
+                >
                   <Search className="h-4 w-4 mr-2" />
                   Search alumni...
                 </Button>
               </div>
 
               {/* Notifications */}
-              <Button variant="ghost" size="icon" className="relative">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="relative"
+                onClick={() => navigate('/responses')}
+              >
                 <Bell className="h-5 w-5" />
                 {stats.notifications.unread > 0 && (
                   <span className="absolute -top-1 -right-1 h-5 w-5 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center font-medium">
@@ -202,7 +219,12 @@ export default function MemberDashboard() {
               </Button>
               
               {/* Messages */}
-              <Button variant="ghost" size="icon" className="relative">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="relative"
+                onClick={() => navigate('/chat')}
+              >
                 <MessageSquare className="h-5 w-5" />
                 {stats.chat.totalUnread > 0 && (
                   <span className="absolute -top-1 -right-1 h-5 w-5 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center font-medium">
@@ -588,7 +610,11 @@ export default function MemberDashboard() {
                           </div>
                         ))}
                       </div>
-                      <Button variant="link" className="w-full mt-3 text-xs">
+                      <Button 
+                        variant="link" 
+                        className="w-full mt-3 text-xs"
+                        onClick={() => navigate('/responses')}
+                      >
                         View All Activity
                         <ArrowUpRight className="h-3 w-3 ml-1" />
                       </Button>
@@ -621,14 +647,22 @@ export default function MemberDashboard() {
                               <Badge variant="outline" className="text-xs">
                                 {person.match} match
                               </Badge>
-                              <Button size="sm" variant="ghost">
+                              <Button 
+                                size="sm" 
+                                variant="ghost"
+                                onClick={() => navigate('/alumni-directory')}
+                              >
                                 Connect
                               </Button>
                             </div>
                           </div>
                         ))}
                       </div>
-                      <Button variant="link" className="w-full mt-3 text-xs">
+                      <Button 
+                        variant="link" 
+                        className="w-full mt-3 text-xs"
+                        onClick={() => navigate('/alumni-directory')}
+                      >
                         Discover More Alumni
                         <ArrowUpRight className="h-3 w-3 ml-1" />
                       </Button>
@@ -650,6 +684,7 @@ export default function MemberDashboard() {
                         <div 
                           key={post.id} 
                           className="p-4 rounded-lg border hover:shadow-md transition-shadow cursor-pointer"
+                          onClick={() => navigate('/browse-postings')}
                         >
                           <div className="flex items-center space-x-2 mb-2">
                             <Avatar className="h-6 w-6">
@@ -821,7 +856,11 @@ export default function MemberDashboard() {
                                 {post.engagement.interested} interested
                               </span>
                             )}
-                            <Button size="sm" className="font-medium">
+                            <Button 
+                              size="sm" 
+                              className="font-medium"
+                              onClick={() => navigate(post.type === 'offer' ? '/chat' : '/express-interest')}
+                            >
                               {post.type === 'offer' ? (
                                 <>
                                   <CheckCircle2 className="h-4 w-4 mr-2" />
@@ -863,7 +902,7 @@ export default function MemberDashboard() {
                       <p className="text-muted-foreground mb-4">
                         Connect with alumni who share your interests and expertise
                       </p>
-                      <Button>
+                      <Button onClick={() => navigate('/alumni-directory')}>
                         <UserPlus className="h-4 w-4 mr-2" />
                         Find Alumni
                       </Button>
@@ -1153,7 +1192,11 @@ export default function MemberDashboard() {
                           </div>
                         </div>
 
-                        <Button variant="outline" className="w-full mt-4" onClick={() => setActiveTab('alumni')}>
+                        <Button 
+                          variant="outline" 
+                          className="w-full mt-4" 
+                          onClick={() => navigate('/alumni-directory')}
+                        >
                           <Users className="h-4 w-4 mr-2" />
                           Explore New Connections
                         </Button>
@@ -1177,6 +1220,7 @@ export default function MemberDashboard() {
                           <div 
                             key={conversation.id} 
                             className="flex items-center space-x-3 p-3 rounded-lg hover:bg-muted cursor-pointer transition-colors"
+                            onClick={() => navigate('/chat')}
                           >
                             <div className="flex -space-x-2">
                               {conversation.participants.filter((p: any) => p.id !== currentProfile.userId).slice(0, 2).map((participant: any) => (

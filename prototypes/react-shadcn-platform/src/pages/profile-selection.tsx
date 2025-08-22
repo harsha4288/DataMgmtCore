@@ -322,12 +322,26 @@ export default function ProfileSelectionPage() {
           {/* Additional Options */}
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center space-x-4 text-sm">
-              <Button variant="link" className="text-muted-foreground">
+              <Button 
+                variant="link" 
+                className="text-muted-foreground"
+                onClick={() => {
+                  // TODO: Navigate to account settings when implemented
+                  alert('Account Settings will be available in the next phase.')
+                }}
+              >
                 <Settings className="h-4 w-4 mr-2" />
                 Account Settings
               </Button>
               <span className="text-muted-foreground">•</span>
-              <Button variant="link" className="text-muted-foreground">
+              <Button 
+                variant="link" 
+                className="text-muted-foreground"
+                onClick={() => {
+                  // TODO: Navigate to help & support when implemented
+                  alert('Help & Support resources will be available in the next phase.')
+                }}
+              >
                 Help & Support
               </Button>
             </div>

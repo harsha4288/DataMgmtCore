@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
+import { PageIntroduction } from '@/components/ui/page-introduction'
+import { moduleFeatures } from '@/lib/module-features'
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -294,6 +296,11 @@ export default function MyPostingsPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <PageIntroduction 
+        title={moduleFeatures.myPostings.title}
+        description={moduleFeatures.myPostings.description}
+        features={moduleFeatures.myPostings.features}
+      />
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40">
         <div className="container mx-auto px-6 py-4">
@@ -441,7 +448,13 @@ export default function MyPostingsPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => navigate(`/edit-posting/${posting.id}`)}>
+                          <DropdownMenuItem onClick={() => {
+                            // Edit functionality - placeholder for now
+                            toast({
+                              title: "Edit Feature",
+                              description: "Posting edit functionality will be available in the next phase."
+                            })
+                          }}>
                             <Edit3 className="h-4 w-4 mr-2" />
                             Edit
                           </DropdownMenuItem>
@@ -711,9 +724,39 @@ export default function MyPostingsPage() {
                               </div>
                               <p className="text-sm text-muted-foreground mb-2">{response.message}</p>
                               <div className="flex space-x-2">
-                                <Button size="sm" variant="outline">Reply</Button>
-                                <Button size="sm" variant="outline">Mark Reviewed</Button>
-                                <Button size="sm" variant="outline">Contact</Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  onClick={() => {
+                                    // Reply functionality - placeholder for now
+                                    toast({
+                                      title: "Reply Feature",
+                                      description: "Reply functionality will be available in the next phase."
+                                    })
+                                  }}
+                                >
+                                  Reply
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  onClick={() => {
+                                    // Mark as reviewed functionality
+                                    toast({
+                                      title: "Marked as Reviewed",
+                                      description: `Response from ${response.name} has been marked as reviewed.`
+                                    })
+                                  }}
+                                >
+                                  Mark Reviewed
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  onClick={() => navigate('/chat', { state: { recipient: response } })}
+                                >
+                                  Contact
+                                </Button>
                               </div>
                             </div>
                           </div>

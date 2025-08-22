@@ -1,4 +1,5 @@
 import React from 'react'
+// eslint-disable-next-line no-redeclare
 import { render, screen } from '@testing-library/react';
 import { describe, test, expect } from 'vitest';
 import { Badge } from '../badge';
