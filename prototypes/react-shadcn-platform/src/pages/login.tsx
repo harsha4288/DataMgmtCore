@@ -18,7 +18,6 @@ import {
   AlertCircle,
   CheckCircle,
   Loader2,
-  GitBranch,
   Users,
   Trophy,
   Star,
@@ -224,11 +223,15 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-6 relative z-10">
         {/* Header with animation */}
         <div className="text-center space-y-4">
-          <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-full mb-4">
-            <GitBranch className="h-10 w-10 text-primary" />
+          <div className="inline-flex items-center justify-center mb-4">
+            <img
+              src="/img/sgsgf-logo.png"
+              alt="SGS Gita Foundation Logo"
+              className="h-16 w-auto"
+            />
           </div>
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight">Gita Alumni Connect</h1>
+            <h1 className="text-3xl font-bold tracking-tight">SGS Gita Connect</h1>
             <p className="text-muted-foreground text-lg">
               Where alumni help alumni succeed
             </p>
@@ -505,7 +508,7 @@ export default function LoginPage() {
             </div>
           </div>
           <p className="text-xs text-muted-foreground">
-            © 2024 Gita Alumni Connect. Building connections that matter.
+            © 2024 SGS Gita Connect. Alumni Network.
           </p>
         </div>
       </div>

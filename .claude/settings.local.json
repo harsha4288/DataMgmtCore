@@ -17,7 +17,15 @@
       "Bash(npx tsc:*)",
       "Bash(rm:*)",
       "Bash(git init:*)",
-      "Bash(git branch:*)"
+      "Bash(git branch:*)",
+      "WebSearch",
+      "WebFetch(domain:support.anthropic.com)",
+      "Bash(curl:*)",
+      "Bash(pkill:*)",
+      "Bash(grep:*)",
+      "Bash(chmod:*)",
+      "Bash(mv:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": []
   }

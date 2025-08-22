@@ -8,8 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
-import { PageIntroduction } from '@/components/ui/page-introduction'
-import { moduleFeatures } from '@/lib/module-features'
 
 import { 
   Bell, 
@@ -45,12 +43,36 @@ import {
   UserPlus,
   ArrowUpRight,
   BarChart3,
-  Target,
-  Sparkles,
-  Globe
+  Target
 } from 'lucide-react'
 import { type UserProfile } from '@/lib/mock-data/auth'
 import { getDashboardStats, mockPostings, getNotificationsByUser, getConversationsByUser } from '@/lib/mock-data'
+import { getPersonalizedAlumniPosts, type AlumniPost } from '@/lib/mock-data/enhanced-alumni-posts'
+import { type Posting } from '@/lib/mock-data/postings'
+
+// Unified display type for both alumni posts and regular postings
+type UnifiedPost = {
+  id: string
+  title: string
+  description: string
+  authorName: string
+  authorAvatar?: string
+  createdAt: string
+  location?: string
+  type: 'offer' | 'seek' | 'offering' | 'seeking'
+  category: string
+  tags: string[]
+  expiresAt?: string
+  engagement: {
+    likes: number
+    comments: number
+    views: number
+    interested?: number
+  }
+  image?: string
+  isUrgent?: boolean
+  organization?: string
+}
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
 
 export default function MemberDashboard() {
@@ -96,15 +118,63 @@ export default function MemberDashboard() {
     navigate('/profile-selection')
   }
 
-  const getPersonalizedPosts = () => {
+  const getPersonalizedPosts = (): UnifiedPost[] => {
     if (!currentProfile) return []
     
-    return mockPostings.filter(post => 
+    // Get enhanced alumni posts first, then fallback to regular postings
+    const alumniPosts = getPersonalizedAlumniPosts({
+      domains: currentProfile.preferences.domains
+    }).slice(0, 4)
+    
+    const regularPosts = mockPostings.filter(post => 
       post.status === 'active' &&
       currentProfile.preferences.domains.some(domain => 
         post.category === domain || post.subcategory === domain
       )
-    ).slice(0, 6)
+    ).slice(0, 2)
+    
+    // Convert alumni posts to unified format
+    const unifiedAlumniPosts: UnifiedPost[] = alumniPosts.map((post: AlumniPost) => ({
+      id: post.id,
+      title: post.title,
+      description: post.content,
+      authorName: post.author,
+      authorAvatar: post.authorAvatar,
+      createdAt: post.createdAt,
+      location: post.location,
+      type: post.postType,
+      category: post.category,
+      tags: post.tags,
+      expiresAt: post.deadline,
+      engagement: {
+        likes: post.likes,
+        comments: post.comments.length,
+        views: 0,
+        interested: 0
+      },
+      image: post.image,
+      isUrgent: post.isUrgent,
+      organization: post.organization
+    }))
+    
+    // Convert regular posts to unified format
+    const unifiedRegularPosts: UnifiedPost[] = regularPosts.map((post: Posting) => ({
+      id: post.id,
+      title: post.title,
+      description: post.description,
+      authorName: post.authorName,
+      authorAvatar: post.authorAvatar,
+      createdAt: post.createdAt,
+      location: post.location,
+      type: post.type,
+      category: post.category,
+      tags: post.tags,
+      expiresAt: post.expiresAt,
+      engagement: post.engagement,
+      isUrgent: false
+    }))
+    
+    return [...unifiedAlumniPosts, ...unifiedRegularPosts]
   }
 
   const formatTimeAgo = (dateString: string) => {
@@ -126,8 +196,8 @@ export default function MemberDashboard() {
       'Healthcare': Heart,
       'Engineering': Settings,
       'Medical': Heart,
-      'Computer Science': Globe,
-      'Arts & Crafts': Sparkles,
+      'Computer Science': Settings,
+      'Arts & Crafts': Star,
       'Business': Briefcase,
       'Education': GraduationCap,
     }
@@ -164,26 +234,25 @@ export default function MemberDashboard() {
     acc + post.engagement.likes + post.engagement.comments + post.engagement.views, 0
   )
 
+
   return (
     <div className="min-h-screen bg-background">
-      <PageIntroduction 
-        title={moduleFeatures.memberDashboard.title}
-        description={moduleFeatures.memberDashboard.description}
-        features={moduleFeatures.memberDashboard.features}
-      />
+
       {/* Enhanced Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
             {/* Logo and Brand */}
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                  <Users className="h-5 w-5 text-primary-foreground" />
-                </div>
+              <div className="flex items-center space-x-3">
+                <img
+                  src="/img/sgsgf-logo.png"
+                  alt="SGS Gita Foundation Logo"
+                  className="h-8 w-auto"
+                />
                 <div>
-                  <h1 className="text-lg font-bold">Gita Alumni Connect</h1>
-                  <p className="text-xs text-muted-foreground">Member Portal</p>
+                  <h1 className="text-lg font-bold">SGS Gita Connect</h1>
+                  <p className="text-xs text-muted-foreground">Alumni Network</p>
                 </div>
               </div>
             </div>
@@ -269,6 +338,7 @@ export default function MemberDashboard() {
         <div className="mb-6">
           <Card className="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20">
             <CardContent className="p-4">
+              
               {/* Top Row - Welcome & Actions */}
               <div className="flex items-center justify-between mb-3">
                 <div className="flex-1">
@@ -276,7 +346,7 @@ export default function MemberDashboard() {
                     Welcome back, {currentProfile.name.split(' ')[0]}!
                   </h2>
                   <p className="text-sm text-muted-foreground">
-                    Connect, collaborate, and grow with the Gita alumni community
+                    Connect, collaborate, and grow with the SGS Gita Connect Alumni Network
                   </p>
                 </div>
                 <div className="flex items-center space-x-3">
@@ -561,9 +631,11 @@ export default function MemberDashboard() {
                 <TabsTrigger value="feed" className="flex items-center gap-2">
                   <FileText className="h-4 w-4" />
                   Feed
-                  <Badge variant="secondary" className="ml-1 h-5 px-1.5">
-                    {personalizedPosts.length}
-                  </Badge>
+                  {personalizedPosts.length > 0 && (
+                    <Badge variant="secondary" className="ml-1 h-5 px-1.5">
+                      {personalizedPosts.length}
+                    </Badge>
+                  )}
                 </TabsTrigger>
                 <TabsTrigger value="connections" className="flex items-center gap-2">
                   <Users className="h-4 w-4" />
@@ -737,147 +809,182 @@ export default function MemberDashboard() {
                 </div>
 
                 <div className="space-y-4">
-                  {personalizedPosts.map((post) => (
-                    <Card key={post.id} className="hover:shadow-lg transition-all duration-200">
-                      <CardContent className="p-6">
-                        {/* Post Header */}
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex items-center space-x-3">
-                            <Avatar className="h-10 w-10 border-2 border-primary/10">
-                              <AvatarImage src={post.authorAvatar} />
-                              <AvatarFallback>
-                                {post.authorName.split(' ').map(n => n[0]).join('')}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <div className="flex items-center space-x-2">
-                                <p className="font-semibold">{post.authorName}</p>
-                                <Badge variant="outline" className="text-xs">
-                                  {'Alumni'}
-                                </Badge>
-                              </div>
-                              <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                                <Clock className="h-3 w-3" />
-                                <span>{formatTimeAgo(post.createdAt)}</span>
-                                <span>•</span>
-                                <MapPin className="h-3 w-3" />
-                                <span>{post.location}</span>
+                  {personalizedPosts.map((post: UnifiedPost) => {
+                    // Check if this is an alumni post (has organization or image)
+                    const isAlumniPost = Boolean(post.organization || post.image)
+
+                    return (
+                      <Card key={post.id} className="hover:shadow-lg transition-all duration-200">
+                        <CardContent className="p-6">
+                          {/* Post Header */}
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="flex items-center space-x-3">
+                              <Avatar className="h-10 w-10 border-2 border-primary/10">
+                                <AvatarImage src={post.authorAvatar} />
+                                <AvatarFallback>
+                                  {post.authorName.split(' ').map((n: string) => n[0]).join('')}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <div className="flex items-center space-x-2">
+                                  <p className="font-semibold">{post.authorName}</p>
+                                  <Badge variant="outline" className="text-xs">
+                                    {isAlumniPost ? 'Alumni' : 'Member'}
+                                  </Badge>
+                                  {post.organization && (
+                                    <Badge variant="secondary" className="text-xs">
+                                      {post.organization}
+                                    </Badge>
+                                  )}
+                                </div>
+                                <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                                  <Clock className="h-3 w-3" />
+                                  <span>{formatTimeAgo(post.createdAt)}</span>
+                                  {post.location && (
+                                    <>
+                                      <span>•</span>
+                                      <MapPin className="h-3 w-3" />
+                                      <span>{post.location}</span>
+                                    </>
+                                  )}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <Badge 
-                              variant={post.type === 'offer' ? 'default' : 'secondary'}
-                              className="flex items-center space-x-1"
-                            >
-                              {post.type === 'offer' ? (
-                                <>
-                                  <Users2 className="h-3 w-3" />
-                                  <span>Offering</span>
-                                </>
-                              ) : (
-                                <>
-                                  <HelpCircle className="h-3 w-3" />
-                                  <span>Seeking</span>
-                                </>
-                              )}
-                            </Badge>
-                            {false && (
-                              <Badge variant="destructive" className="text-xs">
-                                Urgent
+                            <div className="flex items-center space-x-2">
+                              <Badge 
+                                variant={post.type === 'offer' || post.type === 'offering' ? 'default' : 'secondary'}
+                                className="flex items-center space-x-1"
+                              >
+                                {post.type === 'offer' || post.type === 'offering' ? (
+                                  <>
+                                    <Users2 className="h-3 w-3" />
+                                    <span>Offering</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <HelpCircle className="h-3 w-3" />
+                                    <span>Seeking</span>
+                                  </>
+                                )}
                               </Badge>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Post Content */}
-                        <div className="mb-4">
-                          <h4 className="text-lg font-semibold mb-2">{post.title}</h4>
-                          <p className="text-muted-foreground mb-3">
-                            {post.description}
-                          </p>
-                          
-                          {/* Category & Tags */}
-                          <div className="flex items-center space-x-2 mb-3">
-                            <div className={`flex items-center space-x-1 ${getCategoryColor(post.category)}`}>
-                              {getDomainIcon(post.category)}
-                              <span className="text-sm font-medium">{post.category}</span>
-                            </div>
-                            <span className="text-muted-foreground">•</span>
-                            <div className="flex flex-wrap gap-1">
-                              {post.tags.slice(0, 3).map((tag) => (
-                                <Badge key={tag} variant="outline" className="text-xs">
-                                  {tag}
-                                </Badge>
-                              ))}
-                              {post.tags.length > 3 && (
-                                <Badge variant="outline" className="text-xs">
-                                  +{post.tags.length - 3} more
+                              {post.isUrgent && (
+                                <Badge variant="destructive" className="text-xs">
+                                  Urgent
                                 </Badge>
                               )}
                             </div>
                           </div>
 
-                          {/* Expiry Date if applicable */}
-                          {post.expiresAt && (
-                            <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                              <Calendar className="h-3 w-3" />
-                              <span>Expires in 5 days</span>
+                          {/* Post Image */}
+                          {post.image && (
+                            <div className="mb-4">
+                              <img 
+                                src={post.image} 
+                                alt={post.title}
+                                className="w-full h-48 object-cover rounded-lg"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none'
+                                }}
+                              />
                             </div>
                           )}
-                        </div>
 
-                        {/* Engagement Section */}
-                        <Separator className="my-4" />
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-1">
-                            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
-                              <Heart className="h-4 w-4 mr-1" />
-                              <span className="text-sm">{post.engagement.likes}</span>
-                            </Button>
-                            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
-                              <MessageCircle className="h-4 w-4 mr-1" />
-                              <span className="text-sm">{post.engagement.comments}</span>
-                            </Button>
-                            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
-                              <Eye className="h-4 w-4 mr-1" />
-                              <span className="text-sm">{post.engagement.views}</span>
-                            </Button>
-                            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
-                              <Share className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
-                              <Bookmark className="h-4 w-4" />
-                            </Button>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            {post.engagement.interested && post.engagement.interested > 0 && (
-                              <span className="text-xs text-muted-foreground">
-                                {post.engagement.interested} interested
-                              </span>
-                            )}
-                            <Button 
-                              size="sm" 
-                              className="font-medium"
-                              onClick={() => navigate(post.type === 'offer' ? '/chat' : '/express-interest')}
-                            >
-                              {post.type === 'offer' ? (
-                                <>
-                                  <CheckCircle2 className="h-4 w-4 mr-2" />
-                                  Connect Now
-                                </>
+                          {/* Post Content */}
+                          <div className="mb-4">
+                            <h4 className="text-lg font-semibold mb-2">{post.title}</h4>
+                            <div className="text-muted-foreground mb-3">
+                              {isAlumniPost && post.description.includes('<p>') ? (
+                                <div 
+                                  className="prose prose-sm max-w-none"
+                                  dangerouslySetInnerHTML={{ __html: post.description }}
+                                />
                               ) : (
-                                <>
-                                  <Star className="h-4 w-4 mr-2" />
-                                  Express Interest
-                                </>
+                                <p>{post.description}</p>
                               )}
-                            </Button>
+                            </div>
+                            
+                            {/* Category & Tags */}
+                            <div className="flex items-center space-x-2 mb-3">
+                              <div className={`flex items-center space-x-1 ${getCategoryColor(post.category)}`}>
+                                {getDomainIcon(post.category)}
+                                <span className="text-sm font-medium">{post.category}</span>
+                              </div>
+                              <span className="text-muted-foreground">•</span>
+                              <div className="flex flex-wrap gap-1">
+                                {post.tags.slice(0, 3).map((tag) => (
+                                  <Badge key={tag} variant="outline" className="text-xs">
+                                    {tag}
+                                  </Badge>
+                                ))}
+                                {post.tags.length > 3 && (
+                                  <Badge variant="outline" className="text-xs">
+                                    +{post.tags.length - 3} more
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Expiry Date if applicable */}
+                            {post.expiresAt && (
+                              <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                                <Calendar className="h-3 w-3" />
+                                <span>Expires {formatTimeAgo(post.expiresAt)}</span>
+                              </div>
+                            )}
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+
+                          {/* Engagement Section */}
+                          <Separator className="my-4" />
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-1">
+                              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
+                                <Heart className="h-4 w-4 mr-1" />
+                                <span className="text-sm">{post.engagement.likes}</span>
+                              </Button>
+                              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
+                                <MessageCircle className="h-4 w-4 mr-1" />
+                                <span className="text-sm">{post.engagement.comments}</span>
+                              </Button>
+                              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
+                                <Eye className="h-4 w-4 mr-1" />
+                                <span className="text-sm">{post.engagement.views}</span>
+                              </Button>
+                              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
+                                <Share className="h-4 w-4" />
+                              </Button>
+                              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
+                                <Bookmark className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              {post.engagement.interested && post.engagement.interested > 0 && (
+                                <span className="text-xs text-muted-foreground">
+                                  {post.engagement.interested} interested
+                                </span>
+                              )}
+                              <Button 
+                                size="sm" 
+                                className="font-medium"
+                                onClick={() => navigate(post.type === 'offer' || post.type === 'offering' ? '/chat' : '/express-interest')}
+                              >
+                                {post.type === 'offer' || post.type === 'offering' ? (
+                                  <>
+                                    <CheckCircle2 className="h-4 w-4 mr-2" />
+                                    Connect Now
+                                  </>
+                                ) : (
+                                  <>
+                                    <Star className="h-4 w-4 mr-2" />
+                                    Express Interest
+                                  </>
+                                )}
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
 
                 <div className="text-center py-8">
@@ -1155,7 +1262,7 @@ export default function MemberDashboard() {
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center text-base">
-                        <Sparkles className="h-4 w-4 mr-2" />
+                        <Star className="h-4 w-4 mr-2" />
                         Insights & Recommendations
                       </CardTitle>
                       <CardDescription>Personalized growth suggestions</CardDescription>
@@ -1261,6 +1368,7 @@ export default function MemberDashboard() {
                   </CardContent>
                 </Card>
               </TabsContent>
+
             </Tabs>
           </div>
         </div>

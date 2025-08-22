@@ -15,7 +15,6 @@ import {
   Edit,
   Trash2,
   ChevronRight,
-  GitBranch,
   LogOut
 } from 'lucide-react'
 import { getCurrentUser, type UserProfile, type User as UserType } from '@/lib/mock-data/auth'
@@ -154,8 +153,12 @@ export default function ProfileSelectionPage() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <GitBranch className="h-6 w-6 text-primary" />
-              <h1 className="text-xl font-bold">Gita Alumni Connect</h1>
+              <img
+                src="/img/sgsgf-logo.png"
+                alt="SGS Gita Foundation Logo"
+                className="h-6 w-auto"
+              />
+              <h1 className="text-xl font-bold">SGS Gita Connect</h1>
             </div>
             <div className="flex items-center space-x-2">
               <Badge variant="secondary">Phase 2 Demo</Badge>
@@ -347,7 +350,7 @@ export default function ProfileSelectionPage() {
             </div>
             
             <div className="text-xs text-muted-foreground">
-              <p>Gita Alumni Connect - Phase 2 Prototype</p>
+              <p>SGS Gita Connect - Alumni Network</p>
               <p>Profile-based authentication system demo</p>
             </div>
           </div>

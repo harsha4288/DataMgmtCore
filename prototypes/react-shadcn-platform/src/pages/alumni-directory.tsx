@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Search, MapPin, Briefcase, Calendar, Mail, ExternalLink } from 'lucide-react'
+import { Search, MapPin, Briefcase, Calendar, Mail, ExternalLink, ArrowLeft } from 'lucide-react'
 import { mockAlumniData, AlumniMember, filterAlumni } from '@/lib/mock-data/alumni'
 import { PageIntroduction } from '@/components/ui/page-introduction'
 import { moduleFeatures } from '@/lib/module-features'
@@ -62,6 +62,15 @@ export default function AlumniDirectory() {
       />
       
       <div className="space-y-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="mb-4"
+          onClick={() => navigate('/member-dashboard')}
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Dashboard
+        </Button>
         <h1 className="text-3xl font-bold">Alumni Directory</h1>
       </div>
 
