@@ -31,7 +31,8 @@
       "Bash(grep:*)",
       "Bash(npm audit fix:*)",
       "Bash(find:*)",
-      "Bash(xcopy:*)"
+      "Bash(xcopy:*)",
+      "Bash(npm test:*)"
     ],
     "deny": [],
     "ask": [],

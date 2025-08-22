@@ -8,6 +8,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu'
 
 import { 
   Bell, 
@@ -43,7 +50,8 @@ import {
   UserPlus,
   ArrowUpRight,
   BarChart3,
-  Target
+  Target,
+  Menu
 } from 'lucide-react'
 import { type UserProfile } from '@/lib/mock-data/auth'
 import { getDashboardStats, mockPostings, getNotificationsByUser, getConversationsByUser } from '@/lib/mock-data'
@@ -240,30 +248,26 @@ export default function MemberDashboard() {
 
       {/* Enhanced Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-3 sm:px-6 py-3">
+        <div className="container mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Logo and Brand */}
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <div className="flex items-center space-x-2 sm:space-x-3">
-                <img
-                  src="/images/opportunities/sgsgf-logo.png"
-                  alt="SGS Gita Foundation Logo"
-                  className="h-6 sm:h-8 w-auto"
-                />
-                <div className="hidden sm:block">
-                  <h1 className="text-sm sm:text-lg font-bold">SGS Gita Connect</h1>
-                  <p className="text-xs text-muted-foreground">Alumni Network</p>
-                </div>
-                <div className="sm:hidden">
-                  <h1 className="text-sm font-bold">SGS Connect</h1>
-                </div>
+            <div className="flex items-center space-x-3">
+              <img
+                src="/images/opportunities/sgsgf-logo.png"
+                alt="SGS Gita Foundation Logo"
+                className="h-8 w-auto"
+              />
+              <div>
+                <h1 className="text-lg font-bold">SGS Connect</h1>
+                <p className="text-xs text-muted-foreground hidden sm:block">Alumni Network</p>
               </div>
             </div>
             
             {/* Navigation and Actions */}
-            <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4">
-              {/* Quick Search */}
-              <div className="hidden lg:flex items-center">
+            <div className="flex items-center space-x-2">
+              {/* Desktop Navigation */}
+              <div className="hidden md:flex items-center space-x-2">
+                {/* Quick Search */}
                 <Button 
                   variant="outline" 
                   size="sm" 
@@ -273,79 +277,111 @@ export default function MemberDashboard() {
                   <Search className="h-4 w-4 mr-2" />
                   Search alumni...
                 </Button>
-              </div>
-              {/* Mobile Search Icon */}
-              <div className="lg:hidden">
+
+                {/* Notifications */}
                 <Button 
                   variant="ghost" 
                   size="icon" 
-                  className="h-8 w-8 min-w-[32px]"
-                  onClick={() => navigate('/alumni-directory')}
+                  className="relative"
+                  onClick={() => navigate('/responses')}
                 >
-                  <Search className="h-4 w-4" />
+                  <Bell className="h-5 w-5" />
+                  {stats.notifications.unread > 0 && (
+                    <span className="absolute -top-1 -right-1 h-5 w-5 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center font-medium">
+                      {stats.notifications.unread}
+                    </span>
+                  )}
                 </Button>
-              </div>
+                
+                {/* Messages */}
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="relative"
+                  onClick={() => navigate('/chat')}
+                >
+                  <MessageSquare className="h-5 w-5" />
+                  {stats.chat.totalUnread > 0 && (
+                    <span className="absolute -top-1 -right-1 h-5 w-5 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center font-medium">
+                      {stats.chat.totalUnread}
+                    </span>
+                  )}
+                </Button>
 
-              {/* Notifications */}
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="relative h-8 w-8 min-w-[32px] sm:h-9 sm:w-9"
-                onClick={() => navigate('/responses')}
-              >
-                <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
-                {stats.notifications.unread > 0 && (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center font-medium">
-                    {stats.notifications.unread > 9 ? '9+' : stats.notifications.unread}
-                  </span>
-                )}
-              </Button>
-              
-              {/* Messages */}
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="relative h-8 w-8 min-w-[32px] sm:h-9 sm:w-9"
-                onClick={() => navigate('/chat')}
-              >
-                <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5" />
-                {stats.chat.totalUnread > 0 && (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center font-medium">
-                    {stats.chat.totalUnread > 9 ? '9+' : stats.chat.totalUnread}
-                  </span>
-                )}
-              </Button>
-
-              {/* Theme Toggle - Hidden on small mobile */}
-              <div className="hidden sm:block">
+                {/* Theme Toggle */}
                 <ThemeToggle />
-              </div>
 
-              <Separator orientation="vertical" className="hidden sm:block h-8" />
+                <Separator orientation="vertical" className="h-6" />
+              </div>
+              
+              {/* Mobile Menu Dropdown */}
+              <div className="md:hidden">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <Menu className="h-5 w-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem onClick={() => navigate('/alumni-directory')}>
+                      <Search className="h-4 w-4 mr-2" />
+                      Search Alumni
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/responses')}>
+                      <Bell className="h-4 w-4 mr-2" />
+                      Notifications
+                      {stats.notifications.unread > 0 && (
+                        <Badge variant="destructive" className="ml-auto h-5 w-5 p-0 text-xs">
+                          {stats.notifications.unread}
+                        </Badge>
+                      )}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/chat')}>
+                      <MessageSquare className="h-4 w-4 mr-2" />
+                      Messages
+                      {stats.chat.totalUnread > 0 && (
+                        <Badge variant="destructive" className="ml-auto h-5 w-5 p-0 text-xs">
+                          {stats.chat.totalUnread}
+                        </Badge>
+                      )}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleSwitchProfile}>
+                      <UserPlus className="h-4 w-4 mr-2" />
+                      Switch Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
               
               {/* Profile Section */}
-              <div className="flex items-center space-x-1 sm:space-x-2">
+              <div className="flex items-center space-x-2">
                 <div className="hidden lg:block text-right">
-                  <p className="text-sm font-medium truncate max-w-[120px]">{currentProfile.name}</p>
-                  <p className="text-xs text-muted-foreground capitalize truncate max-w-[120px]">{currentProfile.preferences.professionalStatus || 'member'} • {currentProfile.role}</p>
+                  <p className="text-sm font-medium">{currentProfile.name}</p>
+                  <p className="text-xs text-muted-foreground capitalize">{currentProfile.preferences.professionalStatus || 'member'} • {currentProfile.role}</p>
                 </div>
-                <Avatar className="h-7 w-7 sm:h-8 sm:w-8 lg:h-9 lg:w-9 border-2 border-primary/20">
+                <Avatar className="h-8 w-8 border-2 border-primary/20">
                   <AvatarImage src={currentProfile.avatar} />
-                  <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs">
+                  <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
                     {currentProfile.name.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex items-center space-x-0.5 sm:space-x-1">
-                  <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8 lg:h-9 lg:w-9" onClick={handleSwitchProfile}>
-                    <UserPlus className="h-3 w-3 sm:h-4 sm:w-4" />
+                {/* Desktop Profile Actions */}
+                <div className="hidden md:flex items-center space-x-1">
+                  <Button variant="ghost" size="icon" onClick={handleSwitchProfile}>
+                    <UserPlus className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8 lg:h-9 lg:w-9" onClick={handleLogout}>
-                    <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <Button variant="ghost" size="icon" onClick={handleLogout}>
+                    <LogOut className="h-4 w-4" />
                   </Button>
-                  {/* Mobile Theme Toggle in dropdown */}
-                  <div className="sm:hidden">
-                    <ThemeToggle />
-                  </div>
+                </div>
+                {/* Mobile Theme Toggle */}
+                <div className="md:hidden">
+                  <ThemeToggle />
                 </div>
               </div>
             </div>
@@ -353,7 +389,7 @@ export default function MemberDashboard() {
         </div>
       </header>
 
-      <div className="container mx-auto px-3 sm:px-6 py-3 sm:py-6">
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
         {/* Hero Welcome Section */}
         <div className="mb-4 sm:mb-6">
           <Card className="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20">
