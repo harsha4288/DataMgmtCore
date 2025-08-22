@@ -154,7 +154,7 @@ export default function ProfileSelectionPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <img
-                src="/img/sgsgf-logo.png"
+                src="/images/opportunities/sgsgf-logo.png"
                 alt="SGS Gita Foundation Logo"
                 className="h-6 w-auto"
               />

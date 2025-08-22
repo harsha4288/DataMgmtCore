@@ -225,7 +225,7 @@ export default function LoginPage() {
         <div className="text-center space-y-4">
           <div className="inline-flex items-center justify-center mb-4">
             <img
-              src="/img/sgsgf-logo.png"
+              src="/images/opportunities/sgsgf-logo.png"
               alt="SGS Gita Foundation Logo"
               className="h-16 w-auto"
             />

@@ -246,7 +246,7 @@ export default function MemberDashboard() {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-3">
                 <img
-                  src="/img/sgsgf-logo.png"
+                  src="/images/opportunities/sgsgf-logo.png"
                   alt="SGS Gita Foundation Logo"
                   className="h-8 w-auto"
                 />
