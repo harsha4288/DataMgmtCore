@@ -32,7 +32,9 @@
       "Bash(npm audit fix:*)",
       "Bash(find:*)",
       "Bash(xcopy:*)",
-      "Bash(npm test:*)"
+      "Bash(npm test:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": [],

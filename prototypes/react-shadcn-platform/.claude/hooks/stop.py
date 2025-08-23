@@ -66,18 +66,14 @@ def get_session_summary() -> Dict[str, Any]:
     return summary
 
 def update_progress_summary(summary: Dict[str, Any]) -> None:
-    """Update PROGRESS.md with session summary"""
-    progress_path = Path("PROGRESS.md")
-    
-    if not progress_path.exists():
-        return
+    """Save session summary to separate log file instead of PROGRESS.md"""
+    # Save to separate session log file instead of polluting PROGRESS.md
+    session_log_path = Path(".claude/logs/session_summaries.log")
+    session_log_path.parent.mkdir(parents=True, exist_ok=True)
     
     try:
-        content = progress_path.read_text(encoding='utf-8')
-        
-        # Create session summary section
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-        session_section = f"\n\n### Session Summary - {timestamp}\n"
+        session_section = f"\n### Session Summary - {timestamp}\n"
         
         if 'statistics' in summary:
             stats = summary['statistics']
@@ -91,19 +87,10 @@ def update_progress_summary(summary: Dict[str, Any]) -> None:
             for activity in summary['activities'][-5:]:  # Last 5 activities
                 session_section += f"- {activity}\n"
         
-        # Find a good place to insert (after current task or at end)
-        task_pattern = r'(###.*?Current Task:.*?)(?=###|\Z)'
-        match = re.search(task_pattern, content, re.DOTALL | re.IGNORECASE)
-        
-        if match:
-            # Insert after current task
-            updated_content = content[:match.end()] + session_section + content[match.end():]
-        else:
-            # Append at end
-            updated_content = content + session_section
-        
-        # Write back
-        progress_path.write_text(updated_content, encoding='utf-8')
+        # Append to session log instead of PROGRESS.md
+        with open(session_log_path, 'a', encoding='utf-8') as f:
+            f.write(session_section + "\n")
+            
     except Exception as e:
         pass
 
