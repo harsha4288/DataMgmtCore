@@ -363,7 +363,7 @@ const DocumentationValidationPanel: React.FC<DocumentationValidationPanelProps> 
                               {error.file}
                             </code>
                           </div>
-                          <p className="text-sm font-medium">{error.message}</p>
+                          <div className="text-sm font-medium whitespace-pre-line">{error.message}</div>
                           {error.suggestion && (
                             <div className="p-2 rounded" style={{ backgroundColor: 'hsl(var(--muted))' }}>
                               <p className="text-sm">
