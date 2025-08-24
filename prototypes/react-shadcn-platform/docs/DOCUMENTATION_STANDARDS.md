@@ -45,13 +45,65 @@ If exceeding limits:
 - ❌ **PROGRESS.md** must sync from phase summaries
 - ✅ **Manual overrides** allowed with explicit documentation
 
+## 🔗 STRICT LINK PLACEMENT RULES
+
+### ❌ FORBIDDEN in PROGRESS.md
+- Task-level links (e.g., `./docs/progress/phase-X/task-X.Y-name.md`)
+- Task ID references (e.g., "Task 5.1:", "Task 6.4:")  
+- Individual task status details
+- Task-specific implementation details
+
+### ✅ ALLOWED in PROGRESS.md
+- Phase-level links ONLY (e.g., `./docs/progress/phase-X/README.md`)
+- Phase-level status summaries
+- High-level achievements without task details
+- Project-wide metrics and milestones
+
+### ✅ REQUIRED in Phase READMEs  
+- Task-level links (e.g., `./task-X.Y-name.md`)
+- Individual task status and details
+- Task-specific progress tracking
+- Implementation specifics
+
+### 🚨 Validation Rules
+- Any link containing `/task-` in PROGRESS.md = **VIOLATION**
+- Text matching `Task [0-9]\.[0-9]` in PROGRESS.md = **VIOLATION**
+- Task status details in PROGRESS.md = **VIOLATION**
+- Phase links in individual task files = **VIOLATION**
+
+## 📊 STATUS SYSTEM STANDARDS
+
+### Complete Task/Phase Status Values
+
+#### Development Statuses
+- 🟡 **Pending**: Not started, awaiting initiation
+- 🟡 **Next Priority**: Queued for upcoming work in pipeline
+- 🟢 **In Progress**: Currently being worked on (applies to both tasks AND phases)
+
+#### Blocked/Paused Statuses
+- 🟠 **Paused**: Partially completed work, temporarily halted
+- 🔴 **On Hold**: Will resume later (strategic pause, dependencies, never-started tasks)
+
+#### Final Statuses
+- 🔄 **Ready for Sign-off**: Development complete, awaiting user approval/testing
+- ✅ **Complete**: Fully finished and approved
+- ❌ **Cancelled**: Permanently discontinued, will not be completed
+
+### Status Usage Rules
+- **AI Restrictions**: Never change status to Complete without explicit human approval
+- **Single Active Rule**: Only ONE task/phase can be "In Progress" in any branch/worktree
+- **Paused vs On Hold**: Use "Paused" for started work, "On Hold" for strategic delays
+- **Ready for Sign-off**: Required intermediate status before completion
+- **Consistency**: Same task must have same status across all documentation levels
+- **Validation**: All status values must match this approved list exactly
+
 ## 📋 DOCUMENTATION STRUCTURE STANDARDS
 
 ### Task File Template
 ```markdown
 # Task X.Y: [Title]
 
-> **Status:** [🟡 Pending | 🟢 In Progress | ✅ Complete]  
+> **Status:** [🟡 Pending | 🟡 Next Priority | 🟢 In Progress | 🟠 Paused | 🔴 On Hold | 🔄 Ready for Sign-off | ✅ Complete | ❌ Cancelled]  
 > **Priority:** [High | Medium | Low]  
 > **Duration:** [X hours]
 
@@ -77,7 +129,7 @@ If exceeding limits:
 ```markdown
 # Phase X: [Title]
 
-> **Status:** [Status] | **Progress:** X% | **Duration:** X weeks
+> **Status:** [🟡 Pending | 🟡 Next Priority | 🟢 In Progress | 🟠 Paused | 🔴 On Hold | 🔄 Ready for Sign-off | ✅ Complete | ❌ Cancelled] | **Progress:** X% | **Duration:** X weeks
 
 ## 🎯 Overview
 [2-3 sentences maximum]
@@ -102,9 +154,13 @@ If exceeding limits:
 
 ### Automated Validation Rules
 1. **Link Integrity**: All internal links must be valid
-2. **Status Consistency**: Task status must match between files
-3. **Progress Math**: Phase progress must equal average of task progress
-4. **Template Compliance**: All documents must follow templates
+2. **Link Placement**: Enforce strict hierarchy rules (no task links in PROGRESS.md)
+3. **Status Validation**: All status values must match approved list: Pending, Next Priority, In Progress, Paused, On Hold, Ready for Sign-off, Complete, Cancelled
+4. **Status Consistency**: Same task must have identical status across all documentation levels
+5. **Single Active Rule**: Only ONE task/phase can be "In Progress" per branch/worktree
+6. **Progress Math**: Phase progress must equal average of task progress
+7. **Template Compliance**: All documents must follow templates
+8. **Hierarchy Compliance**: Single source of truth rules enforced
 
 ## 🤖 AI GUIDANCE RULES
 
