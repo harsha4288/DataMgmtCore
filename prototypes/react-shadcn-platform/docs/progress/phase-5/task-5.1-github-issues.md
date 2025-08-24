@@ -1,7 +1,6 @@
 # Task 5.1: GitHub Issues Migration
 
-> **Status:** 🟡 Pending  
-> **Timeline:** Days 1-2  
+> **Status:** 🔄 In Progress  > **Timeline:** Days 1-2  
 > **Complexity:** Medium  
 > **Dependencies:** None
 

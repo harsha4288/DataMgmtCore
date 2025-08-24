@@ -327,6 +327,43 @@ class ProgressReader {
   }
 
   /**
+   * Find the actual file path for a task by looking in the file system
+   */
+  findTaskFilePath(phaseId, taskId) {
+    const fs = require('fs');
+    const path = require('path');
+    
+    try {
+      // Look in the phase directory for task files
+      const phaseDir = path.resolve(__dirname, `../docs/progress/phase-${phaseId}`);
+      
+      if (!fs.existsSync(phaseDir)) {
+        console.log(`⚠️ Phase directory not found: ${phaseDir}`);
+        return `/docs/progress/phase-${phaseId}/task-${taskId}.md`; // fallback
+      }
+      
+      const files = fs.readdirSync(phaseDir);
+      
+      // Look for files that start with task-{taskId}
+      const taskFile = files.find(file => 
+        file.startsWith(`task-${taskId}`) && file.endsWith('.md')
+      );
+      
+      if (taskFile) {
+        console.log(`✅ Found task file: phase-${phaseId}/${taskFile} for task ${taskId}`);
+        return `/docs/progress/phase-${phaseId}/${taskFile}`;
+      }
+      
+      console.log(`⚠️ Task file not found for task ${taskId} in phase ${phaseId}, using fallback`);
+      return `/docs/progress/phase-${phaseId}/task-${taskId}.md`; // fallback
+      
+    } catch (error) {
+      console.error(`❌ Error finding task file for ${phaseId}.${taskId}:`, error.message);
+      return `/docs/progress/phase-${phaseId}/task-${taskId}.md`; // fallback
+    }
+  }
+
+  /**
    * Convert to dashboard format
    */
   toDashboardFormat(data) {
@@ -355,7 +392,8 @@ class ProgressReader {
           estimatedHours: 0,
           dependencies: [],
           comments: [],
-          subtasks: []
+          subtasks: [],
+          documentPath: this.findTaskFilePath(phase.id, task.id)
         }))
       })),
       currentPhase: data.currentPhase,

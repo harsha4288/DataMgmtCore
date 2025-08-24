@@ -1,0 +1,21 @@
+{
+  "timestamp": "2025-08-24T19:16:43.876Z",
+  "totalErrors": 93,
+  "totalWarnings": 0,
+  "sizeViolations": 5,
+  "templateViolations": 57,
+  "brokenLinks": 29,
+  "status": "critical",
+  "details": [
+    "📏 SIZE VIOLATION: docs\\progress\\phase-6\\task-6.3-database-design.md has 359 lines (limit: 250)",
+    "📏 SIZE VIOLATION: docs\\progress\\phase-6\\task-6.2-backend-architecture.md has 283 lines (limit: 250)",
+    "📏 SIZE VIOLATION: docs\\progress\\phase-6\\task-6.10-production-launch.md has 315 lines (limit: 250)",
+    "📏 SIZE VIOLATION: docs\\progress\\phase-6\\task-6.1-research-planning.md has 319 lines (limit: 250)",
+    "📏 SIZE VIOLATION: docs\\progress\\phase-6\\README.md has 226 lines (limit: 150)",
+    "📋 TEMPLATE VIOLATION: Task 6.9 missing required section: ## 📋 Objective OR ## 🎯 Objective",
+    "📋 TEMPLATE VIOLATION: Task 6.9 missing required section: ## ✅ Success Criteria",
+    "📋 TEMPLATE VIOLATION: Task 6.8 missing required section: ## 📋 Objective OR ## 🎯 Objective",
+    "📋 TEMPLATE VIOLATION: Task 6.8 missing required section: ## ✅ Success Criteria",
+    "📋 TEMPLATE VIOLATION: Task 6.7 missing required section: ## 📋 Objective OR ## 🎯 Objective"
+  ]
+}

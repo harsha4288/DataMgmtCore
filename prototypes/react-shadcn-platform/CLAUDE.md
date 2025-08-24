@@ -236,4 +236,28 @@ node validate-theme-usage.js --fix
 
 ---
 
+## 🚨 CRITICAL DOCUMENTATION RULES
+
+### ❌ **AI RESTRICTIONS** 
+- **NEVER** update task/phase status without explicit human approval
+- **NEVER** mark tasks completed without user verification
+- **ALWAYS** request approval before any documentation status changes
+
+### ✅ **DOCUMENTATION WORKFLOW INTEGRATION**
+1. **Follow** standards in `docs/DOCUMENTATION_STANDARDS.md` 
+2. **Validate** using `npm run validate:docs` before completion
+3. **Request** human approval for all status changes
+4. **Run** `npm run health:docs` to check documentation health
+
+### 🤖 **STATUS UPDATE REQUIREMENT**
+All status changes must use this format:
+```
+Current Status: [X] → Proposed Status: [Y] 
+⚠️ HUMAN APPROVAL REQUIRED ⚠️
+```
+
+📚 **Complete Standards:** See `docs/DOCUMENTATION_STANDARDS.md` for all rules, templates, and detailed guidance
+
+---
+
 **Remember: The user has excellent guidelines. My job is to follow them precisely, understanding both the rules AND the legitimate exceptions.**

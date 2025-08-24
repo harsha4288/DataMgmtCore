@@ -125,11 +125,12 @@
 - Knowledge Base - Searchable success/failure patterns
 
 **Tasks:**
-- [Task 5.1: Progress Sync & Dashboard](./docs/progress/phase-5/task-5.1-progress-sync-dashboard.md) 🟡 Pending
-- [Task 5.2: Git Worktrees Infrastructure](./docs/progress/phase-5/task-5.2-git-worktrees.md) 🟡 Pending
-- [Task 5.3: Quality Tools Pipeline](./docs/progress/phase-5/task-5.3-quality-pipeline.md) 🟡 Pending
-- [Task 5.4: Knowledge Management System](./docs/progress/phase-5/task-5.4-knowledge-base.md) 🟡 Pending
-- [Task 5.5: Multi-Session Orchestration](./docs/progress/phase-5/task-5.5-orchestration.md) 🟡 Pending
+- [Task 5.1: Progress Sync & Dashboard] 🟡 Pending
+- [Task 5.2: Git Worktrees Infrastructure] 🟡 Pending
+- [Task 5.3: Quality Tools Pipeline] 🟡 Pending
+- [Task 5.4: Real-Time Dashboard] 🟡 Pending
+- [Task 5.5: Knowledge Management System] 🟡 Pending
+- [Task 5.6: Multi-Session Orchestration] 🟡 Pending
 
 ### [Phase 6: Alumni Production Implementation](./docs/progress/phase-6/README.md) 🟡 Next Priority
 
