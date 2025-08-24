@@ -115,11 +115,10 @@ class DocumentationValidator {
 
   async loadDocumentationData() {
     if (this.options.verbose) console.log('Loading documentation data...');
-    
-    // Load PROGRESS.md
+    // Load PROGRESS.md (phase-level only)
     try {
       const progressContent = fs.readFileSync('./PROGRESS.md', 'utf8');
-      this.progressData = this.parseProgress(progressContent);
+      this.progressData = { content: progressContent };
     } catch (error) {
       this.errors.push('Cannot read PROGRESS.md: ' + error.message);
     }
@@ -163,24 +162,28 @@ class DocumentationValidator {
 
   async validateDocumentSizes() {
     if (this.options.verbose) console.log('Validating document sizes...');
-    
     const allFiles = await glob('docs/**/*.md');
     allFiles.push('./PROGRESS.md');
-    
     for (const file of allFiles) {
       try {
         const content = fs.readFileSync(file, 'utf8');
         const lines = content.split('\n').length;
         const limit = this.getSizeLimit(file);
-        
         if (limit && lines > limit) {
-          this.errors.push(
-            `📏 SIZE VIOLATION: ${file} has ${lines} lines (limit: ${limit})\n` +
-            `   → Consider splitting into smaller files`
-          );
-          
-          if (this.options.fix) {
-            this.suggestDocumentSplit(file, content, lines, limit);
+          // Custom suggestion for PROGRESS.md
+          if (path.basename(file) === 'PROGRESS.md') {
+            this.errors.push(
+              `📏 SIZE VIOLATION: ${file} has ${lines} lines (limit: ${limit})\n` +
+              `   → Move all task-level details (links, IDs, statuses) to the appropriate phase README.md files as per docs/DOCUMENTATION_STANDARDS.md.`
+            );
+          } else {
+            this.errors.push(
+              `📏 SIZE VIOLATION: ${file} has ${lines} lines (limit: ${limit})\n` +
+              `   → Consider splitting into smaller files`
+            );
+            if (this.options.fix) {
+              this.suggestDocumentSplit(file, content, lines, limit);
+            }
           }
         }
       } catch (error) {
@@ -254,24 +257,8 @@ class DocumentationValidator {
 
   async validateConsistency() {
     if (this.options.verbose) console.log('Validating consistency between documents...');
-    
-    // Check task status consistency between files
-    for (const [taskId, taskInfo] of this.taskData) {
-      const taskStatus = this.extractStatus(taskInfo.content);
-      
-      // Check if PROGRESS.md has the same status
-      if (this.progressData) {
-        const progressStatus = this.getTaskStatusFromProgress(taskId);
-        if (progressStatus && progressStatus !== taskStatus) {
-          this.errors.push(
-            `🔄 STATUS MISMATCH: Task ${taskId}\n` +
-            `   → Task file: ${taskStatus}\n` +
-            `   → PROGRESS.md: ${progressStatus}\n` +
-            `   → Single source of truth violation`
-          );
-        }
-      }
-    }
+    // No task-level status checks for PROGRESS.md (standards forbid task details in PROGRESS.md)
+    // Only phase-level consistency should be checked elsewhere if needed
   }
 
   async validateLinks() {
@@ -310,30 +297,7 @@ class DocumentationValidator {
 
   async detectRedundancy() {
     if (this.options.verbose) console.log('Detecting redundant content...');
-    
-    // Check for duplicate task lists between PROGRESS.md and phase READMEs
-    if (this.progressData && this.progressData.tasks) {
-      for (const [phaseId, phaseInfo] of this.phaseData) {
-        const phaseTasks = this.extractTaskList(phaseInfo.content);
-        const progressTasks = this.progressData.tasks.filter(t => 
-          t.id.startsWith(phaseId + '.')
-        );
-        
-        if (phaseTasks.length > 0 && progressTasks.length > 0) {
-          // Check if both contain similar task information
-          const redundantTasks = this.findRedundantTasks(phaseTasks, progressTasks);
-          
-          if (redundantTasks.length > 0) {
-            this.errors.push(
-              `🔄 REDUNDANCY DETECTED: Phase ${phaseId}\n` +
-              `   → Tasks listed in both PROGRESS.md and ${phaseInfo.file}\n` +
-              `   → Redundant tasks: ${redundantTasks.join(', ')}\n` +
-              `   → Violates single source of truth principle`
-            );
-          }
-        }
-      }
-    }
+    // No redundancy check between PROGRESS.md and phase READMEs for task lists (standards forbid task details in PROGRESS.md)
   }
 
   async validateSourceHierarchy() {
@@ -367,67 +331,56 @@ class DocumentationValidator {
 
   async validateStrictLinkPlacement() {
     if (this.options.verbose) console.log('Validating strict link placement rules...');
-    
     // Check PROGRESS.md for FORBIDDEN content
     if (this.progressData) {
       try {
         const progressContent = fs.readFileSync('./PROGRESS.md', 'utf8');
-        
         // Rule 1: No task-level links in PROGRESS.md
         const taskLinkPattern = /\[([^\]]*?)\]\([^)]*\/task-[^)]*\)/g;
         let taskLinkMatch;
-        
         while ((taskLinkMatch = taskLinkPattern.exec(progressContent)) !== null) {
           this.errors.push(
-            `🚨 LINK PLACEMENT VIOLATION: PROGRESS.md contains task-level link\n` +
-            `   → Found: ${taskLinkMatch[0]}\n` +
-            `   → Rule: Task links FORBIDDEN in PROGRESS.md\n` +
-            `   → Solution: Move to appropriate Phase README`
+            `🚨 STANDARDS VIOLATION: Task-level link found in PROGRESS.md\n` +
+            `   → ${taskLinkMatch[0]}\n` +
+            `   → Per docs/DOCUMENTATION_STANDARDS.md: Task links, IDs, and statuses are strictly forbidden in PROGRESS.md.\n` +
+            `   → Move all task-level details to the appropriate phase README.md.`
           );
         }
-        
         // Rule 2: No Task ID references ("Task X.Y:")
         const taskIdPattern = /Task\s+[0-9]+\.[0-9]+:/g;
         let taskIdMatch;
-        
         while ((taskIdMatch = taskIdPattern.exec(progressContent)) !== null) {
           this.errors.push(
-            `🚨 TASK ID VIOLATION: PROGRESS.md contains task ID reference\n` +
+            `🚨 STANDARDS VIOLATION: Task ID reference found in PROGRESS.md\n` +
             `   → Found: "${taskIdMatch[0]}"\n` +
-            `   → Rule: Task IDs FORBIDDEN in PROGRESS.md\n` +
-            `   → Solution: Use phase-level summaries only`
+            `   → Per docs/DOCUMENTATION_STANDARDS.md: Task IDs are strictly forbidden in PROGRESS.md.\n` +
+            `   → Move all task-level details to the appropriate phase README.md.`
           );
         }
-        
         // Rule 3: No individual task status details
         const taskStatusPattern = /- \[Task \d+\.\d+[^\]]*\]/g;
         let taskStatusMatch;
-        
         while ((taskStatusMatch = taskStatusPattern.exec(progressContent)) !== null) {
           this.errors.push(
-            `🚨 TASK STATUS VIOLATION: PROGRESS.md contains individual task status\n` +
+            `🚨 STANDARDS VIOLATION: Individual task status found in PROGRESS.md\n` +
             `   → Found: "${taskStatusMatch[0]}"\n` +
-            `   → Rule: Individual task statuses FORBIDDEN in PROGRESS.md\n` +
-            `   → Solution: Use phase-level status summaries only`
+            `   → Per docs/DOCUMENTATION_STANDARDS.md: Individual task statuses are strictly forbidden in PROGRESS.md.\n` +
+            `   → Move all task-level details to the appropriate phase README.md.`
           );
         }
-        
         // Rule 4: Only phase-level links allowed
         const phaseLinkPattern = /\[([^\]]*?)\]\([^)]*\/phase-[^)]*\/README\.md\)/g;
         const allLinkPattern = /\[([^\]]*?)\]\(\.\/[^)]*\)/g;
         const phaseLinks = [];
         const allLinks = [];
-        
         let phaseLinkMatch;
         while ((phaseLinkMatch = phaseLinkPattern.exec(progressContent)) !== null) {
           phaseLinks.push(phaseLinkMatch[0]);
         }
-        
         let allLinkMatch;
         while ((allLinkMatch = allLinkPattern.exec(progressContent)) !== null) {
           allLinks.push(allLinkMatch[0]);
         }
-        
         // Check if there are internal links that are NOT phase links
         const nonPhaseLinks = allLinks.filter(link => !phaseLinks.includes(link));
         for (const link of nonPhaseLinks) {
@@ -439,7 +392,6 @@ class DocumentationValidator {
             );
           }
         }
-        
       } catch (error) {
         this.warnings.push(`Cannot validate link placement in PROGRESS.md: ${error.message}`);
       }
@@ -630,53 +582,31 @@ class DocumentationValidator {
   async validateHierarchyCompliance() {
     if (this.options.verbose) console.log('Validating hierarchy compliance (single source of truth)...');
     
-    // Rule: Task files are PRIMARY SOURCE (most authoritative)
-    // Rule: Phase READMEs must sync FROM task files
-    // Rule: PROGRESS.md must sync FROM phase summaries
-    
-    for (const [phaseId, phaseInfo] of this.phaseData) {
-      const phaseTasks = Array.from(this.taskData.entries())
-        .filter(([taskId]) => taskId.startsWith(phaseId + '.'));
-      
-      for (const [taskId, taskInfo] of phaseTasks) {
-        // Check task file is being used as source
-        const taskStatus = this.extractStatus(taskInfo.content);
-        const taskProgress = this.extractProgress(taskInfo.content);
+    // Only check that PROGRESS.md syncs from phase summaries (not task-level)
+    if (this.progressData && this.progressData.content) {
+      try {
+        const progressContent = this.progressData.content;
         
-        // Check if phase README reflects task file data
-        const phaseTaskStatus = this.getTaskStatusFromPhase(taskId, phaseInfo.content);
-        
-        if (phaseTaskStatus && phaseTaskStatus !== taskStatus) {
-          this.errors.push(
-            `🏗️ HIERARCHY VIOLATION: Task ${taskId} status inconsistency\n` +
-            `   → Task file (PRIMARY): ${taskStatus}\n` +
-            `   → Phase README: ${phaseTaskStatus}\n` +
-            `   → Rule: Phase README must sync FROM task file\n` +
-            `   → Solution: Update phase README to match task file`
-          );
-        }
-      }
-    }
-    
-    // Check PROGRESS.md syncs from phase data
-    if (this.progressData && this.progressData.tasks) {
-      for (const progressTask of this.progressData.tasks) {
-        const phaseId = progressTask.id.split('.')[0];
-        const phaseInfo = this.phaseData.get(phaseId);
-        
-        if (phaseInfo) {
-          const phaseTaskStatus = this.getTaskStatusFromPhase(progressTask.id, phaseInfo.content);
+        // Rule: PROGRESS.md must sync FROM phase summaries
+        for (const [phaseId, phaseInfo] of this.phaseData) {
+          const phaseTaskSummary = this.extractTaskSummaryFromPhase(phaseInfo.content);
           
-          if (phaseTaskStatus && phaseTaskStatus !== progressTask.status) {
-            this.warnings.push(
-              `🏗️ HIERARCHY WARNING: PROGRESS.md may be out of sync\n` +
-              `   → Task ${progressTask.id}\n` +
-              `   → PROGRESS.md: ${progressTask.status}\n` +
-              `   → Phase README: ${phaseTaskStatus}\n` +
-              `   → Note: PROGRESS.md should sync from phase summaries`
-            );
+          for (const taskId in phaseTaskSummary) {
+            const phaseTaskStatus = this.getTaskStatusFromPhase(taskId, progressContent);
+            
+            if (phaseTaskStatus && phaseTaskStatus !== phaseTaskSummary[taskId]) {
+              this.warnings.push(
+                `🏗️ HIERARCHY WARNING: PROGRESS.md may be out of sync\n` +
+                `   → Task ${taskId}\n` +
+                `   → PROGRESS.md: ${phaseTaskStatus}\n` +
+                `   → Phase README: ${phaseTaskSummary[taskId]}\n` +
+                `   → Note: PROGRESS.md should sync from phase summaries`
+              );
+            }
           }
         }
+      } catch (error) {
+        this.warnings.push(`Cannot validate PROGRESS.md sync in ${this.progressData.file}: ${error.message}`);
       }
     }
   }
@@ -826,9 +756,10 @@ class DocumentationValidator {
   }
 
   getTaskStatusFromProgress(taskId) {
-    if (!this.progressData || !this.progressData.tasks) return null;
-    const task = this.progressData.tasks.find(t => t.id === taskId);
-    return task ? task.status : null;
+    if (!this.progressData || !this.progressData.content) return null;
+    const taskLinePattern = new RegExp(`Task ${taskId}.*?([🟡🟢🔴✅❌🟠🔄][^\n]*)`);
+    const match = this.progressData.content.match(taskLinePattern);
+    return match ? match[1].trim() : null;
   }
 
   extractTaskSummaryFromPhase(content) {

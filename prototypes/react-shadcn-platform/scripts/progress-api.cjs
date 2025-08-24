@@ -8,7 +8,11 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs').promises;
 const path = require('path');
+const { exec } = require('child_process');
+const util = require('util');
 const { ProgressReader } = require('./readProgress.cjs');
+
+const execAsync = util.promisify(exec);
 
 const app = express();
 const PORT = 3002;
@@ -165,6 +169,272 @@ function formatStatus(status) {
       return 'Pending';
   }
 }
+
+// Git status endpoint
+app.get('/api/git-status', async (req, res) => {
+  try {
+    const [statusResult, branchResult, logResult] = await Promise.all([
+      execAsync('git status --porcelain', { cwd: path.join(__dirname, '..') }),
+      execAsync('git branch --show-current', { cwd: path.join(__dirname, '..') }),
+      execAsync('git log -1 --format="%H|%s|%an|%ai"', { cwd: path.join(__dirname, '..') })
+    ]);
+
+    const statusLines = statusResult.stdout.trim().split('\n').filter(line => line.trim());
+    const staged = statusLines.filter(line => line.charAt(0) !== ' ' && line.charAt(0) !== '?').length;
+    const unstaged = statusLines.filter(line => line.charAt(1) !== ' ').length;
+    const untracked = statusLines.filter(line => line.startsWith('??')).length;
+
+    const branch = branchResult.stdout.trim();
+    const logParts = logResult.stdout.trim().split('|');
+
+    res.json({
+      branch,
+      ahead: 0,
+      behind: 0,
+      staged,
+      unstaged,
+      untracked,
+      lastCommit: {
+        hash: logParts[0]?.substring(0, 7) || 'Unknown',
+        message: logParts[1] || 'Unknown',
+        author: logParts[2] || 'Unknown',
+        timestamp: logParts[3] || new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    console.error('Error getting git status:', error);
+    res.status(500).json({ 
+      error: 'Failed to get git status',
+      details: error.message 
+    });
+  }
+});
+
+// Quality checks endpoint
+app.get('/api/quality-checks', async (req, res) => {
+  try {
+    const checks = [];
+    
+    // Run lint check
+    try {
+      const lintResult = await execAsync('npm run lint', { cwd: path.join(__dirname, '..') });
+      checks.push({
+        id: `lint-${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        type: 'lint',
+        status: 'pass',
+        message: 'ESLint passed with no errors',
+        errorCount: 0,
+        warningCount: 0,
+        fileCount: 0
+      });
+    } catch (error) {
+      const errorLines = error.stdout ? error.stdout.split('\n') : [];
+      const errorCount = errorLines.filter(line => line.includes('error')).length;
+      const warningCount = errorLines.filter(line => line.includes('warning')).length;
+      
+      checks.push({
+        id: `lint-${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        type: 'lint',
+        status: errorCount > 0 ? 'fail' : 'warning',
+        message: `ESLint found ${errorCount} errors, ${warningCount} warnings`,
+        errorCount,
+        warningCount,
+        fileCount: 0,
+        details: error.stdout
+      });
+    }
+
+    // Run type check
+    try {
+      const typeResult = await execAsync('npm run type-check', { cwd: path.join(__dirname, '..') });
+      checks.push({
+        id: `type-${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        type: 'type-check',
+        status: 'pass',
+        message: 'TypeScript compilation successful',
+        errorCount: 0,
+        warningCount: 0,
+        fileCount: 0
+      });
+    } catch (error) {
+      const errorLines = error.stdout ? error.stdout.split('\n') : [];
+      const errorCount = errorLines.filter(line => line.includes('error')).length;
+      
+      checks.push({
+        id: `type-${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        type: 'type-check',
+        status: 'fail',
+        message: `TypeScript found ${errorCount} errors`,
+        errorCount,
+        warningCount: 0,
+        fileCount: 0,
+        details: error.stdout
+      });
+    }
+
+    res.json(checks);
+  } catch (error) {
+    console.error('Error running quality checks:', error);
+    res.status(500).json({ 
+      error: 'Failed to run quality checks',
+      details: error.message 
+    });
+  }
+});
+
+// Documentation validation endpoint
+app.get('/api/validation-results', async (req, res) => {
+  try {
+    // Check if validation script exists
+    const validationScript = path.join(__dirname, '..', 'validate-documentation.js');
+    const scriptExists = await fs.access(validationScript).then(() => true).catch(() => false);
+    
+    if (!scriptExists) {
+      return res.json({
+        isRunning: false,
+        lastRun: new Date(),
+        summary: {
+          totalErrors: 0,
+          totalWarnings: 1,
+          sizeViolations: 0,
+          templateViolations: 0,
+          brokenLinks: 0
+        },
+        results: [{
+          type: 'warning',
+          message: 'Documentation validation script not found',
+          file: 'validate-documentation.js',
+          details: 'Run: npm install documentation validation dependencies'
+        }]
+      });
+    }
+
+    // Run validation script
+    const result = await execAsync(`node "${validationScript}"`, { cwd: path.join(__dirname, '..') });
+    
+    // Parse validation results (this would depend on your validation script output format)
+    res.json({
+      isRunning: false,
+      lastRun: new Date(),
+      summary: {
+        totalErrors: 0,
+        totalWarnings: 0,
+        sizeViolations: 0,
+        templateViolations: 0,
+        brokenLinks: 0
+      },
+      results: []
+    });
+  } catch (error) {
+    console.error('Error running documentation validation:', error);
+    res.json({
+      isRunning: false,
+      lastRun: new Date(),
+      summary: {
+        totalErrors: 1,
+        totalWarnings: 0,
+        sizeViolations: 0,
+        templateViolations: 0,
+        brokenLinks: 0
+      },
+      results: [{
+        type: 'error',
+        message: 'Failed to run documentation validation',
+        file: 'validation-system',
+        details: error.message
+      }]
+    });
+  }
+});
+
+// Run validation endpoint
+app.post('/api/run-validation', async (req, res) => {
+  try {
+    const validationScript = path.join(__dirname, '..', 'validate-documentation.js');
+    const result = await execAsync(`node "${validationScript}"`, { cwd: path.join(__dirname, '..') });
+    
+    res.json({
+      success: true,
+      message: 'Documentation validation completed',
+      output: result.stdout
+    });
+  } catch (error) {
+    console.error('Error running validation:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Documentation validation failed',
+      error: error.message,
+      output: error.stdout || error.stderr
+    });
+  }
+});
+
+// Run quality check endpoint
+app.post('/api/run-quality-check', async (req, res) => {
+  try {
+    const { type } = req.body;
+    
+    if (!type) {
+      return res.status(400).json({ error: 'Quality check type is required' });
+    }
+
+    let command;
+    switch (type) {
+      case 'lint':
+        command = 'npm run lint';
+        break;
+      case 'type-check':
+        command = 'npm run type-check';
+        break;
+      case 'theme':
+        command = 'npm run validate:theme';
+        break;
+      case 'build':
+        command = 'npm run build';
+        break;
+      default:
+        return res.status(400).json({ error: `Unknown quality check type: ${type}` });
+    }
+
+    try {
+      const result = await execAsync(command, { cwd: path.join(__dirname, '..') });
+      res.json({
+        status: 'pass',
+        message: `${type} check passed successfully`,
+        errorCount: 0,
+        warningCount: 0,
+        fileCount: 0,
+        details: result.stdout
+      });
+    } catch (error) {
+      const errorLines = error.stdout ? error.stdout.split('\n') : [];
+      const errorCount = errorLines.filter(line => line.includes('error')).length;
+      const warningCount = errorLines.filter(line => line.includes('warning')).length;
+      
+      res.json({
+        status: errorCount > 0 ? 'fail' : 'warning',
+        message: `${type} check found ${errorCount} errors, ${warningCount} warnings`,
+        errorCount,
+        warningCount,
+        fileCount: 0,
+        details: error.stdout || error.stderr
+      });
+    }
+  } catch (error) {
+    console.error('Error running quality check:', error);
+    res.status(500).json({
+      status: 'fail',
+      message: `Failed to run ${req.body.type} check`,
+      errorCount: 1,
+      warningCount: 0,
+      details: error.message
+    });
+  }
+});
 
 // Health check
 app.get('/api/health', (req, res) => {

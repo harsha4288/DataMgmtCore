@@ -130,28 +130,28 @@ class WorkflowService {
     currentPhase: '',
     activeTask: null,
     gitStatus: {
-      branch: 'Prototype-2-shadcn',
+      branch: 'Unknown',
       ahead: 0,
       behind: 0,
       staged: 0,
-      unstaged: 4,
-      untracked: 2,
+      unstaged: 0,
+      untracked: 0,
       lastCommit: {
-        hash: 'e1f017c',
-        message: 'Prototype 2: Phase 2 Gita Alumni connect mock UI implemented',
+        hash: 'Unknown',
+        message: 'Loading...',
         timestamp: new Date().toISOString(),
-        author: 'Claude Code'
+        author: 'Unknown'
       }
     },
     metrics: {
-      componentReusability: 85,
-      qualityGateStatus: 'pass',
+      componentReusability: 0,
+      qualityGateStatus: 'warning',
       testCoverage: 0,
-      techDebt: 15,
-      buildTime: 2.3,
-      filesModified: 12,
-      linesOfCode: 8540,
-      codeComplexity: 6.2
+      techDebt: 0,
+      buildTime: 0,
+      filesModified: 0,
+      linesOfCode: 0,
+      codeComplexity: 0
     },
     qualityChecks: [],
     recentActivity: [],
@@ -166,32 +166,34 @@ class WorkflowService {
 
   private async loadInitialData() {
     try {
-      // Load from PROGRESS.md if available
       console.log('🚀 Loading initial data for dashboard...');
+      
+      // Try to load real project data
       const progressData = await this.loadProgressData();
       if (progressData && progressData.length > 0) {
         console.log('✅ Using real progress data:', progressData.length, 'phases');
         this.state.phases = progressData;
+        this.state.isConnected = true;
       } else {
-        console.log('📋 Using mock data');
-        // Fallback to mock data
-        this.state.phases = this.getMockPhases();
+        console.log('📋 No real data available - showing empty state');
+        this.state.phases = [];
+        this.state.isConnected = false;
       }
 
-      // Load git status
+      // Try to load real git status
       await this.updateGitStatus();
       
-      // Load quality checks
-      await this.updateQualityChecks();
-      
-      // Load recent activity
-      await this.loadRecentActivity();
+      // Load quality checks only if connected
+      if (this.state.isConnected) {
+        await this.updateQualityChecks();
+        await this.loadRecentActivity();
+      }
 
-      this.state.isConnected = true;
       this.notifyListeners();
     } catch (error) {
       console.error('Failed to load initial data:', error);
-      this.state.phases = this.getMockPhases();
+      this.state.phases = [];
+      this.state.isConnected = false;
       this.notifyListeners();
     }
   }
@@ -199,20 +201,18 @@ class WorkflowService {
   private async loadProgressData(): Promise<Phase[] | null> {
     try {
       console.log('🔄 Attempting to load progress data from API...');
-      // Try to load from the progress reader API endpoint
       const response = await fetch('http://localhost:3002/api/progress');
       if (response.ok) {
         const data = await response.json();
-        console.log('✅ Progress data loaded from API:', data.phases.length, 'phases');
+        console.log('✅ Progress data loaded from API:', data.phases?.length || 0, 'phases');
         return this.convertProgressDataToPhases(data);
       } else {
         console.log('❌ API response not OK:', response.status);
       }
     } catch (error) {
-      console.log('❌ Could not load from API, falling back to mock data:', error.message);
+      console.log('❌ Could not load from API:', error.message);
     }
     
-    console.log('🔄 Using mock data instead');
     return null;
   }
 
@@ -249,328 +249,101 @@ class WorkflowService {
     }));
   }
 
-  private getMockPhases(): Phase[] {
-    return [
-      {
-        id: '1',
-        name: 'Phase 1: Foundation Setup',
-        status: 'in_progress',
-        progress: 95,
-        description: 'Setting up the core foundation with shadcn/ui components and theme system',
-        startDate: '2024-12-01',
-        collapsed: false,
-        tasks: [
-          {
-            id: '1.4',
-            title: 'Entity System Integration',
-            description: 'Port entity system from Prototype 1 and integrate with current architecture',
-            status: 'in_progress',
-            priority: 'high',
-            assignee: 'Claude Code',
-            dueDate: '2024-12-20',
-            estimatedHours: 8,
-            actualHours: 6,
-            dependencies: ['1.3.5'],
-            documentPath: '/docs/tasks/1.4-entity-integration.md',
-            history: [
-              { 
-                id: 'h1', 
-                timestamp: new Date(Date.now() - 3600000).toISOString(), 
-                action: 'Task created', 
-                user: 'User', 
-                details: 'Initial task definition' 
-              },
-              { 
-                id: 'h2', 
-                timestamp: new Date(Date.now() - 1800000).toISOString(), 
-                action: 'Status changed', 
-                user: 'Claude Code', 
-                details: 'Changed from pending to in_progress' 
-              }
-            ],
-            comments: [
-              {
-                id: 'c1',
-                author: 'User',
-                content: 'Ready to proceed with entity integration. Please ensure theme compatibility.',
-                timestamp: new Date(Date.now() - 1800000).toISOString(),
-                type: 'command'
-              }
-            ],
-            subtasks: [
-              {
-                id: '1.4.1',
-                title: 'Define Entity Interfaces',
-                description: 'Create TypeScript interfaces for all entities',
-                status: 'completed',
-                priority: 'medium',
-                assignee: 'Claude Code',
-                dueDate: '2024-12-20',
-                estimatedHours: 2,
-                dependencies: [],
-                comments: [],
-                subtasks: []
-              },
-              {
-                id: '1.4.2',
-                title: 'Implement CRUD Operations',
-                description: 'Add Create, Read, Update, Delete operations',
-                status: 'pending',
-                priority: 'high',
-                assignee: 'Claude Code',
-                dueDate: '2024-12-20',
-                estimatedHours: 4,
-                dependencies: ['1.4.1'],
-                comments: [],
-                subtasks: []
-              }
-            ],
-            fileChanges: [
-              {
-                path: 'src/services/EntityService.ts',
-                type: 'added',
-                timestamp: new Date(Date.now() - 900000).toISOString(),
-                linesAdded: 145,
-                linesRemoved: 0
-              },
-              {
-                path: 'src/types/entities.ts',
-                type: 'modified',
-                timestamp: new Date(Date.now() - 600000).toISOString(),
-                linesAdded: 23,
-                linesRemoved: 5
-              }
-            ],
-            qualityChecks: [
-              {
-                id: 'q1',
-                timestamp: new Date(Date.now() - 300000).toISOString(),
-                type: 'lint',
-                status: 'pass',
-                message: 'ESLint passed with 0 errors',
-                fileCount: 12
-              },
-              {
-                id: 'q2',
-                timestamp: new Date(Date.now() - 300000).toISOString(),
-                type: 'type-check',
-                status: 'pass',
-                message: 'TypeScript check passed',
-                fileCount: 12
-              }
-            ]
-          }
-        ]
-      },
-      {
-        id: '2',
-        name: 'Phase 2: Gita Alumni Mock UI',
-        status: 'completed',
-        progress: 100,
-        description: 'Implement wireframes and mockups for Gita Alumni system',
-        startDate: '2024-12-21',
-        endDate: '2024-12-21',
-        collapsed: false,
-        tasks: [
-          {
-            id: '2.1',
-            title: 'Design User Dashboard',
-            description: 'Create mockup for user dashboard',
-            status: 'completed',
-            priority: 'high',
-            assignee: 'Claude Code',
-            dueDate: '2024-12-22',
-            estimatedHours: 4,
-            actualHours: 3,
-            dependencies: [],
-            comments: [],
-            subtasks: [],
-            documentPath: '/docs/tasks/2.1-dashboard.md',
-            enhancementRequests: ['Add dark mode toggle', 'Include analytics widget']
-          }
-        ]
-      }
-    ];
-  }
 
   private async updateGitStatus() {
     try {
-      // In a real implementation, this would run git commands
-      // For now, use mock data with periodic updates
-      this.state.gitStatus = {
-        ...this.state.gitStatus,
-        staged: Math.floor(Math.random() * 5),
-        unstaged: Math.floor(Math.random() * 8),
-        untracked: Math.floor(Math.random() * 3)
-      };
+      // Try to get real git status from API
+      const response = await fetch('http://localhost:3002/api/git-status');
+      if (response.ok) {
+        const gitData = await response.json();
+        this.state.gitStatus = gitData;
+        console.log('✅ Git status loaded from API');
+      } else {
+        console.log('⚠️ Git API not available, using default values');
+      }
     } catch (error) {
-      console.error('Failed to update git status:', error);
+      console.log('⚠️ Could not fetch git status:', error.message);
     }
   }
 
   private async updateQualityChecks() {
     try {
-      // Load real documentation health if available
-      const docHealth = await this.loadDocumentationHealth();
-      
-      const checks: QualityCheck[] = [
-        {
-          id: `q-${Date.now()}`,
+      // Only load quality checks if we're connected to real services
+      if (!this.state.isConnected) {
+        this.state.qualityChecks = [{
+          id: `offline-${Date.now()}`,
           timestamp: new Date().toISOString(),
           type: 'lint',
-          status: 'pass', // In real implementation, would check actual lint status
-          message: 'ESLint check passed - no errors or warnings',
+          status: 'warning',
+          message: 'Quality check services offline. Run manual checks: npm run lint, npm run type-check',
           errorCount: 0,
-          warningCount: 0,
-          fileCount: 15
-        },
-        {
-          id: `q-${Date.now()}-1`,
-          timestamp: new Date().toISOString(),
-          type: 'type-check',
-          status: 'pass', // In real implementation, would check actual TypeScript status
-          message: 'TypeScript compilation successful',
-          errorCount: 0,
-          warningCount: 0,
-          fileCount: 15
-        },
-        {
-          id: `q-${Date.now()}-2`,
-          timestamp: new Date().toISOString(),
-          type: 'theme',
-          status: 'warning', // Real theme validation might have issues
-          message: 'Theme validation - some hardcoded colors found',
-          errorCount: 0,
-          warningCount: 12,
-          fileCount: 8,
-          details: 'Found hardcoded color values in components. Use theme variables.'
-        },
-        {
-          id: `q-${Date.now()}-3`,
-          timestamp: new Date().toISOString(),
-          type: 'docs',
-          status: docHealth.status === 'healthy' ? 'pass' : 'fail',
-          message: `Documentation validation - ${docHealth.totalErrors} errors, ${docHealth.totalWarnings} warnings`,
-          errorCount: docHealth.totalErrors,
-          warningCount: docHealth.totalWarnings,
-          fileCount: 50, // Approximate docs file count
-          details: `Size violations: ${docHealth.sizeViolations}, Template violations: ${docHealth.templateViolations}, Broken links: ${docHealth.brokenLinks}`
-        }
-      ];
+          warningCount: 1,
+          fileCount: 0
+        }];
+        return;
+      }
 
-      this.state.qualityChecks = checks;
+      // Try to get real quality check results from API
+      const response = await fetch('http://localhost:3002/api/quality-checks');
+      if (response.ok) {
+        const checks = await response.json();
+        this.state.qualityChecks = checks;
+        console.log('✅ Quality checks loaded from API');
+      } else {
+        throw new Error(`API returned ${response.status}`);
+      }
     } catch (error) {
-      console.error('Failed to update quality checks:', error);
-      // Fallback to basic checks if real data unavailable
+      console.log('⚠️ Could not load quality checks:', error.message);
       this.state.qualityChecks = [{
-        id: `q-${Date.now()}`,
+        id: `error-${Date.now()}`,
         timestamp: new Date().toISOString(),
         type: 'lint',
         status: 'warning',
-        message: 'Quality check service unavailable',
+        message: 'Could not fetch quality check results. Use manual commands.',
         errorCount: 0,
         warningCount: 1,
-        fileCount: 0
+        fileCount: 0,
+        details: 'Run: npm run lint && npm run type-check && npm run validate:theme'
       }];
     }
   }
 
-  private async loadDocumentationHealth(): Promise<DocumentationHealth> {
+
+  private async loadRecentActivity() {
     try {
-      // In a real implementation, this would read from .claude/documentation-health.json
-      // or run the validation command and parse results
-      
-      // Simulate the current known state based on our validation run
-      return {
-        totalErrors: 93,
-        totalWarnings: 0,
-        sizeViolations: 5,
-        templateViolations: 64,
-        brokenLinks: 24,
-        lastValidation: new Date().toISOString(),
-        status: 'critical' // 93 errors is definitely critical
-      };
+      // Try to get real activity from API or git logs
+      const response = await fetch('http://localhost:3002/api/recent-activity');
+      if (response.ok) {
+        const activities = await response.json();
+        this.state.recentActivity = activities;
+        console.log('✅ Recent activity loaded from API');
+      } else {
+        console.log('⚠️ Activity API not available');
+        this.state.recentActivity = [];
+      }
     } catch (error) {
-      console.error('Failed to load documentation health:', error);
-      return {
-        totalErrors: 0,
-        totalWarnings: 0,
-        sizeViolations: 0,
-        templateViolations: 0,
-        brokenLinks: 0,
-        lastValidation: new Date().toISOString(),
-        status: 'healthy'
-      };
+      console.log('⚠️ Could not load recent activity:', error.message);
+      this.state.recentActivity = [];
     }
   }
 
-  private async loadRecentActivity() {
-    // In a real implementation, this would read from Claude Code logs
-    const activities: TaskHistory[] = [
-      {
-        id: `a-${Date.now()}`,
-        timestamp: new Date(Date.now() - 300000).toISOString(),
-        action: 'File modified',
-        user: 'Claude Code',
-        details: 'Updated WorkflowDashboard.tsx with real-time features',
-        fileChanges: ['src/components/workflow/WorkflowDashboard.tsx']
-      },
-      {
-        id: `a-${Date.now()}-1`,
-        timestamp: new Date(Date.now() - 600000).toISOString(),
-        action: 'Quality check completed',
-        user: 'System',
-        details: 'All quality gates passed successfully'
-      }
-    ];
-
-    this.state.recentActivity = activities;
-  }
-
   private startRealTimeUpdates() {
-    // Simulate real-time updates every 5 seconds
+    // Only start real-time updates if connected
+    if (!this.state.isConnected) {
+      console.log('⚠️ Skipping real-time updates - not connected to services');
+      return;
+    }
+
+    // Update every 30 seconds (less frequent to avoid spam)
     setInterval(async () => {
       await this.updateGitStatus();
       await this.updateQualityChecks();
       this.state.lastUpdate = new Date().toISOString();
       this.notifyListeners();
-    }, 5000);
-
-    // Check for Claude Code hook events
-    this.startHookEventListener();
+    }, 30000);
   }
 
-  private startHookEventListener() {
-    // In a real implementation, this would listen to .claude/logs/events.jsonl
-    // For now, simulate periodic updates
-    setInterval(() => {
-      if (Math.random() < 0.3) { // 30% chance of new activity
-        this.simulateHookEvent();
-      }
-    }, 10000);
-  }
 
-  private simulateHookEvent() {
-    const events = [
-      'File edited by Claude Code',
-      'Quality check triggered',
-      'Theme validation completed',
-      'Git status updated',
-      'Task progress updated'
-    ];
-
-    const event = events[Math.floor(Math.random() * events.length)];
-    const activity: TaskHistory = {
-      id: `sim-${Date.now()}`,
-      timestamp: new Date().toISOString(),
-      action: event,
-      user: 'Claude Code',
-      details: `Simulated event: ${event}`
-    };
-
-    this.state.recentActivity = [activity, ...this.state.recentActivity.slice(0, 19)];
-    this.notifyListeners();
-  }
 
   public subscribe(listener: (_state: DashboardState) => void) {
     this.listeners.push(listener);
@@ -717,8 +490,7 @@ class WorkflowService {
   }
 
   public sendClaudeCommand(command: string, taskId?: string) {
-    // In a real implementation, this would interface with Claude Code CLI
-    console.log(`Sending command to Claude Code: ${command}`, { taskId });
+    console.log(`Command logged: ${command}`, { taskId });
     
     if (taskId) {
       this.addTaskComment(taskId, {
@@ -726,16 +498,10 @@ class WorkflowService {
         content: command,
         type: 'command'
       });
-
-      // Simulate Claude's response
-      setTimeout(() => {
-        this.addTaskComment(taskId, {
-          author: 'Claude Code',
-          content: `Acknowledged command: "${command}". Processing...`,
-          type: 'claude_response'
-        });
-      }, 1000);
     }
+    
+    // In a real implementation, this would interface with Claude Code CLI
+    // For now, just log the command
   }
 
   public async runQualityCheck(type: QualityCheck['type']) {
@@ -800,81 +566,29 @@ class WorkflowService {
     warningCount?: number;
     details?: string;
   }> {
-    // In a real implementation, this would actually execute the npm commands
-    // For now, we'll simulate realistic results based on our known project state
-    
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate command execution time
-    
-    switch (type) {
-      case 'lint':
-        return {
-          status: 'pass',
-          message: 'ESLint passed - no errors or warnings found',
-          fileCount: 15,
-          errorCount: 0,
-          warningCount: 0,
-          details: 'All TypeScript/React files passed ESLint validation'
-        };
-        
-      case 'type-check':
-        return {
-          status: 'pass',
-          message: 'TypeScript compilation successful',
-          fileCount: 15,
-          errorCount: 0,
-          warningCount: 0,
-          details: 'All TypeScript files compiled without errors'
-        };
-        
-      case 'theme':
-        return {
-          status: 'warning',
-          message: 'Theme validation found potential issues',
-          fileCount: 8,
-          errorCount: 0,
-          warningCount: 12,
-          details: 'Found hardcoded color values in some components. Use theme variables for better theme switching support.'
-        };
-        
-      case 'docs':
-        // Use the real documentation data we know
-        const docHealth = await this.loadDocumentationHealth();
-        return {
-          status: docHealth.totalErrors > 50 ? 'fail' : docHealth.totalErrors > 0 ? 'warning' : 'pass',
-          message: `Documentation validation: ${docHealth.totalErrors} errors, ${docHealth.totalWarnings} warnings`,
-          fileCount: 50,
-          errorCount: docHealth.totalErrors,
-          warningCount: docHealth.totalWarnings,
-          details: `Issues found: ${docHealth.sizeViolations} size violations, ${docHealth.templateViolations} template violations, ${docHealth.brokenLinks} broken links. Run "npm run validate:docs:verbose" for details.`
-        };
-        
-      case 'build':
-        return {
-          status: 'pass',
-          message: 'Build completed successfully',
-          fileCount: 15,
-          errorCount: 0,
-          warningCount: 0,
-          details: 'TypeScript compilation and Vite build completed without errors'
-        };
-        
-      case 'test':
-        return {
-          status: 'warning',
-          message: 'No tests found',
-          fileCount: 0,
-          errorCount: 0,
-          warningCount: 1,
-          details: 'No test files found. Consider adding unit tests for better code quality.'
-        };
-        
-      default:
-        return {
-          status: 'fail',
-          message: `Unknown check type: ${type}`,
-          errorCount: 1,
-          warningCount: 0
-        };
+    try {
+      // Make API call to execute the actual quality check
+      const response = await fetch('http://localhost:3002/api/run-quality-check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        return result;
+      } else {
+        throw new Error(`API returned ${response.status}`);
+      }
+    } catch (error) {
+      console.log(`⚠️ Could not execute ${type} check:`, error.message);
+      return {
+        status: 'fail',
+        message: `${type} check failed - service unavailable`,
+        errorCount: 1,
+        warningCount: 0,
+        details: `Could not execute ${type} validation. Run manually: npm run ${type === 'type-check' ? 'type-check' : type}`
+      };
     }
   }
 }
