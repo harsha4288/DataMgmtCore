@@ -95,13 +95,14 @@ const WorkflowDashboard: React.FC = () => {
     console.log('Toggle phase collapse:', phaseId);
   };
 
-  const changeTaskStatus = (taskId: string, newStatus: Task['status']) => {
-    updateTaskStatus(taskId, newStatus);
-    
-    // Update local active task if it matches
+  const changeTaskStatus = async (taskId: string, newStatus: Task['status']) => {
+    // Update local active task first for immediate UI feedback
     if (currentActiveTask?.id === taskId) {
       setLocalActiveTask({ ...currentActiveTask, status: newStatus });
     }
+    
+    // Then persist the change
+    await updateTaskStatus(taskId, newStatus);
   };
 
   const viewTaskDocument = (task: Task) => {
@@ -203,7 +204,11 @@ const WorkflowDashboard: React.FC = () => {
                   value={selectedPhaseId}
                   onChange={(e) => setSelectedPhaseId(e.target.value)}
                   className="px-2 py-1 border rounded text-sm"
-                  style={{ borderColor: 'hsl(var(--border))' }}
+                  style={{ 
+                    borderColor: 'hsl(var(--border))',
+                    backgroundColor: 'hsl(var(--background))',
+                    color: 'hsl(var(--foreground))'
+                  }}
                 >
                   {phases.map(phase => (
                     <option key={phase.id} value={phase.id}>
@@ -506,8 +511,13 @@ const WorkflowDashboard: React.FC = () => {
                         <span className="text-sm text-muted-foreground">Status</span>
                         <select
                           value={currentActiveTask.status}
-                          onChange={(e) => changeTaskStatus(currentActiveTask.id, e.target.value as Task['status'])}
+                          onChange={async (e) => await changeTaskStatus(currentActiveTask.id, e.target.value as Task['status'])}
                           className="px-2 py-1 text-xs border rounded"
+                          style={{ 
+                            borderColor: 'hsl(var(--border))',
+                            backgroundColor: 'hsl(var(--background))',
+                            color: 'hsl(var(--foreground))'
+                          }}
                         >
                           <option value="pending">Pending</option>
                           <option value="in_progress">In Progress</option>

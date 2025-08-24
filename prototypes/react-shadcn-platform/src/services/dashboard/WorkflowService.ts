@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { TaskPersistenceService } from '../TaskPersistenceService';
 
 export interface Task {
   id: string;
@@ -156,10 +157,13 @@ class WorkflowService {
   private async loadInitialData() {
     try {
       // Load from PROGRESS.md if available
+      console.log('🚀 Loading initial data for dashboard...');
       const progressData = await this.loadProgressData();
-      if (progressData) {
+      if (progressData && progressData.length > 0) {
+        console.log('✅ Using real progress data:', progressData.length, 'phases');
         this.state.phases = progressData;
       } else {
+        console.log('📋 Using mock data');
         // Fallback to mock data
         this.state.phases = this.getMockPhases();
       }
@@ -183,9 +187,56 @@ class WorkflowService {
   }
 
   private async loadProgressData(): Promise<Phase[] | null> {
-    // In a real implementation, this would read from PROGRESS.md
-    // For now, return null to use mock data
+    try {
+      console.log('🔄 Attempting to load progress data from API...');
+      // Try to load from the progress reader API endpoint
+      const response = await fetch('http://localhost:3002/api/progress');
+      if (response.ok) {
+        const data = await response.json();
+        console.log('✅ Progress data loaded from API:', data.phases.length, 'phases');
+        return this.convertProgressDataToPhases(data);
+      } else {
+        console.log('❌ API response not OK:', response.status);
+      }
+    } catch (error) {
+      console.log('❌ Could not load from API, falling back to mock data:', error.message);
+    }
+    
+    console.log('🔄 Using mock data instead');
     return null;
+  }
+
+  private convertProgressDataToPhases(data: any): Phase[] {
+    if (!data || !data.phases) return [];
+    
+    return data.phases.map((phase: any) => ({
+      id: phase.id,
+      name: phase.name,
+      status: phase.status,
+      progress: phase.progress || 0,
+      description: phase.description || '',
+      startDate: phase.startDate || '',
+      endDate: phase.endDate,
+      collapsed: false,
+      tasks: (phase.tasks || []).map((task: any) => ({
+        id: task.id,
+        title: task.title,
+        description: task.description || '',
+        status: task.status,
+        priority: task.priority || 'medium',
+        assignee: task.assignee || 'Claude Code',
+        dueDate: task.dueDate || '',
+        estimatedHours: task.estimatedHours || 0,
+        actualHours: task.actualHours,
+        dependencies: task.dependencies || [],
+        comments: [],
+        subtasks: task.subtasks || [],
+        documentPath: `/docs/progress/phase-${phase.id}/task-${task.id}.md`,
+        history: [],
+        fileChanges: [],
+        qualityChecks: []
+      }))
+    }));
   }
 
   private getMockPhases(): Phase[] {
@@ -467,7 +518,15 @@ class WorkflowService {
     return { ...this.state };
   }
 
-  public updateTaskStatus(taskId: string, status: Task['status']) {
+  public async updateTaskStatus(taskId: string, status: Task['status']) {
+    // Find the task to get its document path
+    let taskToUpdate: Task | undefined;
+    for (const phase of this.state.phases) {
+      taskToUpdate = phase.tasks.find(task => task.id === taskId);
+      if (taskToUpdate) break;
+    }
+
+    // 1. Update local state immediately for responsive UI
     this.state.phases = this.state.phases.map(phase => ({
       ...phase,
       tasks: phase.tasks.map(task => {
@@ -489,6 +548,78 @@ class WorkflowService {
         return task;
       })
     }));
+
+    // 2. Persist to .md file if documentPath exists
+    if (taskToUpdate?.documentPath) {
+      try {
+        console.log(`💾 Persisting status change for task ${taskId} to file system`);
+        const success = await TaskPersistenceService.updateTaskStatus({
+          taskId,
+          newStatus: status,
+          filePath: taskToUpdate.documentPath
+        });
+        
+        if (!success) {
+          console.error(`❌ Failed to persist status change for task ${taskId}`);
+          // In a production app, you might want to:
+          // - Show error notification to user
+          // - Revert local state
+          // - Add retry mechanism
+          
+          // Add error history entry
+          const errorHistoryEntry: TaskHistory = {
+            id: `h-error-${Date.now()}`,
+            timestamp: new Date().toISOString(),
+            action: `Failed to persist status change`,
+            user: 'System',
+            details: `Could not write status change to ${taskToUpdate.documentPath}`
+          };
+          
+          // Update task with error history
+          this.state.phases = this.state.phases.map(phase => ({
+            ...phase,
+            tasks: phase.tasks.map(task => {
+              if (task.id === taskId) {
+                return {
+                  ...task,
+                  history: [...(task.history || []), errorHistoryEntry]
+                };
+              }
+              return task;
+            })
+          }));
+        } else {
+          console.log(`✅ Successfully persisted status change for task ${taskId}`);
+          
+          // Add success history entry
+          const successHistoryEntry: TaskHistory = {
+            id: `h-persist-${Date.now()}`,
+            timestamp: new Date().toISOString(),
+            action: `Status persisted to file system`,
+            user: 'System',
+            details: `Successfully updated ${taskToUpdate.documentPath}`
+          };
+          
+          // Update task with success history
+          this.state.phases = this.state.phases.map(phase => ({
+            ...phase,
+            tasks: phase.tasks.map(task => {
+              if (task.id === taskId) {
+                return {
+                  ...task,
+                  history: [...(task.history || []), successHistoryEntry]
+                };
+              }
+              return task;
+            })
+          }));
+        }
+      } catch (error) {
+        console.error(`💥 Exception during status persistence for task ${taskId}:`, error);
+      }
+    } else {
+      console.warn(`⚠️ No document path found for task ${taskId}, skipping file persistence`);
+    }
 
     this.notifyListeners();
   }
@@ -567,7 +698,9 @@ export function useWorkflowDashboard() {
 
   return {
     ...state,
-    updateTaskStatus: workflowService.updateTaskStatus.bind(workflowService),
+    updateTaskStatus: async (taskId: string, status: Task['status']) => {
+      await workflowService.updateTaskStatus(taskId, status);
+    },
     addTaskComment: workflowService.addTaskComment.bind(workflowService),
     sendClaudeCommand: workflowService.sendClaudeCommand.bind(workflowService),
     runQualityCheck: workflowService.runQualityCheck.bind(workflowService)

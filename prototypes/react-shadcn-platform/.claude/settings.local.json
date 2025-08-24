@@ -35,7 +35,9 @@
       "Bash(npm test:*)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(git add:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(taskkill:*)",
+      "Bash(powershell:*)"
     ],
     "deny": [],
     "ask": [],

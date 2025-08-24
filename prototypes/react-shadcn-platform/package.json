@@ -29,7 +29,13 @@
     "hook:safety": "python .claude/hooks/pre_tool_use.py --test",
     "hook:context": "python .claude/hooks/user_prompt_submit.py --test",
     "claude:quality": "npm run check:all && npm run validate:theme",
-    "claude:theme": "node validate-theme-usage.js --verbose"
+    "claude:theme": "node validate-theme-usage.js --verbose",
+    "progress:parse": "node scripts/parseProgressFiles.cjs",
+    "progress:sync": "node scripts/sync-progress.cjs",
+    "progress:read": "node scripts/readProgress.cjs",
+    "progress:api": "node scripts/progress-api-simple.cjs",
+    "progress:dashboard": "node scripts/readProgress.cjs --json",
+    "progress:restore": "node scripts/sync-progress.cjs --restore"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -58,7 +64,9 @@
     "@types/react-router-dom": "^5.3.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "cors": "^2.8.5",
     "date-fns": "^4.1.0",
+    "express": "^5.1.0",
     "glob": "^11.0.3",
     "lucide-react": "^0.303.0",
     "react": "^18.2.0",

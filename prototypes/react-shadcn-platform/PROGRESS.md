@@ -118,19 +118,18 @@
 **Expected Impact:** 4x faster development, 70% token reduction, 0% repeated failures
 
 **Key Features:**
-- GitHub Issues Integration - Professional task management  
+- Progress Sync Scripts - Automated task file → PROGRESS.md synchronization
+- Workflow Dashboard - Real-time progress visibility at localhost:3001  
 - Git Worktrees - Parallel Claude sessions with isolated filesystems
 - Quality Pipeline - ESLint, TypeScript, jscpd, SonarQube automation
 - Knowledge Base - Searchable success/failure patterns
-- Real-Time Dashboard - Live monitoring at localhost:3001
 
 **Tasks:**
-- [Task 5.1: GitHub Issues Migration](./docs/progress/phase-5/task-5.1-github-issues.md) 🟡 Pending
+- [Task 5.1: Progress Sync & Dashboard](./docs/progress/phase-5/task-5.1-progress-sync-dashboard.md) 🟡 Pending
 - [Task 5.2: Git Worktrees Infrastructure](./docs/progress/phase-5/task-5.2-git-worktrees.md) 🟡 Pending
 - [Task 5.3: Quality Tools Pipeline](./docs/progress/phase-5/task-5.3-quality-pipeline.md) 🟡 Pending
-- [Task 5.4: Real-Time Dashboard](./docs/progress/phase-5/task-5.4-dashboard.md) 🟡 Pending
-- [Task 5.5: Knowledge Management System](./docs/progress/phase-5/task-5.5-knowledge-base.md) 🟡 Pending
-- [Task 5.6: Multi-Session Orchestration](./docs/progress/phase-5/task-5.6-orchestration.md) 🟡 Pending
+- [Task 5.4: Knowledge Management System](./docs/progress/phase-5/task-5.4-knowledge-base.md) 🟡 Pending
+- [Task 5.5: Multi-Session Orchestration](./docs/progress/phase-5/task-5.5-orchestration.md) 🟡 Pending
 
 ### [Phase 6: Alumni Production Implementation](./docs/progress/phase-6/README.md) 🟡 Next Priority
 
@@ -182,7 +181,7 @@
 ### Phase 5: Development Infrastructure (Active)
 
 **Immediate Priority:** Foundation setup for 4x faster development
-1. 🟡 **Week 1:** Foundation - GitHub Issues, Git Worktrees, Quality Pipeline, Dashboard  
+1. 🟡 **Week 1:** Foundation - Progress Scripts, Workflow Dashboard, Git Worktrees, Quality Pipeline  
 2. 🟡 **Week 2:** Knowledge Management - Failure tracking, success patterns, smart recovery
 3. 🟡 **Week 3:** Advanced Orchestration - Meta-controller, token budgets, Langfuse monitoring
 
