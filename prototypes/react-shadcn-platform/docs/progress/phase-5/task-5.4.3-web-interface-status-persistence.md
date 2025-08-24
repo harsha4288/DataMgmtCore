@@ -1,7 +1,6 @@
 # Sub-task 5.4.3: Web Interface Task Status Persistence
 
-> **Status:** 🔄 In Progress  
-> **Parent Task:** Task 5.4 - Real-Time Dashboard  
+> **Status:** 🔄 In Progress  > **Parent Task:** Task 5.4 - Real-Time Dashboard  
 > **Timeline:** 2-3 hours  
 > **Complexity:** Medium  
 > **Dependencies:** WorkflowDashboard UI (completed), Scripts sync system (existing)

@@ -19,11 +19,32 @@ export class TaskPersistenceService {
    * Modifies YAML front matter: Status field
    */
   static async updateTaskStatus(update: TaskStatusUpdate): Promise<boolean> {
-    // Browser environment - return success but don't actually write files
+    // Browser environment - use API endpoint to write files
     if (typeof window !== 'undefined' || !fs) {
-      console.log(`🌐 Browser environment: Simulating task status update for ${update.taskId} to ${update.newStatus}`);
-      console.log(`📁 Would update file: ${update.filePath}`);
-      return true;
+      console.log(`🌐 Browser environment: Making API request to update task ${update.taskId} to ${update.newStatus}`);
+      console.log(`📁 Target file: ${update.filePath}`);
+      
+      try {
+        const response = await fetch('http://localhost:3002/api/task-status', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(update)
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          console.log(`✅ API successfully updated task ${update.taskId}:`, result);
+          return true;
+        } else {
+          console.error(`❌ API error updating task ${update.taskId}:`, response.status, response.statusText);
+          return false;
+        }
+      } catch (error) {
+        console.error(`❌ Failed to call API for task ${update.taskId}:`, error);
+        return false;
+      }
     }
 
     try {

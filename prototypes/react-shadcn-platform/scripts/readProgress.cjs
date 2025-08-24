@@ -7,8 +7,9 @@ const fs = require('fs');
 const path = require('path');
 
 class ProgressReader {
-  constructor(progressPath = './PROGRESS.md') {
-    this.progressPath = progressPath;
+  constructor(progressPath = '../PROGRESS.md') {
+    // Resolve path relative to script directory
+    this.progressPath = path.resolve(__dirname, progressPath);
   }
 
   /**
