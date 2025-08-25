@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node scripts/dev-with-api-simple.cjs",
+    "dev:vite-only": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
@@ -40,7 +41,9 @@
     "progress:read": "node scripts/readProgress.cjs",
     "progress:api": "node scripts/progress-api-simple.cjs",
     "progress:dashboard": "node scripts/readProgress.cjs --json",
-    "progress:restore": "node scripts/sync-progress.cjs --restore"
+    "progress:restore": "node scripts/sync-progress.cjs --restore",
+    "workflow:dev": "node scripts/dev-with-api.cjs",
+    "workflow:check": "npm run check:all && npm run validate:theme && npm run validate:docs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

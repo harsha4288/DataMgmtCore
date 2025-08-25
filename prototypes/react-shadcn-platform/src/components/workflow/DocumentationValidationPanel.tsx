@@ -22,8 +22,12 @@ import {
   Users,
   TrendingUp,
   FileX,
-  FileCheck
+  FileCheck,
+  ChevronDown,
+  ChevronRight,
+  Info
 } from 'lucide-react';
+import { getStatusInfo, getValidStatusList } from '@/constants/documentation-status';
 
 interface ValidationError {
   id: string;
@@ -35,6 +39,9 @@ interface ValidationError {
   message: string;
   suggestion?: string;
   lineNumber?: number;
+  details?: string[];
+  foundValue?: string;
+  expectedValue?: string;
 }
 
 interface ValidationWarning {
@@ -83,6 +90,7 @@ const DocumentationValidationPanel: React.FC<DocumentationValidationPanelProps> 
 
   const [selectedErrorType, setSelectedErrorType] = useState<string>('all');
   const [showFixSuggestions, setShowFixSuggestions] = useState(false);
+  const [expandedErrors, setExpandedErrors] = useState<Set<string>>(new Set());
 
   // Remove mock data useEffect and replace with real fetch
   useEffect(() => {
@@ -174,9 +182,37 @@ const DocumentationValidationPanel: React.FC<DocumentationValidationPanelProps> 
         return 'AI Restrictions';
       case 'STANDARDS_VIOLATION':
         return 'Standards Violation';
+      case 'INVALID_STATUS':
+        return 'Invalid Status';
       default:
         return type.replace(/_/g, ' ');
     }
+  };
+
+  const getEnhancedErrorMessage = (error: ValidationError): string => {
+    switch (error.type) {
+      case 'BROKEN_LINK':
+        return `Broken or invalid link found in ${error.file}. The link "${error.suggestion?.replace('./', '')}" could not be resolved or points to a non-existent file.`;
+      case 'INVALID_STATUS':
+        const statusInfo = getStatusInfo(error.foundValue || 'unknown');
+        return `Invalid status found: "${error.foundValue}". ${statusInfo.usage}`;
+      case 'LINK_PLACEMENT_VIOLATION':
+        return `${error.message}${error.details && error.details.length > 0 ? ` Found ${error.details.length} violation(s).` : ''}`;
+      default:
+        return error.message;
+    }
+  };
+
+  const toggleErrorExpansion = (errorId: string) => {
+    setExpandedErrors(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(errorId)) {
+        newSet.delete(errorId);
+      } else {
+        newSet.add(errorId);
+      }
+      return newSet;
+    });
   };
 
   const filteredErrors = selectedErrorType === 'all' 
@@ -349,33 +385,94 @@ const DocumentationValidationPanel: React.FC<DocumentationValidationPanelProps> 
                   </AlertDescription>
                 </Alert>
               ) : (
-                filteredErrors.map((error) => (
-                  <Card key={error.id}>
-                    <CardContent className="pt-4">
-                      <div className="flex items-start gap-3">
-                        {getErrorTypeIcon(error.type)}
-                        <div className="flex-1 space-y-2">
-                          <div className="flex items-center gap-2">
-                            <Badge variant="destructive" className="text-xs">
-                              {getErrorTypeLabel(error.type)}
-                            </Badge>
-                            <code className="text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>
-                              {error.file}
-                            </code>
-                          </div>
-                          <div className="text-sm font-medium whitespace-pre-line">{error.message}</div>
-                          {error.suggestion && (
-                            <div className="p-2 rounded" style={{ backgroundColor: 'hsl(var(--muted))' }}>
-                              <p className="text-sm">
-                                <strong>💡 Suggestion:</strong> {error.suggestion}
-                              </p>
+                filteredErrors.map((error) => {
+                  const isExpanded = expandedErrors.has(error.id);
+                  const hasDetails = error.details && error.details.length > 0;
+                  const enhancedMessage = getEnhancedErrorMessage(error);
+
+                  return (
+                    <Card key={error.id}>
+                      <CardContent className="pt-4">
+                        <div className="flex items-start gap-3">
+                          {getErrorTypeIcon(error.type)}
+                          <div className="flex-1 space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Badge variant="destructive" className="text-xs">
+                                {getErrorTypeLabel(error.type)}
+                              </Badge>
+                              <code className="text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                                {error.file}
+                              </code>
+                              {hasDetails && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => toggleErrorExpansion(error.id)}
+                                  className="h-auto p-1 text-xs"
+                                >
+                                  {isExpanded ? (
+                                    <ChevronDown className="h-3 w-3" />
+                                  ) : (
+                                    <ChevronRight className="h-3 w-3" />
+                                  )}
+                                  {error.details!.length} details
+                                </Button>
+                              )}
                             </div>
-                          )}
+                            <div className="text-sm font-medium whitespace-pre-line">{enhancedMessage}</div>
+                            
+                            {/* Enhanced suggestions based on error type */}
+                            {error.type === 'INVALID_STATUS' && (
+                              <div className="p-3 rounded" style={{ backgroundColor: 'hsl(var(--muted))' }}>
+                                <div className="flex items-start gap-2">
+                                  <Info className="h-4 w-4 mt-0.5 text-blue-500" />
+                                  <div className="space-y-2">
+                                    <p className="text-sm font-medium">Valid Statuses:</p>
+                                    <div className="text-xs space-y-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                                      {getValidStatusList().split('\n').map((status, idx) => (
+                                        <div key={idx} dangerouslySetInnerHTML={{ __html: status.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+                                      ))}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                            
+                            {error.type === 'BROKEN_LINK' && error.suggestion && (
+                              <div className="p-2 rounded" style={{ backgroundColor: 'hsl(var(--muted))' }}>
+                                <p className="text-sm">
+                                  <strong>💡 Fix:</strong> Check if the file <code>{error.suggestion}</code> exists or update the link path.
+                                </p>
+                              </div>
+                            )}
+                            
+                            {error.suggestion && !['INVALID_STATUS', 'BROKEN_LINK'].includes(error.type) && (
+                              <div className="p-2 rounded" style={{ backgroundColor: 'hsl(var(--muted))' }}>
+                                <p className="text-sm">
+                                  <strong>💡 Suggestion:</strong> {error.suggestion}
+                                </p>
+                              </div>
+                            )}
+                            
+                            {/* Expandable details */}
+                            {hasDetails && isExpanded && (
+                              <div className="mt-3 p-3 rounded border" style={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }}>
+                                <p className="text-sm font-medium mb-2">All violations found:</p>
+                                <div className="space-y-1 text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                                  {error.details!.map((detail, idx) => (
+                                    <div key={idx} className="font-mono p-1 rounded" style={{ backgroundColor: 'hsl(var(--muted))' }}>
+                                      {detail}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
+                      </CardContent>
+                    </Card>
+                  );
+                })
               )}
             </div>
           </ScrollArea>

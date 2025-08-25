@@ -318,15 +318,35 @@ app.get('/api/validation-results', async (req, res) => {
     let hasErrors = false;
     
     try {
-      const result = await execAsync(`node "${validationScript}"`, { cwd: path.join(__dirname, '..') });
+      const result = await execAsync(`node "${validationScript}" --json`, { 
+        cwd: path.join(__dirname, '..'),
+        maxBuffer: 1024 * 1024 // 1MB buffer for large output
+      });
       validationOutput = result.stdout;
     } catch (error) {
       // Validation script returns exit code 1 when it finds errors, this is expected behavior
-      validationOutput = error.stdout || error.stderr || '';
+      // Try stderr first since that's where the JSON is output when errors exist
+      validationOutput = error.stderr || error.stdout || '';
       hasErrors = true;
+      console.log(`Validation script stderr length: ${(error.stderr || '').length}`);
+      console.log(`Validation script stdout length: ${(error.stdout || '').length}`);
     }
 
-    // Parse the validation output to extract structured data
+    // Try to parse as JSON first (new format)
+    let validationData;
+    try {
+      validationData = JSON.parse(validationOutput);
+      // If it's valid JSON, return it directly
+      console.log(`✅ Successfully parsed JSON validation results: ${validationData.errors.length} errors, ${validationData.warnings.length} warnings`);
+      res.json(validationData);
+      return;
+    } catch (parseError) {
+      // If it's not JSON, fall back to parsing (legacy format)
+      console.log('Validation output is not JSON, parsing manually...', parseError.message);
+      console.log('First 200 chars:', validationOutput.substring(0, 200));
+    }
+
+    // Legacy parsing for text output (fallback)
     const errors = [];
     const warnings = [];
     let totalErrors = 0;
@@ -417,21 +437,54 @@ app.get('/api/validation-results', async (req, res) => {
         
         // Parse STANDARDS VIOLATION
         if (line.includes('STANDARDS VIOLATION:')) {
-          const nextLine = lines[i + 1] ? lines[i + 1].trim() : '';
-          const nextLine2 = lines[i + 2] ? lines[i + 2].trim() : '';
-          
           let message = line.replace('🚨 STANDARDS VIOLATION: ', '');
-          let file = 'unknown';
+          let file = 'PROGRESS.md'; // Default for standards violations
+          let suggestion = 'Fix standards compliance issue';
+          let detailedMessage = message;
           
-          // Look for file info in next lines
-          if (nextLine.includes('→ File:')) {
-            const fileMatch = nextLine.match(/→ File: (.+?)$/);
-            if (fileMatch) file = fileMatch[1].replace(/\\/g, '/');
-          } else if (nextLine.includes('→ Found:')) {
-            const foundMatch = nextLine.match(/→ Found: "(.+?)"$/);
-            if (foundMatch && nextLine2.includes('→ Per docs/')) {
-              file = 'PROGRESS.md';
-              message = `Individual task status found: ${foundMatch[1]}`;
+          // Check for consolidated task documentation violations
+          if (message.includes('Task documentation details found in PROGRESS.md')) {
+            file = 'PROGRESS.md';
+            suggestion = 'Move task documentation links to appropriate phase README.md files';
+            
+            // Capture additional details from following lines
+            let j = i + 1;
+            const details = [];
+            
+            while (j < lines.length && lines[j].trim().startsWith('→')) {
+              const detail = lines[j].trim();
+              if (detail.includes('Task links found:') || 
+                  detail.includes('Task ID references found:') || 
+                  detail.includes('Examples:')) {
+                details.push(detail.replace('→ ', ''));
+              }
+              j++;
+              
+              // Stop when we reach the rule explanation
+              if (detail.includes('Per docs/DOCUMENTATION_STANDARDS.md:')) {
+                break;
+              }
+            }
+            
+            if (details.length > 0) {
+              detailedMessage = message + '\n' + details.join('\n');
+            }
+          }
+          // Handle individual task status violations (keep existing logic)
+          else {
+            const nextLine = lines[i + 1] ? lines[i + 1].trim() : '';
+            const nextLine2 = lines[i + 2] ? lines[i + 2].trim() : '';
+            
+            // Look for file info in next lines
+            if (nextLine.includes('→ File:')) {
+              const fileMatch = nextLine.match(/→ File: (.+?)$/);
+              if (fileMatch) file = fileMatch[1].replace(/\\/g, '/');
+            } else if (nextLine.includes('→ Found:')) {
+              const foundMatch = nextLine.match(/→ Found: "(.+?)"$/);
+              if (foundMatch && nextLine2.includes('→ Per docs/')) {
+                file = 'PROGRESS.md';
+                detailedMessage = `Individual task status found: ${foundMatch[1]}`;
+              }
             }
           }
           
@@ -440,8 +493,59 @@ app.get('/api/validation-results', async (req, res) => {
             type: 'STANDARDS_VIOLATION',
             severity: 'error',
             file,
-            message,
-            suggestion: 'Fix standards compliance issue'
+            message: detailedMessage,
+            suggestion
+          });
+          totalErrors++;
+        }
+        
+        // Parse HIERARCHY VIOLATION
+        if (line.includes('HIERARCHY VIOLATION:')) {
+          let message = line.replace('🚨 HIERARCHY VIOLATION: ', '');
+          let file = 'unknown';
+          let suggestion = 'Fix hierarchy compliance issue';
+          let detailedMessage = message;
+          
+          // Check for phase-level sub-task violations
+          if (message.includes('Sub-task details found in Phase')) {
+            const phaseMatch = message.match(/Phase (\d+) README/);
+            file = phaseMatch ? `docs/progress/phase-${phaseMatch[1]}/README.md` : 'phase-README.md';
+            suggestion = 'Move sub-task details to appropriate task files';
+            
+            // Capture additional details from following lines
+            let j = i + 1;
+            const details = [];
+            
+            while (j < lines.length && lines[j].trim().startsWith('→')) {
+              const detail = lines[j].trim();
+              if (detail.includes('Sub-task links found:') || 
+                  detail.includes('Sub-task ID references found:') ||
+                  detail.includes('Sub-task status details found:') ||
+                  detail.includes('Examples:')) {
+                details.push(detail.replace('→ ', ''));
+              }
+              j++;
+              
+              // Stop when we reach file info
+              if (detail.includes('→ File:')) {
+                const fileMatch = detail.match(/→ File: (.+?)$/);
+                if (fileMatch) file = fileMatch[1].replace(/\\/g, '/');
+                break;
+              }
+            }
+            
+            if (details.length > 0) {
+              detailedMessage = message + '\n' + details.join('\n');
+            }
+          }
+          
+          errors.push({
+            id: `hierarchy-${currentErrorId++}`,
+            type: 'HIERARCHY_VIOLATION',
+            severity: 'error',
+            file,
+            message: detailedMessage,
+            suggestion
           });
           totalErrors++;
         }
@@ -580,12 +684,18 @@ app.post('/api/run-validation', async (req, res) => {
     let hasErrors = false;
     
     try {
-      const result = await execAsync(`node "${validationScript}"`, { cwd: path.join(__dirname, '..') });
+      const result = await execAsync(`node "${validationScript}" --json`, { 
+        cwd: path.join(__dirname, '..'),
+        maxBuffer: 1024 * 1024 // 1MB buffer for large output
+      });
       validationOutput = result.stdout;
     } catch (error) {
       // Validation script returns exit code 1 when it finds errors, this is expected behavior
-      validationOutput = error.stdout || error.stderr || '';
+      // Try stderr first since that's where the JSON is output when errors exist
+      validationOutput = error.stderr || error.stdout || '';
       hasErrors = true;
+      console.log(`Run validation script stderr: ${error.stderr}`);
+      console.log(`Run validation script stdout length: ${(error.stdout || '').length}`);
     }
     
     // Count errors from the output

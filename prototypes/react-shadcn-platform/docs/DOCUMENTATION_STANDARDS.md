@@ -75,6 +75,9 @@ If exceeding limits:
 
 ### Complete Task/Phase Status Values
 
+> **Reference Implementation:** `src/constants/documentation-status.ts`  
+> **Validation:** All status values must match exactly (case-sensitive)
+
 #### Development Statuses
 - 🟡 **Pending**: Not started, awaiting initiation
 - 🟡 **Next Priority**: Queued for upcoming work in pipeline

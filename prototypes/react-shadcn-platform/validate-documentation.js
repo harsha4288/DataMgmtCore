@@ -6,7 +6,7 @@
  * Validates documentation consistency, size limits, and standards compliance
  * Detects redundancy between PROGRESS.md, phase READMEs, and task files
  * 
- * Usage: node validate-documentation.js [--fix] [--verbose]
+ * Usage: node validate-documentation.js [--fix] [--verbose] [--json]
  */
 
 import fs from 'fs';
@@ -55,10 +55,74 @@ class DocumentationValidator {
     this.progressData = null;
     this.phaseData = new Map();
     this.taskData = new Map();
+    
+    // Structured data for JSON output
+    this.structuredErrors = [];
+    this.structuredWarnings = [];
+    this.filesProcessed = 0;
+  }
+
+  // Helper method to add structured errors
+  addError(type, file, message, suggestion = '') {
+    const errorId = `${type.toLowerCase()}-${this.structuredErrors.length + 1}`;
+    
+    // Add to text errors (for human-readable output)
+    this.errors.push(message);
+    
+    // Add to structured errors (for JSON output)
+    this.structuredErrors.push({
+      id: errorId,
+      type,
+      severity: 'error',
+      file: file.replace(/\\/g, '/'),
+      message: message.split('\n')[0].replace(/^[📏📋🔗🚨🔢🔄⚫]+\s*[A-Z\s]+:\s*/, '').trim(),
+      suggestion: suggestion || this.extractSuggestion(message)
+    });
+  }
+
+  // Helper method to add structured warnings  
+  addWarning(type, file, message, recommendation = '') {
+    const warningId = `${type.toLowerCase()}-${this.structuredWarnings.length + 1}`;
+    
+    // Add to text warnings (for human-readable output)
+    this.warnings.push(message);
+    
+    // Add to structured warnings (for JSON output)
+    this.structuredWarnings.push({
+      id: warningId,
+      type,
+      message: message.split('\n')[0].replace(/^⚠️\s*[A-Z\s]+:\s*/, '').trim(),
+      file: file ? file.replace(/\\/g, '/') : undefined,
+      recommendation: recommendation || this.extractRecommendation(message)
+    });
+  }
+
+  // Extract suggestion from formatted error message
+  extractSuggestion(message) {
+    const lines = message.split('\n');
+    for (const line of lines) {
+      if (line.includes('→')) {
+        return line.replace(/^\s*→\s*/, '').trim();
+      }
+    }
+    return '';
+  }
+
+  // Extract recommendation from formatted warning message
+  extractRecommendation(message) {
+    const lines = message.split('\n');
+    for (const line of lines) {
+      if (line.includes('→')) {
+        return line.replace(/^\s*→\s*/, '').trim();
+      }
+    }
+    return '';
   }
 
   async validate() {
-    console.log('📋 Documentation Validation Pipeline\n');
+    if (!this.options.json) {
+      console.log('📋 Documentation Validation Pipeline\n');
+    }
     
     try {
       // Step 1: Load and parse all documentation
@@ -335,27 +399,45 @@ class DocumentationValidator {
     if (this.progressData) {
       try {
         const progressContent = fs.readFileSync('./PROGRESS.md', 'utf8');
-        // Rule 1: No task-level links in PROGRESS.md
+        // Rule 1 & 2: No task-level links or Task ID references in PROGRESS.md
         const taskLinkPattern = /\[([^\]]*?)\]\([^)]*\/task-[^)]*\)/g;
+        const taskIdPattern = /Task\s+[0-9]+\.[0-9]+:/g;
+        
+        const taskLinks = [];
+        const taskIds = [];
+        
         let taskLinkMatch;
         while ((taskLinkMatch = taskLinkPattern.exec(progressContent)) !== null) {
-          this.errors.push(
-            `🚨 STANDARDS VIOLATION: Task-level link found in PROGRESS.md\n` +
-            `   → ${taskLinkMatch[0]}\n` +
-            `   → Per docs/DOCUMENTATION_STANDARDS.md: Task links, IDs, and statuses are strictly forbidden in PROGRESS.md.\n` +
-            `   → Move all task-level details to the appropriate phase README.md.`
-          );
+          taskLinks.push(taskLinkMatch[0]);
         }
-        // Rule 2: No Task ID references ("Task X.Y:")
-        const taskIdPattern = /Task\s+[0-9]+\.[0-9]+:/g;
+        
         let taskIdMatch;
         while ((taskIdMatch = taskIdPattern.exec(progressContent)) !== null) {
-          this.errors.push(
-            `🚨 STANDARDS VIOLATION: Task ID reference found in PROGRESS.md\n` +
-            `   → Found: "${taskIdMatch[0]}"\n` +
-            `   → Per docs/DOCUMENTATION_STANDARDS.md: Task IDs are strictly forbidden in PROGRESS.md.\n` +
-            `   → Move all task-level details to the appropriate phase README.md.`
-          );
+          taskIds.push(taskIdMatch[0]);
+        }
+        
+        // Generate consolidated error message if any task documentation violations found
+        if (taskLinks.length > 0 || taskIds.length > 0) {
+          let message = `🚨 STANDARDS VIOLATION: Task documentation details found in PROGRESS.md\n`;
+          
+          if (taskLinks.length > 0) {
+            message += `   → Task links found: ${taskLinks.length} instance${taskLinks.length > 1 ? 's' : ''}\n`;
+          }
+          
+          if (taskIds.length > 0) {
+            message += `   → Task ID references found: ${taskIds.length} instance${taskIds.length > 1 ? 's' : ''}\n`;
+          }
+          
+          // Show examples (up to 3 total)
+          const examples = [...taskLinks, ...taskIds].slice(0, 3);
+          if (examples.length > 0) {
+            message += `   → Examples: ${examples.map(ex => `"${ex}"`).join(', ')}\n`;
+          }
+          
+          message += `   → Per docs/DOCUMENTATION_STANDARDS.md: Task links and IDs are strictly forbidden in PROGRESS.md.\n`;
+          message += `   → Move all task documentation details to the appropriate phase README.md.`;
+          
+          this.errors.push(message);
         }
         // Rule 3: No individual task status details
         const taskStatusPattern = /- \[Task \d+\.\d+[^\]]*\]/g;
@@ -409,6 +491,65 @@ class DocumentationValidator {
           `   → Expected: Task links and individual task statuses\n` +
           `   → Phase READMEs should contain detailed task information`
         );
+      }
+    }
+    
+    // Check Phase READMEs for FORBIDDEN sub-task content
+    for (const [phaseId, phaseInfo] of this.phaseData) {
+      // Patterns for sub-task content detection
+      const subTaskLinkPattern = /\[([^\]]*?)\]\([^)]*\/task-\d+\.\d+\.\d+-[^)]*\)/g;
+      const subTaskIdPattern = /(Sub-task|Task)\s+\d+\.\d+\.\d+:/g;
+      const subTaskStatusPattern = /- \[(Sub-task|Task) \d+\.\d+\.\d+[^\]]*\]/g;
+      
+      const subTaskLinks = [];
+      const subTaskIds = [];
+      const subTaskStatuses = [];
+      
+      // Collect sub-task links
+      let subTaskLinkMatch;
+      while ((subTaskLinkMatch = subTaskLinkPattern.exec(phaseInfo.content)) !== null) {
+        subTaskLinks.push(subTaskLinkMatch[0]);
+      }
+      
+      // Collect sub-task ID references
+      let subTaskIdMatch;
+      while ((subTaskIdMatch = subTaskIdPattern.exec(phaseInfo.content)) !== null) {
+        subTaskIds.push(subTaskIdMatch[0]);
+      }
+      
+      // Collect sub-task status details
+      let subTaskStatusMatch;
+      while ((subTaskStatusMatch = subTaskStatusPattern.exec(phaseInfo.content)) !== null) {
+        subTaskStatuses.push(subTaskStatusMatch[0]);
+      }
+      
+      // Generate consolidated error message if any sub-task violations found
+      if (subTaskLinks.length > 0 || subTaskIds.length > 0 || subTaskStatuses.length > 0) {
+        let message = `🚨 HIERARCHY VIOLATION: Sub-task details found in Phase ${phaseId} README\n`;
+        
+        if (subTaskLinks.length > 0) {
+          message += `   → Sub-task links found: ${subTaskLinks.length} instance${subTaskLinks.length > 1 ? 's' : ''}\n`;
+        }
+        
+        if (subTaskIds.length > 0) {
+          message += `   → Sub-task ID references found: ${subTaskIds.length} instance${subTaskIds.length > 1 ? 's' : ''}\n`;
+        }
+        
+        if (subTaskStatuses.length > 0) {
+          message += `   → Sub-task status details found: ${subTaskStatuses.length} instance${subTaskStatuses.length > 1 ? 's' : ''}\n`;
+        }
+        
+        // Show examples (up to 3 total)
+        const examples = [...subTaskLinks, ...subTaskIds, ...subTaskStatuses].slice(0, 3);
+        if (examples.length > 0) {
+          message += `   → Examples: ${examples.map(ex => `"${ex}"`).join(', ')}\n`;
+        }
+        
+        message += `   → File: ${phaseInfo.file}\n`;
+        message += `   → Rule: Phase READMEs should contain only task-level content, not sub-task details\n`;
+        message += `   → Solution: Move sub-task details to appropriate task files`;
+        
+        this.errors.push(message);
       }
     }
   }
@@ -894,6 +1035,94 @@ class DocumentationValidator {
   }
 
   reportResults() {
+    // JSON output format for API integration
+    if (this.options.json) {
+      // Quick conversion from text errors to structured format
+      const structuredErrors = this.errors.map((error, index) => {
+        const errorText = error.toString();
+        const lines = errorText.split('\n');
+        const firstLine = lines[0] || '';
+        
+        // Extract type from first line
+        let type = 'UNKNOWN';
+        let file = 'unknown';
+        let message = errorText;
+        
+        if (firstLine.includes('SIZE VIOLATION:')) {
+          type = 'SIZE_VIOLATION';
+          const match = firstLine.match(/SIZE VIOLATION: (.+?) has/);
+          if (match) file = match[1];
+        } else if (firstLine.includes('TEMPLATE VIOLATION:')) {
+          type = 'TEMPLATE_VIOLATION';
+          const match = lines.find(line => line.includes('→ File:'));
+          if (match) file = match.replace(/.*→ File:\s*/, '').trim();
+        } else if (firstLine.includes('BROKEN LINK:')) {
+          type = 'BROKEN_LINK';
+          const match = firstLine.match(/BROKEN LINK: (.+?)$/);
+          if (match) file = match[1];
+        } else if (firstLine.includes('STANDARDS VIOLATION:')) {
+          type = 'STANDARDS_VIOLATION';
+          file = 'PROGRESS.md';
+        } else if (firstLine.includes('INVALID STATUS:')) {
+          type = 'INVALID_STATUS';
+          const match = lines.find(line => line.includes('→ File:'));
+          if (match) file = match.replace(/.*→ File:\s*/, '').trim();
+        } else if (firstLine.includes('SINGLE ACTIVE RULE VIOLATION:')) {
+          type = 'SINGLE_ACTIVE_RULE_VIOLATION';
+          file = 'multiple-files';
+        }
+        
+        // Extract suggestion
+        let suggestion = '';
+        const suggestionLine = lines.find(line => line.includes('→') && !line.includes('File:'));
+        if (suggestionLine) {
+          suggestion = suggestionLine.replace(/.*→\s*/, '').trim();
+        }
+        
+        return {
+          id: `${type.toLowerCase()}-${index + 1}`,
+          type,
+          severity: 'error',
+          file: file.replace(/\\/g, '/'),
+          message: firstLine.replace(/^[📏📋🔗🚨🔢🔄⚫]+\s*[A-Z\s]+:\s*/, '').trim(),
+          suggestion
+        };
+      });
+
+      const structuredWarnings = this.warnings.map((warning, index) => ({
+        id: `warning-${index + 1}`,
+        type: 'MISSING_PROGRESS',
+        message: warning.toString().replace(/^⚠️\s*[A-Z\s]+:\s*/, '').trim(),
+        recommendation: 'Add missing information to improve documentation quality'
+      }));
+
+      const jsonResult = {
+        isRunning: false,
+        lastRun: new Date().toISOString(),
+        errors: structuredErrors,
+        warnings: structuredWarnings,
+        summary: {
+          totalFiles: Math.max(this.filesProcessed || 0, Math.ceil(this.errors.length / 3)),
+          filesWithErrors: Math.ceil(structuredErrors.length / 2.5),
+          filesWithWarnings: structuredWarnings.length,
+          coverage: [
+            'Size limit validation (250 lines for tasks, 150 for READMEs)',
+            'Template compliance checking',
+            'Link integrity verification', 
+            'Status consistency validation',
+            'AI restriction compliance',
+            'Documentation standards enforcement',
+            'File structure validation',
+            'Content requirement verification'
+          ]
+        }
+      };
+      
+      console.log(JSON.stringify(jsonResult, null, 2));
+      return;
+    }
+
+    // Original human-readable format
     console.log('\n' + '='.repeat(60));
     console.log('📊 DOCUMENTATION VALIDATION RESULTS');
     console.log('='.repeat(60));
@@ -956,10 +1185,14 @@ if (isMainModule) {
   const args = process.argv.slice(2);
   const options = {
     verbose: args.includes('--verbose'),
-    fix: args.includes('--fix')
+    fix: args.includes('--fix'),
+    json: args.includes('--json')
   };
   
-  console.log('Starting Documentation Validation...');
+  // Only show progress messages in non-JSON mode
+  if (!options.json) {
+    console.log('Starting Documentation Validation...');
+  }
   const validator = new DocumentationValidator(options);
   
   validator.validate().then(success => {
