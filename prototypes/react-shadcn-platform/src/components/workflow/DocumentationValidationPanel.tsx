@@ -92,29 +92,79 @@ const DocumentationValidationPanel: React.FC<DocumentationValidationPanelProps> 
   const [showFixSuggestions, setShowFixSuggestions] = useState(false);
   const [expandedErrors, setExpandedErrors] = useState<Set<string>>(new Set());
 
-  // Remove mock data useEffect and replace with real fetch
+  // Load validation results directly
   useEffect(() => {
-    const fetchValidationResults = async () => {
+    const loadValidationResults = async () => {
       setValidationResults(prev => ({ ...prev, isRunning: true }));
+      
       try {
+        console.log('🔧 Loading validation results from API...');
+        
+        // Try the simple validation API first
+        try {
+          const response = await fetch('http://localhost:3003/api/validation-results');
+          if (response.ok) {
+            const data = await response.json();
+            console.log('🔧 Received validation data:', {
+              errorsCount: data.errors?.length || 0,
+              warningsCount: data.warnings?.length || 0,
+              totalFiles: data.summary?.totalFiles || 0
+            });
+            
+            setValidationResults({
+              ...data,
+              isRunning: false,
+              lastRun: new Date(data.lastRun),
+            });
+            return;
+          }
+        } catch (apiError) {
+          console.log('🔧 Simple API (port 3003) not available, trying original API...');
+        }
+
+        // Fallback to original API
         const response = await fetch('http://localhost:3002/api/validation-results');
         if (response.ok) {
           const data = await response.json();
+          console.log('🔧 Received API data from port 3002:', {
+            errorsCount: data.errors?.length || 0,
+            warningsCount: data.warnings?.length || 0,
+            totalFiles: data.summary?.totalFiles || 0
+          });
+          
           setValidationResults({
             ...data,
             isRunning: false,
             lastRun: new Date(),
           });
         } else {
-          // fallback to empty or mock data if needed
-          setValidationResults(prev => ({ ...prev, isRunning: false }));
+          throw new Error('Both APIs unavailable');
         }
       } catch (error) {
-        // fallback to empty or mock data if needed
-        setValidationResults(prev => ({ ...prev, isRunning: false }));
+        console.log('🔧 All sources failed, showing empty state');
+        
+        // Show proper error state - no hardcoded data
+        setValidationResults({
+          isRunning: false,
+          lastRun: null,
+          errors: [],
+          warnings: [{
+            id: 'connection-error',
+            type: 'MISSING_CONTENT' as const,
+            message: 'Unable to load validation results. API server may be unavailable.',
+            recommendation: 'Check that the API server is running on localhost:3002'
+          }],
+          summary: {
+            totalFiles: 0,
+            filesWithErrors: 0,
+            filesWithWarnings: 1,
+            coverage: []
+          }
+        });
       }
     };
-    fetchValidationResults();
+    
+    loadValidationResults();
   }, []);
 
   const runValidation = async () => {
@@ -123,14 +173,21 @@ const DocumentationValidationPanel: React.FC<DocumentationValidationPanelProps> 
       if (onRunValidation) {
         await onRunValidation();
       } else {
-        // Call the same fetch as above to refresh results
-        const response = await fetch('http://localhost:3002/api/validation-results');
+        // Try the simple API first
+        let response;
+        try {
+          response = await fetch('http://localhost:3003/api/validation-results');
+        } catch {
+          // Fallback to original API
+          response = await fetch('http://localhost:3002/api/validation-results');
+        }
+        
         if (response.ok) {
           const data = await response.json();
           setValidationResults({
             ...data,
             isRunning: false,
-            lastRun: new Date(),
+            lastRun: new Date(data.lastRun),
           });
         } else {
           setValidationResults(prev => ({ ...prev, isRunning: false }));
@@ -160,6 +217,10 @@ const DocumentationValidationPanel: React.FC<DocumentationValidationPanelProps> 
         return <AlertCircle className="h-4 w-4 text-red-700" />;
       case 'STANDARDS_VIOLATION':
         return <AlertTriangle className="h-4 w-4 text-pink-600" />;
+      case 'HIERARCHY_VIOLATION':
+        return <AlertTriangle className="h-4 w-4 text-indigo-600" />;
+      case 'INVALID_STATUS':
+        return <XCircle className="h-4 w-4 text-red-500" />;
       default:
         return <AlertTriangle className="h-4 w-4 text-gray-500" />;
     }
@@ -182,6 +243,8 @@ const DocumentationValidationPanel: React.FC<DocumentationValidationPanelProps> 
         return 'AI Restrictions';
       case 'STANDARDS_VIOLATION':
         return 'Standards Violation';
+      case 'HIERARCHY_VIOLATION':
+        return 'Hierarchy Violation';
       case 'INVALID_STATUS':
         return 'Invalid Status';
       default:
@@ -197,6 +260,8 @@ const DocumentationValidationPanel: React.FC<DocumentationValidationPanelProps> 
         const statusInfo = getStatusInfo(error.foundValue || 'unknown');
         return `Invalid status found: "${error.foundValue}". ${statusInfo.usage}`;
       case 'LINK_PLACEMENT_VIOLATION':
+        return `${error.message}${error.details && error.details.length > 0 ? ` Found ${error.details.length} violation(s).` : ''}`;
+      case 'HIERARCHY_VIOLATION':
         return `${error.message}${error.details && error.details.length > 0 ? ` Found ${error.details.length} violation(s).` : ''}`;
       default:
         return error.message;

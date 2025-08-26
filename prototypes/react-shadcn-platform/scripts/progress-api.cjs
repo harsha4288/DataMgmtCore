@@ -291,7 +291,9 @@ app.get('/api/validation-results', async (req, res) => {
   try {
     // Check if validation script exists
     const validationScript = path.join(__dirname, '..', 'validate-documentation.js');
+    console.log(`🔧 Looking for validation script at: ${validationScript}`);
     const scriptExists = await fs.access(validationScript).then(() => true).catch(() => false);
+    console.log(`🔧 Script exists: ${scriptExists}`);
     
     if (!scriptExists) {
       return res.json({
@@ -318,32 +320,73 @@ app.get('/api/validation-results', async (req, res) => {
     let hasErrors = false;
     
     try {
+      console.log(`🔧 Running validation script: node "${validationScript}" --json`);
+      console.log(`🔧 Working directory: ${path.join(__dirname, '..')}`);
       const result = await execAsync(`node "${validationScript}" --json`, { 
         cwd: path.join(__dirname, '..'),
         maxBuffer: 1024 * 1024 // 1MB buffer for large output
       });
       validationOutput = result.stdout;
+      console.log(`🔧 SUCCESS - stdout length: ${(result.stdout || '').length}`);
     } catch (error) {
       // Validation script returns exit code 1 when it finds errors, this is expected behavior
-      // Try stderr first since that's where the JSON is output when errors exist
-      validationOutput = error.stderr || error.stdout || '';
+      // The JSON output is in stdout even when the script exits with error code 1
+      validationOutput = error.stdout || '';
       hasErrors = true;
-      console.log(`Validation script stderr length: ${(error.stderr || '').length}`);
-      console.log(`Validation script stdout length: ${(error.stdout || '').length}`);
+      console.log(`🔧 EXPECTED ERROR (exit code 1 when validation errors found) - Exit code: ${error.code}`);
+      console.log(`🔧 stderr length: ${(error.stderr || '').length}`);
+      console.log(`🔧 stdout length: ${(error.stdout || '').length}`);
+      if (error.stdout && error.stdout.length > 0) {
+        console.log(`🔧 First 200 chars of stdout:`, error.stdout.substring(0, 200));
+        console.log(`🔧 This is expected - validation script outputs JSON to stdout even with exit code 1`);
+      } else {
+        console.log(`🔧 ERROR: No stdout from validation script`);
+        if (error.stderr) {
+          console.log(`🔧 stderr content:`, error.stderr.substring(0, 500));
+        }
+      }
     }
 
     // Try to parse as JSON first (new format)
     let validationData;
     try {
-      validationData = JSON.parse(validationOutput);
+      // Clean the output - remove any non-JSON content
+      let cleanOutput = validationOutput.trim();
+      
+      // Try to extract JSON from stderr/stdout
+      const jsonStart = cleanOutput.indexOf('{');
+      const jsonEnd = cleanOutput.lastIndexOf('}');
+      
+      if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+        cleanOutput = cleanOutput.substring(jsonStart, jsonEnd + 1);
+      }
+      
+      validationData = JSON.parse(cleanOutput);
       // If it's valid JSON, return it directly
       console.log(`✅ Successfully parsed JSON validation results: ${validationData.errors.length} errors, ${validationData.warnings.length} warnings`);
-      res.json(validationData);
+      
+      // Ensure the response has the correct structure
+      const response = {
+        isRunning: false,
+        lastRun: new Date().toISOString(),
+        errors: validationData.errors || [],
+        warnings: validationData.warnings || [],
+        summary: validationData.summary || {
+          totalFiles: 0,
+          filesWithErrors: 0,
+          filesWithWarnings: 0,
+          coverage: []
+        }
+      };
+      
+      res.json(response);
       return;
     } catch (parseError) {
       // If it's not JSON, fall back to parsing (legacy format)
-      console.log('Validation output is not JSON, parsing manually...', parseError.message);
-      console.log('First 200 chars:', validationOutput.substring(0, 200));
+      console.log('Validation output is not valid JSON, parsing manually...', parseError.message);
+      console.log('Validation output length:', validationOutput.length);
+      console.log('First 500 chars:', validationOutput.substring(0, 500));
+      console.log('Last 200 chars:', validationOutput.substring(Math.max(0, validationOutput.length - 200)));
     }
 
     // Legacy parsing for text output (fallback)
@@ -691,8 +734,8 @@ app.post('/api/run-validation', async (req, res) => {
       validationOutput = result.stdout;
     } catch (error) {
       // Validation script returns exit code 1 when it finds errors, this is expected behavior
-      // Try stderr first since that's where the JSON is output when errors exist
-      validationOutput = error.stderr || error.stdout || '';
+      // The JSON output is in stdout even when the script exits with error code 1
+      validationOutput = error.stdout || error.stderr || '';
       hasErrors = true;
       console.log(`Run validation script stderr: ${error.stderr}`);
       console.log(`Run validation script stdout length: ${(error.stdout || '').length}`);

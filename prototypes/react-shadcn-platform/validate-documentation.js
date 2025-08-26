@@ -63,7 +63,7 @@ class DocumentationValidator {
   }
 
   // Helper method to add structured errors
-  addError(type, file, message, suggestion = '') {
+  addError(type, file, message, suggestion = '', details = []) {
     const errorId = `${type.toLowerCase()}-${this.structuredErrors.length + 1}`;
     
     // Add to text errors (for human-readable output)
@@ -76,7 +76,8 @@ class DocumentationValidator {
       severity: 'error',
       file: file.replace(/\\/g, '/'),
       message: message.split('\n')[0].replace(/^[📏📋🔗🚨🔢🔄⚫]+\s*[A-Z\s]+:\s*/, '').trim(),
-      suggestion: suggestion || this.extractSuggestion(message)
+      suggestion: suggestion || this.extractSuggestion(message),
+      details: details.length > 0 ? details : undefined
     });
   }
 
@@ -236,15 +237,152 @@ class DocumentationValidator {
         if (limit && lines > limit) {
           // Custom suggestion for PROGRESS.md
           if (path.basename(file) === 'PROGRESS.md') {
-            this.errors.push(
-              `📏 SIZE VIOLATION: ${file} has ${lines} lines (limit: ${limit})\n` +
-              `   → Move all task-level details (links, IDs, statuses) to the appropriate phase README.md files as per docs/DOCUMENTATION_STANDARDS.md.`
-            );
+            let message = `📏 SIZE VIOLATION: ${file} has ${lines} lines (limit: ${limit})\n\n`;
+            
+            message += `📋 ROOT CAUSE:\n`;
+            message += `   → PROGRESS.md contains ${lines - limit}+ excess lines due to task-level content\n`;
+            message += `   → Task details should be in phase README.md files, not PROGRESS.md\n`;
+            message += `   → PROGRESS.md should contain only high-level phase summaries\n\n`;
+            
+            message += `🔧 IMMEDIATE SOLUTION:\n`;
+            message += `   1. AUDIT current content:\n`;
+            message += `      • Count task links: grep "\\[Task [0-9]" PROGRESS.md | wc -l\n`;
+            message += `      • Count task statuses: grep "- \\[Task [0-9]" PROGRESS.md | wc -l\n`;
+            message += `      • Identify phase boundaries in the document\n\n`;
+            
+            message += `   2. MIGRATE task-level content:\n`;
+            message += `      • Extract all [Task X.Y: ...] links and statuses\n`;
+            message += `      • Move to appropriate docs/progress/phase-X/README.md files\n`;
+            message += `      • Keep only [Phase X: ...] links in PROGRESS.md\n\n`;
+            
+            message += `   3. SLIM DOWN to phase-level only:\n`;
+            message += `      • Replace task lists with single phase status lines\n`;
+            message += `      • Example: "Phase 1: Foundation Setup (95% complete)"\n`;
+            message += `      • Target: Reduce from ${lines} lines to ~${limit} lines\n\n`;
+            
+            message += `💡 QUICK COMMAND:\n`;
+            message += `   # Count violations to track progress\n`;
+            message += `   grep -c "\\[Task [0-9]" PROGRESS.md\n\n`;
+            
+            message += `✅ SUCCESS CRITERIA:\n`;
+            message += `   • PROGRESS.md under ${limit} lines\n`;
+            message += `   • No [Task X.Y] references in PROGRESS.md\n`;
+            message += `   • All task details moved to phase README.md files\n`;
+            message += `   • Validation passes: node validate-documentation.js`;
+            
+            this.addError('SIZE_VIOLATION', file, message, 
+              `PROGRESS.md exceeds ${limit}-line limit due to task-level content. Migrate ${Math.ceil((lines - limit) / 3)} task items to phase README.md files and keep only phase-level summaries.`, 
+              [`${lines} lines`, `${limit} limit`, `${lines - limit} excess`]);
           } else {
-            this.errors.push(
-              `📏 SIZE VIOLATION: ${file} has ${lines} lines (limit: ${limit})\n` +
-              `   → Consider splitting into smaller files`
-            );
+            // Enhanced guidance for different file types
+            const fileName = path.basename(file);
+            const isTaskFile = fileName.startsWith('task-');
+            const isPhaseReadme = fileName === 'README.md' && file.includes('phase-');
+            const isStandardsFile = fileName.includes('STANDARDS') || fileName.includes('GUIDELINES');
+            
+            let message = `📏 SIZE VIOLATION: ${file} has ${lines} lines (limit: ${limit})\n\n`;
+            
+            if (isTaskFile) {
+              message += `📋 TASK FILE ANALYSIS:\n`;
+              message += `   → Excess content: ${lines - limit} lines over limit\n`;
+              message += `   → Task files should be focused and actionable\n`;
+              message += `   → Consider if content belongs in multiple files\n\n`;
+              
+              message += `🔧 SPLITTING STRATEGIES FOR TASK FILES:\n`;
+              message += `   1. CREATE SUB-TASKS:\n`;
+              message += `      • Split into: task-X.Y.1-part1.md, task-X.Y.2-part2.md\n`;
+              message += `      • Keep main task-X.Y.md as overview/coordination\n`;
+              message += `      • Move detailed implementation to sub-tasks\n\n`;
+              
+              message += `   2. EXTRACT REFERENCE MATERIAL:\n`;
+              message += `      • Move large code examples → separate .md files\n`;
+              message += `      • Move research notes → docs/research/\n`;
+              message += `      • Keep only essential task information\n\n`;
+              
+              message += `   3. MOVE COMPLETED SECTIONS:\n`;
+              message += `      • Archive completed sub-sections\n`;
+              message += `      • Keep only current work and next steps\n`;
+              message += `      • Link to archived details if needed\n`;
+            
+            } else if (isPhaseReadme) {
+              message += `📋 PHASE README ANALYSIS:\n`;
+              message += `   → Excess content: ${lines - limit} lines over limit\n`;
+              message += `   → Phase READMEs should summarize, not detail\n`;
+              message += `   → Task details belong in individual task files\n\n`;
+              
+              message += `🔧 SPLITTING STRATEGIES FOR PHASE READMES:\n`;
+              message += `   1. TASK TABLE OPTIMIZATION:\n`;
+              message += `      • Shorten task descriptions in summary table\n`;
+              message += `      • Remove detailed task notes\n`;
+              message += `      • Keep only: ID, Title, Status, Progress%\n\n`;
+              
+              message += `   2. EXTRACT PHASE DOCUMENTATION:\n`;
+              message += `      • Move architecture details → phase-X-architecture.md\n`;
+              message += `      • Move implementation guides → phase-X-implementation.md\n`;
+              message += `      • Keep README as navigation hub\n\n`;
+              
+              message += `   3. REFERENCE BY LINK:\n`;
+              message += `      • Replace inline content with links\n`;
+              message += `      • "See: [Architecture Details](./phase-X-architecture.md)"\n`;
+              message += `      • Maintain overview, link to details\n`;
+            
+            } else if (isStandardsFile) {
+              message += `📋 STANDARDS FILE ANALYSIS:\n`;
+              message += `   → Standards files can be larger but should be organized\n`;
+              message += `   → Consider if content is truly standards vs. examples\n`;
+              message += `   → Limit increased to ${limit} but structure matters\n\n`;
+              
+              message += `🔧 ORGANIZATION STRATEGIES:\n`;
+              message += `   1. SEPARATE CONCERNS:\n`;
+              message += `      • Standards → current file\n`;
+              message += `      • Examples → separate examples/ directory\n`;
+              message += `      • Tools/scripts → separate tools/ directory\n\n`;
+              
+              message += `   2. USE TABLE OF CONTENTS:\n`;
+              message += `      • Add navigation links at top\n`;
+              message += `      • Structure with clear headers\n`;
+              message += `      • Make it easy to find specific rules\n`;
+            
+            } else {
+              message += `📋 GENERAL FILE ANALYSIS:\n`;
+              message += `   → Excess content: ${lines - limit} lines over limit\n`;
+              message += `   → File may contain mixed concerns\n`;
+              message += `   → Consider logical splitting points\n\n`;
+              
+              message += `🔧 GENERAL SPLITTING STRATEGIES:\n`;
+              message += `   1. BY TOPIC/SECTION:\n`;
+              message += `      • Split major sections into separate files\n`;
+              message += `      • Create index file linking to parts\n`;
+              message += `      • Use consistent naming: ${fileName.replace('.md', '')}-part1.md\n\n`;
+              
+              message += `   2. BY PURPOSE:\n`;
+              message += `      • Overview → ${fileName}\n`;
+              message += `      • Details → ${fileName.replace('.md', '')}-details.md\n`;
+              message += `      • Examples → ${fileName.replace('.md', '')}-examples.md\n`;
+            }
+            
+            message += `\n💡 QUICK ANALYSIS COMMANDS:\n`;
+            message += `   # Find section boundaries\n`;
+            message += `   grep -n "^##" "${file}"\n`;
+            message += `   \n`;
+            message += `   # Count lines per section\n`;
+            message += `   awk '/^##/{print NR ": " $0}' "${file}"\n\n`;
+            
+            message += `✅ SUCCESS CRITERIA:\n`;
+            message += `   • File under ${limit} lines\n`;
+            message += `   • Content logically organized\n`;
+            message += `   • Clear navigation between split files\n`;
+            message += `   • Validation passes: node validate-documentation.js`;
+            
+            const suggestionText = isTaskFile 
+              ? `Split task into ${Math.ceil(lines / limit)} sub-tasks or extract reference material to separate files`
+              : isPhaseReadme 
+                ? `Optimize task table, extract detailed content to separate phase documentation files`
+                : `Split into ${Math.ceil(lines / limit)} logical parts based on content sections`;
+            
+            this.addError('SIZE_VIOLATION', file, message, suggestionText, 
+              [`${lines} lines`, `${limit} limit`, `${lines - limit} excess`, fileName]);
+            
             if (this.options.fix) {
               this.suggestDocumentSplit(file, content, lines, limit);
             }
@@ -288,18 +426,66 @@ class DocumentationValidator {
           // Handle alternative section patterns
           const hasAnySection = section.some(alt => taskInfo.content.includes(alt));
           if (!hasAnySection) {
-            this.errors.push(
-              `📋 TEMPLATE VIOLATION: Task ${taskId} missing required section: ${section.join(' OR ')}\n` +
-              `   → File: ${taskInfo.file}`
-            );
+            let message = `📋 TEMPLATE VIOLATION: Task ${taskId} missing required section: ${section.join(' OR ')}\n`;
+            message += `   → File: ${taskInfo.file}\n\n`;
+            
+            message += `📋 MISSING SECTION ANALYSIS:\n`;
+            message += `   → Required: One of ${section.join(' OR ')}\n`;
+            message += `   → Purpose: Define clear task objective and scope\n`;
+            message += `   → Location: Should appear early in task document\n\n`;
+            
+            message += `📝 BOILERPLATE CONTENT (copy-paste ready):\n`;
+            if (section.includes('## 📋 Objective') || section.includes('## 🎯 Objective')) {
+              message += `   Add ONE of these sections:\n\n`;
+              message += `   ## 📋 Objective\n`;
+              message += `   Brief description of what this task accomplishes and why it's important.\n\n`;
+              message += `   **Scope:**\n`;
+              message += `   - Define what's included in this task\n`;
+              message += `   - List key deliverables\n`;
+              message += `   - Specify boundaries and limitations\n\n`;
+              message += `   **Prerequisites:**\n`;
+              message += `   - List any dependencies or requirements\n`;
+              message += `   - Reference related tasks if applicable\n\n`;
+              message += `   OR\n\n`;
+              message += `   ## 🎯 Objective\n`;
+              message += `   Clear statement of the task goal and expected outcomes.\n\n`;
+              message += `   **Key Results:**\n`;
+              message += `   - Measurable outcome 1\n`;
+              message += `   - Measurable outcome 2\n`;
+              message += `   - Measurable outcome 3\n\n`;
+            }
+            
+            message += `🔧 HOW TO ADD:\n`;
+            message += `   1. LOCATE insertion point:\n`;
+            message += `      • After main "# Task" heading\n`;
+            message += `      • Before implementation details\n\n`;
+            
+            message += `   2. INSERT chosen section:\n`;
+            message += `      • Copy template above\n`;
+            message += `      • Customize content for Task ${taskId}\n`;
+            message += `      • Maintain consistent formatting\n\n`;
+            
+            message += `✅ TEMPLATE COMPLIANCE:\n`;
+            message += `   • Use exact heading format (## emoji Title)\n`;
+            message += `   • Include all required subsections\n`;
+            message += `   • Maintain clear, actionable content\n`;
+            message += `   • Validate: node validate-documentation.js`;
+            
+            this.addError('TEMPLATE_VIOLATION', taskInfo.file, message, 
+              `Add missing objective section. Choose either "## 📋 Objective" or "## 🎯 Objective" with scope and prerequisites.`,
+              [taskId, section.join(' OR ')]);
           }
         } else {
           // Handle single section pattern
           if (!taskInfo.content.includes(section)) {
-            this.errors.push(
-              `📋 TEMPLATE VIOLATION: Task ${taskId} missing required section: ${section}\n` +
-              `   → File: ${taskInfo.file}`
-            );
+            let message = `📋 TEMPLATE VIOLATION: Task ${taskId} missing required section: ${section}\n`;
+            message += `   → File: ${taskInfo.file}\n\n`;
+            
+            message += this.generateSectionBoilerplate(section, 'task', taskId);
+            
+            this.addError('TEMPLATE_VIOLATION', taskInfo.file, message, 
+              this.generateSectionSuggestion(section, 'task'),
+              [taskId, section]);
           }
         }
       }
@@ -310,10 +496,14 @@ class DocumentationValidator {
       const requiredSections = CONFIG.REQUIRED_SECTIONS['phase-*/README.md'];
       for (const section of requiredSections) {
         if (!phaseInfo.content.includes(section)) {
-          this.errors.push(
-            `📋 TEMPLATE VIOLATION: Phase ${phaseId} README missing required section: ${section}\n` +
-            `   → File: ${phaseInfo.file}`
-          );
+          let message = `📋 TEMPLATE VIOLATION: Phase ${phaseId} README missing required section: ${section}\n`;
+          message += `   → File: ${phaseInfo.file}\n\n`;
+          
+          message += this.generateSectionBoilerplate(section, 'phase', phaseId);
+          
+          this.addError('TEMPLATE_VIOLATION', phaseInfo.file, message, 
+            this.generateSectionSuggestion(section, 'phase'),
+            [phaseId, section]);
         }
       }
     }
@@ -416,9 +606,17 @@ class DocumentationValidator {
           taskIds.push(taskIdMatch[0]);
         }
         
+        // Rule 3: Collect individual task status details
+        const taskStatusPattern = /- \[Task \d+\.\d+[^\]]*\]/g;
+        const taskStatuses = [];
+        let taskStatusMatch;
+        while ((taskStatusMatch = taskStatusPattern.exec(progressContent)) !== null) {
+          taskStatuses.push(taskStatusMatch[0]);
+        }
+        
         // Generate consolidated error message if any task documentation violations found
-        if (taskLinks.length > 0 || taskIds.length > 0) {
-          let message = `🚨 STANDARDS VIOLATION: Task documentation details found in PROGRESS.md\n`;
+        if (taskLinks.length > 0 || taskIds.length > 0 || taskStatuses.length > 0) {
+          let message = `🚨 LINK_PLACEMENT_VIOLATION: Task documentation details found in PROGRESS.md\n`;
           
           if (taskLinks.length > 0) {
             message += `   → Task links found: ${taskLinks.length} instance${taskLinks.length > 1 ? 's' : ''}\n`;
@@ -428,27 +626,58 @@ class DocumentationValidator {
             message += `   → Task ID references found: ${taskIds.length} instance${taskIds.length > 1 ? 's' : ''}\n`;
           }
           
-          // Show examples (up to 3 total)
-          const examples = [...taskLinks, ...taskIds].slice(0, 3);
-          if (examples.length > 0) {
-            message += `   → Examples: ${examples.map(ex => `"${ex}"`).join(', ')}\n`;
+          if (taskStatuses.length > 0) {
+            message += `   → Task status details found: ${taskStatuses.length} instance${taskStatuses.length > 1 ? 's' : ''}\n`;
           }
           
-          message += `   → Per docs/DOCUMENTATION_STANDARDS.md: Task links and IDs are strictly forbidden in PROGRESS.md.\n`;
-          message += `   → Move all task documentation details to the appropriate phase README.md.`;
+          // Show examples (up to 5 total from all types)
+          const allViolations = [...taskLinks, ...taskIds, ...taskStatuses];
+          const examples = allViolations.slice(0, 5);
+          if (examples.length > 0) {
+            message += `   → Examples: ${examples.map(ex => `"${ex}"`).join(', ')}${allViolations.length > 5 ? ` and ${allViolations.length - 5} more` : ''}\n`;
+          }
           
-          this.errors.push(message);
-        }
-        // Rule 3: No individual task status details
-        const taskStatusPattern = /- \[Task \d+\.\d+[^\]]*\]/g;
-        let taskStatusMatch;
-        while ((taskStatusMatch = taskStatusPattern.exec(progressContent)) !== null) {
-          this.errors.push(
-            `🚨 STANDARDS VIOLATION: Individual task status found in PROGRESS.md\n` +
-            `   → Found: "${taskStatusMatch[0]}"\n` +
-            `   → Per docs/DOCUMENTATION_STANDARDS.md: Individual task statuses are strictly forbidden in PROGRESS.md.\n` +
-            `   → Move all task-level details to the appropriate phase README.md.`
-          );
+          message += `\n📋 WHY THIS MATTERS:\n`;
+          message += `   → PROGRESS.md must contain only phase-level summaries for maintainability\n`;
+          message += `   → Task details belong in phase README.md files for proper organization\n`;
+          message += `   → This ensures single source of truth and prevents documentation bloat\n\n`;
+          
+          message += `🔧 HOW TO FIX - Step-by-Step Migration:\n`;
+          message += `   1. IDENTIFY affected content:\n`;
+          message += `      • Task links: [Task X.Y: Description](./path/to/task.md)\n`;
+          message += `      • Task IDs: "Task X.Y:" references\n`;
+          message += `      • Task statuses: "- [Task X.Y] status details"\n\n`;
+          
+          message += `   2. LOCATE target phase README:\n`;
+          message += `      • For Task 1.x → docs/progress/phase-1/README.md\n`;
+          message += `      • For Task 2.x → docs/progress/phase-2/README.md\n`;
+          message += `      • Pattern: docs/progress/phase-X/README.md\n\n`;
+          
+          message += `   3. MOVE content to appropriate phase README:\n`;
+          message += `      • Copy task links to "## 📋 Tasks" section\n`;
+          message += `      • Copy task statuses to task status table\n`;
+          message += `      • Remove task-level details from PROGRESS.md\n\n`;
+          
+          message += `   4. UPDATE PROGRESS.md to phase-level only:\n`;
+          message += `      • Keep: [Phase X](./docs/progress/phase-X/README.md) - Description\n`;
+          message += `      • Remove: All [Task X.Y] references\n`;
+          message += `      • Keep: Phase-level status and progress percentages\n\n`;
+          
+          message += `💡 EXAMPLE TRANSFORMATION:\n`;
+          message += `   BEFORE (PROGRESS.md): "- [Task 1.2: Theme System](./docs/.../task-1.2.md) ✅ Complete"\n`;
+          message += `   AFTER (PROGRESS.md):  "- [Phase 1](./docs/progress/phase-1/README.md) - Foundation Setup"\n`;
+          message += `   MOVED TO (phase-1/README.md): "- [Task 1.2: Theme System](./task-1.2-theme-system.md) ✅ Complete"\n\n`;
+          
+          message += `⚠️  VALIDATION:\n`;
+          message += `   • Run: node validate-documentation.js\n`;
+          message += `   • Check: No task-level content remains in PROGRESS.md\n`;
+          message += `   • Verify: All task details moved to correct phase README.md\n\n`;
+          
+          message += `📚 Reference: docs/DOCUMENTATION_STANDARDS.md - Link Placement Rules`;
+          
+          const detailedSuggestion = `Follow the 4-step migration process: 1) Identify ${allViolations.length} task-level items, 2) Locate target phase READMEs, 3) Move content to appropriate "## 📋 Tasks" sections, 4) Keep only phase-level summaries in PROGRESS.md. Run validation after migration.`;
+          
+          this.addError('LINK_PLACEMENT_VIOLATION', './PROGRESS.md', message, detailedSuggestion, allViolations);
         }
         // Rule 4: Only phase-level links allowed
         const phaseLinkPattern = /\[([^\]]*?)\]\([^)]*\/phase-[^)]*\/README\.md\)/g;
@@ -525,7 +754,7 @@ class DocumentationValidator {
       
       // Generate consolidated error message if any sub-task violations found
       if (subTaskLinks.length > 0 || subTaskIds.length > 0 || subTaskStatuses.length > 0) {
-        let message = `🚨 HIERARCHY VIOLATION: Sub-task details found in Phase ${phaseId} README\n`;
+        let message = `🚨 HIERARCHY_VIOLATION: Sub-task details found in Phase ${phaseId} README\n`;
         
         if (subTaskLinks.length > 0) {
           message += `   → Sub-task links found: ${subTaskLinks.length} instance${subTaskLinks.length > 1 ? 's' : ''}\n`;
@@ -539,17 +768,18 @@ class DocumentationValidator {
           message += `   → Sub-task status details found: ${subTaskStatuses.length} instance${subTaskStatuses.length > 1 ? 's' : ''}\n`;
         }
         
-        // Show examples (up to 3 total)
-        const examples = [...subTaskLinks, ...subTaskIds, ...subTaskStatuses].slice(0, 3);
+        // Show examples (up to 5 total from all types)
+        const allSubTaskViolations = [...subTaskLinks, ...subTaskIds, ...subTaskStatuses];
+        const examples = allSubTaskViolations.slice(0, 5);
         if (examples.length > 0) {
-          message += `   → Examples: ${examples.map(ex => `"${ex}"`).join(', ')}\n`;
+          message += `   → Examples: ${examples.map(ex => `"${ex}"`).join(', ')}${allSubTaskViolations.length > 5 ? ` and ${allSubTaskViolations.length - 5} more` : ''}\n`;
         }
         
         message += `   → File: ${phaseInfo.file}\n`;
         message += `   → Rule: Phase READMEs should contain only task-level content, not sub-task details\n`;
         message += `   → Solution: Move sub-task details to appropriate task files`;
         
-        this.errors.push(message);
+        this.addError('HIERARCHY_VIOLATION', phaseInfo.file, message, '', allSubTaskViolations);
       }
     }
   }
@@ -578,13 +808,54 @@ class DocumentationValidator {
         );
         
         if (!isValidStatus) {
-          this.errors.push(
-            `🚨 INVALID STATUS: Task ${taskId}\n` +
-            `   → Current: "${status}"\n` +
-            `   → File: ${taskInfo.file}\n` +
-            `   → Valid statuses: ${validStatuses.join(', ')}\n` +
-            `   → Must use approved status values exactly`
-          );
+          let message = `🚨 INVALID STATUS: Task ${taskId}\n`;
+          message += `   → Current: "${status}"\n`;
+          message += `   → File: ${taskInfo.file}\n\n`;
+          
+          message += `📋 PROBLEM ANALYSIS:\n`;
+          message += `   → Status "${status}" is not in the approved status list\n`;
+          message += `   → Status must match exactly (emoji + text)\n`;
+          message += `   → Inconsistent statuses break progress tracking\n\n`;
+          
+          message += `✅ APPROVED STATUS VALUES (copy-paste ready):\n`;
+          message += `   🟡 Pending           - Task not yet started, awaiting prerequisite\n`;
+          message += `   🟡 Next Priority     - Task queued as next to work on\n`;
+          message += `   🟢 In Progress       - Task actively being worked on (ONLY ONE allowed)\n`;
+          message += `   🟠 Paused            - Task temporarily stopped, will resume\n`;
+          message += `   🔴 On Hold           - Task blocked by external dependencies\n`;
+          message += `   🔄 Ready for Sign-off - Task completed, awaiting approval\n`;
+          message += `   ✅ Complete          - Task finished and approved\n`;
+          message += `   ❌ Cancelled         - Task no longer needed\n\n`;
+          
+          message += `🔧 HOW TO FIX:\n`;
+          message += `   1. LOCATE status line in ${taskInfo.file}:\n`;
+          message += `      • Find: **Status:** ${status}\n`;
+          message += `      • Line pattern: **Status:** [emoji] [text]\n\n`;
+          
+          // Suggest the most appropriate replacement
+          const suggestedStatus = this.suggestCorrectStatus(status);
+          message += `   2. REPLACE with exact format:\n`;
+          message += `      **Status:** ${suggestedStatus}\n\n`;
+          
+          message += `   3. VERIFY format requirements:\n`;
+          message += `      • Must start with **Status:**\n`;
+          message += `      • Must include exact emoji\n`;
+          message += `      • Must match text exactly (case-sensitive)\n`;
+          message += `      • No extra spaces or variations\n\n`;
+          
+          message += `💡 QUICK FIX COMMAND:\n`;
+          message += `   # Replace the status line\n`;
+          message += `   sed -i 's/\\*\\*Status:\\*\\* ${status.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/\\*\\*Status:\\*\\* ${suggestedStatus}/g' "${taskInfo.file}"\n\n`;
+          
+          message += `⚠️  IMPORTANT RULES:\n`;
+          message += `   • Only ONE task can be "🟢 In Progress" at a time\n`;
+          message += `   • Status changes require human approval (AI cannot auto-update)\n`;
+          message += `   • Progress percentage should align with status\n`;
+          message += `   • Update phase README when task status changes`;
+          
+          this.addError('INVALID_STATUS', taskInfo.file, message, 
+            `Replace "${status}" with "${suggestedStatus}" in status line. Use exact emoji and text format.`,
+            [status, suggestedStatus, taskId]);
         }
       }
     }
@@ -599,13 +870,60 @@ class DocumentationValidator {
         );
         
         if (!isValidStatus) {
-          this.errors.push(
-            `🚨 INVALID STATUS: Phase ${phaseId}\n` +
-            `   → Current: "${status}"\n` +
-            `   → File: ${phaseInfo.file}\n` +
-            `   → Valid statuses: ${validStatuses.join(', ')}\n` +
-            `   → Must use approved status values exactly`
-          );
+          let message = `🚨 INVALID STATUS: Phase ${phaseId}\n`;
+          message += `   → Current: "${status}"\n`;
+          message += `   → File: ${phaseInfo.file}\n\n`;
+          
+          message += `📋 PROBLEM ANALYSIS:\n`;
+          message += `   → Phase status "${status}" is not in the approved status list\n`;
+          message += `   → Phase statuses must match task status system exactly\n`;
+          message += `   → Phase status should reflect overall phase progress\n\n`;
+          
+          message += `✅ APPROVED PHASE STATUS VALUES (copy-paste ready):\n`;
+          message += `   🟡 Pending           - Phase not yet started, planning phase\n`;
+          message += `   🟡 Next Priority     - Phase queued as next major milestone\n`;
+          message += `   🟢 In Progress       - Phase actively being worked on (ONLY ONE allowed)\n`;
+          message += `   🟠 Paused            - Phase temporarily stopped, will resume\n`;
+          message += `   🔴 On Hold           - Phase blocked by external dependencies\n`;
+          message += `   🔄 Ready for Sign-off - Phase completed, awaiting final approval\n`;
+          message += `   ✅ Complete          - Phase finished and all tasks approved\n`;
+          message += `   ❌ Cancelled         - Phase no longer needed\n\n`;
+          
+          message += `🔧 HOW TO FIX - Phase README.md:\n`;
+          message += `   1. LOCATE status line in ${phaseInfo.file}:\n`;
+          message += `      • Find: **Status:** ${status}\n`;
+          message += `      • Usually in "## 🎯 Overview" section\n\n`;
+          
+          const suggestedStatus = this.suggestCorrectStatus(status);
+          message += `   2. REPLACE with exact format:\n`;
+          message += `      **Status:** ${suggestedStatus} **Progress:** XX%\n\n`;
+          
+          message += `   3. UPDATE progress percentage:\n`;
+          message += `      • Calculate: Average of all task progress in this phase\n`;
+          message += `      • Rule: Phase progress = average task progress (±5% tolerance)\n`;
+          message += `      • Example: If tasks are 80%, 90%, 70% → Phase should be 80%\n\n`;
+          
+          message += `   4. VERIFY consistency:\n`;
+          message += `      • Phase status should reflect task completion state\n`;
+          message += `      • If all tasks ✅ Complete → Phase should be ✅ Complete\n`;
+          message += `      • If any task 🟢 In Progress → Phase should be 🟢 In Progress\n\n`;
+          
+          message += `💡 QUICK FIX COMMANDS:\n`;
+          message += `   # Fix the status line\n`;
+          message += `   sed -i 's/\\*\\*Status:\\*\\* ${status.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/\\*\\*Status:\\*\\* ${suggestedStatus}/g' "${phaseInfo.file}"\n`;
+          message += `   \n`;
+          message += `   # Check task progress to calculate phase progress\n`;
+          message += `   grep "\\*\\*Current:\\*\\*" docs/progress/phase-${phaseId}/task-*.md\n\n`;
+          
+          message += `⚠️  PHASE-SPECIFIC RULES:\n`;
+          message += `   • Only ONE phase can be "🟢 In Progress" at a time\n`;
+          message += `   • Phase status must sync with task statuses\n`;
+          message += `   • Phase progress must equal average of task progress\n`;
+          message += `   • Update PROGRESS.md when phase status changes`;
+          
+          this.addError('INVALID_STATUS', phaseInfo.file, message, 
+            `Replace "${status}" with "${suggestedStatus}" in phase README status line. Ensure progress percentage matches task average.`,
+            [status, suggestedStatus, phaseId]);
         }
       }
     }
@@ -804,6 +1122,152 @@ class DocumentationValidator {
         this.warnings.push(`Cannot check AI restrictions in ${file}: ${error.message}`);
       }
     }
+  }
+
+  // Helper method to generate section boilerplate content
+  generateSectionBoilerplate(section, docType, id) {
+    let content = `📋 MISSING SECTION ANALYSIS:\n`;
+    content += `   → Required: ${section}\n`;
+    content += `   → Purpose: ${this.getSectionPurpose(section)}\n`;
+    content += `   → Location: ${this.getSectionLocation(section, docType)}\n\n`;
+    
+    content += `📝 BOILERPLATE CONTENT (copy-paste ready):\n\n`;
+    
+    switch(section) {
+      case '# Task':
+        content += `   # Task ${id}: [Task Title Here]\n\n`;
+        content += `   > **Phase:** [Phase Number] - [Phase Name]\n`;
+        content += `   > **Priority:** [High/Medium/Low]\n`;
+        content += `   > **Estimated Effort:** [X hours/days]\n\n`;
+        break;
+        
+      case '## ✅ Success Criteria':
+        content += `   ## ✅ Success Criteria\n\n`;
+        content += `   **Definition of Done:**\n`;
+        content += `   - [ ] Criterion 1: Specific, measurable outcome\n`;
+        content += `   - [ ] Criterion 2: Quality standards met\n`;
+        content += `   - [ ] Criterion 3: Documentation updated\n`;
+        content += `   - [ ] Criterion 4: Tests pass and validation complete\n\n`;
+        content += `   **Acceptance Tests:**\n`;
+        content += `   1. Test scenario 1\n`;
+        content += `   2. Test scenario 2\n`;
+        content += `   3. Test scenario 3\n\n`;
+        break;
+        
+      case '**Status:**':
+        content += `   **Status:** 🟡 Pending **Progress:** 0% **Current:** Not started\n\n`;
+        content += `   **Last Updated:** ${new Date().toISOString().split('T')[0]}\n`;
+        content += `   **Assigned:** [Name/Team]\n`;
+        content += `   **Dependencies:** [List any blocking tasks]\n\n`;
+        break;
+        
+      case '# Phase':
+        content += `   # Phase ${id}: [Phase Name]\n\n`;
+        content += `   > **Timeline:** [Start Date] - [End Date]\n`;
+        content += `   > **Team:** [Team/Developer Names]\n`;
+        content += `   > **Dependencies:** [External dependencies]\n\n`;
+        break;
+        
+      case '## 🎯 Overview':
+        content += `   ## 🎯 Overview\n\n`;
+        content += `   **Objective:**\n`;
+        content += `   Brief description of what this phase accomplishes and why it's critical to the project.\n\n`;
+        content += `   **Key Deliverables:**\n`;
+        content += `   - Deliverable 1: Description and success metrics\n`;
+        content += `   - Deliverable 2: Description and success metrics\n`;
+        content += `   - Deliverable 3: Description and success metrics\n\n`;
+        content += `   **Status:** 🟡 Pending **Progress:** 0%\n\n`;
+        break;
+        
+      case '## 📋 Tasks':
+        content += `   ## 📋 Tasks\n\n`;
+        content += `   ### Task Progress Summary\n`;
+        content += `   | Task | Status | Progress | Priority |\n`;
+        content += `   |------|--------|----------|----------|\n`;
+        content += `   | [Task ${id}.1: Task Name](./task-${id}.1-name.md) | 🟡 Pending | 0% | High |\n`;
+        content += `   | [Task ${id}.2: Task Name](./task-${id}.2-name.md) | 🟡 Pending | 0% | Medium |\n\n`;
+        content += `   ### Detailed Task List\n`;
+        content += `   - **Task ${id}.1:** [Brief description]\n`;
+        content += `   - **Task ${id}.2:** [Brief description]\n\n`;
+        break;
+    }
+    
+    content += `🔧 HOW TO ADD:\n`;
+    content += `   1. LOCATE insertion point in ${docType} file\n`;
+    content += `   2. COPY template content above\n`;
+    content += `   3. CUSTOMIZE with specific details\n`;
+    content += `   4. VERIFY formatting matches exactly\n\n`;
+    
+    content += `✅ TEMPLATE COMPLIANCE:\n`;
+    content += `   • Use exact heading format and emoji\n`;
+    content += `   • Include all required subsections\n`;
+    content += `   • Maintain consistent structure\n`;
+    content += `   • Validate: node validate-documentation.js`;
+    
+    return content;
+  }
+  
+  // Helper method to generate section suggestion
+  generateSectionSuggestion(section, docType) {
+    const suggestions = {
+      '# Task': 'Add main task heading with title, phase reference, priority, and effort estimate',
+      '## ✅ Success Criteria': 'Add success criteria section with definition of done and acceptance tests',
+      '**Status:**': 'Add status line with current status, progress percentage, and metadata',
+      '# Phase': 'Add main phase heading with timeline, team, and dependencies',
+      '## 🎯 Overview': 'Add overview section with objectives, deliverables, and current status',
+      '## 📋 Tasks': 'Add tasks section with progress summary table and detailed task list'
+    };
+    
+    return suggestions[section] || `Add missing ${section} section with appropriate content`;
+  }
+  
+  // Helper method to get section purpose
+  getSectionPurpose(section) {
+    const purposes = {
+      '# Task': 'Main task identifier and metadata',
+      '## ✅ Success Criteria': 'Define measurable completion criteria',
+      '**Status:**': 'Track current progress and status',
+      '# Phase': 'Main phase identifier and context',
+      '## 🎯 Overview': 'Phase objectives and high-level status',
+      '## 📋 Tasks': 'Detailed task tracking and progress'
+    };
+    
+    return purposes[section] || 'Required documentation section';
+  }
+  
+  // Helper method to get section location
+  getSectionLocation(section, docType) {
+    if (section.startsWith('#')) return 'At beginning of document';
+    if (section.startsWith('##')) return 'After main heading, before detailed content';
+    if (section.startsWith('**Status:**')) return 'In overview or summary section';
+    return 'As appropriate for document structure';
+  }
+
+  // Helper method to suggest correct status based on current invalid status
+  suggestCorrectStatus(currentStatus) {
+    const currentLower = currentStatus.toLowerCase();
+    
+    // Smart matching based on common patterns
+    if (currentLower.includes('active') || currentLower.includes('progress') || currentLower.includes('working')) {
+      return '🟢 In Progress';
+    } else if (currentLower.includes('pending') || currentLower.includes('waiting') || currentLower.includes('todo')) {
+      return '🟡 Pending';
+    } else if (currentLower.includes('next') || currentLower.includes('priority') || currentLower.includes('queue')) {
+      return '🟡 Next Priority';
+    } else if (currentLower.includes('pause') || currentLower.includes('stop')) {
+      return '🟠 Paused';
+    } else if (currentLower.includes('hold') || currentLower.includes('block') || currentLower.includes('wait')) {
+      return '🔴 On Hold';
+    } else if (currentLower.includes('review') || currentLower.includes('sign') || currentLower.includes('approval')) {
+      return '🔄 Ready for Sign-off';
+    } else if (currentLower.includes('complete') || currentLower.includes('done') || currentLower.includes('finish')) {
+      return '✅ Complete';
+    } else if (currentLower.includes('cancel') || currentLower.includes('abandon') || currentLower.includes('skip')) {
+      return '❌ Cancelled';
+    }
+    
+    // Default fallback
+    return '🟡 Pending';
   }
 
   // Helper methods for new validations
@@ -1037,58 +1501,7 @@ class DocumentationValidator {
   reportResults() {
     // JSON output format for API integration
     if (this.options.json) {
-      // Quick conversion from text errors to structured format
-      const structuredErrors = this.errors.map((error, index) => {
-        const errorText = error.toString();
-        const lines = errorText.split('\n');
-        const firstLine = lines[0] || '';
-        
-        // Extract type from first line
-        let type = 'UNKNOWN';
-        let file = 'unknown';
-        let message = errorText;
-        
-        if (firstLine.includes('SIZE VIOLATION:')) {
-          type = 'SIZE_VIOLATION';
-          const match = firstLine.match(/SIZE VIOLATION: (.+?) has/);
-          if (match) file = match[1];
-        } else if (firstLine.includes('TEMPLATE VIOLATION:')) {
-          type = 'TEMPLATE_VIOLATION';
-          const match = lines.find(line => line.includes('→ File:'));
-          if (match) file = match.replace(/.*→ File:\s*/, '').trim();
-        } else if (firstLine.includes('BROKEN LINK:')) {
-          type = 'BROKEN_LINK';
-          const match = firstLine.match(/BROKEN LINK: (.+?)$/);
-          if (match) file = match[1];
-        } else if (firstLine.includes('STANDARDS VIOLATION:')) {
-          type = 'STANDARDS_VIOLATION';
-          file = 'PROGRESS.md';
-        } else if (firstLine.includes('INVALID STATUS:')) {
-          type = 'INVALID_STATUS';
-          const match = lines.find(line => line.includes('→ File:'));
-          if (match) file = match.replace(/.*→ File:\s*/, '').trim();
-        } else if (firstLine.includes('SINGLE ACTIVE RULE VIOLATION:')) {
-          type = 'SINGLE_ACTIVE_RULE_VIOLATION';
-          file = 'multiple-files';
-        }
-        
-        // Extract suggestion
-        let suggestion = '';
-        const suggestionLine = lines.find(line => line.includes('→') && !line.includes('File:'));
-        if (suggestionLine) {
-          suggestion = suggestionLine.replace(/.*→\s*/, '').trim();
-        }
-        
-        return {
-          id: `${type.toLowerCase()}-${index + 1}`,
-          type,
-          severity: 'error',
-          file: file.replace(/\\/g, '/'),
-          message: firstLine.replace(/^[📏📋🔗🚨🔢🔄⚫]+\s*[A-Z\s]+:\s*/, '').trim(),
-          suggestion
-        };
-      });
-
+      // Use properly structured errors instead of lossy text conversion
       const structuredWarnings = this.warnings.map((warning, index) => ({
         id: `warning-${index + 1}`,
         type: 'MISSING_PROGRESS',
@@ -1099,12 +1512,12 @@ class DocumentationValidator {
       const jsonResult = {
         isRunning: false,
         lastRun: new Date().toISOString(),
-        errors: structuredErrors,
-        warnings: structuredWarnings,
+        errors: this.structuredErrors,
+        warnings: this.structuredWarnings.length > 0 ? this.structuredWarnings : structuredWarnings,
         summary: {
           totalFiles: Math.max(this.filesProcessed || 0, Math.ceil(this.errors.length / 3)),
-          filesWithErrors: Math.ceil(structuredErrors.length / 2.5),
-          filesWithWarnings: structuredWarnings.length,
+          filesWithErrors: Math.ceil(this.structuredErrors.length / 2.5),
+          filesWithWarnings: this.structuredWarnings.length > 0 ? this.structuredWarnings.length : structuredWarnings.length,
           coverage: [
             'Size limit validation (250 lines for tasks, 150 for READMEs)',
             'Template compliance checking',

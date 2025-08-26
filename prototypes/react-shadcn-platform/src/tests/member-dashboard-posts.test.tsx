@@ -208,8 +208,8 @@ describe('Member Dashboard Posts Display', () => {
     htmlPosts.forEach(post => {
       console.log(`- ${post.title}`)
       console.log(`  HTML content length: ${post.content.length}`)
-      console.log(`  Has <p> tags: ${post.content.includes('<p>')`)
-      console.log(`  Has <ul> tags: ${post.content.includes('<ul>')`)
+      console.log(`  Has <p> tags: ${post.content.includes('<p>')}`)
+      console.log(`  Has <ul> tags: ${post.content.includes('<ul>')}`)
     })
     
     expect(htmlPosts.length).toBeGreaterThan(0)

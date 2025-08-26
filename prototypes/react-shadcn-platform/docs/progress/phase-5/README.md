@@ -3,7 +3,7 @@
 > **Status:** 🟡 Active - Just Started  
 > **Focus:** Tool-first workflow, parallel execution, knowledge management  
 > **Expected Impact:** 4x faster development, 70% token reduction, 0% repeated failures  
-> **Timeline:** 3 weeks (21 days)
+> **Timeline:** 5 weeks (35 days)
 
 ## 🎯 Overview
 
@@ -26,7 +26,7 @@ Phase 5 implements a comprehensive development infrastructure automation system 
 - **Knowledge Base** - Tagged success/failure patterns with reusability scores
 - **Dashboard** - Real-time monitoring server at localhost:3001
 
-## 📋 Task Breakdown (7 Tasks)
+## 📋 Task Breakdown (8 Tasks)
 
 ### Week 1: Foundation (Days 1-7)
 - **[Task 5.1: GitHub Issues Migration](./task-5.1-github-issues.md)** 🔴 On Hold
@@ -41,8 +41,15 @@ Phase 5 implements a comprehensive development infrastructure automation system 
 ### Week 2: Knowledge Management (Days 8-14)  
 - **[Task 5.5: Knowledge Management System](./task-5.5-knowledge-base.md)**
     - Smart memory and failure prevention
+
 ### Week 3: Advanced Orchestration (Days 15-21)
 - **[Task 5.6: Multi-Session Orchestration](./task-5.7-orchestration.md)** - Meta-controller and budget management
+
+### Week 4: Universal Project Management System (Days 22-35)
+- **[Task 5.8: Universal Project Management System](./task-5.8-universal-project-management-system.md)** 🟡 In Progress
+    - Complete transformation to user-agnostic project management platform
+    - Advanced dashboard, entity interconnection, quality pipeline modernization
+    - Knowledge management and real-time collaboration features
 
 ## 🎯 Success Metrics
 
