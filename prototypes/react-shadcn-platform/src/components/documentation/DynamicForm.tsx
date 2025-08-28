@@ -19,7 +19,7 @@ import { FormValidator, FormDataProcessor } from '@/lib/documentation-system/for
 interface DynamicFormProps {
   schema: FormSchema;
   initialData?: any;
-  onSubmit: (data: any, markdown: string) => Promise<QueryResult<any>>;
+  onSubmit: (_data: any, _markdown: string) => Promise<QueryResult<any>>;
   onCancel?: () => void;
 }
 
@@ -44,36 +44,7 @@ export function DynamicForm({ schema, initialData = {}, onSubmit, onCancel }: Dy
     }
   }, [errors]);
 
-  const handleNestedFieldChange = useCallback((parentField: string, childField: string, value: any) => {
-    setFormData((prev: any) => ({
-      ...prev,
-      [parentField]: {
-        ...prev[parentField],
-        [childField]: value
-      }
-    }));
-  }, []);
-
-  const handleArrayFieldAdd = useCallback((field: string, newItem: any) => {
-    setFormData((prev: any) => ({
-      ...prev,
-      [field]: [...(prev[field] || []), newItem]
-    }));
-  }, []);
-
-  const handleArrayFieldRemove = useCallback((field: string, index: number) => {
-    setFormData((prev: any) => ({
-      ...prev,
-      [field]: prev[field].filter((_: any, i: number) => i !== index)
-    }));
-  }, []);
-
-  const handleArrayItemChange = useCallback((field: string, index: number, newValue: any) => {
-    setFormData((prev: any) => ({
-      ...prev,
-      [field]: prev[field].map((item: any, i: number) => i === index ? newValue : item)
-    }));
-  }, []);
+  // Unused handlers removed to fix lint errors
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

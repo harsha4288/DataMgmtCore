@@ -104,6 +104,7 @@ const QualityReportPanel: React.FC<QualityReportPanelProps> = ({
   // Load real validation results
   useEffect(() => {
     loadRealValidationData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadRealValidationData = async () => {

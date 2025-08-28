@@ -42,7 +42,8 @@
       "Bash(pkill:*)",
       "Bash(timeout 15 npm run graphql:server)",
       "Bash(timeout 10 node:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "WebFetch(domain:localhost)"
     ],
     "deny": [],
     "ask": [],

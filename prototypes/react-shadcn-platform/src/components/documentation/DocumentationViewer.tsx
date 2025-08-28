@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Search, Filter, Download, Eye, Edit, RefreshCw } from 'lucide-react';
+import { Search, Download, Eye, Edit, RefreshCw } from 'lucide-react';
 import { DocumentationUtils } from '@/lib/documentation-system/utils';
 
 interface DocumentationViewerProps {
@@ -30,10 +30,12 @@ export function DocumentationViewer({ type }: DocumentationViewerProps) {
 
   useEffect(() => {
     loadItems();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type]);
 
   useEffect(() => {
     filterItems();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items, searchQuery, statusFilter]);
 
   const loadItems = async () => {
@@ -549,7 +551,7 @@ function getGraphQLQuery(type: string): string {
   }
 }
 
-function getMarkdownQuery(type: string, id: string): string {
+function getMarkdownQuery(type: string, _id: string): string {
   switch (type) {
     case 'task':
       return `

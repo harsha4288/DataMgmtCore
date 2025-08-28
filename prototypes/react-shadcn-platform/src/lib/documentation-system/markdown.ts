@@ -60,7 +60,7 @@ export class MarkdownGenerator {
   /**
    * Generate JSON for API consumption
    */
-  private static generateForAPI(data: any, type: string): string {
+  private static generateForAPI(data: any, _type: string): string {
     return JSON.stringify(data, null, 2);
   }
 

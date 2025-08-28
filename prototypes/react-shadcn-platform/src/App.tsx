@@ -27,6 +27,7 @@ import AnalyticsDashboard from './pages/analytics-dashboard'
 import MyPostingsPage from './pages/my-postings'
 import WorkflowDashboardPage from './pages/workflow-dashboard'
 import { AlumniOpportunities } from './pages/alumni-opportunities'
+import ConfigurationPage from './pages/configuration'
 
 // Auth Guard Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -65,7 +66,7 @@ function PhaseSelection() {
               Select which phase of the platform you'd like to explore
             </p>
 
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
               {/* Phase 1 Card */}
               <div className="group cursor-pointer" onClick={() => window.location.href = '/phase1'}>
                 <div className="border rounded-lg p-8 hover:shadow-lg transition-all duration-200 group-hover:scale-[1.02]">
@@ -170,6 +171,42 @@ function PhaseSelection() {
 
                   <Button className="w-full mt-6 group-hover:bg-blue-600 bg-blue-500">
                     Open Dashboard
+                  </Button>
+                </div>
+              </div>
+
+              {/* Configuration Management Card */}
+              <div className="group cursor-pointer" onClick={() => window.location.href = '/configuration'}>
+                <div className="border rounded-lg p-8 hover:shadow-lg transition-all duration-200 group-hover:scale-[1.02] border-purple-500/50">
+                  <div className="mb-4">
+                    <Badge variant="outline" className="mb-2 bg-purple-50 text-purple-600">Phase 5.8.2</Badge>
+                    <h3 className="text-2xl font-bold mb-2">Configuration Hub</h3>
+                    <p className="text-muted-foreground">
+                      Universal configuration management for instructions, tools, templates, and quality standards
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-2 text-sm text-left">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
+                      <span>User Instructions</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
+                      <span>Tool Configurations</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
+                      <span>Dynamic Templates</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
+                      <span>Quality Standards</span>
+                    </div>
+                  </div>
+
+                  <Button className="w-full mt-6 group-hover:bg-purple-600 bg-purple-500">
+                    Manage Configuration
                   </Button>
                 </div>
               </div>
@@ -366,6 +403,14 @@ function App() {
         <Route path="/workflow-dashboard" element={
           <ThemeProvider>
             <WorkflowDashboardPage />
+            <Toaster />
+          </ThemeProvider>
+        } />
+
+        {/* Configuration Management - Universal Configuration System */}
+        <Route path="/configuration" element={
+          <ThemeProvider>
+            <ConfigurationPage />
             <Toaster />
           </ThemeProvider>
         } />

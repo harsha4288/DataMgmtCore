@@ -9,6 +9,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { getGraphQLEndpoint, getValidationEndpoint, getDashboardEndpoint, getHealthCheckEndpoints } from '@/lib/config';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -99,6 +100,7 @@ interface QualityReport {
   timestamp: string;
 }
 
+// eslint-disable-next-line no-unused-vars
 interface ValidationResult {
   summary: {
     total: number;
@@ -167,7 +169,7 @@ const DocumentationSystemPanel: React.FC = () => {
   
   const [issues, setIssues] = useState<Issue[]>([]);
   const [qualityReport, setQualityReport] = useState<QualityReport | null>(null);
-  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
+  // const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [documentationValidation, setDocumentationValidation] = useState<DocumentationValidation | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
@@ -176,7 +178,7 @@ const DocumentationSystemPanel: React.FC = () => {
 
   // Initialize WebSocket connection
   useEffect(() => {
-    const socket = io('http://localhost:3001');
+    const socket = io(getDashboardEndpoint());
     socketRef.current = socket;
 
     socket.on('connect', () => {
@@ -259,10 +261,11 @@ const DocumentationSystemPanel: React.FC = () => {
       }
     };
 
+    const healthEndpoints = getHealthCheckEndpoints();
     const [graphqlHealth, validationHealth, dashboardHealth] = await Promise.all([
-      checkService('http://localhost:3004/health', 'graphql'),
-      checkService('http://localhost:3005/health', 'validation'),
-      checkService('http://localhost:3001/api/status', 'dashboard')
+      checkService(healthEndpoints.graphql, 'graphql'),
+      checkService(healthEndpoints.validation, 'validation'),
+      checkService(healthEndpoints.dashboard, 'dashboard')
     ]);
 
     setSystemStatus({
@@ -275,7 +278,7 @@ const DocumentationSystemPanel: React.FC = () => {
   // Load project statistics from GraphQL
   const loadProjectStats = async () => {
     try {
-      const response = await fetch('http://localhost:3004/graphql', {
+      const response = await fetch(getGraphQLEndpoint(), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -308,7 +311,7 @@ const DocumentationSystemPanel: React.FC = () => {
   // Load issues from GraphQL
   const loadIssues = async () => {
     try {
-      const response = await fetch('http://localhost:3004/graphql', {
+      const response = await fetch(getGraphQLEndpoint(), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -349,15 +352,15 @@ const DocumentationSystemPanel: React.FC = () => {
   // Load validation results from validation API
   const loadValidationResults = async () => {
     try {
-      const response = await fetch('http://localhost:3005/validate-project', {
+      const response = await fetch(`${getValidationEndpoint()}/validate-project`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ projectPath: '.' })
       });
 
       if (response.ok) {
-        const data = await response.json();
-        setValidationResult(data);
+        await response.json();
+        // setValidationResult(data);
       }
     } catch (error) {
       console.warn('Failed to load validation results:', error);
@@ -411,7 +414,7 @@ const DocumentationSystemPanel: React.FC = () => {
   // Run quality pipeline
   const runQualityPipeline = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/quality', {
+      const response = await fetch(`${getDashboardEndpoint()}/api/quality`, {
         method: 'POST'
       });
 
@@ -450,6 +453,7 @@ const DocumentationSystemPanel: React.FC = () => {
     refreshData();
     const interval = setInterval(refreshData, 30000); // 30 seconds
     return () => clearInterval(interval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getStatusBadge = (status: 'healthy' | 'error' | 'down') => {
@@ -527,7 +531,7 @@ const DocumentationSystemPanel: React.FC = () => {
                 Refresh
               </Button>
               <Button 
-                onClick={() => window.open('http://localhost:3001', '_blank')}
+                onClick={() => window.open(getDashboardEndpoint(), '_blank')}
                 size="sm"
               >
                 <ExternalLink className="h-4 w-4 mr-2" />
@@ -1001,7 +1005,7 @@ const DocumentationSystemPanel: React.FC = () => {
             <CardContent>
               <div className="space-y-4">
                 <Button 
-                  onClick={() => window.open('http://localhost:3004/graphql', '_blank')}
+                  onClick={() => window.open(getGraphQLEndpoint(), '_blank')}
                   className="w-full"
                 >
                   <ExternalLink className="h-4 w-4 mr-2" />
@@ -1035,7 +1039,7 @@ const DocumentationSystemPanel: React.FC = () => {
                 <Button 
                   variant="outline" 
                   className="w-full justify-start"
-                  onClick={() => window.open('http://localhost:3001', '_blank')}
+                  onClick={() => window.open(getDashboardEndpoint(), '_blank')}
                 >
                   <BarChart3 className="h-4 w-4 mr-2" />
                   Open Dashboard

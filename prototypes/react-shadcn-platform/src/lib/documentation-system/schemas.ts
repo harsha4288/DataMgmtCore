@@ -2,7 +2,8 @@
  * JSON Schema generation from existing documentation structure
  */
 
-import { FormSchema, ValidationRule } from './types';
+import { FormSchema } from './types';
+// import { ValidationRule } from './types';
 
 export class SchemaGenerator {
   /**
@@ -368,6 +369,388 @@ export class SchemaGenerator {
     };
   }
 
+  // ============================================================================
+  // Universal Configuration Management Schemas (Task 5.8.2)
+  // ============================================================================
+
+  /**
+   * Generate User Instruction creation form schema
+   */
+  static getUserInstructionSchema(): FormSchema {
+    return {
+      id: 'user-instruction-creation',
+      name: 'userInstruction',
+      title: 'Create User Instruction',
+      description: 'Create instructions for specific user types and contexts',
+      schema: {
+        type: 'object',
+        properties: {
+          title: {
+            type: 'string',
+            title: 'Instruction Title',
+            minLength: 5,
+            maxLength: 200
+          },
+          content: {
+            type: 'string',
+            title: 'Instruction Content',
+            description: 'Detailed instruction content in markdown format',
+            minLength: 20
+          },
+          userTypes: {
+            type: 'array',
+            title: 'User Types',
+            description: 'Which user types this instruction applies to',
+            items: {
+              type: 'string',
+              enum: ['human_developer', 'project_manager', 'qa_tester', 'ai_agent', 'external_tool', 'consultant']
+            },
+            minItems: 1,
+            uniqueItems: true
+          },
+          context: {
+            type: 'array',
+            title: 'Project Contexts',
+            description: 'When this instruction should be applied',
+            items: {
+              type: 'object',
+              properties: {
+                name: { type: 'string', minLength: 3 },
+                category: {
+                  type: 'string',
+                  enum: ['phase', 'task_type', 'tech_stack', 'environment', 'complexity']
+                },
+                conditions: {
+                  type: 'object',
+                  title: 'Context Conditions'
+                }
+              },
+              required: ['name', 'category']
+            }
+          },
+          tags: {
+            type: 'array',
+            title: 'Tags',
+            items: { type: 'string' },
+            uniqueItems: true
+          },
+          priority: {
+            type: 'string',
+            title: 'Priority Level',
+            enum: ['low', 'medium', 'high', 'critical'],
+            default: 'medium'
+          }
+        },
+        required: ['title', 'content', 'userTypes', 'priority']
+      },
+      ui_schema: {
+        content: {
+          'ui:widget': 'textarea',
+          'ui:rows': 10
+        },
+        userTypes: {
+          'ui:widget': 'checkboxes'
+        },
+        tags: {
+          'ui:widget': 'tags'
+        },
+        context: {
+          'ui:options': {
+            addable: true,
+            removable: true
+          }
+        }
+      },
+      validation_rules: [
+        {
+          field: 'title',
+          type: 'min_length',
+          value: 5,
+          message: 'Title must be at least 5 characters'
+        }
+      ]
+    };
+  }
+
+  /**
+   * Generate Tool Configuration creation form schema
+   */
+  static getToolConfigurationSchema(): FormSchema {
+    return {
+      id: 'tool-configuration-creation',
+      name: 'toolConfiguration',
+      title: 'Create Tool Configuration',
+      description: 'Configure development tools and frameworks',
+      schema: {
+        type: 'object',
+        properties: {
+          toolName: {
+            type: 'string',
+            title: 'Tool Name',
+            description: 'Name of the tool or framework',
+            minLength: 2,
+            maxLength: 100
+          },
+          category: {
+            type: 'string',
+            title: 'Tool Category',
+            enum: ['development_tools', 'testing_frameworks', 'build_systems', 'quality_tools', 'integration_tools']
+          },
+          environment: {
+            type: 'string',
+            title: 'Environment',
+            enum: ['development', 'staging', 'production', 'testing'],
+            default: 'development'
+          },
+          configuration: {
+            type: 'object',
+            title: 'Configuration Settings',
+            description: 'Tool-specific configuration parameters'
+          },
+          userTypes: {
+            type: 'array',
+            title: 'Applicable User Types',
+            items: {
+              type: 'string',
+              enum: ['human_developer', 'project_manager', 'qa_tester', 'ai_agent', 'external_tool', 'consultant']
+            },
+            minItems: 1,
+            uniqueItems: true
+          }
+        },
+        required: ['toolName', 'category', 'environment', 'userTypes']
+      },
+      ui_schema: {
+        configuration: {
+          'ui:widget': 'textarea',
+          'ui:rows': 8,
+          'ui:help': 'Enter configuration as JSON object'
+        },
+        userTypes: {
+          'ui:widget': 'checkboxes'
+        }
+      },
+      validation_rules: []
+    };
+  }
+
+  /**
+   * Generate Template creation form schema
+   */
+  static getTemplateSchema(): FormSchema {
+    return {
+      id: 'template-creation',
+      name: 'template',
+      title: 'Create Template',
+      description: 'Create dynamic templates for content generation',
+      schema: {
+        type: 'object',
+        properties: {
+          name: {
+            type: 'string',
+            title: 'Template Name',
+            minLength: 3,
+            maxLength: 100
+          },
+          type: {
+            type: 'string',
+            title: 'Template Type',
+            enum: ['task_template', 'issue_template', 'review_template', 'report_template', 'communication_template']
+          },
+          content: {
+            type: 'string',
+            title: 'Template Content',
+            description: 'Template content with variable placeholders',
+            minLength: 10
+          },
+          variables: {
+            type: 'array',
+            title: 'Template Variables',
+            items: {
+              type: 'object',
+              properties: {
+                name: {
+                  type: 'string',
+                  title: 'Variable Name',
+                  pattern: '^[a-zA-Z_][a-zA-Z0-9_]*$'
+                },
+                type: {
+                  type: 'string',
+                  title: 'Variable Type',
+                  enum: ['string', 'number', 'boolean', 'array', 'object']
+                },
+                required: {
+                  type: 'boolean',
+                  title: 'Required',
+                  default: false
+                },
+                defaultValue: {
+                  title: 'Default Value'
+                }
+              },
+              required: ['name', 'type', 'required']
+            }
+          },
+          outputFormats: {
+            type: 'array',
+            title: 'Output Formats',
+            items: {
+              type: 'string',
+              enum: ['json', 'markdown', 'html', 'api_response', 'plain_text']
+            },
+            minItems: 1,
+            uniqueItems: true,
+            default: ['markdown']
+          },
+          userTypes: {
+            type: 'array',
+            title: 'Target User Types',
+            items: {
+              type: 'string',
+              enum: ['human_developer', 'project_manager', 'qa_tester', 'ai_agent', 'external_tool', 'consultant']
+            },
+            minItems: 1,
+            uniqueItems: true
+          }
+        },
+        required: ['name', 'type', 'content', 'outputFormats', 'userTypes']
+      },
+      ui_schema: {
+        content: {
+          'ui:widget': 'textarea',
+          'ui:rows': 12,
+          'ui:help': 'Use {{variableName}} for variable placeholders'
+        },
+        variables: {
+          'ui:options': {
+            addable: true,
+            removable: true
+          }
+        },
+        outputFormats: {
+          'ui:widget': 'checkboxes'
+        },
+        userTypes: {
+          'ui:widget': 'checkboxes'
+        }
+      },
+      validation_rules: []
+    };
+  }
+
+  /**
+   * Generate Quality Standard creation form schema
+   */
+  static getQualityStandardSchema(): FormSchema {
+    return {
+      id: 'quality-standard-creation',
+      name: 'qualityStandard',
+      title: 'Create Quality Standard',
+      description: 'Define quality standards and rules',
+      schema: {
+        type: 'object',
+        properties: {
+          name: {
+            type: 'string',
+            title: 'Standard Name',
+            minLength: 3,
+            maxLength: 100
+          },
+          category: {
+            type: 'string',
+            title: 'Quality Category',
+            enum: ['code_quality', 'documentation_quality', 'process_quality', 'output_quality', 'communication_quality']
+          },
+          description: {
+            type: 'string',
+            title: 'Description',
+            minLength: 10,
+            maxLength: 500
+          },
+          rules: {
+            type: 'array',
+            title: 'Quality Rules',
+            items: {
+              type: 'object',
+              properties: {
+                name: {
+                  type: 'string',
+                  title: 'Rule Name',
+                  minLength: 3
+                },
+                description: {
+                  type: 'string',
+                  title: 'Rule Description',
+                  minLength: 10
+                },
+                automated: {
+                  type: 'boolean',
+                  title: 'Automated Check',
+                  default: false
+                },
+                severity: {
+                  type: 'string',
+                  title: 'Severity Level',
+                  enum: ['info', 'warning', 'error', 'critical'],
+                  default: 'warning'
+                },
+                parameters: {
+                  type: 'object',
+                  title: 'Rule Parameters'
+                }
+              },
+              required: ['name', 'description', 'automated', 'severity']
+            },
+            minItems: 1
+          },
+          userTypes: {
+            type: 'array',
+            title: 'Applicable User Types',
+            items: {
+              type: 'string',
+              enum: ['human_developer', 'project_manager', 'qa_tester', 'ai_agent', 'external_tool', 'consultant']
+            },
+            minItems: 1,
+            uniqueItems: true
+          },
+          enabled: {
+            type: 'boolean',
+            title: 'Enabled',
+            default: true
+          }
+        },
+        required: ['name', 'category', 'description', 'rules', 'userTypes']
+      },
+      ui_schema: {
+        description: {
+          'ui:widget': 'textarea',
+          'ui:rows': 4
+        },
+        rules: {
+          'ui:options': {
+            addable: true,
+            removable: true
+          },
+          items: {
+            description: {
+              'ui:widget': 'textarea',
+              'ui:rows': 3
+            },
+            parameters: {
+              'ui:widget': 'textarea',
+              'ui:rows': 2,
+              'ui:help': 'Enter parameters as JSON object'
+            }
+          }
+        },
+        userTypes: {
+          'ui:widget': 'checkboxes'
+        }
+      },
+      validation_rules: []
+    };
+  }
+
   /**
    * Get all available schemas
    */
@@ -375,7 +758,11 @@ export class SchemaGenerator {
     return [
       this.getTaskSchema(),
       this.getPhaseSchema(),
-      this.getIssueSchema()
+      this.getIssueSchema(),
+      this.getUserInstructionSchema(),
+      this.getToolConfigurationSchema(),
+      this.getTemplateSchema(),
+      this.getQualityStandardSchema()
     ];
   }
 

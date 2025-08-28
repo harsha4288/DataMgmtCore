@@ -127,7 +127,7 @@ export function DocumentationManager({ className }: DocumentationManagerProps) {
     }
   };
 
-  const handleFormSubmit = async (data: any, markdown: string): Promise<QueryResult<any>> => {
+  const handleFormSubmit = async (data: any, _markdown: string): Promise<QueryResult<any>> => {
     try {
       let mutation = '';
       let variables = {};

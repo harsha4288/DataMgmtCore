@@ -11,7 +11,7 @@ export interface ValidationRule {
   severity: 'error' | 'warning' | 'info' | 'suggestion';
   enabled: boolean;
   conditions?: ValidationCondition[];
-  validator: (data: any, context: ValidationContext) => ValidationResult[];
+  validator: (_data: any, _context: ValidationContext) => ValidationResult[];
 }
 
 export interface ValidationCondition {

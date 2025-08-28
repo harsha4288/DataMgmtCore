@@ -2,7 +2,7 @@
  * GraphQL schema and resolvers for the documentation system
  */
 
-import { createSchema } from 'graphql-yoga';
+// import { createSchema } from 'graphql-yoga';
 
 export const typeDefs = `
   # Core types
@@ -198,6 +198,118 @@ export const typeDefs = `
     consumer: String!
   }
 
+  # Universal Configuration Management Types (Task 5.8.2)
+  type UserInstruction {
+    id: ID!
+    title: String!
+    content: String!
+    userTypes: [String!]!
+    context: [InstructionContext!]!
+    tags: [String!]!
+    priority: String!
+    lastUpdated: String!
+    version: String!
+  }
+
+  type InstructionContext {
+    id: String
+    name: String!
+    category: String!
+    conditions: JSON
+  }
+
+  type ToolConfiguration {
+    id: ID!
+    toolName: String!
+    category: String!
+    environment: String!
+    configuration: JSON!
+    userTypes: [String!]!
+    validationRules: [String!]!
+    lastUpdated: String!
+  }
+
+  type Template {
+    id: ID!
+    name: String!
+    type: String!
+    content: String!
+    variables: [TemplateVariable!]!
+    conditions: [String!]!
+    outputFormats: [String!]!
+    userTypes: [String!]!
+    lastUpdated: String!
+  }
+
+  type TemplateVariable {
+    name: String!
+    type: String!
+    required: Boolean!
+    defaultValue: JSON
+  }
+
+  type QualityStandard {
+    id: ID!
+    name: String!
+    category: String!
+    description: String!
+    rules: [QualityRule!]!
+    userTypes: [String!]!
+    enabled: Boolean!
+    lastUpdated: String!
+  }
+
+  type QualityRule {
+    name: String!
+    description: String!
+    automated: Boolean!
+    severity: String!
+    parameters: JSON
+  }
+
+  # JSON scalar type
+  scalar JSON
+
+  # Configuration Management Input Types (Task 5.8.2)
+  input UserInstructionInput {
+    title: String!
+    content: String!
+    userTypes: [String!]!
+    context: [InstructionContextInput!]
+    tags: [String!]
+    priority: String!
+    version: String
+  }
+
+  input InstructionContextInput {
+    id: String
+    name: String!
+    category: String!
+    conditions: JSON
+  }
+
+  input ToolConfigurationInput {
+    toolName: String!
+    category: String!
+    environment: String!
+    configuration: JSON!
+    userTypes: [String!]!
+    validationRules: [String!]
+  }
+
+  # Configuration Management Response Types
+  type UserInstructionResponse {
+    success: Boolean!
+    error: String
+    userInstruction: UserInstruction
+  }
+
+  type ToolConfigurationResponse {
+    success: Boolean!
+    error: String
+    toolConfiguration: ToolConfiguration
+  }
+
   # Response types
   type TaskResponse {
     task: Task
@@ -249,6 +361,20 @@ export const typeDefs = `
     
     # Statistics
     getProjectStats: ProjectStats!
+
+    # Universal Configuration Management Queries (Task 5.8.2)
+    getUserInstructions(userType: String, context: String): [UserInstruction!]!
+    getUserInstruction(id: ID!): UserInstruction
+    searchUserInstructions(query: String!, userType: String): [UserInstruction!]!
+    
+    getToolConfigurations(category: String, environment: String, userType: String): [ToolConfiguration!]!
+    getToolConfiguration(id: ID!): ToolConfiguration
+    
+    getTemplates(type: String, userType: String): [Template!]!
+    getTemplate(id: ID!): Template
+    
+    getQualityStandards(category: String, userType: String): [QualityStandard!]!
+    getQualityStandard(id: ID!): QualityStandard
   }
 
   type ProjectStats {
@@ -282,6 +408,15 @@ export const typeDefs = `
     saveTaskToFile(id: ID!): TaskResponse!
     savePhaseToFile(id: ID!): PhaseResponse!
     saveIssueToFile(id: ID!): IssueResponse!
+
+    # Configuration Management Mutations (Task 5.8.2)
+    createUserInstruction(input: UserInstructionInput!): UserInstructionResponse!
+    updateUserInstruction(id: ID!, input: UserInstructionInput!): UserInstructionResponse!
+    deleteUserInstruction(id: ID!): UserInstructionResponse!
+    
+    createToolConfiguration(input: ToolConfigurationInput!): ToolConfigurationResponse!
+    updateToolConfiguration(id: ID!, input: ToolConfigurationInput!): ToolConfigurationResponse!
+    deleteToolConfiguration(id: ID!): ToolConfigurationResponse!
   }
 `;
 
@@ -290,5 +425,10 @@ export interface GraphQLContext {
     tasks: any;
     phases: any;
     issues: any;
+    // Configuration Management Data Sources
+    userInstructions: any;
+    toolConfigurations: any;
+    templates: any;
+    qualityStandards: any;
   };
 }

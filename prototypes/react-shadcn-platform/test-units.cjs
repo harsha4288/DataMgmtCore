@@ -1,50 +1,101 @@
+#!/usr/bin/env node
+
 /**
- * Unit Testing for Documentation System
- * Tests individual components without requiring full servers
+ * Test script for validation server unit tests
  */
 
-const fs = require('fs');
-const path = require('path');
+// Test the regex patterns
+function testRegexPatterns() {
+  console.log('=== Testing Regex Patterns ===');
+  
+  const patterns = {
+    task: /^task-\d+\.\d+-.+$/,
+    phase: /^phase-\d+$/,
+    issue: /^issue-.+$/
+  };
 
-// Test data
-const testTask = {
-  id: 'task-1.1-project-initialization',
-  name: 'Project Initialization',
-  description: 'Initialize the project structure, install all necessary dependencies, and set up the development environment.',
-  phase_id: 'phase-1',
-  progress: 100,
-  subtasks: [
-    {
-      name: 'Create Project Structure',
-      description: 'Initialize Vite + React + TypeScript project',
-      completed: true
-    },
-    {
-      name: 'Install Dependencies', 
-      description: 'Install React 18 and TypeScript',
-      completed: true
+  const testCases = [
+    { type: 'phase', id: 'phase-0', expected: true },
+    { type: 'phase', id: 'phase-1', expected: true },
+    { type: 'phase', id: 'phase-10', expected: true },
+    { type: 'phase', id: 'phase-abc', expected: false },
+    { type: 'task', id: 'task-1.1-setup', expected: true },
+    { type: 'task', id: 'task-5.8-test', expected: true },
+    { type: 'task', id: 'task-invalid', expected: false },
+    { type: 'issue', id: 'issue-bug-fix', expected: true },
+    { type: 'issue', id: 'issue-', expected: true },
+    { type: 'issue', id: 'not-issue', expected: false }
+  ];
+
+  let passed = 0;
+  let total = testCases.length;
+
+  testCases.forEach(test => {
+    const pattern = patterns[test.type];
+    const result = pattern.test(test.id);
+    const status = result === test.expected ? '✅ PASS' : '❌ FAIL';
+    
+    console.log(`${status} ${test.type}: '${test.id}' - Expected: ${test.expected}, Got: ${result}`);
+    
+    if (result === test.expected) passed++;
+  });
+
+  console.log(`\nResults: ${passed}/${total} tests passed\n`);
+  return passed === total;
+}
+
+// Test API endpoint responses
+async function testAPIEndpoints() {
+  console.log('=== Testing API Endpoints ===');
+  
+  try {
+    const response = await fetch('http://localhost:3005/health');
+    const data = await response.json();
+    console.log('✅ Health endpoint:', data.status);
+    
+    // Test phase validation
+    const phaseTest = await fetch('http://localhost:3005/validate/phase', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        data: {
+          id: 'phase-1',
+          name: 'Test Phase',
+          description: 'This is a test phase with sufficient length'
+        }
+      })
+    });
+    
+    const phaseResult = await phaseTest.json();
+    console.log('Phase validation result:', JSON.stringify(phaseResult, null, 2));
+    
+    const hasIdFormatError = phaseResult.results.some(r => r.ruleId === 'id-format');
+    if (hasIdFormatError) {
+      console.log('❌ ISSUE: Phase ID format validation is failing for valid IDs');
+    } else {
+      console.log('✅ Phase ID validation working correctly');
     }
-  ],
-  metadata: {
-    status: 'completed',
-    priority: 'high',
-    labels: ['setup', 'foundation'],
-    dependencies: [],
-    estimated_hours: 8,
-    actual_hours: 6
-  },
-  created_at: '2024-12-19T10:00:00Z',
-  updated_at: '2024-12-19T16:00:00Z'
-};
+    
+  } catch (error) {
+    console.log('❌ API test failed:', error.message);
+  }
+}
 
-console.log('🧪 Documentation System Unit Tests');
-console.log('==================================\n');
+// Main test runner
+async function runTests() {
+  console.log('🧪 Running Validation Server Unit Tests\n');
+  
+  const regexPass = testRegexPatterns();
+  await testAPIEndpoints();
+  
+  if (regexPass) {
+    console.log('✅ All regex unit tests passed');
+  } else {
+    console.log('❌ Some regex unit tests failed');
+  }
+}
 
-// Test 1: JSON Schema Validation
-console.log('📋 Test 1: JSON Schema Validation');
-console.log('----------------------------------');
-
-function validateTaskSchema(task) {
+runTests().catch(console.error);
   const errors = [];
   
   // Required fields

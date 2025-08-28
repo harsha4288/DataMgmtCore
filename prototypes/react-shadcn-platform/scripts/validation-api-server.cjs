@@ -99,8 +99,8 @@ class ValidationEngine {
         if (!data.id) return results;
 
         const patterns = {
-          task: /^task-\\d+\\.\\d+-.+$/,
-          phase: /^phase-\\d+$/,
+          task: /^task-\d+\.\d+-.+$/,
+          phase: /^phase-\d+$/,
           issue: /^issue-.+$/
         };
 

@@ -9,6 +9,65 @@ const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 
+// Database setup for configuration management
+const Database = require('better-sqlite3');
+const dbPath = path.join(__dirname, '../src/lib/database/database.db');
+
+// Initialize database with proper error handling and connection management
+let db;
+const initializeDatabase = () => {
+  try {
+    // Ensure database directory exists
+    const dbDir = path.dirname(dbPath);
+    if (!fs.existsSync(dbDir)) {
+      fs.mkdirSync(dbDir, { recursive: true });
+    }
+
+    db = new Database(dbPath);
+    
+    // Configure database for better performance and crash prevention
+    db.pragma('journal_mode = WAL');
+    db.pragma('synchronous = NORMAL');
+    db.pragma('foreign_keys = ON');
+    
+    // Create tables if they don't exist
+    const schemaPath = path.join(__dirname, '../src/lib/database/schema.sql');
+    if (fs.existsSync(schemaPath)) {
+      const schema = fs.readFileSync(schemaPath, 'utf8');
+      // Execute schema in transaction to prevent partial failures
+      db.transaction(() => {
+        db.exec(schema);
+      })();
+    }
+    
+    console.log('Database initialized successfully');
+    return db;
+  } catch (error) {
+    console.error('Database initialization error:', error);
+    // Create an in-memory database as fallback
+    console.log('Falling back to in-memory database');
+    return new Database(':memory:');
+  }
+};
+
+// Initialize database with retry logic
+let dbInitRetries = 0;
+const initWithRetry = () => {
+  try {
+    return initializeDatabase();
+  } catch (error) {
+    dbInitRetries++;
+    if (dbInitRetries < 3) {
+      console.log(`Database init retry ${dbInitRetries}/3`);
+      setTimeout(initWithRetry, 1000);
+    } else {
+      throw error;
+    }
+  }
+};
+
+db = initWithRetry();
+
 // Import TypeScript files (they'll be transpiled on the fly in a real setup)
 // For now, we'll include the schema and resolvers directly
 
@@ -257,6 +316,14 @@ const typeDefs = `
     
     # Statistics
     getProjectStats: ProjectStats!
+
+    # Configuration Management Queries
+    getUserInstructions(userType: String, context: String): [UserInstruction!]!
+    getUserInstruction(id: ID!): UserInstruction
+    searchUserInstructions(query: String!, userType: String): [UserInstruction!]!
+    
+    getToolConfigurations(category: String, environment: String, userType: String): [ToolConfiguration!]!
+    getToolConfiguration(id: ID!): ToolConfiguration
   }
 
   type ProjectStats {
@@ -268,6 +335,33 @@ const typeDefs = `
     blocked_tasks: Int!
     completion_percentage: Float!
     avg_task_completion_time: Float
+  }
+
+  # JSON scalar type (define first to avoid conflicts)
+  scalar JSON
+
+  # Configuration Management Types
+  type UserInstruction {
+    id: ID!
+    title: String!
+    content: String!
+    userTypes: [String!]!
+    context: JSON
+    tags: [String!]!
+    priority: String!
+    lastUpdated: String!
+    version: String!
+  }
+
+  type ToolConfiguration {
+    id: ID!
+    toolName: String!
+    category: String!
+    environment: String!
+    configuration: JSON!
+    userTypes: [String!]!
+    validationRules: [String!]!
+    lastUpdated: String!
   }
 
   # Mutation types
@@ -290,6 +384,45 @@ const typeDefs = `
     saveTaskToFile(id: ID!): TaskResponse!
     savePhaseToFile(id: ID!): PhaseResponse!
     saveIssueToFile(id: ID!): IssueResponse!
+
+    # Configuration Management Mutations
+    createUserInstruction(input: UserInstructionInput!): UserInstructionResponse!
+    updateUserInstruction(id: ID!, input: UserInstructionInput!): UserInstructionResponse!
+    deleteUserInstruction(id: ID!): UserInstructionResponse!
+    
+    createToolConfiguration(input: ToolConfigurationInput!): ToolConfigurationResponse!
+    updateToolConfiguration(id: ID!, input: ToolConfigurationInput!): ToolConfigurationResponse!
+    deleteToolConfiguration(id: ID!): ToolConfigurationResponse!
+  }
+
+  input UserInstructionInput {
+    title: String!
+    content: String!
+    userTypes: [String!]!
+    context: String
+    tags: [String!]
+    priority: String!
+  }
+
+  input ToolConfigurationInput {
+    toolName: String!
+    category: String!
+    environment: String!
+    configuration: String!
+    userTypes: [String!]!
+    validationRules: [String!]
+  }
+
+  type UserInstructionResponse {
+    success: Boolean!
+    error: String
+    userInstruction: UserInstruction
+  }
+
+  type ToolConfigurationResponse {
+    success: Boolean!
+    error: String
+    toolConfiguration: ToolConfiguration
   }
 `;
 
@@ -715,8 +848,44 @@ class DocumentationDataSources {
   }
 }
 
-// Resolvers
+// Error handling wrapper to prevent crashes
+const withErrorHandler = (resolverFn, operationName) => {
+  return async (...args) => {
+    try {
+      return await resolverFn(...args);
+    } catch (error) {
+      console.error(`GraphQL ${operationName} error:`, error);
+      // Return appropriate error response instead of crashing
+      if (operationName.includes('create') || operationName.includes('update') || operationName.includes('delete')) {
+        return {
+          success: false,
+          error: `${operationName} failed: ${error.message}`,
+          data: null
+        };
+      }
+      return null; // For queries, return null instead of crashing
+    }
+  };
+};
+
+// Resolvers with crash prevention
 const resolvers = {
+  // JSON scalar resolver
+  JSON: {
+    serialize: (value) => value,
+    parseValue: (value) => value,
+    parseLiteral: (ast) => {
+      if (ast.kind === 'StringValue') {
+        try {
+          return JSON.parse(ast.value);
+        } catch {
+          return ast.value;
+        }
+      }
+      return null;
+    }
+  },
+
   Query: {
     getAllPhases: async (_, __, context) => {
       return await context.dataSources.getAllPhases();
@@ -785,6 +954,89 @@ const resolvers = {
     },
     getProjectStats: async (_, __, context) => {
       return await context.dataSources.getProjectStats();
+    },
+
+    // Configuration Management Resolvers
+    getUserInstructions: withErrorHandler(async (_, { userType, context: ctx }, context) => {
+      let query = 'SELECT * FROM user_instructions';
+      const params = [];
+      
+      if (userType || ctx) {
+        const conditions = [];
+        if (userType) {
+          conditions.push('user_types LIKE ?');
+          params.push(`%${userType}%`);
+        }
+        if (ctx) {
+          conditions.push('context = ?');
+          params.push(ctx);
+        }
+        query += ' WHERE ' + conditions.join(' AND ');
+      }
+      
+      const stmt = db.prepare(query);
+      const rows = stmt.all(...params);
+      
+      return rows.map(row => ({
+        id: row.id,
+        title: row.title,
+        content: row.content,
+        userTypes: JSON.parse(row.user_types || '[]'),
+        context: JSON.parse(row.context || '[]'),
+        tags: JSON.parse(row.tags || '[]'),
+        priority: row.priority,
+        lastUpdated: row.updated_at,
+        version: row.version
+      }));
+    }, 'getUserInstructions'),
+    getUserInstruction: async (_, { id }, context) => {
+      return null;
+    },
+    searchUserInstructions: async (_, { query, userType }, context) => {
+      return [];
+    },
+    getToolConfigurations: async (_, { category, environment, userType }, context) => {
+      try {
+        let query = 'SELECT * FROM tool_configurations';
+        const params = [];
+        
+        if (category || environment || userType) {
+          const conditions = [];
+          if (category) {
+            conditions.push('category = ?');
+            params.push(category);
+          }
+          if (environment) {
+            conditions.push('environment = ?');
+            params.push(environment);
+          }
+          if (userType) {
+            conditions.push('user_types LIKE ?');
+            params.push(`%${userType}%`);
+          }
+          query += ' WHERE ' + conditions.join(' AND ');
+        }
+        
+        const stmt = db.prepare(query);
+        const rows = stmt.all(...params);
+        
+        return rows.map(row => ({
+          id: row.id,
+          toolName: row.tool_name,
+          category: row.category,
+          environment: row.environment,
+          configuration: JSON.parse(row.configuration || '{}'),
+          userTypes: JSON.parse(row.user_types || '[]'),
+          validationRules: JSON.parse(row.validation_rules || '[]'),
+          lastUpdated: row.updated_at
+        }));
+      } catch (error) {
+        console.error('Error fetching tool configurations:', error);
+        return [];
+      }
+    },
+    getToolConfiguration: async (_, { id }, context) => {
+      return null;
     }
   },
   
@@ -891,6 +1143,306 @@ const resolvers = {
         error: null,
         markdown
       };
+    },
+
+    // Configuration Management Mutations
+    createUserInstruction: async (_, { input }, context) => {
+      try {
+        const id = `ui_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const now = new Date().toISOString();
+        
+        const stmt = db.prepare(`
+          INSERT INTO user_instructions (
+            id, title, content, user_types, context, tags, priority, version
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `);
+        
+        stmt.run(
+          id,
+          input.title,
+          input.content,
+          JSON.stringify(input.userTypes || []),
+          JSON.stringify(input.context || []),
+          JSON.stringify(input.tags || []),
+          input.priority || 'medium',
+          '1.0'
+        );
+        
+        // Fetch the created record
+        const selectStmt = db.prepare('SELECT * FROM user_instructions WHERE id = ?');
+        const row = selectStmt.get(id);
+        
+        return {
+          success: true,
+          error: null,
+          userInstruction: {
+            id: row.id,
+            title: row.title,
+            content: row.content,
+            userTypes: JSON.parse(row.user_types || '[]'),
+            context: JSON.parse(row.context || '[]'),
+            tags: JSON.parse(row.tags || '[]'),
+            priority: row.priority,
+            lastUpdated: row.updated_at,
+            version: row.version
+          }
+        };
+      } catch (error) {
+        console.error('Error creating user instruction:', error);
+        return {
+          success: false,
+          error: error.message,
+          userInstruction: null
+        };
+      }
+    },
+    updateUserInstruction: async (_, { id, input }, context) => {
+      try {
+        const stmt = db.prepare(`
+          UPDATE user_instructions 
+          SET title = ?, content = ?, user_types = ?, context = ?, tags = ?, priority = ?, updated_at = datetime('now')
+          WHERE id = ?
+        `);
+        
+        const result = stmt.run(
+          input.title,
+          input.content,
+          JSON.stringify(input.userTypes || []),
+          JSON.stringify(input.context || []),
+          JSON.stringify(input.tags || []),
+          input.priority || 'medium',
+          id
+        );
+        
+        if (result.changes === 0) {
+          return {
+            success: false,
+            error: 'User instruction not found',
+            userInstruction: null
+          };
+        }
+        
+        // Fetch the updated record
+        const selectStmt = db.prepare('SELECT * FROM user_instructions WHERE id = ?');
+        const row = selectStmt.get(id);
+        
+        return {
+          success: true,
+          error: null,
+          userInstruction: {
+            id: row.id,
+            title: row.title,
+            content: row.content,
+            userTypes: JSON.parse(row.user_types || '[]'),
+            context: JSON.parse(row.context || '[]'),
+            tags: JSON.parse(row.tags || '[]'),
+            priority: row.priority,
+            lastUpdated: row.updated_at,
+            version: row.version
+          }
+        };
+      } catch (error) {
+        console.error('Error updating user instruction:', error);
+        return {
+          success: false,
+          error: error.message,
+          userInstruction: null
+        };
+      }
+    },
+    deleteUserInstruction: async (_, { id }, context) => {
+      try {
+        const instruction = db.prepare('SELECT * FROM user_instructions WHERE id = ?').get(id);
+        
+        if (!instruction) {
+          return {
+            success: false,
+            error: 'User instruction not found',
+            userInstruction: null
+          };
+        }
+        
+        const stmt = db.prepare('DELETE FROM user_instructions WHERE id = ?');
+        const result = stmt.run(id);
+        
+        if (result.changes === 0) {
+          return {
+            success: false,
+            error: 'Failed to delete user instruction',
+            userInstruction: null
+          };
+        }
+        
+        return {
+          success: true,
+          error: null,
+          userInstruction: {
+            id: instruction.id,
+            title: instruction.title,
+            content: instruction.content,
+            userTypes: JSON.parse(instruction.user_types || '[]'),
+            context: JSON.parse(instruction.context || '[]'),
+            tags: JSON.parse(instruction.tags || '[]'),
+            priority: instruction.priority,
+            lastUpdated: instruction.updated_at,
+            version: instruction.version
+          }
+        };
+      } catch (error) {
+        console.error('Error deleting user instruction:', error);
+        return {
+          success: false,
+          error: error.message,
+          userInstruction: null
+        };
+      }
+    },
+    createToolConfiguration: async (_, { input }, context) => {
+      try {
+        const id = `tc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const now = new Date().toISOString();
+        
+        const stmt = db.prepare(`
+          INSERT INTO tool_configurations (
+            id, tool_name, category, environment, configuration, user_types, validation_rules
+          ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        `);
+        
+        stmt.run(
+          id,
+          input.toolName,
+          input.category,
+          input.environment,
+          JSON.stringify(input.configuration || {}),
+          JSON.stringify(input.userTypes || []),
+          JSON.stringify(input.validationRules || [])
+        );
+        
+        // Fetch the created record
+        const selectStmt = db.prepare('SELECT * FROM tool_configurations WHERE id = ?');
+        const row = selectStmt.get(id);
+        
+        return {
+          success: true,
+          error: null,
+          toolConfiguration: {
+            id: row.id,
+            toolName: row.tool_name,
+            category: row.category,
+            environment: row.environment,
+            configuration: JSON.parse(row.configuration || '{}'),
+            userTypes: JSON.parse(row.user_types || '[]'),
+            validationRules: JSON.parse(row.validation_rules || '[]'),
+            lastUpdated: row.updated_at
+          }
+        };
+      } catch (error) {
+        console.error('Error creating tool configuration:', error);
+        return {
+          success: false,
+          error: error.message,
+          toolConfiguration: null
+        };
+      }
+    },
+    updateToolConfiguration: async (_, { id, input }, context) => {
+      try {
+        const stmt = db.prepare(`
+          UPDATE tool_configurations 
+          SET tool_name = ?, category = ?, environment = ?, configuration = ?, user_types = ?, validation_rules = ?, updated_at = datetime('now')
+          WHERE id = ?
+        `);
+        
+        const result = stmt.run(
+          input.toolName,
+          input.category,
+          input.environment,
+          JSON.stringify(input.configuration || {}),
+          JSON.stringify(input.userTypes || []),
+          JSON.stringify(input.validationRules || []),
+          id
+        );
+        
+        if (result.changes === 0) {
+          return {
+            success: false,
+            error: 'Tool configuration not found',
+            toolConfiguration: null
+          };
+        }
+        
+        // Fetch the updated record
+        const selectStmt = db.prepare('SELECT * FROM tool_configurations WHERE id = ?');
+        const row = selectStmt.get(id);
+        
+        return {
+          success: true,
+          error: null,
+          toolConfiguration: {
+            id: row.id,
+            toolName: row.tool_name,
+            category: row.category,
+            environment: row.environment,
+            configuration: JSON.parse(row.configuration || '{}'),
+            userTypes: JSON.parse(row.user_types || '[]'),
+            validationRules: JSON.parse(row.validation_rules || '[]'),
+            lastUpdated: row.updated_at
+          }
+        };
+      } catch (error) {
+        console.error('Error updating tool configuration:', error);
+        return {
+          success: false,
+          error: error.message,
+          toolConfiguration: null
+        };
+      }
+    },
+    deleteToolConfiguration: async (_, { id }, context) => {
+      try {
+        const config = db.prepare('SELECT * FROM tool_configurations WHERE id = ?').get(id);
+        
+        if (!config) {
+          return {
+            success: false,
+            error: 'Tool configuration not found',
+            toolConfiguration: null
+          };
+        }
+        
+        const stmt = db.prepare('DELETE FROM tool_configurations WHERE id = ?');
+        const result = stmt.run(id);
+        
+        if (result.changes === 0) {
+          return {
+            success: false,
+            error: 'Failed to delete tool configuration',
+            toolConfiguration: null
+          };
+        }
+        
+        return {
+          success: true,
+          error: null,
+          toolConfiguration: {
+            id: config.id,
+            toolName: config.tool_name,
+            category: config.category,
+            environment: config.environment,
+            configuration: JSON.parse(config.configuration || '{}'),
+            userTypes: JSON.parse(config.user_types || '[]'),
+            validationRules: JSON.parse(config.validation_rules || '[]'),
+            lastUpdated: config.updated_at
+          }
+        };
+      } catch (error) {
+        console.error('Error deleting tool configuration:', error);
+        return {
+          success: false,
+          error: error.message,
+          toolConfiguration: null
+        };
+      }
     }
   }
 };
@@ -921,8 +1473,56 @@ const server = createServer(yoga);
 
 const PORT = process.env.PORT || 3004;
 
+// Graceful shutdown handling to prevent crashes and memory leaks
+const gracefulShutdown = (signal) => {
+  console.log(`\nReceived ${signal}. Starting graceful shutdown...`);
+  
+  server.close((err) => {
+    if (err) {
+      console.error('Error during server shutdown:', err);
+      process.exit(1);
+    }
+    
+    // Close database connection
+    if (db) {
+      try {
+        db.close();
+        console.log('Database connection closed');
+      } catch (error) {
+        console.error('Error closing database:', error);
+      }
+    }
+    
+    console.log('Server shut down gracefully');
+    process.exit(0);
+  });
+  
+  // Force shutdown after 10 seconds
+  setTimeout(() => {
+    console.error('Forced shutdown after timeout');
+    process.exit(1);
+  }, 10000);
+};
+
+// Handle various shutdown signals
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+process.on('SIGUSR2', () => gracefulShutdown('SIGUSR2')); // nodemon restart
+
+// Handle uncaught exceptions and unhandled rejections
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  gracefulShutdown('uncaughtException');
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  gracefulShutdown('unhandledRejection');
+});
+
 server.listen(PORT, () => {
   console.log('🚀 GraphQL Server running at http://localhost:' + PORT + '/graphql');
   console.log('📊 GraphiQL playground available at http://localhost:' + PORT + '/graphql');
   console.log('📁 Serving documentation from: ../docs/progress');
+  console.log('🛡️ Crash prevention measures enabled');
 });

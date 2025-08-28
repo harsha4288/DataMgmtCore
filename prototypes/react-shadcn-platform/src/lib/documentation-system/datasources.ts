@@ -7,14 +7,28 @@ import fs from 'fs';
 import path from 'path';
 import { Task, Phase, Issue, TaskStatus, QueryResult } from './types';
 import { FormDataProcessor } from './forms';
+import { ConfigurationDataSources } from './datasources/configurationDataSources';
 
 export class DocumentationDataSources {
   private basePath: string;
   private cache: Map<string, any> = new Map();
   private cacheTimeout = 5 * 60 * 1000; // 5 minutes
+  
+  // Configuration Management Data Sources
+  public userInstructions: ConfigurationDataSources;
+  public toolConfigurations: ConfigurationDataSources;
+  public templates: ConfigurationDataSources;
+  public qualityStandards: ConfigurationDataSources;
 
   constructor(basePath: string = './docs/progress') {
     this.basePath = basePath;
+    
+    // Initialize configuration data sources
+    const configDS = new ConfigurationDataSources();
+    this.userInstructions = configDS;
+    this.toolConfigurations = configDS;
+    this.templates = configDS;
+    this.qualityStandards = configDS;
   }
 
   // === PHASE OPERATIONS ===

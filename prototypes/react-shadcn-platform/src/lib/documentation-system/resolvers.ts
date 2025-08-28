@@ -3,7 +3,7 @@
  */
 
 import { GraphQLContext } from './graphql';
-import { DocumentationDataSources } from './datasources';
+// import { DocumentationDataSources } from './datasources';
 
 export const resolvers = {
   Query: {
@@ -117,6 +117,58 @@ export const resolvers = {
     // Statistics
     getProjectStats: async (_: any, __: any, context: GraphQLContext) => {
       return await context.dataSources.tasks.getProjectStats();
+    },
+
+    // ============================================================================
+    // Universal Configuration Management Queries (Task 5.8.2)
+    // ============================================================================
+
+    // User Instructions Repository (5.8.2.1)
+    getUserInstructions: async (_: any, { userType, context: filterContext }: { userType?: string; context?: string }, context: GraphQLContext) => {
+      return await context.dataSources.userInstructions.getInstructions(userType, filterContext);
+    },
+
+    getUserInstruction: async (_: any, { id }: { id: string }, context: GraphQLContext) => {
+      return await context.dataSources.userInstructions.getInstruction(id);
+    },
+
+    searchUserInstructions: async (_: any, { query, userType }: { query: string; userType?: string }, context: GraphQLContext) => {
+      return await context.dataSources.userInstructions.searchInstructions(query, userType);
+    },
+
+    // Tool & Framework Configuration (5.8.2.2)
+    getToolConfigurations: async (_: any, { category, environment, userType }: { category?: string; environment?: string; userType?: string }, context: GraphQLContext) => {
+      return await context.dataSources.toolConfigurations.getConfigurations(category, environment, userType);
+    },
+
+    getToolConfiguration: async (_: any, { id }: { id: string }, context: GraphQLContext) => {
+      return await context.dataSources.toolConfigurations.getConfiguration(id);
+    },
+
+    // Dynamic Template System (5.8.2.3)
+    getTemplates: async (_: any, { type, userType }: { type?: string; userType?: string }, context: GraphQLContext) => {
+      return await context.dataSources.templates.getTemplates(type, userType);
+    },
+
+    getTemplate: async (_: any, { id }: { id: string }, context: GraphQLContext) => {
+      return await context.dataSources.templates.getTemplate(id);
+    },
+
+    renderTemplate: async (_: any, { templateId, variables, outputFormat }: { templateId: string; variables: Record<string, any>; outputFormat?: string }, context: GraphQLContext) => {
+      return await context.dataSources.templates.renderTemplate(templateId, variables, outputFormat);
+    },
+
+    // Quality Standards (5.8.2.4)
+    getQualityStandards: async (_: any, { category, userType }: { category?: string; userType?: string }, context: GraphQLContext) => {
+      return await context.dataSources.qualityStandards.getStandards(category, userType);
+    },
+
+    getQualityStandard: async (_: any, { id }: { id: string }, context: GraphQLContext) => {
+      return await context.dataSources.qualityStandards.getStandard(id);
+    },
+
+    validateQualityStandards: async (_: any, { content, standards }: { content: any; standards: string[] }, context: GraphQLContext) => {
+      return await context.dataSources.qualityStandards.validateContent(content, standards);
     }
   },
 
@@ -394,6 +446,182 @@ export const resolvers = {
         success: true,
         error: null,
         markdown
+      };
+    },
+
+    // ============================================================================
+    // Universal Configuration Management Mutations (Task 5.8.2)
+    // ============================================================================
+
+    // User Instructions Repository CRUD
+    createUserInstruction: async (_: any, { input }: { input: any }, context: GraphQLContext) => {
+      const result = await context.dataSources.userInstructions.createInstruction(input);
+      return {
+        userInstruction: result.success ? result.data : null,
+        success: result.success,
+        error: result.error
+      };
+    },
+
+    updateUserInstruction: async (_: any, { id, input }: { id: string; input: any }, context: GraphQLContext) => {
+      try {
+        if (!id || !input) {
+          return {
+            userInstruction: null,
+            success: false,
+            error: 'Missing required parameters: id and input are required'
+          };
+        }
+        
+        const result = await context.dataSources.userInstructions.updateInstruction(id, input);
+        return {
+          userInstruction: result.success ? result.data : null,
+          success: result.success,
+          error: result.error || null
+        };
+      } catch (error) {
+        console.error('GraphQL updateUserInstruction error:', error);
+        return {
+          userInstruction: null,
+          success: false,
+          error: `Failed to update user instruction: ${error instanceof Error ? error.message : 'Unknown error'}`
+        };
+      }
+    },
+
+    deleteUserInstruction: async (_: any, { id }: { id: string }, context: GraphQLContext) => {
+      try {
+        if (!id) {
+          return {
+            success: false,
+            error: 'Missing required parameter: id is required'
+          };
+        }
+        
+        const result = await context.dataSources.userInstructions.deleteInstruction(id);
+        return {
+          success: result.success,
+          error: result.error || null
+        };
+      } catch (error) {
+        console.error('GraphQL deleteUserInstruction error:', error);
+        return {
+          success: false,
+          error: `Failed to delete user instruction: ${error instanceof Error ? error.message : 'Unknown error'}`
+        };
+      }
+    },
+
+    // Tool Configuration CRUD
+    createToolConfiguration: async (_: any, { input }: { input: any }, context: GraphQLContext) => {
+      const result = await context.dataSources.toolConfigurations.createConfiguration(input);
+      return {
+        toolConfiguration: result.success ? result.data : null,
+        success: result.success,
+        error: result.error
+      };
+    },
+
+    updateToolConfiguration: async (_: any, { id, input }: { id: string; input: any }, context: GraphQLContext) => {
+      try {
+        if (!id || !input) {
+          return {
+            toolConfiguration: null,
+            success: false,
+            error: 'Missing required parameters: id and input are required'
+          };
+        }
+        
+        const result = await context.dataSources.toolConfigurations.updateConfiguration(id, input);
+        return {
+          toolConfiguration: result.success ? result.data : null,
+          success: result.success,
+          error: result.error || null
+        };
+      } catch (error) {
+        console.error('GraphQL updateToolConfiguration error:', error);
+        return {
+          toolConfiguration: null,
+          success: false,
+          error: `Failed to update tool configuration: ${error instanceof Error ? error.message : 'Unknown error'}`
+        };
+      }
+    },
+
+    deleteToolConfiguration: async (_: any, { id }: { id: string }, context: GraphQLContext) => {
+      try {
+        if (!id) {
+          return {
+            success: false,
+            error: 'Missing required parameter: id is required'
+          };
+        }
+        
+        const result = await context.dataSources.toolConfigurations.deleteConfiguration(id);
+        return {
+          success: result.success,
+          error: result.error || null
+        };
+      } catch (error) {
+        console.error('GraphQL deleteToolConfiguration error:', error);
+        return {
+          success: false,
+          error: `Failed to delete tool configuration: ${error instanceof Error ? error.message : 'Unknown error'}`
+        };
+      }
+    },
+
+    // Template CRUD
+    createTemplate: async (_: any, { input }: { input: any }, context: GraphQLContext) => {
+      const result = await context.dataSources.templates.createTemplate(input);
+      return {
+        template: result.success ? result.data : null,
+        success: result.success,
+        error: result.error
+      };
+    },
+
+    updateTemplate: async (_: any, { id, input }: { id: string; input: any }, context: GraphQLContext) => {
+      const result = await context.dataSources.templates.updateTemplate(id, input);
+      return {
+        template: result.success ? result.data : null,
+        success: result.success,
+        error: result.error
+      };
+    },
+
+    deleteTemplate: async (_: any, { id }: { id: string }, context: GraphQLContext) => {
+      const result = await context.dataSources.templates.deleteTemplate(id);
+      return {
+        success: result.success,
+        error: result.error
+      };
+    },
+
+    // Quality Standards CRUD
+    createQualityStandard: async (_: any, { input }: { input: any }, context: GraphQLContext) => {
+      const result = await context.dataSources.qualityStandards.createStandard(input);
+      return {
+        qualityStandard: result.success ? result.data : null,
+        success: result.success,
+        error: result.error
+      };
+    },
+
+    updateQualityStandard: async (_: any, { id, input }: { id: string; input: any }, context: GraphQLContext) => {
+      const result = await context.dataSources.qualityStandards.updateStandard(id, input);
+      return {
+        qualityStandard: result.success ? result.data : null,
+        success: result.success,
+        error: result.error
+      };
+    },
+
+    deleteQualityStandard: async (_: any, { id }: { id: string }, context: GraphQLContext) => {
+      const result = await context.dataSources.qualityStandards.deleteStandard(id);
+      return {
+        success: result.success,
+        error: result.error
       };
     }
   }

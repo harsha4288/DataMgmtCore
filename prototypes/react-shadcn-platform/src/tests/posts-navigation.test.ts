@@ -3,10 +3,12 @@
  * These tests will help diagnose why posts with images aren't visible
  */
 
-import { describe, test, expect, beforeEach } from 'vitest'
-import { enhancedAlumniPosts, getPostById, searchPosts } from '@/lib/mock-data/enhanced-alumni-posts'
+import { describe, test, expect } from 'vitest'
+import { enhancedAlumniPosts, searchPosts } from '@/lib/mock-data/enhanced-alumni-posts'
 import fs from 'fs'
 import path from 'path'
+
+declare const process: any
 
 describe('Posts Navigation and Image Loading Issues', () => {
   describe('Posts Data Integrity', () => {

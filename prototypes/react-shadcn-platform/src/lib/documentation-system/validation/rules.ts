@@ -124,7 +124,7 @@ export const VALIDATION_RULES: ValidationRule[] = [
     category: 'content',
     severity: 'suggestion',
     enabled: true,
-    validator: (data: any, context: ValidationContext): ValidationResult[] => {
+    validator: (data: any, _context: ValidationContext): ValidationResult[] => {
       const results: ValidationResult[] = [];
       
       // Check for placeholder text
@@ -385,7 +385,7 @@ export const VALIDATION_RULES: ValidationRule[] = [
     category: 'consistency',
     severity: 'suggestion',
     enabled: true,
-    validator: (data: any, context: ValidationContext): ValidationResult[] => {
+    validator: (data: any, _context: ValidationContext): ValidationResult[] => {
       const results: ValidationResult[] = [];
       
       const name = data.name || data.title;
@@ -442,7 +442,7 @@ export const VALIDATION_RULES: ValidationRule[] = [
     category: 'consistency',
     severity: 'warning',
     enabled: true,
-    validator: (data: any, context: ValidationContext): ValidationResult[] => {
+    validator: (data: any, _context: ValidationContext): ValidationResult[] => {
       const results: ValidationResult[] = [];
       
       const dateFields = getDateFields(data);

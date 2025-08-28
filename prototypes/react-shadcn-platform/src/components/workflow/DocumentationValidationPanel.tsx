@@ -141,23 +141,18 @@ const DocumentationValidationPanel: React.FC<DocumentationValidationPanelProps> 
           throw new Error('Both APIs unavailable');
         }
       } catch (error) {
-        console.log('🔧 All sources failed, showing empty state');
+        console.error('🔧 All validation APIs failed:', error);
         
-        // Show proper error state - no hardcoded data
+        // NO FALLBACK DATA - Show clear error state
         setValidationResults({
           isRunning: false,
           lastRun: null,
           errors: [],
-          warnings: [{
-            id: 'connection-error',
-            type: 'MISSING_CONTENT' as const,
-            message: 'Unable to load validation results. API server may be unavailable.',
-            recommendation: 'Check that the API server is running on localhost:3002'
-          }],
+          warnings: [],
           summary: {
             totalFiles: 0,
             filesWithErrors: 0,
-            filesWithWarnings: 1,
+            filesWithWarnings: 0,
             coverage: []
           }
         });
@@ -256,9 +251,10 @@ const DocumentationValidationPanel: React.FC<DocumentationValidationPanelProps> 
     switch (error.type) {
       case 'BROKEN_LINK':
         return `Broken or invalid link found in ${error.file}. The link "${error.suggestion?.replace('./', '')}" could not be resolved or points to a non-existent file.`;
-      case 'INVALID_STATUS':
+      case 'INVALID_STATUS': {
         const statusInfo = getStatusInfo(error.foundValue || 'unknown');
         return `Invalid status found: "${error.foundValue}". ${statusInfo.usage}`;
+      }
       case 'LINK_PLACEMENT_VIOLATION':
         return `${error.message}${error.details && error.details.length > 0 ? ` Found ${error.details.length} violation(s).` : ''}`;
       case 'HIERARCHY_VIOLATION':
@@ -334,9 +330,11 @@ const DocumentationValidationPanel: React.FC<DocumentationValidationPanelProps> 
           <div className="flex items-center justify-between">
             <div className="text-sm" style={{ color: 'hsl(var(--muted-foreground))' }}>
               {!isConnected ? (
-                <>API Offline - Manual validation required</>
+                <>❌ API Connection Failed - No validation data available</>
               ) : validationResults.lastRun ? (
                 <>Last run: {validationResults.lastRun.toLocaleString()}</>
+              ) : validationResults.errors.length === 0 && validationResults.warnings.length === 0 && validationResults.summary.totalFiles === 0 ? (
+                <>❌ No data - APIs (localhost:3002, localhost:3003) are offline. Start with: node validate-documentation.js --server</>
               ) : (
                 'Never run - Click "Run Validation" to start'
               )}
@@ -387,7 +385,9 @@ const DocumentationValidationPanel: React.FC<DocumentationValidationPanelProps> 
           <CardContent className="pt-4">
             <div className="text-center">
               <div className="text-2xl font-bold text-green-600">
-                {Math.round(((validationResults.summary.totalFiles - validationResults.summary.filesWithErrors) / validationResults.summary.totalFiles) * 100)}%
+                {validationResults.summary.totalFiles > 0 
+                  ? Math.round(((validationResults.summary.totalFiles - validationResults.summary.filesWithErrors) / validationResults.summary.totalFiles) * 100)
+                  : 0}%
               </div>
               <p className="text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>Health Score</p>
             </div>
@@ -439,7 +439,16 @@ const DocumentationValidationPanel: React.FC<DocumentationValidationPanelProps> 
           {/* Errors List */}
           <ScrollArea className="h-96">
             <div className="space-y-3">
-              {filteredErrors.length === 0 ? (
+              {validationResults.summary.totalFiles === 0 ? (
+                <Alert>
+                  <XCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    <strong>No validation data available.</strong><br/>
+                    APIs (localhost:3002, localhost:3003) are offline.<br/>
+                    Start validation server: <code>node validate-documentation.js --server</code>
+                  </AlertDescription>
+                </Alert>
+              ) : filteredErrors.length === 0 ? (
                 <Alert>
                   <CheckCircle className="h-4 w-4" />
                   <AlertDescription>
@@ -546,7 +555,16 @@ const DocumentationValidationPanel: React.FC<DocumentationValidationPanelProps> 
         <TabsContent value="warnings" className="space-y-4">
           <ScrollArea className="h-96">
             <div className="space-y-3">
-              {validationResults.warnings.length === 0 ? (
+              {validationResults.summary.totalFiles === 0 ? (
+                <Alert>
+                  <XCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    <strong>No validation data available.</strong><br/>
+                    APIs (localhost:3002, localhost:3003) are offline.<br/>
+                    Start validation server: <code>node validate-documentation.js --server</code>
+                  </AlertDescription>
+                </Alert>
+              ) : validationResults.warnings.length === 0 ? (
                 <Alert>
                   <CheckCircle className="h-4 w-4" />
                   <AlertDescription>

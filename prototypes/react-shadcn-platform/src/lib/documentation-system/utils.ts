@@ -2,7 +2,8 @@
  * Utility functions for the documentation system
  */
 
-import { Task, Phase, Issue, FormSchema } from './types';
+import { Task, Phase, Issue } from './types';
+// import { FormSchema } from './types';
 
 export class DocumentationUtils {
   /**
@@ -390,7 +391,7 @@ export class DocumentationUtils {
           month: 'long', 
           day: 'numeric' 
         });
-      case 'relative':
+      case 'relative': {
         const diffMs = now.getTime() - date.getTime();
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
         
@@ -400,6 +401,7 @@ export class DocumentationUtils {
         if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
         if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
         return `${Math.floor(diffDays / 365)} years ago`;
+      }
       default:
         return date.toLocaleDateString();
     }
@@ -478,15 +480,15 @@ export class DocumentationUtils {
   /**
    * Debounce function calls
    */
-  static debounce<T extends (...args: any[]) => any>(
+  static debounce<T extends (..._args: any[]) => any>(
     func: T,
     wait: number
-  ): (...args: Parameters<T>) => void {
-    let timeout: NodeJS.Timeout;
+  ): (..._args: Parameters<T>) => void {
+    let timeout: any;
     
-    return (...args: Parameters<T>) => {
+    return (..._args: Parameters<T>) => {
       clearTimeout(timeout);
-      timeout = setTimeout(() => func(...args), wait);
+      timeout = setTimeout(() => func(..._args), wait);
     };
   }
 
