@@ -89,6 +89,37 @@ Manual Testing → User Approval → Git Commit → Update PROGRESS.md → Next 
 
 ## 🔧 PROJECT-SPECIFIC GUIDELINES
 
+## 🎯 DATA IMPLEMENTATION BEHAVIORAL RULES
+
+### ❌ **DEFAULT BEHAVIORS TO AVOID**
+- Creating sample/mock/dummy data when data source is unclear
+- Using useState with hardcoded arrays to "make it work"
+- Assuming demo data is needed for functionality
+- Taking shortcuts with fake data to show quick results
+
+### ✅ **CORRECT DEFAULT BEHAVIORS**
+- ASK about data sources before implementing
+- Implement proper empty states and loading indicators
+- Connect to real APIs/databases or leave placeholders for integration
+- Focus on architecture first, then data population
+
+### 🔧 **DECISION FRAMEWORK**
+When implementing new functionality, always ask:
+1. "Where will this data come from in production?"
+2. "Should I implement the real data flow or ask the user first?"
+3. "Is this mock data serving a legitimate demo purpose or just convenience?"
+
+### 💡 **ARCHITECTURE-FIRST MINDSET**
+- Build components that accept real data props
+- Implement proper loading/error states
+- Design for integration with actual backends
+- Only use mock data when explicitly requested for demos
+
+### 🚨 **EXCEPTION: Alumni Module Only**
+- Alumni features (`src/lib/mock-data/alumni.ts` etc.) use demo data intentionally
+- This will be removed in Phase 6 production implementation
+- Do NOT replicate this pattern for any other features
+
 ## 🚨 CRITICAL THEME RULES
 
 ### ❌ **NEVER DO (Zero Tolerance)**
