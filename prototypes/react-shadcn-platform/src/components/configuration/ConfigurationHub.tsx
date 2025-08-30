@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { UserInstructionsPanel } from './UserInstructionsPanel';
 import { ToolConfigurationPanel } from './ToolConfigurationPanel';
-import { useUserInstructions, useToolConfigurations } from '@/hooks/useConfiguration';
+import { TemplateManagementPanel } from './TemplateManagementPanel';
+import { QualityStandardsPanel } from './QualityStandardsPanel';
+import { useUserInstructions, useToolConfigurations, useTemplates, useQualityStandards } from '@/hooks/useConfiguration';
 import { Users, Settings, FileText, Shield, Activity } from 'lucide-react';
 
 interface ConfigurationHubProps {
@@ -17,6 +19,8 @@ export function ConfigurationHub({ className }: ConfigurationHubProps) {
   // Real database connections
   const { data: instructions, loading: instructionsLoading } = useUserInstructions();
   const { data: toolConfigs, loading: toolsLoading } = useToolConfigurations();
+  const { data: templates, loading: templatesLoading } = useTemplates();
+  const { data: standards, loading: standardsLoading } = useQualityStandards();
 
   // Calculate real statistics from database
   const stats = {
@@ -24,22 +28,38 @@ export function ConfigurationHub({ className }: ConfigurationHubProps) {
       total: instructions.length,
       active: instructions.filter(i => i.priority !== 'low').length,
       byUserType: {
-        ai_agent: instructions.filter(i => i.userTypes.includes('ai_agent')).length,
-        human_developer: instructions.filter(i => i.userTypes.includes('human_developer')).length,
-        qa_tester: instructions.filter(i => i.userTypes.includes('qa_tester')).length
+        ai_agent: instructions.filter(i => i.userTypes.includes('ai_agent' as any)).length,
+        human_developer: instructions.filter(i => i.userTypes.includes('human_developer' as any)).length,
+        qa_tester: instructions.filter(i => i.userTypes.includes('qa_tester' as any)).length
       }
     },
     tools: {
       total: toolConfigs.length,
       byCategory: {
-        development: toolConfigs.filter(t => t.category === 'development').length,
-        testing: toolConfigs.filter(t => t.category === 'testing').length,
-        quality: toolConfigs.filter(t => t.category === 'quality').length,
-        build: toolConfigs.filter(t => t.category === 'build').length
+        development: toolConfigs.filter(t => t.category === 'development_tools').length,
+        testing: toolConfigs.filter(t => t.category === 'testing_frameworks').length,
+        quality: toolConfigs.filter(t => t.category === 'quality_tools').length,
+        build: toolConfigs.filter(t => t.category === 'build_systems').length
       }
     },
-    templates: { total: 0, active: 0, byType: { task: 0, issue: 0, report: 0 } }, // TODO: Implement templates
-    standards: { total: 0, active: 0, byCategory: { code: 0, docs: 0, process: 0 } } // TODO: Implement standards
+    templates: { 
+      total: templates.length,
+      active: templates.length,
+      byType: { 
+        task: templates.filter(t => t.type === 'task_template').length,
+        issue: templates.filter(t => t.type === 'issue_template').length,
+        report: templates.filter(t => t.type === 'report_template').length
+      }
+    },
+    standards: { 
+      total: standards.length,
+      active: standards.filter(s => s.enabled).length,
+      byCategory: { 
+        code: standards.filter(s => s.category === 'code_quality').length,
+        docs: standards.filter(s => s.category === 'documentation_quality').length,
+        process: standards.filter(s => s.category === 'process_quality').length
+      }
+    }
   };
 
   return (
@@ -107,16 +127,18 @@ export function ConfigurationHub({ className }: ConfigurationHubProps) {
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.templates.total}</div>
+              <div className="text-2xl font-bold">
+                {templatesLoading ? '...' : stats.templates.total}
+              </div>
               <div className="flex space-x-1 mt-2">
                 <Badge variant="secondary" className="text-xs">
-                  Task: {stats.templates.byType.task}
+                  Task: {templatesLoading ? '...' : stats.templates.byType.task}
                 </Badge>
                 <Badge variant="secondary" className="text-xs">
-                  Issue: {stats.templates.byType.issue}
+                  Issue: {templatesLoading ? '...' : stats.templates.byType.issue}
                 </Badge>
                 <Badge variant="secondary" className="text-xs">
-                  Report: {stats.templates.byType.report}
+                  Report: {templatesLoading ? '...' : stats.templates.byType.report}
                 </Badge>
               </div>
             </CardContent>
@@ -128,16 +150,18 @@ export function ConfigurationHub({ className }: ConfigurationHubProps) {
               <Shield className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.standards.total}</div>
+              <div className="text-2xl font-bold">
+                {standardsLoading ? '...' : stats.standards.total}
+              </div>
               <div className="flex space-x-1 mt-2">
                 <Badge variant="secondary" className="text-xs">
-                  Code: {stats.standards.byCategory.code}
+                  Code: {standardsLoading ? '...' : stats.standards.byCategory.code}
                 </Badge>
                 <Badge variant="secondary" className="text-xs">
-                  Docs: {stats.standards.byCategory.docs}
+                  Docs: {standardsLoading ? '...' : stats.standards.byCategory.docs}
                 </Badge>
                 <Badge variant="secondary" className="text-xs">
-                  Process: {stats.standards.byCategory.process}
+                  Process: {standardsLoading ? '...' : stats.standards.byCategory.process}
                 </Badge>
               </div>
             </CardContent>
@@ -174,45 +198,11 @@ export function ConfigurationHub({ className }: ConfigurationHubProps) {
           </TabsContent>
 
           <TabsContent value="templates">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <FileText className="w-5 h-5" />
-                  <span>Template Management</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8 text-muted-foreground">
-                  <Activity className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <h3 className="text-lg font-medium mb-2">Template System</h3>
-                  <p>Dynamic template management for task creation, issue tracking, and report generation.</p>
-                  <div className="mt-4">
-                    <Badge variant="outline">Coming Soon</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <TemplateManagementPanel />
           </TabsContent>
 
           <TabsContent value="standards">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Shield className="w-5 h-5" />
-                  <span>Quality Standards</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8 text-muted-foreground">
-                  <Activity className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <h3 className="text-lg font-medium mb-2">Quality Standards Management</h3>
-                  <p>Define and enforce quality standards across code, documentation, and processes.</p>
-                  <div className="mt-4">
-                    <Badge variant="outline">Coming Soon</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <QualityStandardsPanel />
           </TabsContent>
         </Tabs>
 

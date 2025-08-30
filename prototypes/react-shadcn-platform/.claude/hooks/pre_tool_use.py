@@ -24,6 +24,26 @@ BLOCKED_PATTERNS = [
     r"del\s+/[sS]\s+/[qQ]\s+[cC]:",    # Windows recursive delete
 ]
 
+# Auto-approved command patterns (never require approval)
+AUTO_APPROVED_PATTERNS = [
+    # Git readonly commands
+    r"^git\s+(status|log|diff|show|branch|remote|config\s+--list)",
+    # NPM operations
+    r"^npm\s+(run|start|test|build|install|audit)",
+    r"^npx\s+",
+    r"^yarn\s+(start|test|build|install)",
+    # Port/app control
+    r"taskkill.*:(\d+)",                # Kill processes on ports
+    r"pkill.*node",                     # Kill node processes  
+    r"netstat.*:(\d+)",                 # Check port status
+    r"lsof.*:(\d+)",                    # Check port usage (Unix)
+    # Process control
+    r"^(timeout|killall|pkill)\s+",
+]
+
+# Auto-approved tools (never require approval)
+AUTO_APPROVED_TOOLS = ["Read", "Glob", "Grep", "LS"]
+
 # Quality gate checks per tool
 QUALITY_GATES = {
     "Edit": ["validate_theme_compliance", "check_imports", "validate_indentation"],

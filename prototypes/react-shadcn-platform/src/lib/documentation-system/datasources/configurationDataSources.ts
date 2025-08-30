@@ -193,95 +193,318 @@ export class ConfigurationDataSources {
   }
 
   // ============================================================================
-  // Templates Data Source (Placeholder - to be implemented)
+  // Templates Data Source
   // ============================================================================
 
-  async getTemplates(_type?: string, _userType?: string): Promise<Template[]> {
-    // Placeholder - would implement similar pattern to above
-    console.log('Templates data source - to be implemented');
-    return [];
+  async getTemplates(type?: string, userType?: string): Promise<Template[]> {
+    try {
+      return this.db.getTemplates(type, userType);
+    } catch (error) {
+      console.error('Error fetching templates:', error);
+      return [];
+    }
   }
 
-  async getTemplate(_id: string): Promise<Template | null> {
-    console.log('Template data source - to be implemented');
-    return null;
+  async getTemplate(id: string): Promise<Template | null> {
+    try {
+      return this.db.getTemplate(id);
+    } catch (error) {
+      console.error('Error fetching template:', error);
+      return null;
+    }
   }
 
-  async renderTemplate(_templateId: string, _variables: Record<string, any>, _outputFormat?: string): Promise<any> {
-    console.log('Template rendering - to be implemented');
-    return null;
+  async renderTemplate(templateId: string, variables: Record<string, any>, outputFormat?: string): Promise<any> {
+    try {
+      return this.db.renderTemplate(templateId, variables, outputFormat);
+    } catch (error) {
+      console.error('Error rendering template:', error);
+      return {
+        success: false,
+        error: `Failed to render template: ${error}`
+      };
+    }
   }
 
-  async createTemplate(_data: Partial<Template>): Promise<QueryResult<Template>> {
-    return {
-      data: null as any,
-      success: false,
-      error: 'Templates not yet implemented',
-      timestamp: new Date().toISOString()
-    };
+  async createTemplate(data: Partial<Template>): Promise<QueryResult<Template>> {
+    try {
+      const result = this.db.createTemplate(data);
+      return {
+        data: result.data,
+        success: result.success,
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      return {
+        data: null as any,
+        success: false,
+        error: `Failed to create template: ${error}`,
+        timestamp: new Date().toISOString()
+      };
+    }
   }
 
-  async updateTemplate(_id: string, _data: Partial<Template>): Promise<QueryResult<Template>> {
-    return {
-      data: null as any,
-      success: false,
-      error: 'Templates not yet implemented',
-      timestamp: new Date().toISOString()
-    };
+  async updateTemplate(id: string, data: Partial<Template>): Promise<QueryResult<Template>> {
+    try {
+      const result = this.db.updateTemplate(id, data);
+      if (result.success) {
+        return {
+          data: result.data,
+          success: result.success,
+          timestamp: new Date().toISOString()
+        };
+      } else {
+        return {
+          data: null as any,
+          success: false,
+          error: 'Failed to update template',
+          timestamp: new Date().toISOString()
+        };
+      }
+    } catch (error) {
+      return {
+        data: null as any,
+        success: false,
+        error: `Failed to update template: ${error}`,
+        timestamp: new Date().toISOString()
+      };
+    }
   }
 
-  async deleteTemplate(_id: string): Promise<QueryResult<boolean>> {
-    return {
-      data: false,
-      success: false,
-      error: 'Templates not yet implemented',
-      timestamp: new Date().toISOString()
-    };
+  async deleteTemplate(id: string): Promise<QueryResult<boolean>> {
+    try {
+      const result = this.db.deleteTemplate(id);
+      return {
+        data: result.success,
+        success: result.success,
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      return {
+        data: false,
+        success: false,
+        error: `Failed to delete template: ${error}`,
+        timestamp: new Date().toISOString()
+      };
+    }
   }
 
   // ============================================================================
-  // Quality Standards Data Source (Placeholder - to be implemented)
+  // Quality Standards Data Source
   // ============================================================================
 
-  async getStandards(_category?: string, _userType?: string): Promise<QualityStandard[]> {
-    console.log('Quality standards data source - to be implemented');
-    return [];
+  async getStandards(category?: string, userType?: string): Promise<QualityStandard[]> {
+    try {
+      return this.db.getQualityStandards(category, userType);
+    } catch (error) {
+      console.error('Error fetching quality standards:', error);
+      return [];
+    }
   }
 
-  async getStandard(_id: string): Promise<QualityStandard | null> {
-    console.log('Quality standard data source - to be implemented');
-    return null;
+  async getStandard(id: string): Promise<QualityStandard | null> {
+    try {
+      return this.db.getQualityStandard(id);
+    } catch (error) {
+      console.error('Error fetching quality standard:', error);
+      return null;
+    }
   }
 
-  async validateContent(_content: any, _standards: string[]): Promise<any> {
-    console.log('Quality validation - to be implemented');
-    return null;
+  async validateContent(content: any, standards: string[]): Promise<any> {
+    try {
+      const results = [];
+      
+      for (const standardId of standards) {
+        const standard = await this.getStandard(standardId);
+        if (!standard || !standard.enabled) continue;
+        
+        const validationResult = {
+          standardId,
+          standardName: standard.name,
+          category: standard.category,
+          passed: true,
+          violations: [] as any[],
+          warnings: [] as any[]
+        };
+
+        // Execute quality rules
+        for (const rule of standard.rules) {
+          try {
+            const ruleResult = await this.executeQualityRule(rule, content);
+            if (!ruleResult.passed) {
+              validationResult.passed = false;
+              if (rule.severity === 'error' || rule.severity === 'critical') {
+                validationResult.violations.push({
+                  rule: rule.name,
+                  message: ruleResult.message,
+                  severity: rule.severity
+                });
+              } else {
+                validationResult.warnings.push({
+                  rule: rule.name,
+                  message: ruleResult.message,
+                  severity: rule.severity
+                });
+              }
+            }
+          } catch (error) {
+            console.error(`Error executing rule ${rule.name}:`, error);
+          }
+        }
+
+        results.push(validationResult);
+      }
+
+      return {
+        success: true,
+        data: {
+          overallPassed: results.every(r => r.passed),
+          results,
+          summary: {
+            totalStandards: results.length,
+            passedStandards: results.filter(r => r.passed).length,
+            totalViolations: results.reduce((sum, r) => sum + r.violations.length, 0),
+            totalWarnings: results.reduce((sum, r) => sum + r.warnings.length, 0)
+          },
+          validatedAt: new Date().toISOString()
+        }
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: `Quality validation failed: ${error}`
+      };
+    }
   }
 
-  async createStandard(_data: Partial<QualityStandard>): Promise<QueryResult<QualityStandard>> {
-    return {
-      data: null as any,
-      success: false,
-      error: 'Quality standards not yet implemented',
-      timestamp: new Date().toISOString()
-    };
+  private async executeQualityRule(rule: any, content: any): Promise<{ passed: boolean; message?: string }> {
+    // Basic quality rule implementations
+    switch (rule.name.toLowerCase()) {
+      case 'no_hardcoded_colors':
+        return this.validateNoHardcodedColors(content);
+      case 'component_reusability':
+        return this.validateComponentReusability(content);
+      case 'theme_compliance':
+        return this.validateThemeCompliance(content);
+      case 'documentation_completeness':
+        return this.validateDocumentationCompleteness(content);
+      default:
+        return { passed: true }; // Unknown rules pass by default
+    }
   }
 
-  async updateStandard(_id: string, _data: Partial<QualityStandard>): Promise<QueryResult<QualityStandard>> {
-    return {
-      data: null as any,
-      success: false,
-      error: 'Quality standards not yet implemented',
-      timestamp: new Date().toISOString()
-    };
+  private validateNoHardcodedColors(content: string): { passed: boolean; message?: string } {
+    const hardcodedColorPattern = /(#[0-9a-fA-F]{3,6}|rgb\(|rgba\(|hsl\((?!\s*var\()))/;
+    if (hardcodedColorPattern.test(content)) {
+      return {
+        passed: false,
+        message: 'Hardcoded colors found. Use theme variables instead.'
+      };
+    }
+    return { passed: true };
   }
 
-  async deleteStandard(_id: string): Promise<QueryResult<boolean>> {
-    return {
-      data: false,
-      success: false,
-      error: 'Quality standards not yet implemented',
-      timestamp: new Date().toISOString()
-    };
+  private validateComponentReusability(content: string): { passed: boolean; message?: string } {
+    // Simple heuristic: check for prop interfaces and generic patterns
+    const hasProps = /interface\s+\w+Props/.test(content);
+    const hasGenericPatterns = /\w+Props/.test(content);
+    
+    if (!hasProps && !hasGenericPatterns && content.includes('export')) {
+      return {
+        passed: false,
+        message: 'Component may not be reusable. Consider adding props interface.'
+      };
+    }
+    return { passed: true };
+  }
+
+  private validateThemeCompliance(content: string): { passed: boolean; message?: string } {
+    const themeVariablePattern = /hsl\(var\(--[\w-]+\)\)/;
+    const hasColors = /(color|background|border):/i.test(content);
+    
+    if (hasColors && !themeVariablePattern.test(content)) {
+      return {
+        passed: false,
+        message: 'Use theme variables for colors: hsl(var(--variable-name))'
+      };
+    }
+    return { passed: true };
+  }
+
+  private validateDocumentationCompleteness(content: string): { passed: boolean; message?: string } {
+    const hasComments = /\/\*\*[\s\S]*?\*\//.test(content) || /\/\//.test(content);
+    const hasExports = /export/.test(content);
+    
+    if (hasExports && !hasComments) {
+      return {
+        passed: false,
+        message: 'Exported code should include documentation comments.'
+      };
+    }
+    return { passed: true };
+  }
+
+  async createStandard(data: Partial<QualityStandard>): Promise<QueryResult<QualityStandard>> {
+    try {
+      const result = this.db.createQualityStandard(data);
+      return {
+        data: result.data,
+        success: result.success,
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      return {
+        data: null as any,
+        success: false,
+        error: `Failed to create quality standard: ${error}`,
+        timestamp: new Date().toISOString()
+      };
+    }
+  }
+
+  async updateStandard(id: string, data: Partial<QualityStandard>): Promise<QueryResult<QualityStandard>> {
+    try {
+      const result = this.db.updateQualityStandard(id, data);
+      if (result.success) {
+        return {
+          data: result.data,
+          success: result.success,
+          timestamp: new Date().toISOString()
+        };
+      } else {
+        return {
+          data: null as any,
+          success: false,
+          error: 'Failed to update quality standard',
+          timestamp: new Date().toISOString()
+        };
+      }
+    } catch (error) {
+      return {
+        data: null as any,
+        success: false,
+        error: `Failed to update quality standard: ${error}`,
+        timestamp: new Date().toISOString()
+      };
+    }
+  }
+
+  async deleteStandard(id: string): Promise<QueryResult<boolean>> {
+    try {
+      const result = this.db.deleteQualityStandard(id);
+      return {
+        data: result.success,
+        success: result.success,
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      return {
+        data: false,
+        success: false,
+        error: `Failed to delete quality standard: ${error}`,
+        timestamp: new Date().toISOString()
+      };
+    }
   }
 }

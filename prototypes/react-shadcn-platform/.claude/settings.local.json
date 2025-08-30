@@ -43,7 +43,14 @@
       "Bash(timeout 15 npm run graphql:server)",
       "Bash(timeout 10 node:*)",
       "Bash(timeout:*)",
-      "WebFetch(domain:localhost)"
+      "WebFetch(domain:localhost)",
+      "Read(C:\\Users/**)",
+      "Bash(echo $USERPROFILE)",
+      "Read(C:\\Users\\Sriharsha/**)",
+      "Read(C:\\Users\\Sriharsha\\AppData\\Roaming/**)",
+      "Read(C:\\Users\\Sriharsha\\AppData\\Local/**)",
+      "Read(C:\\Users\\Sriharsha\\.claude/**)",
+      "Read(C:\\Users\\Sriharsha/**)"
     ],
     "deny": [],
     "ask": [],

@@ -21,6 +21,10 @@ export interface AlumniPost {
   applicationUrl?: string
   isUrgent?: boolean
   postType: 'offering' | 'seeking'
+  engagement: {
+    views: number
+    shares: number
+  }
   approvalDetails?: {
     requestedAt: string
     reviewedAt?: string
@@ -81,6 +85,10 @@ export const enhancedAlumniPosts: AlumniPost[] = [
     applicationUrl: 'https://hms.harvard.edu/fellowships/neuroscience',
     isUrgent: true,
     postType: 'offering',
+    engagement: {
+      views: 1247,
+      shares: 23
+    },
     approvalDetails: {
       requestedAt: '2025-03-31T16:20:00Z',
       reviewedAt: '2025-04-01T08:30:00Z',
@@ -125,6 +133,10 @@ export const enhancedAlumniPosts: AlumniPost[] = [
     applicationUrl: 'https://yale.edu/internships/summer2025',
     isUrgent: false,
     postType: 'offering',
+    engagement: {
+      views: 892,
+      shares: 15
+    },
     approvalDetails: {
       requestedAt: '2025-03-19T15:00:00Z',
       reviewedAt: '2025-03-20T09:00:00Z',
@@ -162,6 +174,10 @@ export const enhancedAlumniPosts: AlumniPost[] = [
     applicationUrl: 'https://mitlabs.mit.edu/apply',
     isUrgent: true,
     postType: 'offering',
+    engagement: {
+      views: 654,
+      shares: 8
+    },
     approvalDetails: {
       requestedAt: '2025-03-22T14:30:00Z',
       reviewedAt: '2025-03-22T15:45:00Z',
@@ -200,6 +216,10 @@ export const enhancedAlumniPosts: AlumniPost[] = [
     applicationUrl: 'https://stanford.edu/summer-research',
     isUrgent: true,
     postType: 'offering',
+    engagement: {
+      views: 743,
+      shares: 12
+    },
     approvalDetails: {
       requestedAt: '2025-03-21T09:15:00Z',
       reviewedAt: '2025-03-21T16:20:00Z',
@@ -234,6 +254,10 @@ export const enhancedAlumniPosts: AlumniPost[] = [
     deadline: '2025-04-10T23:59:59Z',
     isUrgent: true,
     postType: 'seeking',
+    engagement: {
+      views: 312,
+      shares: 5
+    },
     approvalDetails: {
       requestedAt: '2025-03-25T16:45:00Z',
       reviewedAt: '2025-03-25T17:30:00Z',
@@ -271,6 +295,10 @@ export const enhancedAlumniPosts: AlumniPost[] = [
     applicationUrl: 'https://careers.google.com/students/',
     isUrgent: true,
     postType: 'offering',
+    engagement: {
+      views: 1523,
+      shares: 31
+    },
     approvalDetails: {
       requestedAt: '2025-03-23T11:00:00Z',
       reviewedAt: '2025-03-23T12:30:00Z',

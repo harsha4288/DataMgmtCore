@@ -324,6 +324,12 @@ const typeDefs = `
     
     getToolConfigurations(category: String, environment: String, userType: String): [ToolConfiguration!]!
     getToolConfiguration(id: ID!): ToolConfiguration
+    
+    getTemplates(type: String, userType: String): [Template!]!
+    getTemplate(id: ID!): Template
+    
+    getQualityStandards(category: String, userType: String): [QualityStandard!]!
+    getQualityStandard(id: ID!): QualityStandard
   }
 
   type ProjectStats {
@@ -364,6 +370,44 @@ const typeDefs = `
     lastUpdated: String!
   }
 
+  type Template {
+    id: ID!
+    name: String!
+    type: String!
+    content: String!
+    variables: [TemplateVariable!]!
+    conditions: [String!]!
+    outputFormats: [String!]!
+    userTypes: [String!]!
+    lastUpdated: String!
+  }
+
+  type TemplateVariable {
+    name: String!
+    type: String!
+    required: Boolean!
+    defaultValue: JSON
+  }
+
+  type QualityStandard {
+    id: ID!
+    name: String!
+    category: String!
+    description: String!
+    rules: [QualityRule!]!
+    userTypes: [String!]!
+    enabled: Boolean!
+    lastUpdated: String!
+  }
+
+  type QualityRule {
+    name: String!
+    description: String!
+    automated: Boolean!
+    severity: String!
+    parameters: JSON
+  }
+
   # Mutation types
   type Mutation {
     # Create operations
@@ -393,6 +437,14 @@ const typeDefs = `
     createToolConfiguration(input: ToolConfigurationInput!): ToolConfigurationResponse!
     updateToolConfiguration(id: ID!, input: ToolConfigurationInput!): ToolConfigurationResponse!
     deleteToolConfiguration(id: ID!): ToolConfigurationResponse!
+    
+    createTemplate(input: TemplateInput!): TemplateResponse!
+    updateTemplate(id: ID!, input: TemplateInput!): TemplateResponse!
+    deleteTemplate(id: ID!): TemplateResponse!
+    
+    createQualityStandard(input: QualityStandardInput!): QualityStandardResponse!
+    updateQualityStandard(id: ID!, input: QualityStandardInput!): QualityStandardResponse!
+    deleteQualityStandard(id: ID!): QualityStandardResponse!
   }
 
   input UserInstructionInput {
@@ -413,6 +465,40 @@ const typeDefs = `
     validationRules: [String!]
   }
 
+  input TemplateInput {
+    name: String!
+    type: String!
+    content: String!
+    variables: [TemplateVariableInput!]
+    conditions: [String!]
+    outputFormats: [String!]!
+    userTypes: [String!]!
+  }
+
+  input TemplateVariableInput {
+    name: String!
+    type: String!
+    required: Boolean!
+    defaultValue: JSON
+  }
+
+  input QualityStandardInput {
+    name: String!
+    category: String!
+    description: String!
+    rules: [QualityRuleInput!]!
+    userTypes: [String!]!
+    enabled: Boolean!
+  }
+
+  input QualityRuleInput {
+    name: String!
+    description: String!
+    automated: Boolean!
+    severity: String!
+    parameters: JSON
+  }
+
   type UserInstructionResponse {
     success: Boolean!
     error: String
@@ -423,6 +509,18 @@ const typeDefs = `
     success: Boolean!
     error: String
     toolConfiguration: ToolConfiguration
+  }
+
+  type TemplateResponse {
+    success: Boolean!
+    error: String
+    template: Template
+  }
+
+  type QualityStandardResponse {
+    success: Boolean!
+    error: String
+    qualityStandard: QualityStandard
   }
 `;
 
@@ -1036,7 +1134,91 @@ const resolvers = {
       }
     },
     getToolConfiguration: async (_, { id }, context) => {
-      return null;
+      try {
+        const stmt = db.prepare('SELECT * FROM tool_configurations WHERE id = ?');
+        const row = stmt.get(id);
+        
+        if (!row) return null;
+        
+        return {
+          id: row.id,
+          toolName: row.tool_name,
+          category: row.category,
+          environment: row.environment,
+          configuration: JSON.parse(row.configuration || '{}'),
+          userTypes: JSON.parse(row.user_types || '[]'),
+          validationRules: JSON.parse(row.validation_rules || '[]'),
+          lastUpdated: row.updated_at
+        };
+      } catch (error) {
+        console.error('Error fetching tool configuration:', error);
+        return null;
+      }
+    },
+
+    // Templates Queries
+    getTemplates: async (_, { type, userType }, context) => {
+      try {
+        return await context.dataSources.templates.getTemplates(type, userType);
+      } catch (error) {
+        console.error('Error fetching templates:', error);
+        return [];
+      }
+    },
+    getTemplate: async (_, { id }, context) => {
+      try {
+        const stmt = db.prepare('SELECT * FROM templates WHERE id = ?');
+        const row = stmt.get(id);
+        
+        if (!row) return null;
+        
+        return {
+          id: row.id,
+          name: row.name,
+          type: row.type,
+          content: row.content,
+          variables: JSON.parse(row.variables || '[]'),
+          conditions: JSON.parse(row.conditions || '[]'),
+          outputFormats: JSON.parse(row.output_formats || '["markdown"]'),
+          userTypes: JSON.parse(row.user_types || '[]'),
+          lastUpdated: row.updated_at
+        };
+      } catch (error) {
+        console.error('Error fetching template:', error);
+        return null;
+      }
+    },
+
+    // Quality Standards Queries
+    getQualityStandards: async (_, { category, userType }, context) => {
+      try {
+        return await context.dataSources.qualityStandards.getStandards(category, userType);
+      } catch (error) {
+        console.error('Error fetching quality standards:', error);
+        return [];
+      }
+    },
+    getQualityStandard: async (_, { id }, context) => {
+      try {
+        const stmt = db.prepare('SELECT * FROM quality_standards WHERE id = ?');
+        const row = stmt.get(id);
+        
+        if (!row) return null;
+        
+        return {
+          id: row.id,
+          name: row.name,
+          category: row.category,
+          description: row.description,
+          rules: JSON.parse(row.rules || '[]'),
+          userTypes: JSON.parse(row.user_types || '[]'),
+          enabled: row.enabled === 1,
+          lastUpdated: row.updated_at
+        };
+      } catch (error) {
+        console.error('Error fetching quality standard:', error);
+        return null;
+      }
     }
   },
   
@@ -1443,6 +1625,307 @@ const resolvers = {
           toolConfiguration: null
         };
       }
+    },
+
+    // Template Mutations
+    createTemplate: async (_, { input }, context) => {
+      try {
+        const id = `tpl_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        const stmt = db.prepare(`
+          INSERT INTO templates (
+            id, name, type, content, variables, conditions, output_formats, user_types
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `);
+        
+        stmt.run(
+          id,
+          input.name,
+          input.type,
+          input.content,
+          JSON.stringify(input.variables || []),
+          JSON.stringify(input.conditions || []),
+          JSON.stringify(input.outputFormats || ['markdown']),
+          JSON.stringify(input.userTypes || [])
+        );
+        
+        // Fetch the created record
+        const selectStmt = db.prepare('SELECT * FROM templates WHERE id = ?');
+        const row = selectStmt.get(id);
+        
+        return {
+          success: true,
+          error: null,
+          template: {
+            id: row.id,
+            name: row.name,
+            type: row.type,
+            content: row.content,
+            variables: JSON.parse(row.variables || '[]'),
+            conditions: JSON.parse(row.conditions || '[]'),
+            outputFormats: JSON.parse(row.output_formats || '["markdown"]'),
+            userTypes: JSON.parse(row.user_types || '[]'),
+            lastUpdated: row.updated_at
+          }
+        };
+      } catch (error) {
+        console.error('Error creating template:', error);
+        return {
+          success: false,
+          error: error.message,
+          template: null
+        };
+      }
+    },
+    updateTemplate: async (_, { id, input }, context) => {
+      try {
+        const stmt = db.prepare(`
+          UPDATE templates 
+          SET name = ?, type = ?, content = ?, variables = ?, conditions = ?, output_formats = ?, user_types = ?, updated_at = datetime('now')
+          WHERE id = ?
+        `);
+        
+        const result = stmt.run(
+          input.name,
+          input.type,
+          input.content,
+          JSON.stringify(input.variables || []),
+          JSON.stringify(input.conditions || []),
+          JSON.stringify(input.outputFormats || ['markdown']),
+          JSON.stringify(input.userTypes || []),
+          id
+        );
+        
+        if (result.changes === 0) {
+          return {
+            success: false,
+            error: 'Template not found',
+            template: null
+          };
+        }
+        
+        // Fetch the updated record
+        const selectStmt = db.prepare('SELECT * FROM templates WHERE id = ?');
+        const row = selectStmt.get(id);
+        
+        return {
+          success: true,
+          error: null,
+          template: {
+            id: row.id,
+            name: row.name,
+            type: row.type,
+            content: row.content,
+            variables: JSON.parse(row.variables || '[]'),
+            conditions: JSON.parse(row.conditions || '[]'),
+            outputFormats: JSON.parse(row.output_formats || '["markdown"]'),
+            userTypes: JSON.parse(row.user_types || '[]'),
+            lastUpdated: row.updated_at
+          }
+        };
+      } catch (error) {
+        console.error('Error updating template:', error);
+        return {
+          success: false,
+          error: error.message,
+          template: null
+        };
+      }
+    },
+    deleteTemplate: async (_, { id }, context) => {
+      try {
+        const template = db.prepare('SELECT * FROM templates WHERE id = ?').get(id);
+        
+        if (!template) {
+          return {
+            success: false,
+            error: 'Template not found',
+            template: null
+          };
+        }
+        
+        const stmt = db.prepare('DELETE FROM templates WHERE id = ?');
+        const result = stmt.run(id);
+        
+        if (result.changes === 0) {
+          return {
+            success: false,
+            error: 'Failed to delete template',
+            template: null
+          };
+        }
+        
+        return {
+          success: true,
+          error: null,
+          template: {
+            id: template.id,
+            name: template.name,
+            type: template.type,
+            content: template.content,
+            variables: JSON.parse(template.variables || '[]'),
+            conditions: JSON.parse(template.conditions || '[]'),
+            outputFormats: JSON.parse(template.output_formats || '["markdown"]'),
+            userTypes: JSON.parse(template.user_types || '[]'),
+            lastUpdated: template.updated_at
+          }
+        };
+      } catch (error) {
+        console.error('Error deleting template:', error);
+        return {
+          success: false,
+          error: error.message,
+          template: null
+        };
+      }
+    },
+
+    // Quality Standard Mutations
+    createQualityStandard: async (_, { input }, context) => {
+      try {
+        const id = `qs_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        const stmt = db.prepare(`
+          INSERT INTO quality_standards (
+            id, name, category, description, rules, user_types, enabled
+          ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        `);
+        
+        stmt.run(
+          id,
+          input.name,
+          input.category,
+          input.description,
+          JSON.stringify(input.rules || []),
+          JSON.stringify(input.userTypes || []),
+          input.enabled ? 1 : 0
+        );
+        
+        // Fetch the created record
+        const selectStmt = db.prepare('SELECT * FROM quality_standards WHERE id = ?');
+        const row = selectStmt.get(id);
+        
+        return {
+          success: true,
+          error: null,
+          qualityStandard: {
+            id: row.id,
+            name: row.name,
+            category: row.category,
+            description: row.description,
+            rules: JSON.parse(row.rules || '[]'),
+            userTypes: JSON.parse(row.user_types || '[]'),
+            enabled: row.enabled === 1,
+            lastUpdated: row.updated_at
+          }
+        };
+      } catch (error) {
+        console.error('Error creating quality standard:', error);
+        return {
+          success: false,
+          error: error.message,
+          qualityStandard: null
+        };
+      }
+    },
+    updateQualityStandard: async (_, { id, input }, context) => {
+      try {
+        const stmt = db.prepare(`
+          UPDATE quality_standards 
+          SET name = ?, category = ?, description = ?, rules = ?, user_types = ?, enabled = ?, updated_at = datetime('now')
+          WHERE id = ?
+        `);
+        
+        const result = stmt.run(
+          input.name,
+          input.category,
+          input.description,
+          JSON.stringify(input.rules || []),
+          JSON.stringify(input.userTypes || []),
+          input.enabled ? 1 : 0,
+          id
+        );
+        
+        if (result.changes === 0) {
+          return {
+            success: false,
+            error: 'Quality standard not found',
+            qualityStandard: null
+          };
+        }
+        
+        // Fetch the updated record
+        const selectStmt = db.prepare('SELECT * FROM quality_standards WHERE id = ?');
+        const row = selectStmt.get(id);
+        
+        return {
+          success: true,
+          error: null,
+          qualityStandard: {
+            id: row.id,
+            name: row.name,
+            category: row.category,
+            description: row.description,
+            rules: JSON.parse(row.rules || '[]'),
+            userTypes: JSON.parse(row.user_types || '[]'),
+            enabled: row.enabled === 1,
+            lastUpdated: row.updated_at
+          }
+        };
+      } catch (error) {
+        console.error('Error updating quality standard:', error);
+        return {
+          success: false,
+          error: error.message,
+          qualityStandard: null
+        };
+      }
+    },
+    deleteQualityStandard: async (_, { id }, context) => {
+      try {
+        const standard = db.prepare('SELECT * FROM quality_standards WHERE id = ?').get(id);
+        
+        if (!standard) {
+          return {
+            success: false,
+            error: 'Quality standard not found',
+            qualityStandard: null
+          };
+        }
+        
+        const stmt = db.prepare('DELETE FROM quality_standards WHERE id = ?');
+        const result = stmt.run(id);
+        
+        if (result.changes === 0) {
+          return {
+            success: false,
+            error: 'Failed to delete quality standard',
+            qualityStandard: null
+          };
+        }
+        
+        return {
+          success: true,
+          error: null,
+          qualityStandard: {
+            id: standard.id,
+            name: standard.name,
+            category: standard.category,
+            description: standard.description,
+            rules: JSON.parse(standard.rules || '[]'),
+            userTypes: JSON.parse(standard.user_types || '[]'),
+            enabled: standard.enabled === 1,
+            lastUpdated: standard.updated_at
+          }
+        };
+      } catch (error) {
+        console.error('Error deleting quality standard:', error);
+        return {
+          success: false,
+          error: error.message,
+          qualityStandard: null
+        };
+      }
     }
   }
 };
@@ -1453,14 +1936,130 @@ const schema = createSchema({
   resolvers
 });
 
-// Create Yoga server
+// Create Yoga server with enhanced context for Configuration Management
 const yoga = createYoga({
   schema,
-  context: () => ({
-    dataSources: new DocumentationDataSources()
-  }),
+  context: () => {
+    const docDataSources = new DocumentationDataSources();
+    
+    // Add Configuration Management methods to the data sources
+    docDataSources.userInstructions = {
+      getInstructions: async (userType, context) => {
+        const stmt = db.prepare(`
+          SELECT * FROM user_instructions 
+          WHERE (? IS NULL OR JSON_EXTRACT(user_types, "$") LIKE ('%' || ? || '%'))
+          AND (? IS NULL OR JSON_EXTRACT(context, "$") LIKE ('%' || ? || '%'))
+          ORDER BY updated_at DESC
+        `);
+        const rows = stmt.all(userType, userType, context, context);
+        return rows.map(row => ({
+          ...row,
+          userTypes: JSON.parse(row.user_types || '[]'),
+          context: JSON.parse(row.context || '[]'),
+          tags: JSON.parse(row.tags || '[]'),
+          lastUpdated: row.updated_at
+        }));
+      }
+    };
+    
+    docDataSources.toolConfigurations = {
+      getConfigurations: async (category, environment, userType) => {
+        let query = 'SELECT * FROM tool_configurations WHERE 1=1';
+        const params = [];
+        
+        if (category) {
+          query += ' AND category = ?';
+          params.push(category);
+        }
+        if (environment) {
+          query += ' AND environment = ?';
+          params.push(environment);
+        }
+        if (userType) {
+          query += ' AND JSON_EXTRACT(user_types, "$") LIKE ?';
+          params.push(`%"${userType}"%`);
+        }
+        
+        query += ' ORDER BY updated_at DESC';
+        
+        const stmt = db.prepare(query);
+        const rows = stmt.all(...params);
+        
+        return rows.map(row => ({
+          ...row,
+          toolName: row.tool_name,
+          configuration: JSON.parse(row.configuration || '{}'),
+          userTypes: JSON.parse(row.user_types || '[]'),
+          validationRules: JSON.parse(row.validation_rules || '[]'),
+          lastUpdated: row.updated_at
+        }));
+      }
+    };
+    
+    docDataSources.templates = {
+      getTemplates: async (type, userType) => {
+        let query = 'SELECT * FROM templates WHERE 1=1';
+        const params = [];
+        
+        if (type) {
+          query += ' AND type = ?';
+          params.push(type);
+        }
+        if (userType) {
+          query += ' AND JSON_EXTRACT(user_types, "$") LIKE ?';
+          params.push(`%"${userType}"%`);
+        }
+        
+        query += ' ORDER BY updated_at DESC';
+        
+        const stmt = db.prepare(query);
+        const rows = stmt.all(...params);
+        
+        return rows.map(row => ({
+          ...row,
+          variables: JSON.parse(row.variables || '[]'),
+          conditions: JSON.parse(row.conditions || '[]'),
+          outputFormats: JSON.parse(row.output_formats || '["markdown"]'),
+          userTypes: JSON.parse(row.user_types || '[]'),
+          lastUpdated: row.updated_at
+        }));
+      }
+    };
+    
+    docDataSources.qualityStandards = {
+      getStandards: async (category, userType) => {
+        let query = 'SELECT * FROM quality_standards WHERE 1=1';
+        const params = [];
+        
+        if (category) {
+          query += ' AND category = ?';
+          params.push(category);
+        }
+        if (userType) {
+          query += ' AND JSON_EXTRACT(user_types, "$") LIKE ?';
+          params.push(`%"${userType}"%`);
+        }
+        
+        query += ' ORDER BY updated_at DESC';
+        
+        const stmt = db.prepare(query);
+        const rows = stmt.all(...params);
+        
+        return rows.map(row => ({
+          ...row,
+          rules: JSON.parse(row.rules || '[]'),
+          userTypes: JSON.parse(row.user_types || '[]'),
+          lastUpdated: row.updated_at
+        }));
+      }
+    };
+    
+    return {
+      dataSources: docDataSources
+    };
+  },
   cors: {
-    origin: ['http://localhost:3000', 'http://localhost:5173'],
+    origin: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'],
     credentials: true
   },
   graphiql: {

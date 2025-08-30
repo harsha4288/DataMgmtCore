@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Plus, Search, Edit, Trash2, Tag, Users, AlertCircle, Loader2 } from 'lucide-react';
-import { UserInstruction, UserType, ContextCategory } from '@/lib/documentation-system/types';
+import { UserInstruction, UserType } from '@/lib/documentation-system/types';
 import { useUserInstructions } from '@/hooks/useConfiguration';
 
 interface UserInstructionsPanelProps {

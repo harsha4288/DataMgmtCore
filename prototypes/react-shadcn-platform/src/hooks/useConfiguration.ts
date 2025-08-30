@@ -145,7 +145,16 @@ export function useUserInstructions(userType?: string, context?: string): Config
         }
       `;
 
-      const result = await graphqlRequest(mutation, { id: _id, input: _item });
+      // Filter out read-only fields for GraphQL input
+      const input = {
+        title: _item.title,
+        content: _item.content,
+        userTypes: _item.userTypes,
+        context: _item.context,
+        tags: _item.tags,
+        priority: _item.priority
+      };
+      const result = await graphqlRequest(mutation, { id: _id, input });
       if (result.updateUserInstruction.success) {
         await refetch();
       } else {
@@ -289,7 +298,16 @@ export function useToolConfigurations(category?: string, environment?: string, u
         }
       `;
 
-      const result = await graphqlRequest(mutation, { id: _id, input: _item });
+      // Filter out read-only fields for GraphQL input  
+      const input = {
+        toolName: _item.toolName,
+        category: _item.category,
+        environment: _item.environment,
+        configuration: JSON.stringify(_item.configuration || {}),
+        userTypes: _item.userTypes,
+        validationRules: _item.validationRules
+      };
+      const result = await graphqlRequest(mutation, { id: _id, input });
       if (result.updateToolConfiguration.success) {
         await refetch();
       } else {
@@ -390,5 +408,348 @@ export function useInstructionSearch() {
     loading,
     error,
     search
+  };
+}
+
+// ============================================================================
+// Templates Hook
+// ============================================================================
+
+export function useTemplates(type?: string, userType?: string): ConfigurationHookResult<any> {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const refetch = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const query = `
+        query GetTemplates($type: String, $userType: String) {
+          getTemplates(type: $type, userType: $userType) {
+            id
+            name
+            type
+            content
+            variables {
+              name
+              type
+              required
+              defaultValue
+            }
+            conditions
+            outputFormats
+            userTypes
+            lastUpdated
+          }
+        }
+      `;
+
+      const result = await graphqlRequest(query, { type, userType });
+      setData(result.getTemplates || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch templates');
+      console.error('Failed to fetch templates:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const create = async (item: any) => {
+    try {
+      const mutation = `
+        mutation CreateTemplate($input: TemplateInput!) {
+          createTemplate(input: $input) {
+            success
+            error
+            template {
+              id
+              name
+              type
+              content
+              variables {
+                name
+                type
+                required
+                defaultValue
+              }
+              conditions
+              outputFormats
+              userTypes
+              lastUpdated
+            }
+          }
+        }
+      `;
+
+      const result = await graphqlRequest(mutation, { input: item });
+      if (result.createTemplate.success) {
+        await refetch();
+      } else {
+        throw new Error(result.createTemplate.error);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create template');
+      throw err;
+    }
+  };
+
+  const update = async (id: string, item: any) => {
+    try {
+      const mutation = `
+        mutation UpdateTemplate($id: ID!, $input: TemplateInput!) {
+          updateTemplate(id: $id, input: $input) {
+            success
+            error
+            template {
+              id
+              name
+              type
+              content
+              variables {
+                name
+                type
+                required
+                defaultValue
+              }
+              conditions
+              outputFormats
+              userTypes
+              lastUpdated
+            }
+          }
+        }
+      `;
+
+      // Filter out read-only fields for GraphQL input
+      const input = {
+        name: item.name,
+        type: item.type,
+        content: item.content,
+        variables: item.variables,
+        conditions: item.conditions,
+        outputFormats: item.outputFormats,
+        userTypes: item.userTypes
+      };
+      const result = await graphqlRequest(mutation, { id, input });
+      if (result.updateTemplate.success) {
+        await refetch();
+      } else {
+        throw new Error(result.updateTemplate.error);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update template');
+      throw err;
+    }
+  };
+
+  const remove = async (id: string) => {
+    try {
+      const mutation = `
+        mutation DeleteTemplate($id: ID!) {
+          deleteTemplate(id: $id) {
+            success
+            error
+          }
+        }
+      `;
+
+      const result = await graphqlRequest(mutation, { id });
+      if (result.deleteTemplate.success) {
+        await refetch();
+      } else {
+        throw new Error(result.deleteTemplate.error);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete template');
+      throw err;
+    }
+  };
+
+  useEffect(() => {
+    refetch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type, userType]);
+
+  return {
+    data,
+    loading,
+    error,
+    refetch,
+    create,
+    update,
+    remove
+  };
+}
+
+// ============================================================================
+// Quality Standards Hook
+// ============================================================================
+
+export function useQualityStandards(category?: string, userType?: string): ConfigurationHookResult<any> {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const refetch = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const query = `
+        query GetQualityStandards($category: String, $userType: String) {
+          getQualityStandards(category: $category, userType: $userType) {
+            id
+            name
+            category
+            description
+            rules {
+              name
+              description
+              automated
+              severity
+              parameters
+            }
+            userTypes
+            enabled
+            lastUpdated
+          }
+        }
+      `;
+
+      const result = await graphqlRequest(query, { category, userType });
+      setData(result.getQualityStandards || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch quality standards');
+      console.error('Failed to fetch quality standards:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const create = async (item: any) => {
+    try {
+      const mutation = `
+        mutation CreateQualityStandard($input: QualityStandardInput!) {
+          createQualityStandard(input: $input) {
+            success
+            error
+            qualityStandard {
+              id
+              name
+              category
+              description
+              rules {
+                name
+                description
+                automated
+                severity
+                parameters
+              }
+              userTypes
+              enabled
+              lastUpdated
+            }
+          }
+        }
+      `;
+
+      const result = await graphqlRequest(mutation, { input: item });
+      if (result.createQualityStandard.success) {
+        await refetch();
+      } else {
+        throw new Error(result.createQualityStandard.error);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create quality standard');
+      throw err;
+    }
+  };
+
+  const update = async (id: string, item: any) => {
+    try {
+      const mutation = `
+        mutation UpdateQualityStandard($id: ID!, $input: QualityStandardInput!) {
+          updateQualityStandard(id: $id, input: $input) {
+            success
+            error
+            qualityStandard {
+              id
+              name
+              category
+              description
+              rules {
+                name
+                description
+                automated
+                severity
+                parameters
+              }
+              userTypes
+              enabled
+              lastUpdated
+            }
+          }
+        }
+      `;
+
+      // Filter out read-only fields for GraphQL input
+      const input = {
+        name: item.name,
+        category: item.category,
+        description: item.description,
+        rules: item.rules,
+        userTypes: item.userTypes,
+        enabled: item.enabled
+      };
+      const result = await graphqlRequest(mutation, { id, input });
+      if (result.updateQualityStandard.success) {
+        await refetch();
+      } else {
+        throw new Error(result.updateQualityStandard.error);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update quality standard');
+      throw err;
+    }
+  };
+
+  const remove = async (id: string) => {
+    try {
+      const mutation = `
+        mutation DeleteQualityStandard($id: ID!) {
+          deleteQualityStandard(id: $id) {
+            success
+            error
+          }
+        }
+      `;
+
+      const result = await graphqlRequest(mutation, { id });
+      if (result.deleteQualityStandard.success) {
+        await refetch();
+      } else {
+        throw new Error(result.deleteQualityStandard.error);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete quality standard');
+      throw err;
+    }
+  };
+
+  useEffect(() => {
+    refetch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, userType]);
+
+  return {
+    data,
+    loading,
+    error,
+    refetch,
+    create,
+    update,
+    remove
   };
 }

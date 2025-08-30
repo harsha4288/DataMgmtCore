@@ -297,6 +297,40 @@ export const typeDefs = `
     validationRules: [String!]
   }
 
+  input TemplateInput {
+    name: String!
+    type: String!
+    content: String!
+    variables: [TemplateVariableInput!]
+    conditions: [String!]
+    outputFormats: [String!]!
+    userTypes: [String!]!
+  }
+
+  input TemplateVariableInput {
+    name: String!
+    type: String!
+    required: Boolean!
+    defaultValue: JSON
+  }
+
+  input QualityStandardInput {
+    name: String!
+    category: String!
+    description: String!
+    rules: [QualityRuleInput!]!
+    userTypes: [String!]!
+    enabled: Boolean!
+  }
+
+  input QualityRuleInput {
+    name: String!
+    description: String!
+    automated: Boolean!
+    severity: String!
+    parameters: JSON
+  }
+
   # Configuration Management Response Types
   type UserInstructionResponse {
     success: Boolean!
@@ -308,6 +342,18 @@ export const typeDefs = `
     success: Boolean!
     error: String
     toolConfiguration: ToolConfiguration
+  }
+
+  type TemplateResponse {
+    success: Boolean!
+    error: String
+    template: Template
+  }
+
+  type QualityStandardResponse {
+    success: Boolean!
+    error: String
+    qualityStandard: QualityStandard
   }
 
   # Response types
@@ -417,6 +463,14 @@ export const typeDefs = `
     createToolConfiguration(input: ToolConfigurationInput!): ToolConfigurationResponse!
     updateToolConfiguration(id: ID!, input: ToolConfigurationInput!): ToolConfigurationResponse!
     deleteToolConfiguration(id: ID!): ToolConfigurationResponse!
+    
+    createTemplate(input: TemplateInput!): TemplateResponse!
+    updateTemplate(id: ID!, input: TemplateInput!): TemplateResponse!
+    deleteTemplate(id: ID!): TemplateResponse!
+    
+    createQualityStandard(input: QualityStandardInput!): QualityStandardResponse!
+    updateQualityStandard(id: ID!, input: QualityStandardInput!): QualityStandardResponse!
+    deleteQualityStandard(id: ID!): QualityStandardResponse!
   }
 `;
 

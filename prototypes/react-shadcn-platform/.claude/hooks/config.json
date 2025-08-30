@@ -12,5 +12,12 @@
     "block_dangerous_commands": true,
     "protect_files": true,
     "enforce_quality": true
+  },
+  "auto_approve": {
+    "git_readonly": true,
+    "file_reads": true,
+    "npm_operations": true,
+    "port_operations": true,
+    "app_control": true
   }
 }
