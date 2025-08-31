@@ -9,22 +9,16 @@
  * - Clean visual hierarchy: Use whitespace, not decorations
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { ProjectEntity, TreeExpansionState } from './ExpandableProjectTree';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { InlineDocumentManager } from '../document/InlineDocumentManager';
-import { InlineIssueManager } from '../issue/InlineIssueManager';
-import { TreeStatusManagement } from '../status/TreeStatusManagement';
-import { TreeReviewSystem } from '../review/TreeReviewSystem';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { TreeNodeContextMenu } from './TreeNodeContextMenu';
 import { 
   FileText, 
   Bug, 
   GitPullRequest,
-  MessageSquare,
-  Settings,
-  Plus,
   ChevronRight,
   ChevronDown,
   Folder,
@@ -48,6 +42,16 @@ export interface TreeNodeProps {
   onEntityUpdate: (entityId: string, updates: Partial<ProjectEntity>) => void;
   expansionState: TreeExpansionState;
   breadcrumbPath?: ProjectEntity[];
+  // Context menu handlers
+  onStatusChange?: (entityId: string, newStatus: string) => void;
+  onViewDocuments?: (entityId: string) => void;
+  onViewIssues?: (entityId: string) => void;
+  onViewReviews?: (entityId: string) => void;
+  onEditEntity?: (entityId: string) => void;
+  onDeleteEntity?: (entityId: string) => void;
+  onDuplicateEntity?: (entityId: string) => void;
+  onManageStatus?: (entityId: string) => void;
+  userRole?: 'developer' | 'pm' | 'qa' | 'admin';
 }
 
 export const TreeNode: React.FC<TreeNodeProps> = ({
@@ -59,10 +63,17 @@ export const TreeNode: React.FC<TreeNodeProps> = ({
   onEntitySelect,
   onEntityUpdate,
   expansionState,
-  breadcrumbPath = []
+  breadcrumbPath = [],
+  onStatusChange,
+  onViewDocuments,
+  onViewIssues,
+  onViewReviews,
+  onEditEntity,
+  onDeleteEntity,
+  onDuplicateEntity,
+  onManageStatus,
+  userRole = 'developer'
 }) => {
-  const [showDetailPanel, setShowDetailPanel] = useState(false);
-  const [activeManager, setActiveManager] = useState<'documents' | 'issues' | 'reviews' | 'status' | null>(null);
   
   const hasChildren = entity.children && entity.children.length > 0;
   const indentationLevel = level * 20; // VS Code-style 20px per level
@@ -86,37 +97,62 @@ export const TreeNode: React.FC<TreeNodeProps> = ({
     }
   };
 
-  // Status badge with colors
-  const getStatusBadge = () => {
-    let variant: "default" | "secondary" | "destructive" | "outline" = "outline";
+  // Compact status indicator with tooltip
+  const getStatusIndicator = () => {
+    let dotColor = 'bg-muted-foreground';
     let icon = null;
-    let text = entity.status;
+    let tooltip = '';
+    let showBadge = false;
     
     switch (entity.status) {
       case 'completed':
+        dotColor = 'bg-green-500';
+        icon = <CheckCircle2 className="h-3 w-3 text-green-500" />;
+        tooltip = 'Completed';
+        break;
       case 'approved':
-        variant = "default";
-        icon = <CheckCircle2 className="h-3 w-3" />;
+        dotColor = 'bg-green-500';
+        icon = <CheckCircle2 className="h-3 w-3 text-green-500" />;
+        tooltip = 'Approved';
         break;
       case 'in_progress':
+        dotColor = 'bg-blue-500';
+        icon = <Clock className="h-3 w-3 text-blue-500" />;
+        tooltip = 'In Progress';
+        showBadge = true;
+        break;
       case 'ready_for_review':
+        dotColor = 'bg-orange-500';
+        icon = <Clock className="h-3 w-3 text-orange-500" />;
+        tooltip = 'Ready for Review';
+        showBadge = true;
+        break;
       case 'in_review':
-        variant = "secondary";
-        icon = <Clock className="h-3 w-3" />;
+        dotColor = 'bg-orange-500';
+        icon = <Clock className="h-3 w-3 text-orange-500" />;
+        tooltip = 'In Review';
+        showBadge = true;
         break;
       case 'blocked':
-        variant = "destructive";
-        icon = <AlertCircle className="h-3 w-3" />;
+        dotColor = 'bg-red-500';
+        icon = <AlertCircle className="h-3 w-3 text-red-500" />;
+        tooltip = 'Blocked';
+        showBadge = true;
+        break;
+      case 'cancelled':
+        dotColor = 'bg-gray-500';
+        icon = <Circle className="h-3 w-3 text-gray-500" />;
+        tooltip = 'Cancelled';
         break;
       case 'pending':
-      case 'cancelled':
       default:
-        variant = "outline";
-        icon = <Circle className="h-3 w-3" />;
+        dotColor = 'bg-muted-foreground/40';
+        icon = <Circle className="h-3 w-3 text-muted-foreground" />;
+        tooltip = 'Pending';
         break;
     }
     
-    return { variant, icon, text };
+    return { dotColor, icon, tooltip, showBadge };
   };
 
   // VS Code-style priority coloring
@@ -151,86 +187,12 @@ export const TreeNode: React.FC<TreeNodeProps> = ({
     }
   }, [entity.id, onToggleExpansion, hasChildren]);
 
-  // Handle node selection and detail panel toggle
+  // Handle node selection
   const handleNodeClick = useCallback(() => {
     onEntitySelect(entity);
-    setShowDetailPanel(!showDetailPanel);
-  }, [entity, onEntitySelect, showDetailPanel]);
+  }, [entity, onEntitySelect]);
 
-  // Handle detail panel actions
-  const handleDetailPanelClose = useCallback(() => {
-    setShowDetailPanel(false);
-  }, []);
 
-  // Build current breadcrumb path
-  const getCurrentBreadcrumbPath = useCallback(() => {
-    return [...breadcrumbPath, entity];
-  }, [breadcrumbPath, entity]);
-
-  // Render breadcrumb component
-  const renderBreadcrumb = useCallback(() => {
-    const currentPath = getCurrentBreadcrumbPath();
-    if (currentPath.length <= 1) return null;
-
-    return (
-      <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2 px-2 py-1 bg-muted/30 rounded">
-        {currentPath.map((pathEntity, index) => (
-          <React.Fragment key={pathEntity.id}>
-            {index > 0 && <ChevronRight className="h-3 w-3 mx-0.5" />}
-            <span className={index === currentPath.length - 1 ? 'text-foreground font-medium' : ''}>
-              {pathEntity.title}
-            </span>
-          </React.Fragment>
-        ))}
-      </div>
-    );
-  }, [getCurrentBreadcrumbPath]);
-
-  // Get contextual actions that launch inline managers
-  const getContextualActions = useCallback(() => {
-    const actions = [];
-
-    // Document management
-    if (entity.documentsCount > 0) {
-      actions.push({
-        id: 'documents',
-        label: `Documents (${entity.documentsCount})`,
-        icon: FileText,
-        onClick: () => {
-          setActiveManager(activeManager === 'documents' ? null : 'documents');
-          if (!showDetailPanel) setShowDetailPanel(true);
-        }
-      });
-    }
-
-    // Issue management
-    if (entity.issuesCount > 0) {
-      actions.push({
-        id: 'issues',
-        label: `Issues (${entity.issuesCount})`, 
-        icon: Bug,
-        onClick: () => {
-          setActiveManager(activeManager === 'issues' ? null : 'issues');
-          if (!showDetailPanel) setShowDetailPanel(true);
-        }
-      });
-    }
-
-    // Review management
-    if (entity.reviewsCount > 0) {
-      actions.push({
-        id: 'reviews',
-        label: `Reviews (${entity.reviewsCount})`,
-        icon: GitPullRequest,
-        onClick: () => {
-          setActiveManager(activeManager === 'reviews' ? null : 'reviews');
-          if (!showDetailPanel) setShowDetailPanel(true);
-        }
-      });
-    }
-
-    return actions;
-  }, [entity, activeManager, showDetailPanel]);
 
   return (
     <div className="w-full">
@@ -272,31 +234,40 @@ export const TreeNode: React.FC<TreeNodeProps> = ({
             {entity.title}
           </span>
           
-          {/* Progress bar (VS Code extension style) */}
-          {entity.progress > 0 && entity.progress < 100 && (
-            <div className="flex items-center gap-1.5">
-              <Progress 
-                value={entity.progress} 
-                className="h-1.5 w-16" 
-              />
-              <span className="text-xs text-muted-foreground">
-                {entity.progress}%
-              </span>
-            </div>
-          )}
           
-          {/* Status badge */}
-          {entity.status !== 'pending' && (
-            <Badge 
-              variant={getStatusBadge().variant} 
-              className="h-5 px-1.5 text-xs gap-0.5"
-            >
-              {getStatusBadge().icon}
-              <span className="ml-1">{getStatusBadge().text}</span>
+          {/* Progress percentage badge (compact) */}
+          {entity.progress > 0 && entity.progress < 100 && (
+            <Badge variant="outline" className="h-4 px-1.5 text-xs text-muted-foreground">
+              {entity.progress}%
             </Badge>
           )}
           
-          {/* Resource counts (subtle) */}
+          {/* Compact status indicator */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-1">
+                  {getStatusIndicator().showBadge ? (
+                    <Badge variant="secondary" className="h-4 px-1.5 text-xs">
+                      {getStatusIndicator().icon}
+                    </Badge>
+                  ) : (
+                    <>
+                      <div className={`w-2 h-2 rounded-full ${getStatusIndicator().dotColor}`} />
+                      {entity.status === 'completed' || entity.status === 'approved' ? (
+                        getStatusIndicator().icon
+                      ) : null}
+                    </>
+                  )}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{getStatusIndicator().tooltip}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          
+          {/* Resource counts and actions (subtle) */}
           <div className="flex items-center gap-3 text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
             {entity.documentsCount > 0 && (
               <span className="flex items-center gap-1">
@@ -316,6 +287,29 @@ export const TreeNode: React.FC<TreeNodeProps> = ({
                 {entity.reviewsCount}
               </span>
             )}
+            
+            {/* Context menu trigger button */}
+            <TreeNodeContextMenu
+              entity={entity}
+              onStatusChange={onStatusChange}
+              onViewDocuments={onViewDocuments}
+              onViewIssues={onViewIssues}
+              onViewReviews={onViewReviews}
+              onEditEntity={onEditEntity}
+              onDeleteEntity={onDeleteEntity}
+              onDuplicateEntity={onDuplicateEntity}
+              onManageStatus={onManageStatus}
+              userRole={userRole}
+            >
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 w-6 p-0 hover:bg-accent"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <ChevronDown className="h-3 w-3" />
+              </Button>
+            </TreeNodeContextMenu>
           </div>
         </div>
         
@@ -339,168 +333,21 @@ export const TreeNode: React.FC<TreeNodeProps> = ({
               onEntitySelect={onEntitySelect}
               onEntityUpdate={onEntityUpdate}
               expansionState={expansionState}
-              breadcrumbPath={getCurrentBreadcrumbPath()}
+              breadcrumbPath={[...breadcrumbPath, entity]}
+              onStatusChange={onStatusChange}
+              onViewDocuments={onViewDocuments}
+              onViewIssues={onViewIssues}
+              onViewReviews={onViewReviews}
+              onEditEntity={onEditEntity}
+              onDeleteEntity={onDeleteEntity}
+              onDuplicateEntity={onDuplicateEntity}
+              onManageStatus={onManageStatus}
+              userRole={userRole}
             />
           ))}
         </div>
       )}
 
-      {/* Progressive disclosure panel with integrated managers */}
-      {showDetailPanel && (
-        <div className="ml-8 mt-1 mb-2 pl-3 border-l border-border/50">
-          <div className="bg-muted/30 rounded-md p-3 space-y-3">
-            {/* Context breadcrumb */}
-            {renderBreadcrumb()}
-            {/* Quick metadata when no manager is active */}
-            {!activeManager && (entity.assignee || entity.dueDate) && (
-              <div className="grid grid-cols-1 gap-2 text-sm">
-                {entity.assignee && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Assigned:</span>
-                    <span>{entity.assignee}</span>
-                  </div>
-                )}
-                {entity.dueDate && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Due:</span>
-                    <span>{new Date(entity.dueDate).toLocaleDateString()}</span>
-                  </div>
-                )}
-              </div>
-            )}
-            
-            {/* Resource management actions */}
-            {getContextualActions().length > 0 && (
-              <div className="space-y-2">
-                <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  Resources
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {getContextualActions().map((action) => {
-                    const Icon = action.icon;
-                    const isActive = activeManager === action.id;
-                    return (
-                      <Button
-                        key={action.id}
-                        size="sm"
-                        variant={isActive ? "default" : "outline"}
-                        className="h-7 text-xs"
-                        onClick={action.onClick}
-                      >
-                        <Icon className="h-3 w-3 mr-1.5" />
-                        {action.label}
-                      </Button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Inline Managers - The key integration */}
-            {activeManager === 'documents' && (
-              <div className="border-t pt-3">
-                <InlineDocumentManager
-                  entityId={entity.id}
-                  entityType={entity.type === 'phase' ? 'phase' : entity.type === 'task' ? 'task' : 'issue'}
-                  documents={entity.documents || []}
-                  onCreateDocument={(name, type) => console.log('Create document:', name, type)}
-                  onSaveDocument={(docId, content) => console.log('Save document:', docId, content)}
-                  onDeleteDocument={(docId) => console.log('Delete document:', docId)}
-                />
-              </div>
-            )}
-
-            {activeManager === 'issues' && (
-              <div className="border-t pt-3">
-                <InlineIssueManager
-                  entityId={entity.id}
-                  issues={entity.issues || []}
-                  onCreateIssue={(issue) => console.log('Create issue:', issue)}
-                  onUpdateIssue={(issueId, updates) => console.log('Update issue:', issueId, updates)}
-                />
-              </div>
-            )}
-
-            {activeManager === 'reviews' && (
-              <div className="border-t pt-3">
-                <TreeReviewSystem
-                  entityId={entity.id}
-                  entityType={entity.type}
-                  reviews={entity.reviews || []}
-                  onCreateReview={(review) => console.log('Create review:', review)}
-                  onSubmitReview={(reviewId, decision) => console.log('Submit review:', reviewId, decision)}
-                />
-              </div>
-            )}
-            
-            {/* Entity actions */}
-            {!activeManager && (
-              <div className="flex justify-between items-center pt-2 border-t border-border">
-                <div className="flex gap-2">
-                  <Button 
-                    size="sm" 
-                    variant="ghost" 
-                    className="h-7 text-xs"
-                    onClick={() => setActiveManager('status')}
-                  >
-                    <Settings className="h-3 w-3 mr-1" />
-                    Status
-                  </Button>
-                  <Button size="sm" variant="ghost" className="h-7 text-xs">
-                    <Plus className="h-3 w-3 mr-1" />
-                    Add
-                  </Button>
-                </div>
-                <Button 
-                  size="sm" 
-                  variant="ghost" 
-                  className="h-7 text-xs"
-                  onClick={handleDetailPanelClose}
-                >
-                  Close
-                </Button>
-              </div>
-            )}
-
-            {/* Status Management */}
-            {activeManager === 'status' && (
-              <div className="border-t pt-3">
-                <TreeStatusManagement
-                  entityId={entity.id}
-                  currentStatus={entity.status}
-                  currentProgress={entity.progress}
-                  onStatusUpdate={(status, progress) => {
-                    console.log('Update status:', status, progress);
-                    onEntityUpdate(entity.id, { status, progress });
-                  }}
-                />
-              </div>
-            )}
-
-            {/* Close button when manager is active */}
-            {activeManager && (
-              <div className="flex justify-end pt-2 border-t border-border">
-                <Button 
-                  size="sm" 
-                  variant="ghost" 
-                  className="h-7 text-xs"
-                  onClick={() => setActiveManager(null)}
-                >
-                  Back
-                </Button>
-                <Button 
-                  size="sm" 
-                  variant="ghost" 
-                  className="h-7 text-xs ml-2"
-                  onClick={handleDetailPanelClose}
-                >
-                  Close
-                </Button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

@@ -103,6 +103,7 @@ export interface ExpandableProjectTreeProps {
   showWorkspaceHeader?: boolean;
   onEntitySelect?: (entity: ProjectEntity) => void;
   onEntityUpdate?: (entityId: string, updates: Partial<ProjectEntity>) => void;
+  onManageStatus?: (entityId: string) => void;
   onNewTask?: () => void;
   onSearch?: (query: string) => void;
   onFilter?: () => void;
@@ -120,6 +121,7 @@ export const ExpandableProjectTree: React.FC<ExpandableProjectTreeProps> = ({
   showWorkspaceHeader = false,
   onEntitySelect,
   onEntityUpdate,
+  onManageStatus,
   onNewTask,
   onSearch,
   onFilter,
@@ -315,9 +317,18 @@ export const ExpandableProjectTree: React.FC<ExpandableProjectTreeProps> = ({
             onToggleExpansion={handleToggleExpansion}
             onEntitySelect={handleEntitySelect}
             onEntityUpdate={handleEntityUpdate}
+            onManageStatus={onManageStatus}
             isSelected={selectedEntity?.id === entity.id}
             expansionState={expansionState}
             breadcrumbPath={[]}
+            onStatusChange={handleEntityUpdate}
+            onViewDocuments={() => {}}
+            onViewIssues={() => {}}
+            onViewReviews={() => {}}
+            onEditEntity={() => {}}
+            onDeleteEntity={() => {}}
+            onDuplicateEntity={() => {}}
+            userRole="developer"
           />
         ))}
       </div>

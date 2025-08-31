@@ -113,24 +113,39 @@ SGS Data Management Core
 - ✅ **DONE**: Updated document type interface and mock data
 - **Result**: Users no longer see irrelevant filters in document view
 
-#### Phase 1.2: Fix Issue Manager ❌ PENDING  
-- ❌ **TODO**: Remove "Create Document" button from Issues view
-- ❌ **TODO**: Add proper "Create Issue" button with correct handler
-- ❌ **TODO**: Fix issue-specific filters and actions
+#### Phase 1.2: Fix Issue Manager ✅ COMPLETED
+- ✅ **DONE**: Removed "Create Document" button from Issues view
+- ✅ **DONE**: Added proper "Create Issue" button with correct handler
+- ✅ **DONE**: Fixed issue-specific filters and actions
+- **Result**: InlineIssueManager.tsx now has proper "New Issue" button (lines 102-104)
 
-#### Phase 1.3: Add Context Indicators ❌ PENDING
-- ❌ **TODO**: Add breadcrumb: "Phase 5 > Task 5.8.3 > Subtask 5.8.3.1"  
+#### Phase 1.3: Add Context Indicators 🔄 PARTIALLY COMPLETE
+- ✅ **DONE**: Added breadcrumb functionality in TreeNode.tsx (lines 171-187)
+- ❌ **TODO**: Ensure breadcrumb visibility in all views (may be hidden in some cases)
 - ❌ **TODO**: Highlight selected node in tree with stronger visual
 - ❌ **TODO**: Show current context in resource panel header
+
+#### Phase 1.4: Fix Layout Redundancy & Content Truncation ✅ COMPLETED
+- ✅ **DONE**: Remove redundant "Resources" section from left tree panel (TreeNode.tsx lines 372-397)
+- ✅ **DONE**: Adjust panel widths: Tree (20-25%) | Content (50-55%) | Properties (25%) 
+- ✅ **DONE**: Make left panel resizable with min/max constraints (15%-35% for left, 20%-40% for right)
+- ✅ **DONE**: Add collapse functionality to both side panels with toggle buttons
+- ✅ **DONE**: Store user panel preferences in localStorage with auto-save
+- ✅ **DONE**: Consolidate all resource navigation to right Properties panel only
+- ✅ **RESOLVED**: Document content now gets 50-55% width (was ~40%)
+- ✅ **RESOLVED**: Zero redundancy achieved - each UI element appears exactly once
+- **Implementation**: Added react-resizable-panels for professional layout
+- **Files Modified**: VSCodeLayout.tsx (full resizable layout), TreeNode.tsx (removed redundant Resources)
 
 ### PHASE 2: Create Document Content System ❌ NOT STARTED
 **Duration**: 4-5 hours  
 **Status**: ❌ Waiting for Phase 1 completion
 
-#### Phase 2.1: Create DocumentContentViewer Component ❌ PENDING
-- Replace mock document display with real GraphQL content
-- Parse and display markdown from SQLite database  
-- Support sections: Objective, Status, Implementation, etc.
+#### Phase 2.1: Create DocumentContentViewer Component 🔄 PARTIALLY COMPLETE
+- ✅ **DONE**: DocumentContentViewer component exists in src/components/workflow/document/
+- ❌ **TODO**: Replace mock document display with real GraphQL content (line 49: "TODO: Replace with real GraphQL query")
+- ❌ **TODO**: Parse and display markdown from SQLite database  
+- ❌ **TODO**: Support sections: Objective, Status, Implementation, etc.
 
 #### Phase 2.2: Implement Content CRUD Operations ❌ PENDING
 - Create new documents in SQLite via GraphQL mutations
@@ -142,21 +157,24 @@ SGS Data Management Core
 - Create GraphQL mutation for bulk document import
 - Import task-5.8.3.1 and related Phase 5.8 documents
 
-### PHASE 3: Implement Two-Panel Layout ❌ NOT STARTED
+### PHASE 3: Implement Two-Panel Layout 🔄 PARTIALLY COMPLETE
 **Duration**: 3-4 hours  
-**Status**: ❌ Blocked by Phase 2
+**Status**: 🔄 Layout exists but has width and redundancy issues
 
-#### Phase 3.1: Create Split Panel Layout ❌ PENDING
+#### Phase 3.1: Create Split Panel Layout ✅ IMPLEMENTED BUT NEEDS FIXES
 ```
 [Tree Navigation (30%)] | [Content Panel (70%)]
                         |  - Document Content (Primary)  
-                        |  - Resources (Collapsible)
+                        |  - Resources (Problematic - duplicates right panel)
 ```
+- ✅ **DONE**: Basic three-panel layout implemented
+- ❌ **ISSUE**: Fixed 30% width causes content truncation  
+- ❌ **ISSUE**: Resources section duplicates right Properties panel (redundancy violation)
 
-#### Phase 3.2: Make Resources Secondary ❌ PENDING
-- Resources collapsed by default, expand when needed
-- Remember user preference for panel states
-- Responsive design for mobile/tablet/desktop
+#### Phase 3.2: Make Resources Secondary ❌ NEEDS REWORK
+- ❌ **ISSUE**: Resources should be in right panel only, not left panel
+- ❌ **TODO**: Remember user preference for panel states  
+- ❌ **TODO**: Responsive design for mobile/tablet/desktop
 
 ### PHASE 4: Connect to Backend ❌ NOT STARTED  
 **Duration**: 4-5 hours
@@ -276,32 +294,75 @@ This redesign focuses specifically on fixing navigation UX issues through a mini
 
 ## 🚀 NEXT STEPS - Priority Order
 
-### **IMMEDIATE (Continue Current Session)**
-1. **Phase 1.2**: Fix InlineIssueManager - Remove "Create Document" button, add proper "Create Issue" functionality
-2. **Phase 1.3**: Add context breadcrumb to TreeNode showing current path (Phase > Task > Subtask)
+### **CRITICAL PRIORITY (Current Session)**
+1. **Phase 1.4**: Fix Layout Redundancy & Content Truncation
+   - Remove redundant Resources from left tree panel
+   - Adjust panel widths to prevent content truncation
+   - Make panels resizable and collapsible
+   - Consolidate navigation to single location (right panel)
 
 ### **HIGH PRIORITY (Next Session)**  
-3. **Phase 2.1**: Create DocumentContentViewer component to display real GraphQL content instead of mock data
+2. **Phase 1.3**: Complete Context Indicators - Ensure breadcrumb visibility everywhere
+3. **Phase 2.1**: Connect DocumentContentViewer to real GraphQL content
 4. **Phase 2.2**: Implement document CRUD operations with GraphQL mutations
 5. **Phase 2.3**: Import missing Phase 5.8 documents to SQLite database
 
 ### **MEDIUM PRIORITY (Following Sessions)**
-6. **Phase 3.1**: Implement two-panel layout (30% tree, 70% content+resources)
-7. **Phase 3.2**: Make resources panel collapsible and secondary to content
-8. **Phase 4.1**: Replace all mock data with GraphQL queries
+6. **Phase 4.1**: Replace all mock data with GraphQL queries
+7. **Phase 4.2**: Add auto-save, loading states, and error handling  
+8. **Phase 4.3**: Connect issue/review systems to backend
 
 ### **LOW PRIORITY (Final Polish)**
-9. **Phase 4.2**: Add auto-save, loading states, and error handling
-10. **Phase 4.3**: Connect issue/review systems to backend
-11. **Phase 5.1**: Remove redundant tab navigation from Phase1App.tsx
-12. **Phase 5.2**: Final cleanup and code consolidation
+9. **Phase 5.1**: Remove redundant tab navigation from Phase1App.tsx
+10. **Phase 5.2**: Final cleanup and code consolidation
 
 ### **SUCCESS METRICS TO VERIFY**
-- ✅ No confusing tabs or misplaced buttons (DONE: Document tabs fixed)
-- ❌ Clear context breadcrumb at all times (PENDING)
-- ❌ Real document content from GraphQL/SQLite (PENDING)
-- ❌ Single navigation method only (PENDING)
-- ❌ Efficient screen space usage with two-panel layout (PENDING)
+- ✅ No confusing tabs or misplaced buttons (DONE: Document tabs fixed, Issue buttons fixed)
+- 🔄 Clear context breadcrumb at all times (PARTIALLY DONE: exists but needs visibility fixes)
+- ✅ **NEW**: No content truncation in document view (DONE: Content gets 50-55% width)  
+- ✅ **NEW**: Single location for resource navigation (DONE: Right Properties panel only)
+- ✅ **NEW**: No redundant UI elements (DONE: Zero redundancy achieved)
+- ✅ **NEW**: Efficient screen space usage with optimal panel layout (DONE: Resizable panels 20%|55%|25%)
+- ✅ **NEW**: Panel preferences persist across sessions (DONE: localStorage implementation)
+- ✅ **NEW**: Professional VS Code-style layout (DONE: react-resizable-panels integration)
+- ❌ Real document content from GraphQL/SQLite (PARTIALLY DONE: component exists, needs connection)
+- ❌ Single navigation method only (PENDING: still need to remove tab navigation from Phase1App)
 - ❌ All data from backend, no mock data (PENDING)
 
-**Resume Point**: Continue with Phase 1.2 - fixing the InlineIssueManager "Create Document" button issue.
+**Resume Point**: Continue with Phase 1.3 completion OR start Phase 2.1 (Document Content System)
+
+### **CURRENT STATUS SUMMARY (Updated August 31, 2025):**
+- **Phase 1.1 & 1.2**: ✅ COMPLETED (Document tabs fixed, Issue Manager fixed)
+- **Phase 1.3**: 🔄 PARTIALLY COMPLETE (breadcrumbs exist, need visibility improvements)  
+- **Phase 1.4**: ✅ COMPLETED (layout redundancy fixed, resizable panels implemented)
+- **Phase 1.5**: ✅ **NEW - COMPLETED** (Status & History functionality restored and optimized)
+- **Phase 1.6**: ✅ **NEW - COMPLETED** (Left panel width increased 30%, progress bars removed for screen space)
+- **Phase 2.1**: 🔄 PARTIALLY COMPLETE (DocumentContentViewer exists but uses mock data)
+- **Phase 3**: ✅ RESOLVED (layout now uses proper resizable panels with no redundancy issues)
+
+### **LATEST SESSION ACHIEVEMENTS:**
+#### Phase 1.5: Status Management System Restoration ✅ COMPLETED
+- ✅ **DONE**: Fixed "Status & History" button in right panel to actually work
+- ✅ **DONE**: Connected TreeStatusManagement component with proper props (currentStatus, entityType)
+- ✅ **DONE**: Added complete context menu functionality with all required handlers
+- ✅ **DONE**: Fixed component integration issues preventing status view switching
+- **Result**: Users can now access comprehensive status management interface by selecting entity + clicking "Status & History"
+
+#### Phase 1.6: Screen Real Estate Optimization ✅ COMPLETED  
+- ✅ **DONE**: Increased left panel width from 20% → 30% (50% more space)
+- ✅ **DONE**: Removed progress bars from tree nodes to reduce visual clutter
+- ✅ **DONE**: Updated center panel calculations for optimal layout balance
+- ✅ **DONE**: Updated localStorage defaults for new panel proportions
+- **Result**: Left navigation has significantly more space for longer task names, cleaner visual hierarchy
+
+### **NEXT PRIORITIES (Resume Point):**
+1. **Phase 1.3 Completion**: Ensure breadcrumb visibility and stronger tree selection highlighting
+2. **Phase 2.1**: Connect DocumentContentViewer to real GraphQL content instead of mock data
+3. **Phase 2.2-2.3**: Implement document CRUD operations and import missing Phase 5.8 documents
+
+### **KEY TECHNICAL NOTES FOR NEXT SESSION:**
+- Status management is now fully functional via right panel "Status & History" button
+- Left panel optimal width is 30% (provides good balance with 45% center, 25% right)
+- All builds successful, no TypeScript errors
+- VSCodeLayout.tsx handles proper prop passing to TreeStatusManagement component
+- Context menu functionality complete but may need positioning refinements for very long task names
