@@ -50,7 +50,9 @@
       "Read(C:\\Users\\Sriharsha\\AppData\\Roaming/**)",
       "Read(C:\\Users\\Sriharsha\\AppData\\Local/**)",
       "Read(C:\\Users\\Sriharsha\\.claude/**)",
-      "Read(C:\\Users\\Sriharsha/**)"
+      "Read(C:\\Users\\Sriharsha/**)",
+      "Bash(npm start)",
+      "Bash(cmd //c:*)"
     ],
     "deny": [],
     "ask": [],

@@ -315,15 +315,15 @@ export function DashboardTabs({
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Profile Views</span>
-                    <span className="font-medium">{stats.profile.views}</span>
+                    <span className="font-medium">{stats.profile?.views || 0}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Connection Requests</span>
-                    <span className="font-medium">{stats.connections.requests}</span>
+                    <span className="font-medium">{stats.connections?.requests || 0}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Post Engagement</span>
-                    <span className="font-medium">{stats.engagement.total}</span>
+                    <span className="font-medium">{stats.engagement?.total || 0}</span>
                   </div>
                 </div>
               </CardContent>

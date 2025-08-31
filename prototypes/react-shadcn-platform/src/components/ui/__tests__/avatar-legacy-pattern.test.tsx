@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-redeclare
-import { render, screen } from '@testing-library/react';
+import { render, screen as screenTest } from '@testing-library/react';
 import { describe, test, expect } from 'vitest';
 import { Avatar, AvatarFallback, AvatarImage } from '../avatar';
 
@@ -12,7 +11,7 @@ describe('Avatar Legacy Pattern - Backward Compatibility', () => {
       </Avatar>
     );
     
-    const avatar = screen.getByTestId('legacy-avatar');
+    const avatar = screenTest.getByTestId('legacy-avatar');
     expect(avatar).toBeInTheDocument();
     
     // Should extract "DC" from "Dr. Sarah Chen"
@@ -27,7 +26,7 @@ describe('Avatar Legacy Pattern - Backward Compatibility', () => {
       </Avatar>
     );
     
-    const avatar = screen.getByTestId('legacy-avatar-initials');
+    const avatar = screenTest.getByTestId('legacy-avatar-initials');
     expect(avatar).toBeInTheDocument();
     
     // Should keep "JK" as-is
@@ -45,7 +44,7 @@ describe('Avatar Legacy Pattern - Backward Compatibility', () => {
       </Avatar>
     );
     
-    const avatar = screen.getByTestId('legacy-avatar-split');
+    const avatar = screenTest.getByTestId('legacy-avatar-split');
     expect(avatar).toBeInTheDocument();
     
     // Should show "PS" 
@@ -64,7 +63,7 @@ describe('Avatar Legacy Pattern - Backward Compatibility', () => {
       </Avatar>
     );
     
-    const avatar = screen.getByTestId('legacy-avatar-function');
+    const avatar = screenTest.getByTestId('legacy-avatar-function');
     expect(avatar).toBeInTheDocument();
     
     // Should show "JK" 
@@ -79,7 +78,7 @@ describe('Avatar Legacy Pattern - Backward Compatibility', () => {
       </Avatar>
     );
     
-    const avatar = screen.getByTestId('legacy-avatar-empty');
+    const avatar = screenTest.getByTestId('legacy-avatar-empty');
     expect(avatar).toBeInTheDocument();
     
     // Should have the empty circle fallback
@@ -101,7 +100,7 @@ describe('Avatar Legacy Pattern - Backward Compatibility', () => {
       </Avatar>
     );
     
-    const avatar = screen.getByTestId('mentorship-pattern');
+    const avatar = screenTest.getByTestId('mentorship-pattern');
     expect(avatar).toBeInTheDocument();
     
     // Should show "DSC" (all initials from "Dr. Sarah Chen")

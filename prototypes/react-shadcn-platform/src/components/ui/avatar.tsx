@@ -136,7 +136,7 @@ const AvatarFallback = React.forwardRef<
       )}
       {...props}
     >
-      {displayContent || <div className="h-4 w-4 rounded-full bg-muted-foreground/20" />}
+      {displayContent ? displayContent : <div className="h-4 w-4 rounded-full bg-muted-foreground/20" />}
     </AvatarPrimitive.Fallback>
   )
 })

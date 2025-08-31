@@ -9,15 +9,15 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 interface CalendarProps {
   mode: 'single';
   selected?: Date;
-  onSelect?: (date: Date | undefined) => void;
+  onSelect?: (_date: Date | undefined) => void;
   initialFocus?: boolean;
 }
 
 export const Calendar: React.FC<CalendarProps> = ({
-  mode,
+  _mode,
   selected,
   onSelect,
-  initialFocus
+  _initialFocus
 }) => {
   const [currentDate, setCurrentDate] = React.useState(selected || new Date());
 

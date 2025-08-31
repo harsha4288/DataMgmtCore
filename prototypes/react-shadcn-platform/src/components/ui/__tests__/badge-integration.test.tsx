@@ -1,6 +1,5 @@
 import React from 'react'
-// eslint-disable-next-line no-redeclare
-import { render, screen } from '@testing-library/react';
+import { render, screen as screenTest } from '@testing-library/react';
 import { describe, test, expect } from 'vitest';
 import { Badge } from '../badge';
 import { ThemeProvider } from '@/lib/theme/provider';
@@ -20,7 +19,7 @@ describe('Badge Integration Tests - Real World Scenarios', () => {
       </TestWrapper>
     );
     
-    const badge = screen.getByText('Technology');
+    const badge = screenTest.getByText('Technology');
     expect(badge).toBeInTheDocument();
     expect(badge).toHaveClass('bg-transparent', 'text-foreground');
   });
@@ -43,7 +42,7 @@ describe('Badge Integration Tests - Real World Scenarios', () => {
         </TestWrapper>
       );
       
-      const badge = screen.getByTestId(`grade-${variant}`);
+      const badge = screenTest.getByTestId(`grade-${variant}`);
       expect(badge).toBeInTheDocument();
       expect(badge).toHaveTextContent(text);
       expect(badge).toHaveClass(expectedBg);
@@ -68,7 +67,7 @@ describe('Badge Integration Tests - Real World Scenarios', () => {
         </TestWrapper>
       );
       
-      const badge = screen.getByTestId(`domain-${index}`);
+      const badge = screenTest.getByTestId(`domain-${index}`);
       expect(badge).toBeInTheDocument();
       expect(badge).toHaveTextContent(domain);
       expect(badge).toHaveClass('bg-secondary', 'text-secondary-foreground');
@@ -82,7 +81,7 @@ describe('Badge Integration Tests - Real World Scenarios', () => {
       </TestWrapper>
     );
     
-    const badge = screen.getByTestId('count-badge');
+    const badge = screenTest.getByTestId('count-badge');
     expect(badge).toBeInTheDocument();
     expect(badge).toHaveTextContent('5');
     expect(badge).toHaveClass('bg-destructive', 'text-destructive-foreground');
@@ -95,7 +94,7 @@ describe('Badge Integration Tests - Real World Scenarios', () => {
       </TestWrapper>
     );
     
-    const badge = screen.getByTestId('content-badge');
+    const badge = screenTest.getByTestId('content-badge');
     expect(badge).toBeInTheDocument();
     expect(badge).toHaveTextContent('Expires in 5 days');
   });
@@ -107,7 +106,7 @@ describe('Badge Integration Tests - Real World Scenarios', () => {
       </TestWrapper>
     );
     
-    const badge = screen.getByTestId('max-count-badge');
+    const badge = screenTest.getByTestId('max-count-badge');
     expect(badge).toBeInTheDocument();
     expect(badge).toHaveTextContent('99+');
   });
@@ -124,10 +123,10 @@ describe('Badge Integration Tests - Real World Scenarios', () => {
       </TestWrapper>
     );
     
-    expect(screen.getByText('A+')).toBeInTheDocument();
-    expect(screen.getByText('Technology')).toBeInTheDocument();
-    expect(screen.getByText('12')).toBeInTheDocument();
-    expect(screen.getByText('Active')).toBeInTheDocument();
+    expect(screenTest.getByText('A+')).toBeInTheDocument();
+    expect(screenTest.getByText('Technology')).toBeInTheDocument();
+    expect(screenTest.getByText('12')).toBeInTheDocument();
+    expect(screenTest.getByText('Active')).toBeInTheDocument();
   });
 
   test('Badge does not render placeholder dashes', () => {
@@ -137,7 +136,7 @@ describe('Badge Integration Tests - Real World Scenarios', () => {
       </TestWrapper>
     );
     
-    const badge = screen.getByTestId('no-placeholder');
+    const badge = screenTest.getByTestId('no-placeholder');
     
     // Should not have placeholder dash classes
     expect(badge).not.toHaveClass('w-4', 'h-0.5');
@@ -167,7 +166,7 @@ describe('Badge Integration Tests - Real World Scenarios', () => {
       </TestWrapper>
     );
     
-    const badge = screen.getByTestId('zero-badge');
+    const badge = screenTest.getByTestId('zero-badge');
     expect(badge).toBeInTheDocument();
     expect(badge).toHaveTextContent('0');
   });

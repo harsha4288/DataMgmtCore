@@ -143,7 +143,7 @@ export default function MemberDashboard() {
         <div className="flex gap-8">
           <DashboardSidebar stats={stats} domains={domains} />
           
-          <DashboardTabs
+          <DashboardTabs 
             stats={stats}
             personalizedPosts={personalizedPosts}
             recentActivity={recentActivity}

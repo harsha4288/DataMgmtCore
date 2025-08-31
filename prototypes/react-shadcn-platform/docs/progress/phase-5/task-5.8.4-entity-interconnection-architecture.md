@@ -358,8 +358,80 @@ type Subscription {
 - Comprehensive testing
 - Performance optimization
 
+## 🔍 Additional Features from Navigation Gap Analysis
+
+### 5.8.4.6: Context Tracking & Current Focus System
+**Scope**: Track current working context and provide "you are here" navigation aids
+
+**Context Tracking Architecture**:
+```typescript
+interface WorkingContext {
+  currentPhase: ProjectEntity;
+  currentTask: ProjectEntity;
+  activeWorkItem: ProjectEntity;
+  contextBreadcrumb: string[];
+  workingFocus: {
+    entityId: string;
+    entityType: 'phase' | 'task' | 'subtask' | 'issue';
+    startTime: Date;
+    lastActivity: Date;
+  };
+}
+
+interface ContextIndicators {
+  breadcrumbPath: string[];
+  activeEntityHighlight: boolean;
+  parentChainHighlight: boolean;
+  siblingDimming: boolean;
+  focusTimerDisplay: boolean;
+}
+```
+
+**Features**:
+- **Current Task/Phase Visibility**: Always show where user is in hierarchy
+- **Breadcrumb Navigation**: Full path from project root to current location
+- **Active Context Highlighting**: Visual indicators for current working context
+- **Focus Time Tracking**: Track time spent on current entity
+- **Context History**: Navigate back through previous contexts
+
+### 5.8.4.7: Real Progress Calculation System
+**Scope**: Calculate actual progress based on subtask completion instead of hardcoded values
+
+**Progress Calculation Engine**:
+```typescript
+interface ProgressMetrics {
+  calculateProgress: (entity: ProjectEntity) => number;
+  rollupProgress: (children: ProjectEntity[]) => number;
+  getWeightedProgress: (entity: ProjectEntity) => number;
+  trackCompletion: (entityId: string, status: string) => void;
+}
+
+interface ProgressCalculation {
+  actual: number;          // Calculated from subtask completion
+  weighted: number;        // Weighted by complexity/effort
+  estimated: number;       // Original estimate
+  velocity: number;        // Recent completion rate
+  predictedCompletion: Date;
+}
+```
+
+**Features**:
+- **Automatic Progress Rollup**: Calculate parent progress from children
+- **Weighted Progress**: Account for task complexity/size
+- **Real-time Updates**: Progress updates as tasks complete
+- **Velocity Tracking**: Measure completion speed
+- **Predictive Completion**: Estimate completion dates based on velocity
+
+**Implementation Details**:
+- Replace all hardcoded progress values (e.g., `progress: 55`)
+- Implement recursive calculation from leaf nodes up
+- Cache calculations for performance
+- Update on any status change event
+
 ## 📝 Notes
 
 This task creates the "neural network" of the project management system, where all entities are interconnected and provide contextual intelligence. The key challenge is designing a flexible relationship model that can evolve with changing project needs while maintaining performance and data integrity.
 
 The system must be designed to handle complex relationship graphs without performance degradation, and provide intuitive ways for users to navigate and understand entity relationships.
+
+**Enhanced with Navigation Features**: Now includes context tracking and real progress calculation to address critical gaps identified in the navigation redesign analysis.

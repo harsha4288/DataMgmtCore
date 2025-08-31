@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-redeclare
-import { render, screen } from '@testing-library/react';
+import { render, screen as screenTest } from '@testing-library/react';
 import { describe, test, expect } from 'vitest';
 import { Avatar } from '../avatar';
 
@@ -9,7 +8,7 @@ describe('Avatar Component - Circle Bug Fix', () => {
       <Avatar name="Dr. Sarah Chen" data-testid="avatar-with-name" />
     );
     
-    const avatar = screen.getByTestId('avatar-with-name');
+    const avatar = screenTest.getByTestId('avatar-with-name');
     expect(avatar).toBeInTheDocument();
     
     // Should show initials "DC" for "Dr. Sarah Chen"
@@ -21,7 +20,7 @@ describe('Avatar Component - Circle Bug Fix', () => {
       <Avatar name="John" data-testid="avatar-single-name" />
     );
     
-    const avatar = screen.getByTestId('avatar-single-name');
+    const avatar = screenTest.getByTestId('avatar-single-name');
     expect(avatar).toBeInTheDocument();
     
     // Should show initial "J" for "John"
@@ -33,7 +32,7 @@ describe('Avatar Component - Circle Bug Fix', () => {
       <Avatar name="Priya Sharma Patel" data-testid="avatar-multiple-names" />
     );
     
-    const avatar = screen.getByTestId('avatar-multiple-names');
+    const avatar = screenTest.getByTestId('avatar-multiple-names');
     expect(avatar).toBeInTheDocument();
     
     // Should show "PP" (first and last name initials)
@@ -45,7 +44,7 @@ describe('Avatar Component - Circle Bug Fix', () => {
       <Avatar name="John Kumar" data-testid="avatar-no-empty-circle" />
     );
     
-    const avatar = screen.getByTestId('avatar-no-empty-circle');
+    const avatar = screenTest.getByTestId('avatar-no-empty-circle');
     
     // Should not have the empty circle fallback
     const emptyCircle = avatar.querySelector('.h-4.w-4.rounded-full.bg-muted-foreground\\/20');
@@ -60,7 +59,7 @@ describe('Avatar Component - Circle Bug Fix', () => {
       <Avatar data-testid="avatar-no-name" />
     );
     
-    const avatar = screen.getByTestId('avatar-no-name');
+    const avatar = screenTest.getByTestId('avatar-no-name');
     expect(avatar).toBeInTheDocument();
     
     // Should have the empty circle fallback when no name
@@ -77,7 +76,7 @@ describe('Avatar Component - Circle Bug Fix', () => {
       />
     );
     
-    const avatar = screen.getByTestId('avatar-with-src');
+    const avatar = screenTest.getByTestId('avatar-with-src');
     expect(avatar).toBeInTheDocument();
     
     // Should have an img element or show initials as fallback

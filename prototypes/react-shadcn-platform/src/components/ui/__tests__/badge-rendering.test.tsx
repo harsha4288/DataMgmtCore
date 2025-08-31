@@ -1,6 +1,5 @@
 import React from 'react'
-// eslint-disable-next-line no-redeclare
-import { render, screen } from '@testing-library/react';
+import { render, screen as screenTest } from '@testing-library/react';
 import { describe, test, expect } from 'vitest';
 import { Badge } from '../badge';
 import { PlaceholderDash } from '../placeholder-dash';
@@ -21,7 +20,7 @@ describe('Badge Component Rendering', () => {
       </TestWrapper>
     );
     
-    const badge = screen.getByText('Test Badge');
+    const badge = screenTest.getByText('Test Badge');
     expect(badge).toBeInTheDocument();
     expect(badge).toHaveClass('inline-flex', 'items-center', 'rounded-full');
   });
@@ -38,7 +37,7 @@ describe('Badge Component Rendering', () => {
         </TestWrapper>
       );
       
-      const badge = screen.getByTestId(`badge-${variant}`);
+      const badge = screenTest.getByTestId(`badge-${variant}`);
       expect(badge).toBeInTheDocument();
       expect(badge).toHaveTextContent(variant.toUpperCase());
     });
@@ -51,7 +50,7 @@ describe('Badge Component Rendering', () => {
       </TestWrapper>
     );
     
-    const badge = screen.getByTestId('count-badge');
+    const badge = screenTest.getByTestId('count-badge');
     expect(badge).toBeInTheDocument();
     expect(badge).toHaveTextContent('5');
   });
@@ -63,7 +62,7 @@ describe('Badge Component Rendering', () => {
       </TestWrapper>
     );
     
-    const badge = screen.getByTestId('content-badge');
+    const badge = screenTest.getByTestId('content-badge');
     expect(badge).toBeInTheDocument();
     expect(badge).toHaveTextContent('Technology');
   });
@@ -85,7 +84,7 @@ describe('Badge Component Rendering', () => {
       </TestWrapper>
     );
     
-    const badge = screen.getByTestId('zero-badge');
+    const badge = screenTest.getByTestId('zero-badge');
     expect(badge).toBeInTheDocument();
     expect(badge).toHaveTextContent('0');
   });
@@ -95,7 +94,7 @@ describe('PlaceholderDash Component', () => {
   test('PlaceholderDash renders with default variant', () => {
     render(<PlaceholderDash data-testid="placeholder" />);
     
-    const placeholder = screen.getByTestId('placeholder');
+    const placeholder = screenTest.getByTestId('placeholder');
     expect(placeholder).toBeInTheDocument();
     expect(placeholder).toHaveClass('bg-muted-foreground/30', 'inline-block');
   });
@@ -106,7 +105,7 @@ describe('PlaceholderDash Component', () => {
     variants.forEach(variant => {
       render(<PlaceholderDash variant={variant} data-testid={`placeholder-${variant}`} />);
       
-      const placeholder = screen.getByTestId(`placeholder-${variant}`);
+      const placeholder = screenTest.getByTestId(`placeholder-${variant}`);
       expect(placeholder).toBeInTheDocument();
     });
   });
@@ -120,7 +119,7 @@ describe('CSS Variables Integration', () => {
       </TestWrapper>
     );
     
-    const badge = screen.getByTestId('grade-a-badge');
+    const badge = screenTest.getByTestId('grade-a-badge');
     
     // Check if CSS variables are being applied
     expect(badge).toHaveClass('bg-[var(--badge-grade-a)]');
@@ -152,7 +151,7 @@ describe('Badge vs PlaceholderDash Rendering Issue', () => {
       </TestWrapper>
     );
     
-    const badge = screen.getByTestId('tech-badge');
+    const badge = screenTest.getByTestId('tech-badge');
     expect(badge).toBeInTheDocument();
     expect(badge).toHaveTextContent('Technology');
     
@@ -176,7 +175,7 @@ describe('Badge vs PlaceholderDash Rendering Issue', () => {
         </TestWrapper>
       );
       
-      const badge = screen.getByTestId(`badge-${index}`);
+      const badge = screenTest.getByTestId(`badge-${index}`);
       expect(badge).toBeInTheDocument();
       expect(badge).toHaveTextContent(testCase.expected);
       
