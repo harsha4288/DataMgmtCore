@@ -52,7 +52,8 @@
       "Read(C:\\Users\\Sriharsha\\.claude/**)",
       "Read(C:\\Users\\Sriharsha/**)",
       "Bash(npm start)",
-      "Bash(cmd //c:*)"
+      "Bash(cmd //c:*)",
+      "Bash(sqlite3:*)"
     ],
     "deny": [],
     "ask": [],

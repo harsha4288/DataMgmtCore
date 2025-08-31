@@ -68,6 +68,25 @@ const initWithRetry = () => {
 
 db = initWithRetry();
 
+// Unique ID generation using board prefixes (JIRA-style)
+async function generateUniqueId(boardPrefix = 'TASK') {
+  try {
+    // Get current counter for this board prefix
+    const result = db.prepare('SELECT current_counter FROM boards WHERE prefix = ?').get(boardPrefix);
+    const nextNum = (result?.current_counter || 0) + 1;
+    
+    // Update or insert the counter
+    db.prepare('INSERT OR REPLACE INTO boards (prefix, current_counter) VALUES (?, ?)')
+      .run(boardPrefix, nextNum);
+    
+    return `${boardPrefix}-${nextNum}`;
+  } catch (error) {
+    console.error('Error generating unique ID:', error);
+    // Fallback to timestamp-based ID if database fails
+    return `${boardPrefix}-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
+  }
+}
+
 // Import TypeScript files (they'll be transpiled on the fly in a real setup)
 // For now, we'll include the schema and resolvers directly
 
@@ -135,6 +154,42 @@ const typeDefs = `
     resolution_attempts: [ResolutionAttempt!]!
     created_date: String!
     resolved_date: String
+  }
+
+  # Document types for Phase 2.1
+  type Document {
+    id: ID!
+    title: String!
+    content: String!
+    type: DocumentTypeEnum!
+    status: DocumentStatusEnum!
+    entityId: String!
+    entityType: EntityTypeEnum!
+    author: String
+    lastModified: String!
+    filePath: String!
+    markdown: String!
+  }
+
+  enum DocumentTypeEnum {
+    requirements
+    technical
+    implementation
+    all
+  }
+
+  enum DocumentStatusEnum {
+    draft
+    review
+    approved
+    archived
+  }
+
+  enum EntityTypeEnum {
+    task
+    phase
+    subtask
+    issue
   }
 
   type ResolutionAttempt {
@@ -298,6 +353,11 @@ const typeDefs = `
     getPhase(id: ID!): Phase
     getTask(id: ID!): Task
     getIssue(id: ID!): Issue
+    
+    # Document queries for Phase 2.1
+    getDocumentsByEntity(entityId: ID!, entityType: EntityTypeEnum!): [Document!]!
+    getDocument(id: ID!): Document
+    getDocumentContent(entityId: ID!, entityType: EntityTypeEnum!): Document
     
     # Get by status
     getTasksByStatus(status: TaskStatusEnum!): [Task!]!
@@ -538,38 +598,134 @@ class DocumentationDataSources {
     if (cached) return cached;
 
     try {
-      const phases = [];
-      if (!fs.existsSync(this.basePath)) {
-        return [];
+      // NEW: Use entities table instead of reading .md files
+      if (!db) {
+        console.error('Database not available, falling back to file system');
+        return await this.getAllPhasesFromFiles();
       }
-      
-      const phaseDirs = fs.readdirSync(this.basePath)
-        .filter(dir => dir.startsWith('phase-'))
-        .sort();
 
-      for (const phaseDir of phaseDirs) {
-        const phasePath = path.join(this.basePath, phaseDir);
-        const phase = await this.parsePhaseDirectory(phasePath, phaseDir);
-        if (phase) {
-          phases.push(phase);
-        }
+      const stmt = db.prepare(`
+        SELECT * FROM entities 
+        WHERE entity_type = 'phase' 
+        ORDER BY id
+      `);
+      const phaseRows = stmt.all();
+      
+      const phases = [];
+      for (const row of phaseRows) {
+        // Get tasks for this phase
+        const taskStmt = db.prepare(`
+          SELECT * FROM entities 
+          WHERE entity_type IN ('task', 'subtask') 
+          AND (parent_id = ? OR hierarchy_path LIKE ?)
+          ORDER BY level, sort_order
+        `);
+        const taskRows = taskStmt.all(row.id, `${row.hierarchy_path}%`);
+        
+        const tasks = taskRows.map(taskRow => ({
+          id: taskRow.id,
+          name: taskRow.title,
+          description: taskRow.description || '',
+          phase_id: row.id,
+          status: taskRow.status,
+          progress: taskRow.progress || 0,
+          completion_date: taskRow.updated_at ? taskRow.updated_at.split('T')[0] : null,
+          subtasks: [], // Will be populated by parseSubtasksFromDB if needed
+          metadata: {
+            status: taskRow.status,
+            priority: taskRow.priority || 'medium',
+            assignee: taskRow.assignee,
+            labels: taskRow.labels ? JSON.parse(taskRow.labels) : [],
+            dependencies: taskRow.dependencies ? JSON.parse(taskRow.dependencies) : [],
+            estimated_hours: taskRow.estimated_hours,
+            actual_hours: taskRow.actual_hours
+          },
+          created_at: taskRow.created_at,
+          updated_at: taskRow.updated_at
+        }));
+
+        const phase = {
+          id: row.id,
+          name: row.title,
+          description: row.description || '',
+          status: this.parsePhaseStatus(row.status),
+          progress: this.calculatePhaseProgressFromTasks(tasks),
+          tasks,
+          metadata: {
+            start_date: row.metadata ? JSON.parse(row.metadata).start_date : null,
+            end_date: row.metadata ? JSON.parse(row.metadata).end_date : null,
+            completion_date: row.status === 'completed' ? (row.updated_at ? row.updated_at.split('T')[0] : null) : null,
+            total_estimated_hours: row.estimated_hours,
+            total_actual_hours: row.actual_hours,
+            dependencies: row.dependencies ? JSON.parse(row.dependencies) : []
+          }
+        };
+        
+        phases.push(phase);
       }
 
       this.setCache(cacheKey, phases);
       return phases;
     } catch (error) {
-      console.error('Error loading phases:', error);
-      return [];
+      console.error('Error loading phases from database:', error);
+      // Fallback to file system
+      return await this.getAllPhasesFromFiles();
     }
   }
 
   async getAllTasks() {
-    const phases = await this.getAllPhases();
-    const tasks = [];
-    for (const phase of phases) {
-      tasks.push(...phase.tasks);
+    try {
+      // NEW: Use entities table directly instead of going through phases
+      if (!db) {
+        console.error('Database not available, falling back to file system');
+        const phases = await this.getAllPhasesFromFiles();
+        const tasks = [];
+        for (const phase of phases) {
+          tasks.push(...phase.tasks);
+        }
+        return tasks;
+      }
+
+      const stmt = db.prepare(`
+        SELECT * FROM entities 
+        WHERE entity_type IN ('task', 'subtask')
+        ORDER BY hierarchy_path, level, sort_order
+      `);
+      const taskRows = stmt.all();
+      
+      const tasks = taskRows.map(row => ({
+        id: row.id,
+        name: row.title,
+        description: row.description || '',
+        phase_id: row.parent_id || row.hierarchy_path.split('/')[0], // Extract phase from hierarchy
+        status: row.status,
+        progress: row.progress || 0,
+        completion_date: row.status === 'completed' ? (row.updated_at ? row.updated_at.split('T')[0] : null) : null,
+        subtasks: [], // Could be populated if needed
+        metadata: {
+          status: row.status,
+          priority: row.priority || 'medium',
+          assignee: row.assignee,
+          labels: row.labels ? JSON.parse(row.labels) : [],
+          dependencies: row.dependencies ? JSON.parse(row.dependencies) : [],
+          estimated_hours: row.estimated_hours,
+          actual_hours: row.actual_hours
+        },
+        created_at: row.created_at,
+        updated_at: row.updated_at
+      }));
+
+      return tasks;
+    } catch (error) {
+      console.error('Error loading tasks from database:', error);
+      // Fallback to file system
+      const phases = await this.getAllPhasesFromFiles();
+      const tasks = [];
+      for (const phase of phases) {
+        tasks.push(...phase.tasks);
+      }
+      return tasks;
     }
-    return tasks;
   }
 
   async getAllIssues() {
@@ -717,7 +873,7 @@ class DocumentationDataSources {
         phase_id: phaseId,
         status: this.parseTaskStatus(statusMatch ? statusMatch[1] : 'Pending'),
         progress: progressMatch ? parseInt(progressMatch[1]) : 0,
-        subtasks: this.parseSubtasks(content),
+        subtasks: await this.parseSubtasks(content),
         metadata: {
           status: this.parseTaskStatus(statusMatch ? statusMatch[1] : 'Pending'),
           priority: 'medium',
@@ -784,18 +940,29 @@ class DocumentationDataSources {
     return overviewMatch ? overviewMatch[1].trim() : '';
   }
 
-  parseSubtasks(content) {
+  async parseSubtasks(content) {
     const subtaskMatches = content.match(/- \[(x| )\] (.+)/g);
-    return subtaskMatches ? subtaskMatches.map((match, index) => {
+    if (!subtaskMatches) return [];
+    
+    // Simple approach: All entities use TASK prefix for now
+    // Later can manually replace with CORE, CORE.THEME, ALUMNI.UI, etc.
+    const boardPrefix = 'TASK';
+    
+    const subtasks = [];
+    for (const match of subtaskMatches) {
       const completed = match.includes('[x]');
       const name = match.replace(/- \[(x| )\] /, '');
-      return {
-        id: `subtask-${index}`,
+      const uniqueId = await generateUniqueId(boardPrefix);
+      
+      subtasks.push({
+        id: uniqueId,
         name,
         description: '',
         completed
-      };
-    }) : [];
+      });
+    }
+    
+    return subtasks;
   }
 
   parseTaskStatus(status) {
@@ -880,6 +1047,40 @@ class DocumentationDataSources {
     return totalProgress / tasks.length;
   }
 
+  // Helper method for database-based phase progress calculation
+  calculatePhaseProgressFromTasks(tasks) {
+    if (tasks.length === 0) return 0;
+    const totalProgress = tasks.reduce((sum, task) => sum + (task.progress || 0), 0);
+    return totalProgress / tasks.length;
+  }
+
+  // Fallback method to read phases from files (original implementation)
+  async getAllPhasesFromFiles() {
+    try {
+      const phases = [];
+      if (!fs.existsSync(this.basePath)) {
+        return [];
+      }
+      
+      const phaseDirs = fs.readdirSync(this.basePath)
+        .filter(dir => dir.startsWith('phase-'))
+        .sort();
+
+      for (const phaseDir of phaseDirs) {
+        const phasePath = path.join(this.basePath, phaseDir);
+        const phase = await this.parsePhaseDirectory(phasePath, phaseDir);
+        if (phase) {
+          phases.push(phase);
+        }
+      }
+
+      return phases;
+    } catch (error) {
+      console.error('Error loading phases from files:', error);
+      return [];
+    }
+  }
+
   getFromCache(key) {
     const cached = this.cache.get(key);
     if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
@@ -944,6 +1145,88 @@ class DocumentationDataSources {
         return JSON.stringify(data, null, 2);
     }
   }
+
+  // Document methods for Phase 2.1 - Using SQLite Database (NO .md file dependency)
+  async getDocumentsByEntity(entityId, entityType) {
+    try {
+      // Use global db variable instead of reading .md files
+      if (!db) {
+        console.error('Database not available');
+        return [];
+      }
+
+      // Check if there's an ID mapping for this entity
+      let actualEntityId = entityId;
+      const mappingStmt = db.prepare('SELECT new_id FROM entity_id_mapping WHERE old_id = ? AND entity_type = ?');
+      const mapping = mappingStmt.get(entityId, entityType);
+      
+      if (mapping) {
+        actualEntityId = mapping.new_id;
+        console.log(`ID mapping: ${entityId} -> ${actualEntityId}`);
+      }
+
+      const stmt = db.prepare('SELECT * FROM documents WHERE entity_id = ? AND entity_type = ? ORDER BY updated_at DESC');
+      const rows = stmt.all(actualEntityId, entityType);
+      
+      return rows.map(row => ({
+        id: row.id,
+        title: row.title,
+        content: row.content,
+        type: row.type,
+        status: row.status,
+        entityId: row.entity_id, // Keep the actual stored ID
+        entityType: row.entity_type,
+        author: row.author || 'Development Team',
+        lastModified: row.updated_at,
+        filePath: null, // No file path since we're using database
+        markdown: row.content
+      }));
+    } catch (error) {
+      console.error('Error getting documents by entity from database:', error);
+      return [];
+    }
+  }
+
+  async getDocument(id) {
+    try {
+      if (!db) {
+        console.error('Database not available');
+        return null;
+      }
+
+      const stmt = db.prepare('SELECT * FROM documents WHERE id = ?');
+      const row = stmt.get(id);
+      
+      if (!row) return null;
+      
+      return {
+        id: row.id,
+        title: row.title,
+        content: row.content,
+        type: row.type,
+        status: row.status,
+        entityId: row.entity_id,
+        entityType: row.entity_type,
+        author: row.author || 'Development Team',
+        lastModified: row.updated_at,
+        filePath: null, // No file path since we're using database
+        markdown: row.content
+      };
+    } catch (error) {
+      console.error('Error getting document by id from database:', error);
+      return null;
+    }
+  }
+
+  async getDocumentContent(entityId, entityType) {
+    try {
+      const documents = await this.getDocumentsByEntity(entityId, entityType);
+      return documents[0] || null;
+    } catch (error) {
+      console.error('Error getting document content from database:', error);
+      return null;
+    }
+  }
 }
 
 // Error handling wrapper to prevent crashes
@@ -1002,6 +1285,17 @@ const resolvers = {
     },
     getIssue: async (_, { id }, context) => {
       return await context.dataSources.getIssue(id);
+    },
+
+    // Document resolvers for Phase 2.1
+    getDocumentsByEntity: async (_, { entityId, entityType }, context) => {
+      return await context.dataSources.getDocumentsByEntity(entityId, entityType);
+    },
+    getDocument: async (_, { id }, context) => {
+      return await context.dataSources.getDocument(id);
+    },
+    getDocumentContent: async (_, { entityId, entityType }, context) => {
+      return await context.dataSources.getDocumentContent(entityId, entityType);
     },
     getTasksByStatus: async (_, { status }, context) => {
       const tasks = await context.dataSources.getAllTasks();

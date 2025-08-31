@@ -8,7 +8,7 @@
 
 ## 🎯 Objective
 
-Create a comprehensive knowledge management and documentation system that serves as the central repository for all project documentation, guidelines, and knowledge assets, with powerful search capabilities and dynamic document generation - all completely data-driven without any .md file dependencies.
+Create a comprehensive knowledge management and documentation system that migrates ALL existing .md files to structured database storage, integrates with existing validation infrastructure (`validate-documentation.js`), and provides dynamic document generation with powerful search capabilities - completely eliminating .md file dependencies.
 
 ## 📚 Knowledge Management Architecture
 
@@ -40,7 +40,146 @@ enum KnowledgeAssetType {
 
 ## 📋 Sub-Tasks
 
-### 5.8.6.1: Project Documentation Repository
+### 5.8.6.0: Complete .md File Migration to Database
+**Scope**: Migrate all existing documentation from .md files to structured database storage
+
+**Migration Strategy**:
+This task completes the .md file migration started in Task 5.8.4 by handling all documentation beyond just project entities.
+
+**Files to Migrate**:
+1. **Documentation Standards & Guidelines** (60+ files):
+   ```bash
+   docs/DOCUMENTATION_STANDARDS.md
+   docs/AI_GUIDANCE_TEMPLATES.md
+   docs/DOCUMENTATION_ISSUES_ACTION_PLAN.md
+   docs/analysis/*.md
+   docs/domains/*.md
+   docs/issues/*.md
+   ```
+
+2. **Existing Project Documentation**:
+   - All remaining .md files not covered by entities migration
+   - Preserve cross-references and relationships
+   - Maintain document history and metadata
+
+**Integration with validate-documentation.js**:
+```javascript
+// Convert validation logic to database-driven
+class DatabaseDocumentationValidator {
+  constructor(db) {
+    this.db = db;
+    // Reuse existing validation rules from validate-documentation.js
+    this.sizeLimit = CONFIG.SIZE_LIMITS;
+    this.requiredSections = CONFIG.REQUIRED_SECTIONS;
+  }
+  
+  async validateDocument(documentId) {
+    const doc = await this.db.get('SELECT * FROM documents WHERE id = ?', [documentId]);
+    
+    // Apply existing validation logic
+    const validation = {
+      sizeViolations: this.validateDocumentSize(doc),
+      templateViolations: this.validateTemplateCompliance(doc),
+      statusViolations: this.validateStatusSystem(doc),
+      linkViolations: this.validateStrictLinkPlacement(doc)
+    };
+    
+    // Store validation results
+    await this.db.run(`
+      UPDATE documents SET 
+        validation_status = ?,
+        validation_errors = ?,
+        compliance_score = ?
+      WHERE id = ?
+    `, [
+      validation.isValid ? 'valid' : 'invalid',
+      JSON.stringify(validation.errors),
+      validation.score,
+      documentId
+    ]);
+    
+    return validation;
+  }
+}
+```
+
+**Document Structure Schema**:
+```sql
+-- Enhanced documents table with validation integration
+CREATE TABLE documents (
+    id TEXT PRIMARY KEY,
+    entity_id TEXT,              -- Links to entities table
+    
+    -- Document classification
+    document_type TEXT NOT NULL, -- From KnowledgeAssetType enum
+    category TEXT,
+    template_id TEXT,            -- Links to templates from Config Hub
+    
+    -- Structured content (NOT just markdown blob)
+    title TEXT NOT NULL,
+    summary TEXT,                -- Executive summary
+    content_json TEXT,           -- Structured sections as JSON
+    content_markdown TEXT,       -- Generated markdown view
+    
+    -- Validation results (from validate-documentation.js logic)
+    validation_status TEXT DEFAULT 'draft',  -- 'valid', 'invalid', 'draft'
+    validation_errors TEXT,     -- JSON array of validation issues
+    compliance_score INTEGER,   -- 0-100% compliance with standards
+    word_count INTEGER,         -- For size limit checks
+    line_count INTEGER,         -- For size limit checks
+    
+    -- Standards compliance (reusing existing rules)
+    required_sections TEXT,     -- JSON array of required sections
+    missing_sections TEXT,      -- JSON array of missing sections
+    size_violations TEXT,       -- JSON array of size issues
+    link_violations TEXT,       -- JSON array of link placement issues
+    
+    -- Metadata
+    tags TEXT,                  -- JSON array
+    author TEXT,
+    version INTEGER DEFAULT 1,
+    status TEXT DEFAULT 'draft', -- 'draft', 'review', 'approved', 'archived'
+    
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_validated TIMESTAMP,
+    
+    FOREIGN KEY (entity_id) REFERENCES entities(id),
+    FOREIGN KEY (template_id) REFERENCES templates(id)
+);
+```
+
+**Migration Pipeline**:
+1. **Parse All .md Files**: Extract content, metadata, cross-references
+2. **Structure Content**: Convert to JSON sections based on templates
+3. **Validate Content**: Run existing validate-documentation.js rules
+4. **Store Results**: Insert into database with validation scores
+5. **Update Cross-References**: Convert .md links to entity relationships
+6. **Generate Markdown Views**: Create markdown from structured data for compatibility
+
+**GraphQL Integration**:
+```javascript
+// Update GraphQL to use documents table
+const resolvers = {
+  Query: {
+    getDocumentsByEntity: async (_, { entityId, entityType }) => {
+      // No more ID mapping needed - direct database query
+      return db.prepare(`
+        SELECT * FROM documents 
+        WHERE entity_id = ? 
+        ORDER BY updated_at DESC
+      `).all(entityId);
+    },
+    
+    validateDocument: async (_, { documentId }) => {
+      const validator = new DatabaseDocumentationValidator(db);
+      return validator.validateDocument(documentId);
+    }
+  }
+};
+```
+
+### 5.8.6.1: Structured Document Storage System
 **Scope**: Centralized storage and management of all project documentation
 
 **Documentation Storage System**:

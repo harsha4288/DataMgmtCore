@@ -107,6 +107,21 @@ CREATE TABLE IF NOT EXISTS issues (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Documents (Replacing .md files entirely - Phase 2.1)
+CREATE TABLE IF NOT EXISTS documents (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL, -- Full markdown content
+    type TEXT NOT NULL CHECK (type IN ('requirements', 'technical', 'implementation', 'all')) DEFAULT 'technical',
+    status TEXT NOT NULL CHECK (status IN ('draft', 'review', 'approved', 'archived')) DEFAULT 'draft',
+    entity_id TEXT NOT NULL, -- task-5.8.3.1, phase-5, etc.
+    entity_type TEXT NOT NULL CHECK (entity_type IN ('task', 'phase', 'subtask', 'issue')),
+    author TEXT DEFAULT 'Development Team',
+    version INTEGER DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_user_instructions_priority ON user_instructions(priority);
 CREATE INDEX IF NOT EXISTS idx_user_instructions_updated_at ON user_instructions(updated_at);
@@ -121,6 +136,58 @@ CREATE INDEX IF NOT EXISTS idx_tasks_priority ON tasks(priority);
 CREATE INDEX IF NOT EXISTS idx_phases_status ON phases(status);
 CREATE INDEX IF NOT EXISTS idx_issues_status ON issues(status);
 CREATE INDEX IF NOT EXISTS idx_issues_type ON issues(type);
+CREATE INDEX IF NOT EXISTS idx_documents_entity ON documents(entity_id, entity_type);
+CREATE INDEX IF NOT EXISTS idx_documents_status ON documents(status);
+CREATE INDEX IF NOT EXISTS idx_documents_type ON documents(type);
+CREATE INDEX IF NOT EXISTS idx_entities_type ON entities(entity_type);
+CREATE INDEX IF NOT EXISTS idx_entities_status ON entities(status);
+CREATE INDEX IF NOT EXISTS idx_entities_parent ON entities(parent_id);
+CREATE INDEX IF NOT EXISTS idx_entities_board ON entities(board_id);
+CREATE INDEX IF NOT EXISTS idx_entities_hierarchy ON entities(hierarchy_path);
+CREATE INDEX IF NOT EXISTS idx_entities_level ON entities(level);
+CREATE INDEX IF NOT EXISTS idx_entities_priority ON entities(priority);
+
+-- Board prefixes for unique entity ID generation
+CREATE TABLE IF NOT EXISTS boards (
+    prefix VARCHAR(50) PRIMARY KEY,
+    current_counter INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Unified entities table (replaces tasks and phases tables)
+-- This is the foundation for Task 5.8.4 Entity Interconnection Architecture
+CREATE TABLE IF NOT EXISTS entities (
+    id TEXT PRIMARY KEY,                    -- TASK-1459, phase-5, ISSUE-123, etc.
+    entity_type TEXT NOT NULL,              -- 'phase', 'task', 'subtask', 'issue', 'epic'
+    parent_id TEXT,                         -- Hierarchical relationships
+    board_id TEXT NOT NULL,                 -- Board prefix used for this entity
+    title TEXT NOT NULL,                    -- Display title
+    description TEXT,                       -- Full description/content
+    status TEXT NOT NULL,                   -- 'pending', 'in_progress', 'completed', 'blocked', 'cancelled'
+    priority TEXT,                          -- 'low', 'medium', 'high', 'critical'
+    level INTEGER NOT NULL,                 -- Hierarchy depth (0=phase, 1=task, 2=subtask, etc.)
+    hierarchy_path TEXT NOT NULL,           -- Full path like "phase-5/TASK-1459/TASK-1460"
+    sort_order INTEGER,                     -- Display ordering within parent
+    metadata TEXT,                          -- JSON blob for entity-specific data
+    progress INTEGER DEFAULT 0,             -- 0-100 completion percentage
+    estimated_hours REAL,                   -- Time estimates
+    actual_hours REAL,                      -- Actual time spent
+    assignee TEXT,                          -- Who is responsible
+    labels TEXT DEFAULT '[]',               -- JSON array of labels/tags
+    dependencies TEXT DEFAULT '[]',         -- JSON array of dependency IDs
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Constraints
+    CHECK (progress >= 0 AND progress <= 100),
+    CHECK (status IN ('pending', 'in_progress', 'completed', 'blocked', 'cancelled')),
+    CHECK (entity_type IN ('phase', 'task', 'subtask', 'issue', 'epic')),
+    CHECK (level >= 0),
+    
+    -- Foreign key relationships
+    FOREIGN KEY (parent_id) REFERENCES entities(id) ON DELETE SET NULL,
+    FOREIGN KEY (board_id) REFERENCES boards(prefix) ON DELETE RESTRICT
+);
 
 -- Initial seed data for demonstration
 INSERT OR IGNORE INTO user_instructions (id, title, content, user_types, context, tags, priority) VALUES 
@@ -144,3 +211,77 @@ INSERT OR IGNORE INTO quality_standards (id, name, category, description, rules,
 ('qstd-2', 'Component Reusability Standards', 'code_quality', 'Ensures components are built for reusability with proper prop interfaces', '[{"name": "component_reusability", "description": "Components should have proper prop interfaces", "automated": true, "severity": "warning", "parameters": {"minReusabilityScore": 85}}, {"name": "prop_validation", "description": "All props should be typed", "automated": true, "severity": "error", "parameters": {}}]', '["human_developer"]', 1),
 ('qstd-3', 'Documentation Quality', 'documentation_quality', 'Ensures code is properly documented and maintainable', '[{"name": "documentation_completeness", "description": "Public functions and components must be documented", "automated": true, "severity": "warning", "parameters": {"requireJSDoc": true}}, {"name": "comment_quality", "description": "Comments should be meaningful and up-to-date", "automated": false, "severity": "info", "parameters": {}}]', '["human_developer", "ai_agent", "qa_tester"]', 1),
 ('qstd-4', 'Quality Gate Process', 'process_quality', 'Defines the quality gates that must pass before task completion', '[{"name": "lint_check", "description": "ESLint must pass with 0 errors", "automated": true, "severity": "critical", "parameters": {"command": "npm run lint"}}, {"name": "type_check", "description": "TypeScript compilation must succeed", "automated": true, "severity": "critical", "parameters": {"command": "npm run type-check"}}, {"name": "manual_testing", "description": "Manual testing approval required", "automated": false, "severity": "critical", "parameters": {"requiresUserApproval": true}}]', '["ai_agent", "qa_tester", "project_manager"]', 1);
+
+-- Sample document data (Phase 2.1) - replaces .md files
+INSERT OR IGNORE INTO documents (id, title, content, type, status, entity_id, entity_type, author) VALUES 
+('doc-subtask-0', 'Express.js Server Setup with WebSocket Support', '# Subtask 0: Express.js Server Setup with WebSocket Support
+
+> **Status:** 🔄 In Progress  
+> **Priority:** Critical  
+> **Parent Task:** Task 5.4: Real-Time Dashboard  
+
+## 🎯 Objective
+
+**Primary Goal:** Set up Express.js server with WebSocket support for real-time dashboard functionality.
+
+**Specific Focus:**
+- Configure Express.js server foundation
+- Implement WebSocket connections for real-time updates
+- Set up proper error handling and connection management
+- Prepare for dashboard metrics integration
+
+**Key Principle:** Robust real-time communication foundation for dashboard metrics.
+
+## ✅ Current Progress
+
+### PHASE 1: Server Foundation ✅ COMPLETED
+- ✅ **DONE**: Express.js server configuration
+- ✅ **DONE**: Basic routing structure
+- ✅ **DONE**: Error handling middleware
+
+### PHASE 2: WebSocket Integration 🔄 IN PROGRESS
+- **Phase 2.1**: ✅ COMPLETED - WebSocket server setup
+- **Phase 2.2**: ❌ PENDING - Real-time metrics broadcasting
+
+## 🚀 Next Steps
+
+1. **Complete Phase 2.2**: Real-time metrics broadcasting
+2. **Phase 3**: Dashboard client integration
+3. **Phase 4**: Performance optimization
+
+---
+*Document stored in SQLite database via GraphQL API*', 'technical', 'review', 'subtask-0', 'subtask', 'Development Team'),
+
+('doc-phase-5', 'Universal Project Management Phase', '# Phase 5: Universal Project Management
+
+> **Status:** 🔄 In Progress  
+> **Progress:** 70%  
+> **Estimated Completion:** December 2024  
+
+## 📖 Overview
+
+This phase focuses on creating a universal project management system that integrates advanced dashboard functionality, entity interconnection, and quality gates.
+
+## 🎯 Key Objectives
+
+1. **Advanced Dashboard Functionality** - Complete interactive dashboard with real-time updates
+2. **Entity Interconnection System** - Link tasks, phases, issues, and documents
+3. **Quality Gate Implementation** - Automated quality checks and approvals
+4. **Performance Optimization** - Ensure scalable and fast performance
+
+## 📋 Tasks
+
+- **Task 5.8.1**: Foundation Infrastructure ✅ COMPLETED
+- **Task 5.8.3**: Advanced Dashboard ⚡ IN PROGRESS
+- **Task 5.8.4**: Entity Interconnection ⏳ PENDING
+- **Task 5.8.5**: Quality Gates ⏳ PENDING
+
+## ✅ Success Metrics
+
+- 100% component reusability achieved
+- Zero hardcoded values (theme compliance)
+- All quality gates passing
+- Manual testing approval from stakeholders
+
+---
+*Document managed via Configuration Management System*', 'requirements', 'approved', 'phase-5', 'phase', 'Project Manager');

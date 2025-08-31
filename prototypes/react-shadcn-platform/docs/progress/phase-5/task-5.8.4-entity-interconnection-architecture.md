@@ -8,21 +8,79 @@
 
 ## 🎯 Objective
 
-Create a comprehensive entity interconnection system that intelligently links all project entities (tasks, issues, specifications, quality reports, user configurations) to provide contextual relationships and enhance project visibility and management capabilities.
+Create a unified entity management system with a single `entities` table and comprehensive interconnection capabilities. This system replaces the problematic multiple-table approach (tasks, phases, issues) with a hierarchical, JIRA-style architecture that supports infinite nesting and eliminates ID collision issues while providing intelligent entity linking.
 
-## 🔗 Current Disconnection Problems
+## 🔗 Current Architecture Problems
 
-### Critical Issues
-1. **Isolated Entities**: Tasks, issues, and documents exist independently
-2. **No Cross-References**: Cannot link UAT issues to tasks or specifications to phases
-3. **Missing Context**: Quality reports not connected to code reviews or agents
-4. **Broken Workflows**: Manual tracking of relationships between entities
-5. **Lost Knowledge**: No way to trace decisions or link related work
+### Critical Issues to Solve
+1. **Multiple Table Architecture**: Separate `tasks`, `phases`, `issues` tables create scaling problems
+2. **File-Based Data**: GraphQL still reads from .md files instead of database
+3. **ID Collision Problems**: Duplicate IDs like `subtask-0` across different tasks
+4. **No Hierarchy Support**: Cannot handle infinite nesting (project → phase → task → subtask → sub-subtask)
+5. **Isolated Entities**: No cross-references between different entity types
+6. **Manual Relationship Tracking**: No automated linking or impact analysis
 
-## 🏗️ Interconnection Architecture
+## 🏗️ Unified Entity Architecture
+
+### Single Entities Table Design
+Replace multiple tables with one hierarchical `entities` table using JIRA-style board-based IDs. This eliminates ID collisions, supports infinite nesting, and provides the foundation for intelligent relationship management.
+
+```sql
+-- Single table for ALL project entities
+CREATE TABLE entities (
+    id TEXT PRIMARY KEY,           -- JIRA-style: TASK-1, DASH-2, CORE.UI-123
+    entity_type TEXT NOT NULL,     -- 'project', 'phase', 'task', 'subtask', 'issue', 'epic'
+    parent_id TEXT,                -- References parent entity (NULL for root)
+    board_id TEXT NOT NULL,        -- Board prefix: PET, CORE.UI, ALUMNI.DB, etc.
+    
+    -- Core entity data
+    title TEXT NOT NULL,
+    description TEXT,
+    status TEXT NOT NULL,
+    priority TEXT,
+    
+    -- Hierarchical tracking
+    level INTEGER NOT NULL,        -- 0=project, 1=phase, 2=task, 3=subtask, etc.
+    hierarchy_path TEXT,           -- '/project-1/phase-5/task-5.8/subtask-5.8.3'
+    sort_order INTEGER,            -- Order within parent
+    
+    -- Flexible metadata (JSON)
+    metadata TEXT,                 -- Type-specific fields
+    attributes TEXT,               -- Custom fields per entity type
+    
+    -- Progress and lifecycle
+    progress INTEGER DEFAULT 0,    -- Calculated, not hardcoded
+    estimated_hours REAL,
+    actual_hours REAL,
+    start_date DATE,
+    due_date DATE,
+    completion_date DATE,
+    
+    -- Audit trail
+    created_by TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_by TEXT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (parent_id) REFERENCES entities(id),
+    CHECK (level >= 0 AND level <= 10),  -- Prevent excessive nesting
+    CHECK (progress >= 0 AND progress <= 100)
+);
+
+-- Board management for JIRA-style ID generation
+CREATE TABLE boards (
+    prefix TEXT PRIMARY KEY,       -- PET, CORE.UI, ALUMNI.DB, RAJ.WORK, etc.
+    name TEXT NOT NULL,            -- "UI Components", "Alumni Database"
+    description TEXT,              -- Board purpose
+    current_counter INTEGER DEFAULT 0,  -- Next ID number to assign
+    default_entity_type TEXT,      -- Default type for new entities
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_active BOOLEAN DEFAULT TRUE
+);
+```
 
 ### Universal Relationship Model
-Every entity in the system can be connected to any other entity through typed relationships with metadata, permissions, and lifecycle management.
+Once entities are unified, every entity can be connected to any other entity through typed relationships with metadata, permissions, and lifecycle management.
 
 ```typescript
 interface EntityRelationship {
@@ -67,7 +125,216 @@ enum RelationshipType {
 
 ## 📋 Sub-Tasks
 
-### 5.8.4.1: Task ↔ Issue Linking System
+### 5.8.4.0: Migrate from .md Files to Unified Entities Table
+**Scope**: Migrate all existing .md file data to the new unified entities table
+
+**Migration Pipeline**:
+1. **Parse Existing .md Files**:
+   - Read all files in `docs/progress/phase-*/`
+   - Extract task metadata (title, status, progress, dependencies)
+   - Parse hierarchical structure (phase → task → subtask)
+   - Preserve existing relationships and cross-references
+
+2. **Generate JIRA-Style IDs**:
+   ```javascript
+   // Replace problematic IDs
+   "task-5.8.3-advanced-dashboard-functionality" → "DASH-1"
+   "task-5.8.3.1-navigation-flow-architecture-redesign" → "DASH-2"
+   "subtask-0" → "TASK-1" (unique per board)
+   ```
+
+3. **Populate Entities Table**:
+   - Insert phases with level=1
+   - Insert tasks with level=2, proper parent_id
+   - Insert subtasks with level=3, proper hierarchy_path
+
+### 5.8.4.1: UI Component Migration & Compatibility Layer  
+**Scope**: Update existing UI components to work with new entities table structure
+
+**Components to Update**:
+- `UnifiedWorkspace.tsx` - Update `SelectedTask` interface
+- `TaskDetailView.tsx` - Adapt to new task data structure  
+- `NavigationSidebar.tsx` - Update navigation queries
+- All workflow dashboard components using GraphQL
+
+**Migration Strategy**:
+1. **Create Compatibility Layer**:
+   ```typescript
+   // src/lib/compatibility/task-adapter.ts
+   export const adaptEntityToSelectedTask = (entity: Entity): SelectedTask => {
+     return {
+       id: entity.board_id + '-' + entity.sequence_number,
+       title: entity.title,
+       status: entity.status,
+       assignee: entity.assignee,
+       // Map entity properties to existing UI expectations
+     }
+   }
+   ```
+
+2. **Update GraphQL Resolvers**:
+   - Change from multi-table queries to entities table queries
+   - Maintain same return structure for UI compatibility
+   - Add filtering by entity_type ('task', 'phase', 'subtask')
+
+3. **Gradual UI Migration**:
+   - Phase 1: Use compatibility layer (no UI changes)
+   - Phase 2: Update components to use new structure directly
+   - Phase 3: Remove compatibility layer
+
+### 5.8.4.2: Database Schema Constraints & Scoping
+**Scope**: Prevent entities table from becoming a generic "everything" table
+
+**Entity Type Constraints**:
+```sql
+-- Restrict entities table to project management only
+CREATE TABLE entities (
+  -- ... existing fields ...
+  entity_type TEXT NOT NULL CHECK (
+    entity_type IN (
+      'project', 'phase', 'task', 'subtask', 
+      'issue', 'specification', 'quality_report',
+      'review', 'approval'
+    )
+  ),
+  
+  -- Namespace to prevent scope creep
+  namespace TEXT NOT NULL DEFAULT 'project_mgmt' CHECK (
+    namespace IN ('project_mgmt', 'documentation', 'quality')
+  ),
+  
+  -- Board constraints for ID generation
+  board_id TEXT NOT NULL CHECK (
+    board_id IN ('PROJ', 'TASK', 'DASH', 'QUAL', 'DOC', 'REV')
+  )
+);
+```
+
+**Separate Tables for Non-PM Entities**:
+- Keep `user_instructions`, `tool_configurations`, `templates` separate
+- Create `system_entities` table if needed for non-project items
+- Use `content_entities` table for pure documentation
+
+### 5.8.4.3: Legacy Table Cleanup & Data Migration
+**Scope**: Remove old tables after successful migration to entities table
+
+**Current Tables to Remove**:
+```sql
+-- These will be consolidated into entities table
+DROP TABLE IF EXISTS tasks;
+DROP TABLE IF EXISTS phases;  
+DROP TABLE IF EXISTS issues;
+DROP TABLE IF EXISTS task_relationships;
+DROP TABLE IF EXISTS issue_relationships;
+
+-- Keep these as they serve different purposes
+-- KEEP: user_instructions (configuration management)
+-- KEEP: tool_configurations (configuration management)
+-- KEEP: templates (template system)
+-- KEEP: quality_standards (quality system)
+```
+
+**Migration Verification**:
+1. **Data Integrity Checks**:
+   - Verify all .md file data migrated to entities
+   - Check hierarchical relationships are preserved
+   - Validate all board IDs are unique
+   
+2. **UI Functionality Tests**:
+   - All workflow dashboard views load correctly
+   - Task selection and detail views work
+   - Navigation and filtering functions properly
+   
+3. **GraphQL API Tests**:
+   - All existing queries return expected data
+   - Performance is maintained or improved
+   - New entity-based queries work correctly
+   - Calculate actual progress from child completion
+
+4. **Update GraphQL Server**:
+   ```javascript
+   // BEFORE: Read from files
+   async getAllTasks() {
+     const phases = await this.getAllPhases();
+     // reads from docs/progress/*.md files
+   }
+   
+   // AFTER: Query database
+   async getAllTasks() {
+     return db.prepare(`
+       SELECT * FROM entities 
+       WHERE entity_type = 'task' 
+       ORDER BY hierarchy_path
+     `).all();
+   }
+   ```
+
+5. **Remove Entity ID Mapping**:
+   - The temporary `entity_id_mapping` table becomes unnecessary
+   - All entities have consistent JIRA-style IDs
+   - GraphQL returns database IDs directly to frontend
+
+**Migration Script**: `scripts/migrate-md-to-entities.js`
+**Rollback Strategy**: Keep .md files as backup until migration validated
+
+### 5.8.4.1: Board-Based ID Generation System
+**Scope**: Implement JIRA-style board prefixes with automatic ID generation
+
+**Board Management Features**:
+- **User-Defined Prefixes**: Users create boards like `PET`, `CORE.UI`, `ALUMNI.DB`
+- **Auto-Increment Counters**: Each board maintains its own counter
+- **Collision-Free IDs**: `CORE.UI-1`, `CORE.UI-2`, never conflicts with `PET-1`, `PET-2`
+- **Board Categories**: Work projects, personal tasks, client projects
+
+**Implementation**:
+```javascript
+// Board-based ID generation
+async function generateEntityId(boardPrefix) {
+  // Get next counter for this board
+  const result = await db.get(
+    'SELECT current_counter FROM boards WHERE prefix = ?',
+    [boardPrefix]
+  );
+  
+  const nextNum = (result?.current_counter || 0) + 1;
+  
+  // Update counter
+  await db.run(
+    'UPDATE boards SET current_counter = ? WHERE prefix = ?',
+    [nextNum, boardPrefix]
+  );
+  
+  return `${boardPrefix}-${nextNum}`;
+}
+```
+
+### 5.8.4.2: Hierarchical Entity Management
+**Scope**: Support infinite nesting with proper hierarchy tracking
+
+**Hierarchy Features**:
+- **Infinite Nesting**: project → phase → task → subtask → sub-subtask → ...
+- **Path Calculation**: Automatic hierarchy_path generation
+- **Parent-Child Queries**: Efficient retrieval of entity trees
+- **Progress Rollup**: Calculate parent progress from children
+
+**Query Patterns**:
+```sql
+-- Get all children of an entity
+SELECT * FROM entities 
+WHERE hierarchy_path LIKE '/parent-path/%'
+ORDER BY level, sort_order;
+
+-- Get entity with all ancestors
+WITH RECURSIVE entity_path AS (
+  SELECT * FROM entities WHERE id = ?
+  UNION ALL
+  SELECT e.* FROM entities e
+  JOIN entity_path ep ON ep.parent_id = e.id
+)
+SELECT * FROM entity_path ORDER BY level;
+```
+
+### 5.8.4.3: Task ↔ Issue Linking System
 **Scope**: Intelligent linking between tasks and issues with lifecycle management
 
 **Relationship Types**:
@@ -322,13 +589,21 @@ type Subscription {
 
 ## 📊 Implementation Plan
 
-### Day 1-2: Core Relationship Engine
-- Design and implement relationship database schema
-- Create basic relationship CRUD operations
-- Build relationship validation engine
-- Unit tests for core functionality
+### Day 1-2: Unified Entity System Foundation
+- Implement unified `entities` table schema
+- Create board management system with JIRA-style ID generation
+- Build hierarchical entity CRUD operations  
+- Implement .md file migration pipeline
+- Unit tests for entity management
 
-### Day 3-4: Task-Issue Linking System
+### Day 2-3: GraphQL Server Migration
+- Update GraphQL server to query entities table instead of reading files
+- Remove all `fs.readFileSync` operations
+- Update resolvers for hierarchical queries
+- Test entity relationship queries
+- Remove temporary `entity_id_mapping` table
+
+### Day 4-5: Core Relationship Engine
 - Implement task-issue relationship types
 - Build automatic linking suggestions
 - Create lifecycle tracking

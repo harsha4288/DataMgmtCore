@@ -4,7 +4,7 @@
  * Replaces mock document display with real GraphQL content from SQLite database
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -45,45 +45,73 @@ export const DocumentContentViewer: React.FC<DocumentContentViewerProps> = ({
   onDownload
 }) => {
   const [selectedDocument, setSelectedDocument] = useState<DocumentData | null>(null);
+  const [documents, setDocuments] = useState<DocumentData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // TODO: Replace with real GraphQL query
-  const mockDocuments: DocumentData[] = [
-    {
-      id: `doc-${entityId}-1`,
-      title: `${entityType} Documentation`,
-      content: `# ${entityType.charAt(0).toUpperCase() + entityType.slice(1)} Overview
+  // GraphQL query for document content - Phase 2.1
+  const fetchDocumentContent = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const query = `
+        query GetDocumentsByEntity($entityId: ID!, $entityType: EntityTypeEnum!) {
+          getDocumentsByEntity(entityId: $entityId, entityType: $entityType) {
+            id
+            title
+            content
+            type
+            status
+            entityId
+            entityType
+            author
+            lastModified
+            markdown
+          }
+        }
+      `;
 
-## Objective
-This document outlines the implementation details and requirements for the current ${entityType}.
+      const response = await fetch('http://localhost:3004/graphql', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ 
+          query, 
+          variables: { entityId, entityType }
+        })
+      });
 
-## Status
-- **Current Status**: In Progress
-- **Last Updated**: ${new Date().toLocaleDateString()}
+      if (!response.ok) {
+        throw new Error(`GraphQL request failed: ${response.statusText}`);
+      }
 
-## Implementation Details
-This is where the real content from GraphQL/SQLite would be displayed. The content supports:
+      const result = await response.json();
 
-- **Markdown formatting**
-- Section headers
-- Lists and bullets
-- Code blocks
-- Status indicators
+      if (result.errors) {
+        throw new Error(result.errors[0].message);
+      }
 
-## Requirements
-1. Integration with GraphQL backend
-2. Real-time content updates
-3. Auto-save functionality
-4. Version control integration
-
----
-*This content is dynamically loaded from the SQLite database via GraphQL.*`,
-      type: 'technical',
-      status: 'draft',
-      author: 'Development Team',
-      lastModified: new Date().toISOString(),
-      entityId
+      const fetchedDocuments = result.data.getDocumentsByEntity || [];
+      setDocuments(fetchedDocuments);
+      
+      // Auto-select the first document if available
+      if (fetchedDocuments.length > 0 && !selectedDocument) {
+        setSelectedDocument(fetchedDocuments[0]);
+      }
+    } catch (err) {
+      console.error('Error fetching document content:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load documents');
+    } finally {
+      setLoading(false);
     }
-  ];
+  }, [entityId, entityType, selectedDocument]);
+
+  useEffect(() => {
+    fetchDocumentContent();
+  }, [fetchDocumentContent]);
 
   const renderMarkdownContent = useCallback((content: string) => {
     // Simple markdown-like rendering
@@ -158,23 +186,32 @@ This is where the real content from GraphQL/SQLite would be displayed. The conte
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {false ? ( // loading will be implemented with GraphQL
+          {loading ? (
             <div className="space-y-3">
               <Skeleton className="h-4 w-3/4" />
               <Skeleton className="h-4 w-1/2" />
               <Skeleton className="h-20 w-full" />
             </div>
-          ) : mockDocuments.length === 0 ? (
+          ) : error ? (
+            <div className="text-center py-8 text-destructive">
+              <FileText className="h-12 w-12 mx-auto mb-2 opacity-50" />
+              <p className="text-sm font-medium">Error loading documents</p>
+              <p className="text-xs mt-1">{error}</p>
+              <Button size="sm" variant="outline" className="mt-3" onClick={fetchDocumentContent}>
+                Retry
+              </Button>
+            </div>
+          ) : documents.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <FileText className="h-12 w-12 mx-auto mb-2 opacity-50" />
               <p className="text-sm">No documents found</p>
-              <p className="text-xs mt-1">Documents will be loaded from GraphQL/SQLite</p>
+              <p className="text-xs mt-1">No documents available for {entityType} {entityId}</p>
             </div>
           ) : (
             <div className="space-y-4">
               {/* Document List */}
               <div className="space-y-2">
-                {mockDocuments.map((doc) => (
+                {documents.map((doc) => (
                   <div
                     key={doc.id}
                     className={`p-3 border rounded-lg cursor-pointer transition-colors hover:bg-muted/50 ${
