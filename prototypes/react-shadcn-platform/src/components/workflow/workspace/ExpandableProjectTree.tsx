@@ -19,7 +19,8 @@ import {
   Search, 
   Filter,
   RefreshCw,
-  Settings
+  Settings,
+  ChevronRight
 } from 'lucide-react';
 
 export interface ProjectEntity {
@@ -151,6 +152,7 @@ export const ExpandableProjectTree: React.FC<ExpandableProjectTreeProps> = ({
       [entityId]: !prev[entityId]
     }));
   }, []);
+
 
   // Handle entity selection
   const handleEntitySelect = useCallback((entity: ProjectEntity) => {
@@ -289,22 +291,13 @@ export const ExpandableProjectTree: React.FC<ExpandableProjectTreeProps> = ({
     );
   };
 
-  // Minimal project header - just title
-  const renderProjectHeader = () => {
-    return (
-      <div className="mb-4 pb-2 border-b">
-        <h1 className="text-lg font-semibold">{treeData[0]?.title || 'Project Tree'}</h1>
-      </div>
-    );
-  };
+
 
   return (
     <div className={`w-full ${className}`}>
       {/* Workspace Header with Global Actions (replaces NavigationSidebar functionality) */}
       {renderWorkspaceHeader()}
-      
-      {/* Minimal Project Header (fallback when workspace header is disabled) */}
-      {!showWorkspaceHeader && renderProjectHeader()}
+
 
       {/* Main Tree Structure - No decorative containers */}
       <div className="space-y-0">

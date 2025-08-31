@@ -239,25 +239,6 @@ export const VSCodeLayout: React.FC<VSCodeLayoutProps> = ({
         {/* Entity Header */}
         <div className="p-4 border-b">
           <div className="space-y-3">
-            {/* Breadcrumb Path */}
-            {selectedEntityPath && selectedEntityPath.length > 1 && (
-              <div className="flex items-center text-xs text-muted-foreground overflow-hidden">
-                {selectedEntityPath.slice(0, -1).map((pathEntity, index) => (
-                  <React.Fragment key={pathEntity.id}>
-                    <button
-                      onClick={() => handleEntitySelect(pathEntity)}
-                      className="hover:text-foreground truncate max-w-20"
-                      title={pathEntity.title}
-                    >
-                      {pathEntity.title}
-                    </button>
-                    {index < selectedEntityPath.slice(0, -1).length - 1 && (
-                      <span className="mx-1">/</span>
-                    )}
-                  </React.Fragment>
-                ))}
-              </div>
-            )}
             
             <div>
               <h3 className="font-semibold text-sm truncate">{selectedEntity.title}</h3>

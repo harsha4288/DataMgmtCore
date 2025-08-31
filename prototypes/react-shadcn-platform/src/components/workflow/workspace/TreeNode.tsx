@@ -196,14 +196,20 @@ export const TreeNode: React.FC<TreeNodeProps> = ({
 
   return (
     <div className="w-full">
-      {/* VS Code-style tree node */}
+      {/* VS Code-style tree node with enhanced selection highlighting */}
       <div 
         className={`
-          group flex items-center py-0.5 px-1 cursor-pointer 
-          hover:bg-accent/50 transition-colors
-          ${isSelected ? 'bg-accent border-l-2 border-primary' : ''}
+          group flex items-center py-1 px-2 cursor-pointer 
+          hover:bg-accent/50 transition-all duration-150
+          ${isSelected 
+            ? 'bg-primary/20 border-l-4 border-primary shadow-md ring-1 ring-primary/30' 
+            : ''
+          }
         `}
-        style={{ paddingLeft: `${indentationLevel}px` }}
+        style={{ 
+          paddingLeft: `${indentationLevel}px`,
+          backgroundColor: isSelected ? 'hsl(var(--primary) / 0.15)' : undefined
+        }}
         onClick={handleNodeClick}
       >
         {/* VS Code-style expansion chevron */}
@@ -230,7 +236,7 @@ export const TreeNode: React.FC<TreeNodeProps> = ({
           <span className={`text-sm truncate ${
             entity.type === 'project' ? 'font-semibold' : 
             entity.type === 'phase' ? 'font-medium' : ''
-          }`}>
+          } ${isSelected ? 'font-semibold text-primary' : ''}`}>
             {entity.title}
           </span>
           

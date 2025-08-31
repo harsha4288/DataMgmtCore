@@ -8,16 +8,18 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { X, FileText, Bug, Settings, MessageSquare, Clock, User, Calendar } from 'lucide-react';
+import { X, FileText, Bug, Settings, MessageSquare, Clock, User, Calendar, ChevronRight } from 'lucide-react';
 
 export interface ContextualDetailPanelProps {
   entity: ProjectEntity;
+  entityPath?: ProjectEntity[];  // Breadcrumb path to show context
   onEntityUpdate: (entityId: string, updates: Partial<ProjectEntity>) => void;
   onClose: () => void;
 }
 
 export const ContextualDetailPanel: React.FC<ContextualDetailPanelProps> = ({
   entity,
+  entityPath = [],
   onEntityUpdate,
   onClose
 }) => {
@@ -77,8 +79,34 @@ export const ContextualDetailPanel: React.FC<ContextualDetailPanelProps> = ({
     );
   };
 
+  // Render context path header
+  const renderContextHeader = () => {
+    if (entityPath.length <= 1) return null;
+    
+    return (
+      <div className="px-6 py-2 border-b border-border/50 bg-muted/30">
+        <div className="flex items-center gap-1 text-xs text-muted-foreground overflow-x-auto">
+          <span className="text-xs font-medium text-muted-foreground/80">Context:</span>
+          {entityPath.slice(0, -1).map((pathEntity, index) => (
+            <div key={pathEntity.id} className="flex items-center gap-1 flex-shrink-0">
+              <span className="truncate max-w-24" title={pathEntity.title}>
+                {pathEntity.title}
+              </span>
+              {index < entityPath.length - 2 && (
+                <ChevronRight className="h-3 w-3 flex-shrink-0" />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Card className="w-full bg-hsl(var(--card)) border border-hsl(var(--border))">
+      {/* Context Path Header */}
+      {renderContextHeader()}
+      
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-lg font-semibold">
           {entity.type === 'phase' && '📁'}
