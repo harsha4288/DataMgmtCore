@@ -93,8 +93,24 @@ function createConfig(): AppConfig {
 // Export singleton configuration
 export const config = createConfig();
 
+// Dynamic GraphQL URL that adapts to network access
+function getDynamicGraphQLUrl(): string {
+  if (typeof window === 'undefined') {
+    return defaultConfig.graphql.url;
+  }
+  
+  const currentHost = window.location.hostname;
+  const isNetworkAccess = currentHost !== 'localhost' && currentHost !== '127.0.0.1';
+  
+  if (isNetworkAccess) {
+    return `http://${currentHost}:3004/graphql`;
+  }
+  
+  return defaultConfig.graphql.url;
+}
+
 // Helper functions for common patterns
-export const getGraphQLEndpoint = () => config.graphql.url;
+export const getGraphQLEndpoint = () => getDynamicGraphQLUrl();
 export const getValidationEndpoint = () => config.validation.url;
 export const getDashboardEndpoint = () => config.dashboard.url;
 

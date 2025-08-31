@@ -2059,7 +2059,14 @@ const yoga = createYoga({
     };
   },
   cors: {
-    origin: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'],
+    origin: [
+      'http://localhost:3000', 
+      'http://localhost:5173', 
+      'http://localhost:5174', 
+      'http://localhost:5175',
+      // Allow network access from any IP on port 5173
+      /^http:\/\/192\.168\.\d+\.\d+:5173$/
+    ],
     credentials: true
   },
   graphiql: {

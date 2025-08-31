@@ -16,170 +16,62 @@
 import React from 'react';
 import { VSCodeLayout } from './workspace/VSCodeLayout';
 import { TreeDataProvider } from './workspace/TreeDataProvider';
+import { useProjectTreeData } from '@/hooks/useProjectTreeData';
+import { RefreshCw, AlertCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-// Mock project data - will be replaced with GraphQL
-const mockProjectData = {
-  id: 'sgs-root',
-  type: 'project' as const,
-  title: 'SGS Data Management Core',
-  status: 'in_progress' as const,
-  progress: 55,
-  priority: 'high' as const,
-  documentsCount: 24,
-  issuesCount: 8,
-  reviewsCount: 12,
-  commentsCount: 45,
-  documents: [],
-  issues: [],
-  reviews: [],
-  comments: [],
-  createdAt: new Date('2024-01-01'),
-  updatedAt: new Date(),
-  children: [
-    {
-      id: 'phase-5',
-      type: 'phase' as const,
-      title: 'Phase 5: Universal Project Management',
-      status: 'in_progress' as const,
-      progress: 70,
-      priority: 'high' as const,
-      documentsCount: 18,
-      issuesCount: 5,
-      reviewsCount: 8,
-      commentsCount: 32,
-      documents: [],
-      issues: [],
-      reviews: [],
-      comments: [],
-      createdAt: new Date('2024-11-01'),
-      updatedAt: new Date(),
-      children: [
-        {
-          id: 'task-5.8.1',
-          type: 'task' as const,
-          title: 'Task 5.8.1: Foundation Infrastructure',
-          status: 'completed' as const,
-          progress: 100,
-          priority: 'high' as const,
-          documentsCount: 6,
-          issuesCount: 0,
-          reviewsCount: 3,
-          commentsCount: 12,
-          documents: [],
-          issues: [],
-          reviews: [],
-          comments: [],
-          createdAt: new Date('2024-11-01'),
-          updatedAt: new Date('2024-11-15'),
-        },
-        {
-          id: 'task-5.8.3',
-          type: 'task' as const,
-          title: 'Task 5.8.3: Advanced Dashboard',
-          status: 'in_progress' as const,
-          progress: 30,
-          priority: 'critical' as const,
-          assignee: 'Development Team',
-          dueDate: new Date('2024-12-31'),
-          documentsCount: 8,
-          issuesCount: 3,
-          reviewsCount: 4,
-          commentsCount: 15,
-          documents: [],
-          issues: [],
-          reviews: [],
-          comments: [],
-          createdAt: new Date('2024-11-20'),
-          updatedAt: new Date(),
-          children: [
-            {
-              id: 'subtask-5.8.3.1',
-              type: 'subtask' as const,
-              title: 'Subtask 5.8.3.1: Navigation Redesign',
-              status: 'in_progress' as const,
-              progress: 40,
-              priority: 'critical' as const,
-              assignee: 'Development Team',
-              documentsCount: 4,
-              issuesCount: 2,
-              reviewsCount: 1,
-              commentsCount: 8,
-              documents: [],
-              issues: [],
-              reviews: [],
-              comments: [],
-              createdAt: new Date('2024-12-01'),
-              updatedAt: new Date(),
-            },
-            {
-              id: 'subtask-5.8.3.2',
-              type: 'subtask' as const,
-              title: 'Subtask 5.8.3.2: Status Management',
-              status: 'pending' as const,
-              progress: 0,
-              priority: 'high' as const,
-              documentsCount: 2,
-              issuesCount: 1,
-              reviewsCount: 0,
-              commentsCount: 3,
-              documents: [],
-              issues: [],
-              reviews: [],
-              comments: [],
-              createdAt: new Date('2024-12-01'),
-              updatedAt: new Date(),
-            },
-          ],
-        },
-        {
-          id: 'task-5.8.4',
-          type: 'task' as const,
-          title: 'Task 5.8.4: Entity Interconnection',
-          status: 'pending' as const,
-          progress: 0,
-          priority: 'medium' as const,
-          documentsCount: 4,
-          issuesCount: 2,
-          reviewsCount: 1,
-          commentsCount: 5,
-          documents: [],
-          issues: [],
-          reviews: [],
-          comments: [],
-          createdAt: new Date('2024-11-20'),
-          updatedAt: new Date(),
-        },
-      ],
-    },
-    {
-      id: 'phase-6',
-      type: 'phase' as const,
-      title: 'Phase 6: Production Deployment',
-      status: 'pending' as const,
-      progress: 0,
-      priority: 'medium' as const,
-      documentsCount: 6,
-      issuesCount: 3,
-      reviewsCount: 4,
-      commentsCount: 13,
-      documents: [],
-      issues: [],
-      reviews: [],
-      comments: [],
-      createdAt: new Date('2024-12-01'),
-      updatedAt: new Date(),
-    },
-  ],
-};
 
 const WorkflowDashboard: React.FC = () => {
+  const { projectData, isLoading, error, refetch } = useProjectTreeData();
+
+  if (isLoading) {
+    return (
+      <div className="h-screen bg-background flex items-center justify-center">
+        <div className="flex items-center space-x-2">
+          <RefreshCw className="h-4 w-4 animate-spin" />
+          <span>Loading project data from GraphQL...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <AlertCircle className="h-8 w-8 text-red-500 mx-auto" />
+          <div>
+            <h3 className="text-lg font-semibold">GraphQL Connection Error</h3>
+            <p className="text-muted-foreground">{error}</p>
+          </div>
+          <Button onClick={() => refetch()} variant="outline">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Retry Connection
+          </Button>
+          {projectData && (
+            <p className="text-sm text-muted-foreground">
+              Showing fallback data below
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  if (!projectData) {
+    return (
+      <div className="h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">No project data available</p>
+      </div>
+    );
+  }
 
   return (
-    <TreeDataProvider initialData={mockProjectData}>
+    <TreeDataProvider projectData={projectData}>
       {/* VS Code-style 3-panel layout interface */}
       <div className="h-screen bg-background">
         <VSCodeLayout 
-          entities={[mockProjectData]}
+          entities={[projectData]}
           className="h-full"
         />
       </div>
