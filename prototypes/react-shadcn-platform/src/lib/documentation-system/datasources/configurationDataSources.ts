@@ -395,7 +395,7 @@ export class ConfigurationDataSources {
   }
 
   private validateNoHardcodedColors(content: string): { passed: boolean; message?: string } {
-    const hardcodedColorPattern = /(#[0-9a-fA-F]{3,6}|rgb\(|rgba\(|hsl\((?!\s*var\()))/;
+    const hardcodedColorPattern = /(#[0-9a-fA-F]{3,6}|rgb\(|rgba\(|hsl\((?!\s*var\())/;
     if (hardcodedColorPattern.test(content)) {
       return {
         passed: false,

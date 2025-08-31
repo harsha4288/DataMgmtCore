@@ -40,7 +40,7 @@ interface ActivityItem {
   metadata?: Record<string, any>;
 }
 
-interface Notification {
+interface CollaborationNotification {
   id: string;
   type: 'mention' | 'assignment' | 'review_request' | 'approval_needed' | 'comment' | 'status_change';
   title: string;
@@ -57,7 +57,7 @@ interface TreeCollaborationOverlayProps {
   currentUserId: string;
   users?: UserPresence[];
   activities?: ActivityItem[];
-  notifications?: Notification[];
+  notifications?: CollaborationNotification[];
   onNotificationRead?: (notificationId: string) => void;
   connectionStatus?: 'connected' | 'connecting' | 'disconnected';
   className?: string;

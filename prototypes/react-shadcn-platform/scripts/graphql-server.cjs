@@ -1155,20 +1155,79 @@ class DocumentationDataSources {
         return [];
       }
 
-      // Check if there's an ID mapping for this entity
-      let actualEntityId = entityId;
-      const mappingStmt = db.prepare('SELECT new_id FROM entity_id_mapping WHERE old_id = ? AND entity_type = ?');
-      const mapping = mappingStmt.get(entityId, entityType);
+      console.log(`Fetching documents for entity: ${entityId} (${entityType})`);
       
-      if (mapping) {
-        actualEntityId = mapping.new_id;
-        console.log(`ID mapping: ${entityId} -> ${actualEntityId}`);
+      let rows = [];
+      const processedIds = new Set(); // Track processed document IDs to avoid duplicates
+      
+      // Strategy 1: Direct entity ID match
+      const directStmt = db.prepare('SELECT * FROM documents WHERE entity_id = ? ORDER BY updated_at DESC');
+      const directRows = directStmt.all(entityId);
+      directRows.forEach(row => {
+        if (!processedIds.has(row.id)) {
+          rows.push(row);
+          processedIds.add(row.id);
+          console.log(`Direct match: ${row.id} - ${row.title.substring(0, 40)}`);
+        }
+      });
+      
+      // Strategy 2: Check ID mappings (both directions)
+      // Check if entityId maps to something else
+      const forwardMappingStmt = db.prepare('SELECT new_id FROM entity_id_mapping WHERE old_id = ?');
+      const forwardMapping = forwardMappingStmt.get(entityId);
+      
+      if (forwardMapping) {
+        const mappedStmt = db.prepare('SELECT * FROM documents WHERE entity_id = ? ORDER BY updated_at DESC');
+        const mappedRows = mappedStmt.all(forwardMapping.new_id);
+        mappedRows.forEach(row => {
+          if (!processedIds.has(row.id)) {
+            rows.push(row);
+            processedIds.add(row.id);
+            console.log(`Forward mapped: ${entityId} -> ${forwardMapping.new_id}: ${row.title.substring(0, 40)}`);
+          }
+        });
       }
-
-      const stmt = db.prepare('SELECT * FROM documents WHERE entity_id = ? AND entity_type = ? ORDER BY updated_at DESC');
-      const rows = stmt.all(actualEntityId, entityType);
       
-      return rows.map(row => ({
+      // Check if something else maps to entityId
+      const reverseMappingStmt = db.prepare('SELECT old_id FROM entity_id_mapping WHERE new_id = ?');
+      const reverseMappings = reverseMappingStmt.all(entityId);
+      
+      reverseMappings.forEach(mapping => {
+        const mappedStmt = db.prepare('SELECT * FROM documents WHERE entity_id = ? ORDER BY updated_at DESC');
+        const mappedRows = mappedStmt.all(mapping.old_id);
+        mappedRows.forEach(row => {
+          if (!processedIds.has(row.id)) {
+            rows.push(row);
+            processedIds.add(row.id);
+            console.log(`Reverse mapped: ${mapping.old_id} -> ${entityId}: ${row.title.substring(0, 40)}`);
+          }
+        });
+      });
+      
+      // Strategy 3: Flexible entity type matching (if no exact matches found)
+      if (rows.length === 0) {
+        console.log(`No direct matches for ${entityId}, trying flexible matching...`);
+        
+        // Try without entity_type constraint
+        const flexibleStmt = db.prepare('SELECT * FROM documents WHERE entity_id = ? ORDER BY updated_at DESC');
+        const flexibleRows = flexibleStmt.all(entityId);
+        flexibleRows.forEach(row => {
+          if (!processedIds.has(row.id)) {
+            rows.push(row);
+            processedIds.add(row.id);
+            console.log(`Flexible match: ${row.id} - ${row.title.substring(0, 40)}`);
+          }
+        });
+      }
+      
+      console.log(`Found ${rows.length} total documents for ${entityId}`);
+      
+      // Remove duplicates and sort by relevance
+      const uniqueRows = rows.filter((row, index, self) => 
+        index === self.findIndex(r => r.id === row.id)
+      );
+      
+      return uniqueRows.map(row => ({
         id: row.id,
         title: row.title,
         content: row.content,

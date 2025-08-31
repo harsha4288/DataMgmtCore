@@ -107,39 +107,39 @@ describe('TaskDetailView', () => {
     it('renders task title and metadata', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      expect(screenTest.getByText('Complete Feature Implementation')).toBeInTheDocument();
-      expect(screenTest.getByText('in_progress')).toBeInTheDocument();
-      expect(screenTest.getByText('high')).toBeInTheDocument();
+      expect(screen.getByText('Complete Feature Implementation')).toBeInTheDocument();
+      expect(screen.getByText('in_progress')).toBeInTheDocument();
+      expect(screen.getByText('high')).toBeInTheDocument();
     });
 
     it('renders all task labels', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      expect(screenTest.getByText('frontend')).toBeInTheDocument();
-      expect(screenTest.getByText('urgent')).toBeInTheDocument();
-      expect(screenTest.getByText('api')).toBeInTheDocument();
+      expect(screen.getByText('frontend')).toBeInTheDocument();
+      expect(screen.getByText('urgent')).toBeInTheDocument();
+      expect(screen.getByText('api')).toBeInTheDocument();
     });
 
     it('handles task without priority', () => {
       const taskWithoutPriority = { ...mockTask, priority: undefined };
       render(<TaskDetailView {...defaultProps} task={taskWithoutPriority} />);
       
-      expect(screenTest.getByText('in_progress')).toBeInTheDocument();
-      expect(screenTest.queryByText('high')).not.toBeInTheDocument();
+      expect(screen.getByText('in_progress')).toBeInTheDocument();
+      expect(screen.queryByText('high')).not.toBeInTheDocument();
     });
 
     it('handles task without labels', () => {
       const taskWithoutLabels = { ...mockTask, labels: undefined };
       render(<TaskDetailView {...defaultProps} task={taskWithoutLabels} />);
       
-      expect(screenTest.getByText('Complete Feature Implementation')).toBeInTheDocument();
-      expect(screenTest.queryByText('frontend')).not.toBeInTheDocument();
+      expect(screen.getByText('Complete Feature Implementation')).toBeInTheDocument();
+      expect(screen.queryByText('frontend')).not.toBeInTheDocument();
     });
 
     it('applies correct badge variants for priority', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      const priorityBadge = screenTest.getByText('high');
+      const priorityBadge = screen.getByText('high');
       expect(priorityBadge).toHaveClass('destructive');
     });
 
@@ -147,22 +147,22 @@ describe('TaskDetailView', () => {
       const mediumPriorityTask = { ...mockTask, priority: 'medium' };
       render(<TaskDetailView {...defaultProps} task={mediumPriorityTask} />);
       
-      const priorityBadge = screenTest.getByText('medium');
+      const priorityBadge = screen.getByText('medium');
       expect(priorityBadge).toHaveClass('secondary');
     });
 
     it('renders back button with correct styling', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      const backButton = screenTest.getByTestId('arrow-left-icon').closest('button');
+      const backButton = screen.getByTestId('arrow-left-icon').closest('button');
       expect(backButton).toHaveClass('ghost');
-      expect(screenTest.getByTestId('arrow-left-icon')).toBeInTheDocument();
+      expect(screen.getByTestId('arrow-left-icon')).toBeInTheDocument();
     });
 
     it('calls onBackToList when back button is clicked', async () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      const backButton = screenTest.getByTestId('arrow-left-icon').closest('button');
+      const backButton = screen.getByTestId('arrow-left-icon').closest('button');
       await user.click(backButton!);
       
       expect(mockOnBackToList).toHaveBeenCalledTimes(1);
@@ -173,37 +173,37 @@ describe('TaskDetailView', () => {
     it('renders all action buttons with icons', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      expect(screenTest.getByText('Status')).toBeInTheDocument();
-      expect(screenTest.getByText('Issues')).toBeInTheDocument();
-      expect(screenTest.getByText('Docs')).toBeInTheDocument();
-      expect(screenTest.getByText('Chat')).toBeInTheDocument();
+      expect(screen.getByText('Status')).toBeInTheDocument();
+      expect(screen.getByText('Issues')).toBeInTheDocument();
+      expect(screen.getByText('Docs')).toBeInTheDocument();
+      expect(screen.getByText('Chat')).toBeInTheDocument();
       
-      expect(screenTest.getByTestId('settings-icon')).toBeInTheDocument();
-      expect(screenTest.getByTestId('bug-icon')).toBeInTheDocument();
-      expect(screenTest.getByTestId('filetext-icon')).toBeInTheDocument();
-      expect(screenTest.getByTestId('messagesquare-icon')).toBeInTheDocument();
+      expect(screen.getByTestId('settings-icon')).toBeInTheDocument();
+      expect(screen.getByTestId('bug-icon')).toBeInTheDocument();
+      expect(screen.getByTestId('filetext-icon')).toBeInTheDocument();
+      expect(screen.getByTestId('messagesquare-icon')).toBeInTheDocument();
     });
 
     it('calls onPanelToggle with correct content when buttons are clicked', async () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      await user.click(screenTest.getByText('Status'));
+      await user.click(screen.getByText('Status'));
       expect(mockOnPanelToggle).toHaveBeenCalledWith('status');
       
-      await user.click(screenTest.getByText('Issues'));
+      await user.click(screen.getByText('Issues'));
       expect(mockOnPanelToggle).toHaveBeenCalledWith('issue');
       
-      await user.click(screenTest.getByText('Docs'));
+      await user.click(screen.getByText('Docs'));
       expect(mockOnPanelToggle).toHaveBeenCalledWith('document');
       
-      await user.click(screenTest.getByText('Chat'));
+      await user.click(screen.getByText('Chat'));
       expect(mockOnPanelToggle).toHaveBeenCalledWith('collaboration');
     });
 
     it('applies correct styling to action buttons', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      const statusButton = screenTest.getByText('Status').closest('button');
+      const statusButton = screen.getByText('Status').closest('button');
       expect(statusButton).toHaveClass('outline');
     });
   });
@@ -212,24 +212,24 @@ describe('TaskDetailView', () => {
     it('displays task metadata correctly', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      expect(screenTest.getByText('Task Information')).toBeInTheDocument();
-      expect(screenTest.getByText('Assignee: john.doe')).toBeInTheDocument();
-      expect(screenTest.getByText('Due: Not set')).toBeInTheDocument();
-      expect(screenTest.getByText('Created: 2 days ago')).toBeInTheDocument();
-      expect(screenTest.getByText('Progress: 60%')).toBeInTheDocument();
+      expect(screen.getByText('Task Information')).toBeInTheDocument();
+      expect(screen.getByText('Assignee: john.doe')).toBeInTheDocument();
+      expect(screen.getByText('Due: Not set')).toBeInTheDocument();
+      expect(screen.getByText('Created: 2 days ago')).toBeInTheDocument();
+      expect(screen.getByText('Progress: 60%')).toBeInTheDocument();
     });
 
     it('handles unassigned tasks', () => {
       const unassignedTask = { ...mockTask, assignee: undefined };
       render(<TaskDetailView {...defaultProps} task={unassignedTask} />);
       
-      expect(screenTest.getByText('Assignee: Unassigned')).toBeInTheDocument();
+      expect(screen.getByText('Assignee: Unassigned')).toBeInTheDocument();
     });
 
     it('displays progress bar with correct value', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      const progressBar = screenTest.getByText('Progress: 60%');
+      const progressBar = screen.getByText('Progress: 60%');
       expect(progressBar).toBeInTheDocument();
       expect(progressBar).toHaveAttribute('data-value', '60');
     });
@@ -237,10 +237,10 @@ describe('TaskDetailView', () => {
     it('displays correct icons for metadata items', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      expect(screenTest.getAllByTestId('user-icon')).toHaveLength(1);
-      expect(screenTest.getAllByTestId('calendar-icon')).toHaveLength(1);
-      expect(screenTest.getAllByTestId('clock-icon')).toHaveLength(1);
-      expect(screenTest.getAllByTestId('checksquare-icon')).toHaveLength(1);
+      expect(screen.getAllByTestId('user-icon')).toHaveLength(1);
+      expect(screen.getAllByTestId('calendar-icon')).toHaveLength(1);
+      expect(screen.getAllByTestId('clock-icon')).toHaveLength(1);
+      expect(screen.getAllByTestId('checksquare-icon')).toHaveLength(1);
     });
   });
 
@@ -248,26 +248,26 @@ describe('TaskDetailView', () => {
     it('renders document section when documents exist', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      expect(screenTest.getByText('Attached Documents')).toBeInTheDocument();
-      expect(screenTest.getByText('Preview and edit documents without losing context')).toBeInTheDocument();
+      expect(screen.getByText('Attached Documents')).toBeInTheDocument();
+      expect(screen.getByText('Preview and edit documents without losing context')).toBeInTheDocument();
     });
 
     it('displays all attached documents', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      expect(screenTest.getByText('requirements.md')).toBeInTheDocument();
-      expect(screenTest.getByText('design-specs.figma')).toBeInTheDocument();
-      expect(screenTest.getByText('api-documentation.json')).toBeInTheDocument();
+      expect(screen.getByText('requirements.md')).toBeInTheDocument();
+      expect(screen.getByText('design-specs.figma')).toBeInTheDocument();
+      expect(screen.getByText('api-documentation.json')).toBeInTheDocument();
       
-      expect(screenTest.getByText('markdown')).toBeInTheDocument();
-      expect(screenTest.getByText('design')).toBeInTheDocument();
-      expect(screenTest.getByText('api')).toBeInTheDocument();
+      expect(screen.getByText('markdown')).toBeInTheDocument();
+      expect(screen.getByText('design')).toBeInTheDocument();
+      expect(screen.getByText('api')).toBeInTheDocument();
     });
 
     it('renders preview buttons for each document', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      const previewButtons = screenTest.getAllByText('Preview');
+      const previewButtons = screen.getAllByText('Preview');
       expect(previewButtons).toHaveLength(3);
     });
 
@@ -275,20 +275,20 @@ describe('TaskDetailView', () => {
       const taskWithoutDocs = { ...mockTask, documents: [] };
       render(<TaskDetailView {...defaultProps} task={taskWithoutDocs} />);
       
-      expect(screenTest.queryByText('Attached Documents')).not.toBeInTheDocument();
+      expect(screen.queryByText('Attached Documents')).not.toBeInTheDocument();
     });
 
     it('does not render document section when documents is undefined', () => {
       const taskWithUndefinedDocs = { ...mockTask, documents: undefined };
       render(<TaskDetailView {...defaultProps} task={taskWithUndefinedDocs} />);
       
-      expect(screenTest.queryByText('Attached Documents')).not.toBeInTheDocument();
+      expect(screen.queryByText('Attached Documents')).not.toBeInTheDocument();
     });
 
     it('applies hover styling to document items', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      const docItem = screenTest.getByText('requirements.md').closest('div');
+      const docItem = screen.getByText('requirements.md').closest('div');
       expect(docItem).toHaveClass('hover:bg-accent/50');
     });
 
@@ -296,7 +296,7 @@ describe('TaskDetailView', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
       // Should have FileText icons for each document plus action buttons
-      const fileIcons = screenTest.getAllByTestId('filetext-icon');
+      const fileIcons = screen.getAllByTestId('filetext-icon');
       expect(fileIcons.length).toBeGreaterThanOrEqual(3);
     });
   });
@@ -305,27 +305,27 @@ describe('TaskDetailView', () => {
     it('renders related issues card', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      expect(screenTest.getByText('Related Issues')).toBeInTheDocument();
-      expect(screenTest.getByText('Issues linked to this task')).toBeInTheDocument();
+      expect(screen.getByText('Related Issues')).toBeInTheDocument();
+      expect(screen.getByText('Issues linked to this task')).toBeInTheDocument();
     });
 
     it('displays no issues message by default', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      expect(screenTest.getByText('No related issues found')).toBeInTheDocument();
+      expect(screen.getByText('No related issues found')).toBeInTheDocument();
     });
 
     it('renders create issue button', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      expect(screenTest.getByText('Create Related Issue')).toBeInTheDocument();
-      expect(screenTest.getAllByTestId('bug-icon')).toHaveLength(2); // One in header, one in create button
+      expect(screen.getByText('Create Related Issue')).toBeInTheDocument();
+      expect(screen.getAllByTestId('bug-icon')).toHaveLength(2); // One in header, one in create button
     });
 
     it('applies correct styling to create issue button', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      const createIssueButton = screenTest.getByText('Create Related Issue').closest('button');
+      const createIssueButton = screen.getByText('Create Related Issue').closest('button');
       expect(createIssueButton).toHaveClass('outline', 'w-full');
     });
   });
@@ -334,23 +334,23 @@ describe('TaskDetailView', () => {
     it('renders activity timeline card', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      expect(screenTest.getByText('Activity Timeline')).toBeInTheDocument();
+      expect(screen.getByText('Activity Timeline')).toBeInTheDocument();
     });
 
     it('displays timeline activities', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      expect(screenTest.getByText('Task created')).toBeInTheDocument();
-      expect(screenTest.getByText('Status updated to In Progress')).toBeInTheDocument();
-      expect(screenTest.getByText('2 days ago')).toBeInTheDocument();
-      expect(screenTest.getByText('1 day ago')).toBeInTheDocument();
+      expect(screen.getByText('Task created')).toBeInTheDocument();
+      expect(screen.getByText('Status updated to In Progress')).toBeInTheDocument();
+      expect(screen.getByText('2 days ago')).toBeInTheDocument();
+      expect(screen.getByText('1 day ago')).toBeInTheDocument();
     });
 
     it('displays timeline indicators with correct styling', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
       // Check for timeline dots
-      const container = screenTest.getByText('Task created').closest('div')?.parentElement;
+      const container = screen.getByText('Task created').closest('div')?.parentElement;
       expect(container?.previousElementSibling).toHaveClass('w-2', 'h-2', 'rounded-full');
     });
   });
@@ -359,28 +359,28 @@ describe('TaskDetailView', () => {
     it('applies correct main container styling', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      const container = screenTest.getByText('Complete Feature Implementation').closest('div')?.parentElement?.parentElement;
+      const container = screen.getByText('Complete Feature Implementation').closest('div')?.parentElement?.parentElement;
       expect(container).toHaveClass('h-full', 'flex', 'flex-col');
     });
 
     it('applies correct header styling', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      const header = screenTest.getByText('Complete Feature Implementation').closest('div')?.parentElement;
+      const header = screen.getByText('Complete Feature Implementation').closest('div')?.parentElement;
       expect(header).toHaveClass('flex', 'items-center', 'gap-4', 'p-6', 'border-b', 'bg-card');
     });
 
     it('applies scroll area to content section', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      const scrollArea = screenTest.getByText('Task Information').closest('.scroll-area');
+      const scrollArea = screen.getByText('Task Information').closest('.scroll-area');
       expect(scrollArea).toHaveClass('flex-1', 'p-6');
     });
 
     it('centers content with max width', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      const contentContainer = screenTest.getByText('Task Information').closest('div')?.parentElement;
+      const contentContainer = screen.getByText('Task Information').closest('div')?.parentElement;
       expect(contentContainer).toHaveClass('max-w-4xl', 'mx-auto', 'space-y-6');
     });
   });
@@ -390,7 +390,7 @@ describe('TaskDetailView', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
       // Header should be flexible
-      const headerContent = screenTest.getByText('Complete Feature Implementation').closest('div');
+      const headerContent = screen.getByText('Complete Feature Implementation').closest('div');
       expect(headerContent).toHaveClass('flex-1');
     });
 
@@ -401,7 +401,7 @@ describe('TaskDetailView', () => {
       };
       render(<TaskDetailView {...defaultProps} task={longTitleTask} />);
       
-      const titleElement = screenTest.getByText(longTitleTask.title);
+      const titleElement = screen.getByText(longTitleTask.title);
       expect(titleElement).toBeInTheDocument();
       expect(titleElement).toHaveClass('text-xl', 'font-semibold');
     });
@@ -409,7 +409,7 @@ describe('TaskDetailView', () => {
     it('uses grid layout for metadata display', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      const metadataContainer = screenTest.getByText('Assignee: john.doe').closest('div')?.parentElement;
+      const metadataContainer = screen.getByText('Assignee: john.doe').closest('div')?.parentElement;
       expect(metadataContainer).toHaveClass('grid', 'grid-cols-2', 'gap-4');
     });
   });
@@ -418,31 +418,31 @@ describe('TaskDetailView', () => {
     it('provides proper heading hierarchy', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      const mainHeading = screenTest.getByRole('heading', { level: 1 });
+      const mainHeading = screen.getByRole('heading', { level: 1 });
       expect(mainHeading).toHaveTextContent('Complete Feature Implementation');
       
-      const sectionHeadings = screenTest.getAllByRole('heading', { level: 3 });
+      const sectionHeadings = screen.getAllByRole('heading', { level: 3 });
       expect(sectionHeadings.length).toBeGreaterThan(0);
     });
 
     it('provides semantic button roles', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      expect(screenTest.getByRole('button', { name: /Status/ })).toBeInTheDocument();
-      expect(screenTest.getByRole('button', { name: /Issues/ })).toBeInTheDocument();
-      expect(screenTest.getByRole('button', { name: /Docs/ })).toBeInTheDocument();
-      expect(screenTest.getByRole('button', { name: /Chat/ })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Status/ })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Issues/ })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Docs/ })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Chat/ })).toBeInTheDocument();
     });
 
     it('maintains keyboard navigation', async () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      const backButton = screenTest.getByTestId('arrow-left-icon').closest('button');
+      const backButton = screen.getByTestId('arrow-left-icon').closest('button');
       backButton?.focus();
       expect(document.activeElement).toBe(backButton);
       
       await user.tab();
-      const statusButton = screenTest.getByText('Status').closest('button');
+      const statusButton = screen.getByText('Status').closest('button');
       expect(document.activeElement).toBe(statusButton);
     });
 
@@ -450,10 +450,10 @@ describe('TaskDetailView', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
       // Check muted text elements
-      const mutedText = screenTest.getByText('Issues linked to this task');
+      const mutedText = screen.getByText('Issues linked to this task');
       expect(mutedText).toHaveClass('card-description');
       
-      const timeStamp = screenTest.getByText('2 days ago');
+      const timeStamp = screen.getByText('2 days ago');
       expect(timeStamp).toHaveClass('text-muted-foreground');
     });
   });
@@ -498,11 +498,11 @@ describe('TaskDetailView', () => {
     it('does not cause unnecessary re-renders', () => {
       const { rerender } = render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      const initialTitle = screenTest.getByText('Complete Feature Implementation');
+      const initialTitle = screen.getByText('Complete Feature Implementation');
       
       rerender(<TaskDetailView {...defaultProps} task={mockTask} />);
       
-      expect(screenTest.getByText('Complete Feature Implementation')).toBe(initialTitle);
+      expect(screen.getByText('Complete Feature Implementation')).toBe(initialTitle);
     });
 
     it('handles large document lists efficiently', () => {
@@ -521,7 +521,7 @@ describe('TaskDetailView', () => {
       )).not.toThrow();
       
       // Should render all documents
-      expect(screenTest.getAllByText('Preview')).toHaveLength(20);
+      expect(screen.getAllByText('Preview')).toHaveLength(20);
     });
   });
 
@@ -530,12 +530,12 @@ describe('TaskDetailView', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
       // Test back navigation
-      const backButton = screenTest.getByTestId('arrow-left-icon').closest('button');
+      const backButton = screen.getByTestId('arrow-left-icon').closest('button');
       await user.click(backButton!);
       expect(mockOnBackToList).toHaveBeenCalled();
       
       // Test panel toggles
-      await user.click(screenTest.getByText('Status'));
+      await user.click(screen.getByText('Status'));
       expect(mockOnPanelToggle).toHaveBeenCalledWith('status');
     });
 
@@ -543,12 +543,12 @@ describe('TaskDetailView', () => {
       render(<TaskDetailView {...defaultProps} task={mockTask} />);
       
       // Multiple interactions should not affect display
-      await user.click(screenTest.getByText('Status'));
-      await user.click(screenTest.getByText('Issues'));
-      await user.click(screenTest.getByText('Docs'));
+      await user.click(screen.getByText('Status'));
+      await user.click(screen.getByText('Issues'));
+      await user.click(screen.getByText('Docs'));
       
-      expect(screenTest.getByText('Complete Feature Implementation')).toBeInTheDocument();
-      expect(screenTest.getByText('Task Information')).toBeInTheDocument();
+      expect(screen.getByText('Complete Feature Implementation')).toBeInTheDocument();
+      expect(screen.getByText('Task Information')).toBeInTheDocument();
     });
   });
 });

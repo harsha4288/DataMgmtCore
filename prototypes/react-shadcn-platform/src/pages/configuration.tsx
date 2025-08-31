@@ -1,4 +1,4 @@
-import React from 'react';
+// React import removed - not needed with JSX transform
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Settings } from 'lucide-react';
 import { ConfigurationHub } from '@/components/configuration/ConfigurationHub';

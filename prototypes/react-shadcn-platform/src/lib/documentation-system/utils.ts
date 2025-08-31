@@ -504,4 +504,12 @@ export class DocumentationUtils {
     
     return `${entity.id}-${sanitizedName}.${extension}`;
   }
+
+  /**
+   * Capitalize first letter of a string
+   */
+  static capitalizeFirst(str: string): string {
+    if (!str || typeof str !== 'string') return str;
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
 }

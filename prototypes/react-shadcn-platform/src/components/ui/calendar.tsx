@@ -14,10 +14,8 @@ interface CalendarProps {
 }
 
 export const Calendar: React.FC<CalendarProps> = ({
-  _mode,
   selected,
-  onSelect,
-  _initialFocus
+  onSelect
 }) => {
   const [currentDate, setCurrentDate] = React.useState(selected || new Date());
 

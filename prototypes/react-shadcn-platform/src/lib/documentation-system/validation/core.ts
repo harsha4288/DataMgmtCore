@@ -332,7 +332,10 @@ export class DocumentationValidator {
     };
 
     results.forEach(result => {
-      summary[result.severity]++;
+      const severity = result.severity as keyof typeof summary;
+      if (severity in summary) {
+        summary[severity]++;
+      }
     });
 
     return summary;

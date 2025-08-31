@@ -34,7 +34,7 @@ import {
 type ReviewStatus = 'pending' | 'approved' | 'changes_requested' | 'rejected';
 type CommentType = 'general' | 'suggestion' | 'issue' | 'question';
 
-interface Comment {
+interface ReviewComment {
   id: string;
   content: string;
   author: string;
@@ -42,7 +42,7 @@ interface Comment {
   timestamp: string;
   type: CommentType;
   resolved: boolean;
-  replies: Comment[];
+  replies: ReviewComment[];
   lineNumber?: number;
   attachments?: string[];
 }
@@ -53,7 +53,7 @@ interface Review {
   reviewer: string;
   reviewerAvatar?: string;
   status: ReviewStatus;
-  comments: Comment[];
+  comments: ReviewComment[];
   checklist: ChecklistItem[];
   approvalDate?: string;
   requestDate: string;
@@ -259,7 +259,7 @@ export const TreeReviewSystem: React.FC<TreeReviewSystemProps> = ({
     }
   };
 
-  const handleAddReply = (comment: Comment, review: Review) => {
+  const handleAddReply = (comment: ReviewComment, review: Review) => {
     if (replyContent.trim() && onUpdateReview) {
       const updatedReplies = [
         ...comment.replies,

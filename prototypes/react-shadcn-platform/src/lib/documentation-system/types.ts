@@ -13,6 +13,9 @@ export interface TaskStatus {
   metadata: TaskMetadata;
 }
 
+// Alias for compatibility
+export type Task = TaskStatus;
+
 export interface SubTask {
   id: string;
   name: string;

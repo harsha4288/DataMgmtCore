@@ -89,11 +89,11 @@ describe('Member Dashboard Posts Display', () => {
 
     // Wait for component to load
     await waitFor(() => {
-      expect(screenTest.getByText('Welcome back, Test!')).toBeInTheDocument()
+      expect(screen.getByText('Welcome back, Test!')).toBeInTheDocument()
     })
 
     // Check if Feed tab exists
-    const feedTab = screenTest.getByText('Feed')
+    const feedTab = screen.getByText('Feed')
     expect(feedTab).toBeInTheDocument()
   })
 
@@ -105,16 +105,16 @@ describe('Member Dashboard Posts Display', () => {
     )
 
     await waitFor(() => {
-      expect(screenTest.getByText('Welcome back, Test!')).toBeInTheDocument()
+      expect(screen.getByText('Welcome back, Test!')).toBeInTheDocument()
     })
 
     // Click the Feed tab
-    const feedTab = screenTest.getByText('Feed')
+    const feedTab = screen.getByText('Feed')
     fireEvent.click(feedTab)
 
     // Check if posts are displayed
     await waitFor(() => {
-      const feedHeader = screenTest.getByText('Personalized Feed')
+      const feedHeader = screen.getByText('Personalized Feed')
       expect(feedHeader).toBeInTheDocument()
     })
 
@@ -127,7 +127,7 @@ describe('Member Dashboard Posts Display', () => {
     postsWithImages.forEach(post => {
       console.log(`Looking for post: ${post.title}`)
       try {
-        const postElement = screenTest.getByText(post.title)
+        const postElement = screen.getByText(post.title)
         console.log(`✅ Found: ${post.title}`)
         expect(postElement).toBeInTheDocument()
       } catch (error) {
@@ -144,19 +144,19 @@ describe('Member Dashboard Posts Display', () => {
     )
 
     await waitFor(() => {
-      expect(screenTest.getByText('Welcome back, Test!')).toBeInTheDocument()
+      expect(screen.getByText('Welcome back, Test!')).toBeInTheDocument()
     })
 
     // Click the Feed tab
-    const feedTab = screenTest.getByText('Feed')
+    const feedTab = screen.getByText('Feed')
     fireEvent.click(feedTab)
 
     await waitFor(() => {
-      expect(screenTest.getByText('Personalized Feed')).toBeInTheDocument()
+      expect(screen.getByText('Personalized Feed')).toBeInTheDocument()
     })
 
     // Find images and trigger error events
-    const images = screenTest.getAllByRole('img')
+    const images = screen.getAllByRole('img')
     console.log('\n=== IMAGE LOADING TEST ===')
     console.log('Images found in DOM:', images.length)
     

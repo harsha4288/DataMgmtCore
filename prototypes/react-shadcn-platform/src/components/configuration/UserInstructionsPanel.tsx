@@ -75,7 +75,7 @@ export function UserInstructionsPanel({ className }: UserInstructionsPanelProps)
         title: formData.title,
         content: formData.content,
         userTypes: formData.userTypes,
-        context: JSON.stringify([]), // Context as JSON string
+        context: [], // Empty context array
         tags: formData.tags,
         priority: formData.priority
       });
@@ -109,7 +109,7 @@ export function UserInstructionsPanel({ className }: UserInstructionsPanelProps)
         title: formData.title,
         content: formData.content,
         userTypes: formData.userTypes,
-        context: JSON.stringify(editingInstruction.context || []),
+        context: editingInstruction.context || [],
         tags: formData.tags,
         priority: formData.priority
       });
@@ -139,7 +139,7 @@ export function UserInstructionsPanel({ className }: UserInstructionsPanelProps)
       content: '',
       userTypes: [],
       tags: [],
-      priority: 'medium',
+      priority: 'medium' as const,
       newTag: ''
     });
   };

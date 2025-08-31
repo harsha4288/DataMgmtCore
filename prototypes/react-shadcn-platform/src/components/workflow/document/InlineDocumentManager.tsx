@@ -9,19 +9,17 @@ import { ContextualDocumentPreview } from './ContextualDocumentPreview';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   FileText,
   Plus,
-  Search,
-  Filter,
   Download,
   Upload,
   FolderOpen
 } from 'lucide-react';
 
-interface Document {
+interface DocumentItem {
   id: string;
   name: string;
   type: 'specification' | 'documentation' | 'task' | 'implementation';
@@ -35,8 +33,8 @@ interface Document {
 interface InlineDocumentManagerProps {
   entityId: string;
   entityType: 'task' | 'phase' | 'issue';
-  documents?: Document[];
-  onCreateDocument?: (name: string, type: Document['type']) => void;
+  documents?: DocumentItem[];
+  onCreateDocument?: (name: string, type: DocumentItem['type']) => void;
   onSaveDocument?: (documentId: string, content: string) => void;
   onDeleteDocument?: (documentId: string) => void;
   className?: string;
@@ -57,7 +55,7 @@ export const InlineDocumentManager: React.FC<InlineDocumentManagerProps> = ({
   const [isCreating, setIsCreating] = useState(false);
 
   // Mock documents if none provided
-  const mockDocuments: Document[] = documents.length > 0 ? documents : [
+  const mockDocuments: DocumentItem[] = documents.length > 0 ? documents : [
     {
       id: `${entityId}-spec`,
       name: 'Requirements Specification',
@@ -94,7 +92,7 @@ export const InlineDocumentManager: React.FC<InlineDocumentManagerProps> = ({
     return matchesSearch && matchesFilter;
   });
 
-  const handleDocumentSelect = (document: Document) => {
+  const handleDocumentSelect = (document: DocumentItem) => {
     setSelectedDocument(document);
   };
 
@@ -111,7 +109,7 @@ export const InlineDocumentManager: React.FC<InlineDocumentManagerProps> = ({
     }
   };
 
-  const getStatusColor = (status: Document['status']) => {
+  const getStatusColor = (status: DocumentItem['status']) => {
     switch (status) {
       case 'approved': return 'default';
       case 'review': return 'secondary';
@@ -121,7 +119,7 @@ export const InlineDocumentManager: React.FC<InlineDocumentManagerProps> = ({
     }
   };
 
-  const getTypeIcon = (type: Document['type']) => {
+  const getTypeIcon = (type: DocumentItem['type']) => {
     return <FileText className="h-3 w-3" />;
   };
 

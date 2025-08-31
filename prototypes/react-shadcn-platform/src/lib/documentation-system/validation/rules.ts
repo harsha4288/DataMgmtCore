@@ -52,7 +52,8 @@ export const VALIDATION_RULES: ValidationRule[] = [
       const patterns = {
         task: /^task-\d+\.\d+-.+$/,
         phase: /^phase-\d+$/,
-        issue: /^issue-.+$/
+        issue: /^issue-.+$/,
+        project: /^project-.+$/
       };
 
       const pattern = patterns[context.type];
