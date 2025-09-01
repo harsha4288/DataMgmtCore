@@ -46,6 +46,7 @@ export interface ProjectEntity {
   issues: IssueRef[];
   reviews: ReviewRef[];
   comments: CommentRef[];
+  relationships?: RelationshipRef[];
   
   // Timestamps
   createdAt: Date;
@@ -88,6 +89,21 @@ export interface CommentRef {
   content: string;
   createdAt: Date;
   replies: number;
+}
+
+export interface RelationshipRef {
+  id: string;
+  sourceEntityId: string;
+  targetEntityId: string;
+  relationshipType: string;
+  strength: number;
+  impactScore: number;
+  isActive: boolean;
+  isBidirectional: boolean;
+  reverseType?: string;
+  context?: string;
+  tags: string[];
+  notes?: string;
 }
 
 export interface TreeExpansionState {

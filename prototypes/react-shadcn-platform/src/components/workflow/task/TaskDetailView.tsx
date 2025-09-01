@@ -18,7 +18,10 @@ import {
   Settings,
   Bug,
   CheckSquare,
-  Clock
+  Clock,
+  GitBranch,
+  ArrowRight,
+  Target
 } from 'lucide-react';
 import { SelectedTask } from '../workspace/UnifiedWorkspace';
 
@@ -136,6 +139,79 @@ export const TaskDetailView: React.FC<TaskDetailViewProps> = ({
                           Preview
                         </Button>
                       </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Entity Relationships */}
+          {task.relationships && task.relationships.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <GitBranch className="h-4 w-4" />
+                  Entity Relationships
+                </CardTitle>
+                <CardDescription>
+                  Connected entities and their relationships to this task
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {task.relationships.map((relationship) => (
+                    <div key={relationship.id} className="p-3 border rounded-lg hover:bg-accent/50">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2 font-medium text-sm">
+                          <Target className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-primary">{relationship.sourceEntityId}</span>
+                          <ArrowRight className="h-3 w-3" />
+                          <span className="text-secondary-foreground">{relationship.targetEntityId}</span>
+                        </div>
+                        <Badge variant="outline" className="text-xs">
+                          {relationship.relationshipType}
+                        </Badge>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <span>Strength:</span>
+                          <div className="flex-1 bg-muted rounded-full h-1.5">
+                            <div 
+                              className="bg-primary h-1.5 rounded-full" 
+                              style={{ width: `${relationship.strength * 100}%` }}
+                            />
+                          </div>
+                          <span>{Math.round(relationship.strength * 100)}%</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span>Impact:</span>
+                          <div className="flex-1 bg-muted rounded-full h-1.5">
+                            <div 
+                              className="bg-destructive h-1.5 rounded-full" 
+                              style={{ width: `${relationship.impactScore * 100}%` }}
+                            />
+                          </div>
+                          <span>{Math.round(relationship.impactScore * 100)}%</span>
+                        </div>
+                      </div>
+
+                      {relationship.notes && (
+                        <div className="mt-2 text-xs text-muted-foreground">
+                          <span className="font-medium">Notes:</span> {relationship.notes}
+                        </div>
+                      )}
+
+                      {relationship.tags && relationship.tags.length > 0 && (
+                        <div className="mt-2 flex gap-1 flex-wrap">
+                          {relationship.tags.map((tag, index) => (
+                            <Badge key={index} variant="secondary" className="text-xs px-1.5 py-0.5">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

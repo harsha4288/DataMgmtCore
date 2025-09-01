@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getGraphQLEndpoint } from '@/lib/config';
 import { 
   FileText, 
   Edit, 
@@ -72,7 +73,7 @@ export const DocumentContentViewer: React.FC<DocumentContentViewerProps> = ({
         }
       `;
 
-      const response = await fetch('http://localhost:3004/graphql', {
+      const response = await fetch(getGraphQLEndpoint(), {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

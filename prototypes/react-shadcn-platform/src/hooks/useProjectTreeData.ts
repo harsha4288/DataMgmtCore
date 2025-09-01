@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ProjectEntity } from '@/components/workflow/workspace/ExpandableProjectTree';
+import { ProjectEntity, RelationshipRef } from '@/components/workflow/workspace/ExpandableProjectTree';
 import { getGraphQLEndpoint } from '@/lib/config';
 
 interface GraphQLPhase {
@@ -17,13 +17,39 @@ interface GraphQLTask {
   description: string;
   status: string;
   progress: number;
+  documents: GraphQLDocument[];
   subtasks: GraphQLSubtask[];
+  relationships: GraphQLRelationship[];
+}
+
+interface GraphQLDocument {
+  id: string;
+  taskId: string;
+  title: string;
+  documentType: string;
+  filePath: string;
+  version: string;
 }
 
 interface GraphQLSubtask {
   id: string;
   name: string;
   completed: boolean;
+}
+
+interface GraphQLRelationship {
+  id: string;
+  sourceEntityId: string;
+  targetEntityId: string;
+  relationshipType: string;
+  strength: number;
+  impactScore: number;
+  isActive: boolean;
+  isBidirectional: boolean;
+  reverseType?: string;
+  context?: string;
+  tags: string[];
+  notes?: string;
 }
 
 export interface UseProjectTreeDataResult {
@@ -47,10 +73,32 @@ const PHASES_QUERY = `
         description
         status
         progress
+        documents {
+          id
+          taskId
+          title
+          documentType
+          filePath
+          version
+        }
         subtasks {
           id
           name
           completed
+        }
+        relationships {
+          id
+          sourceEntityId
+          targetEntityId
+          relationshipType
+          strength
+          impactScore
+          isActive
+          isBidirectional
+          reverseType
+          context
+          tags
+          notes
         }
       }
     }
@@ -104,6 +152,7 @@ const transformGraphQLToProjectEntity = (phases: GraphQLPhase[]): ProjectEntity 
     issues: [],
     reviews: [],
     comments: [],
+    relationships: [],
     createdAt: new Date('2024-01-01'),
     updatedAt: now,
     recentActivity: 'Real-time GraphQL data integration',
@@ -158,6 +207,7 @@ const transformPhase = (phase: GraphQLPhase): ProjectEntity => {
     issues: [],
     reviews: [],
     comments: [],
+    relationships: [],
     createdAt: new Date('2024-01-01'),
     updatedAt: now,
     recentActivity: `${phase.tasks.filter(t => t.status === 'in_progress').length} tasks in progress`,
@@ -173,6 +223,30 @@ const transformTask = (task: GraphQLTask, _phaseId: string): ProjectEntity => {
     ? Math.round((completedSubtasks / task.subtasks.length) * 100)
     : task.progress;
   
+  // Transform GraphQL documents to UI format
+  const transformedDocuments = task.documents?.map(doc => ({
+    id: doc.id,
+    name: doc.title,
+    type: doc.documentType,
+    url: doc.filePath || `#document-${doc.id}`,
+  })) || [];
+  
+  // Transform GraphQL relationships to UI format
+  const transformedRelationships = task.relationships?.map(rel => ({
+    id: rel.id,
+    sourceEntityId: rel.sourceEntityId,
+    targetEntityId: rel.targetEntityId,
+    relationshipType: rel.relationshipType,
+    strength: rel.strength,
+    impactScore: rel.impactScore,
+    isActive: rel.isActive,
+    isBidirectional: rel.isBidirectional,
+    reverseType: rel.reverseType,
+    context: rel.context,
+    tags: rel.tags || [],
+    notes: rel.notes
+  })) || [];
+  
   return {
     id: task.id,
     type: 'task',
@@ -183,14 +257,15 @@ const transformTask = (task: GraphQLTask, _phaseId: string): ProjectEntity => {
     priority: taskProgress > 80 ? 'medium' : 'high',
     assignee: task.status === 'completed' ? 'Team' : 'You',
     dueDate: new Date('2024-12-31'),
-    documentsCount: Math.max(1, Math.floor(task.subtasks.length * 0.3)),
+    documentsCount: task.documents?.length || 0,
     issuesCount: task.subtasks.filter(st => !st.completed).length > 5 ? 1 : 0,
     reviewsCount: task.status === 'completed' ? 1 : 0,
     commentsCount: Math.max(0, task.subtasks.length - 10),
-    documents: [],
+    documents: transformedDocuments,
     issues: [],
     reviews: [],
     comments: [],
+    relationships: transformedRelationships,
     createdAt: new Date('2024-01-01'),
     updatedAt: now,
     recentActivity: `${completedSubtasks}/${task.subtasks.length} subtasks completed`,
@@ -218,6 +293,7 @@ const transformSubtask = (subtask: GraphQLSubtask, taskId: string, index: number
     issues: [],
     reviews: [],
     comments: [],
+    relationships: [],
     createdAt: new Date('2024-01-01'),
     updatedAt: now,
     children: []

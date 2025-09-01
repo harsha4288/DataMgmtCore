@@ -106,6 +106,8 @@ const typeDefs = `
     completion_date: String
     subtasks: [SubTask!]!
     metadata: TaskMetadata!
+    documents: [ProjectDocument!]!
+    relationships: [EntityRelationship!]!
     created_at: String!
     updated_at: String!
   }
@@ -451,6 +453,20 @@ const typeDefs = `
     currentEntity: Entity!
   }
 
+  type ProjectDocument {
+    id: ID!
+    taskId: String!
+    title: String!
+    documentType: String!
+    filePath: String
+    content: String
+    metadata: JSON
+    version: String!
+    isActive: Boolean!
+    createdAt: String!
+    updatedAt: String!
+  }
+
   enum RelationshipType {
     DEPENDS_ON
     BLOCKS
@@ -467,6 +483,7 @@ const typeDefs = `
     CHILD_OF
     DUPLICATE_OF
     SIMILAR_TO
+    DOCUMENTS
   }
 
   input CreateEntityInput {
@@ -1436,102 +1453,85 @@ class DocumentationDataSources {
     }
   }
 
-  // Document methods for Phase 2.1 - Using SQLite Database (NO .md file dependency)
+  // Document methods - Updated to use project_documents table (Task 5.8.4)
   async getDocumentsByEntity(entityId, entityType) {
     try {
-      // Use global db variable instead of reading .md files
+      // Use global db variable to query project_documents table
       if (!db) {
         console.error('Database not available');
         return [];
       }
 
-      console.log(`Fetching documents for entity: ${entityId} (${entityType})`);
+      console.log(`[getDocumentsByEntity] Fetching documents for entity: ${entityId} (${entityType})`);
       
       let rows = [];
-      const processedIds = new Set(); // Track processed document IDs to avoid duplicates
       
-      // Strategy 1: Direct entity ID match
-      const directStmt = db.prepare('SELECT * FROM documents WHERE entity_id = ? ORDER BY updated_at DESC');
-      const directRows = directStmt.all(entityId);
-      directRows.forEach(row => {
-        if (!processedIds.has(row.id)) {
-          rows.push(row);
-          processedIds.add(row.id);
-          console.log(`Direct match: ${row.id} - ${row.title.substring(0, 40)}`);
-        }
-      });
-      
-      // Strategy 2: Check ID mappings (both directions)
-      // Check if entityId maps to something else
-      const forwardMappingStmt = db.prepare('SELECT new_id FROM entity_id_mapping WHERE old_id = ?');
-      const forwardMapping = forwardMappingStmt.get(entityId);
-      
-      if (forwardMapping) {
-        const mappedStmt = db.prepare('SELECT * FROM documents WHERE entity_id = ? ORDER BY updated_at DESC');
-        const mappedRows = mappedStmt.all(forwardMapping.new_id);
-        mappedRows.forEach(row => {
-          if (!processedIds.has(row.id)) {
-            rows.push(row);
-            processedIds.add(row.id);
-            console.log(`Forward mapped: ${entityId} -> ${forwardMapping.new_id}: ${row.title.substring(0, 40)}`);
-          }
-        });
+      // For tasks, query project_documents table directly by task_id
+      if (entityType === 'task' || entityType === 'TASK') {
+        const taskDocsStmt = db.prepare(`
+          SELECT id, task_id, title, document_type, content, version, 
+                 created_at, updated_at, metadata, file_path
+          FROM project_documents 
+          WHERE task_id = ? AND is_active = 1 
+          ORDER BY updated_at DESC
+        `);
+        const taskDocs = taskDocsStmt.all(entityId);
+        rows = rows.concat(taskDocs);
+        console.log(`[getDocumentsByEntity] Found ${taskDocs.length} documents in project_documents for task ${entityId}`);
       }
       
-      // Check if something else maps to entityId
-      const reverseMappingStmt = db.prepare('SELECT old_id FROM entity_id_mapping WHERE new_id = ?');
-      const reverseMappings = reverseMappingStmt.all(entityId);
-      
-      reverseMappings.forEach(mapping => {
-        const mappedStmt = db.prepare('SELECT * FROM documents WHERE entity_id = ? ORDER BY updated_at DESC');
-        const mappedRows = mappedStmt.all(mapping.old_id);
-        mappedRows.forEach(row => {
-          if (!processedIds.has(row.id)) {
-            rows.push(row);
-            processedIds.add(row.id);
-            console.log(`Reverse mapped: ${mapping.old_id} -> ${entityId}: ${row.title.substring(0, 40)}`);
-          }
-        });
-      });
-      
-      // Strategy 3: Flexible entity type matching (if no exact matches found)
-      if (rows.length === 0) {
-        console.log(`No direct matches for ${entityId}, trying flexible matching...`);
+      // If no documents found and it's a task, try fallback to old documents table for compatibility
+      if (rows.length === 0 && (entityType === 'task' || entityType === 'TASK')) {
+        console.log(`[getDocumentsByEntity] No documents in project_documents, checking old documents table for compatibility...`);
+        const oldDocsStmt = db.prepare('SELECT * FROM documents WHERE entity_id = ? ORDER BY updated_at DESC');
+        const oldDocs = oldDocsStmt.all(entityId);
+        console.log(`[getDocumentsByEntity] Found ${oldDocs.length} documents in old documents table`);
         
-        // Try without entity_type constraint
-        const flexibleStmt = db.prepare('SELECT * FROM documents WHERE entity_id = ? ORDER BY updated_at DESC');
-        const flexibleRows = flexibleStmt.all(entityId);
-        flexibleRows.forEach(row => {
-          if (!processedIds.has(row.id)) {
-            rows.push(row);
-            processedIds.add(row.id);
-            console.log(`Flexible match: ${row.id} - ${row.title.substring(0, 40)}`);
-          }
-        });
+        // Map old document structure to new format for compatibility
+        const mappedOldDocs = oldDocs.map(row => ({
+          id: row.id,
+          task_id: row.entity_id,
+          title: row.title,
+          document_type: row.type,
+          content: row.content,
+          version: row.version?.toString() || '1.0.0',
+          created_at: row.created_at,
+          updated_at: row.updated_at,
+          metadata: null,
+          file_path: null,
+          // Keep track this came from old table
+          _source: 'documents_table'
+        }));
+        rows = rows.concat(mappedOldDocs);
       }
       
-      console.log(`Found ${rows.length} total documents for ${entityId}`);
+      console.log(`[getDocumentsByEntity] Found ${rows.length} total documents for ${entityId}`);
       
-      // Remove duplicates and sort by relevance
-      const uniqueRows = rows.filter((row, index, self) => 
-        index === self.findIndex(r => r.id === row.id)
-      );
-      
-      return uniqueRows.map(row => ({
-        id: row.id,
-        title: row.title,
-        content: row.content,
-        type: row.type,
-        status: row.status,
-        entityId: row.entity_id, // Keep the actual stored ID
-        entityType: row.entity_type,
-        author: row.author || 'Development Team',
-        lastModified: row.updated_at,
-        filePath: null, // No file path since we're using database
-        markdown: row.content
-      }));
+      // Transform to GraphQL Document format
+      return rows.map(row => {
+        let metadata = null;
+        try {
+          metadata = row.metadata ? JSON.parse(row.metadata) : null;
+        } catch (e) {
+          console.warn(`Failed to parse metadata for document ${row.id}:`, e);
+        }
+        
+        return {
+          id: row.id,
+          title: row.title,
+          content: row.content || '',
+          type: row.document_type || 'technical',
+          status: metadata?.status || 'approved', // Default to approved for project documents
+          entityId: row.task_id || row.entity_id, // Support both formats
+          entityType: 'task', // Project documents are always task-related
+          author: metadata?.author || 'Development Team',
+          lastModified: row.updated_at,
+          filePath: row.file_path || null,
+          markdown: row.content || ''
+        };
+      });
     } catch (error) {
-      console.error('Error getting documents by entity from database:', error);
+      console.error('[getDocumentsByEntity] Error getting documents from database:', error);
       return [];
     }
   }
@@ -3312,6 +3312,71 @@ const resolvers = {
           error: error.message,
           context: null
         };
+      }
+    }
+  },
+
+  // Field resolvers
+  Task: {
+    documents: async (parent, _args, _context) => {
+      try {
+        // Query documents table for documents linked to this task
+        const stmt = db.prepare(`
+          SELECT id, entity_id as taskId, title, type as documentType, 
+                 '' as filePath, content, '{}' as metadata, version, 
+                 CASE WHEN status != 'archived' THEN 1 ELSE 0 END as isActive,
+                 created_at as createdAt, updated_at as updatedAt
+          FROM documents 
+          WHERE entity_id = ? AND status != 'archived'
+          ORDER BY created_at DESC
+        `);
+        const rows = stmt.all(parent.id);
+        
+        return rows.map(row => ({
+          ...row,
+          metadata: row.metadata ? JSON.parse(row.metadata) : {}
+        }));
+      } catch (error) {
+        console.error('Error fetching task documents:', error);
+        return [];
+      }
+    },
+    
+    relationships: async (parent, _args, _context) => {
+      try {
+        // Query entity_relationships table for relationships involving this task
+        const stmt = db.prepare(`
+          SELECT r.*, 
+            se.title as source_title, se.entity_type as source_entity_type,
+            te.title as target_title, te.entity_type as target_entity_type
+          FROM entity_relationships r
+          JOIN entities se ON r.source_entity_id = se.id
+          JOIN entities te ON r.target_entity_id = te.id
+          WHERE r.source_entity_id = ? OR r.target_entity_id = ?
+          ORDER BY r.created_at DESC
+        `);
+        const rows = stmt.all(parent.id, parent.id);
+        
+        return rows.map(row => ({
+          id: row.id,
+          sourceEntityId: row.source_entity_id,
+          targetEntityId: row.target_entity_id,
+          relationshipType: row.relationship_type,
+          strength: row.strength || 0.0,
+          isAutoGenerated: Boolean(row.is_auto_generated),
+          validatedBy: row.validated_by || null,
+          validatedAt: row.validated_at || null,
+          impactScore: row.impact_score || 0.0,
+          isActive: Boolean(row.is_active !== 0),
+          isBidirectional: Boolean(row.is_bidirectional),
+          reverseType: row.reverse_type || null,
+          context: row.context || null,
+          tags: row.tags ? JSON.parse(row.tags) : [],
+          notes: row.notes || null
+        }));
+      } catch (error) {
+        console.error('Error fetching task relationships:', error);
+        return [];
       }
     }
   }
