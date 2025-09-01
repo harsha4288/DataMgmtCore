@@ -37,7 +37,9 @@ export function DashboardTabs({
   recentActivity, 
   recommendedConnections, 
   trendingPosts, 
-  conversationPreviews 
+  connections: _connections,
+  conversationPreviews,
+  profile: _profile
 }: DashboardTabsProps) {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('overview')

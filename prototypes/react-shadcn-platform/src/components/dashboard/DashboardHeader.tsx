@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Separator } from '@/components/ui/separator'
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -12,20 +13,25 @@ import {
 import { 
   Bell, 
   MessageSquare, 
-  Search, 
-  Settings,
+  Search,
   LogOut,
-  Home,
-  FileText,
-  ChevronDown,
+  UserPlus,
+  Menu
 } from 'lucide-react'
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
+import { type UserProfile } from '@/lib/mock-data/auth'
 
 interface DashboardHeaderProps {
-  stats: any;
-  profile: any;
+  currentProfile: UserProfile
+  stats: {
+    notifications: { unread: number }
+    chat: { totalUnread: number }
+  }
+  onSwitchProfile: () => void
+  onLogout: () => void
 }
 
-export function DashboardHeader({ stats, profile }: DashboardHeaderProps) {
+export function DashboardHeader({ currentProfile, stats, onSwitchProfile, onLogout }: DashboardHeaderProps) {
   const navigate = useNavigate()
 
   return (
@@ -69,12 +75,12 @@ export function DashboardHeader({ stats, profile }: DashboardHeaderProps) {
               >
                 <Bell className="h-5 w-5" />
                 {stats.notifications.unread > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs">
+                  <span className="absolute -top-1 -right-1 h-5 w-5 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center font-medium">
                     {stats.notifications.unread}
-                  </Badge>
+                  </span>
                 )}
               </Button>
-
+              
               {/* Messages */}
               <Button 
                 variant="ghost" 
@@ -83,84 +89,89 @@ export function DashboardHeader({ stats, profile }: DashboardHeaderProps) {
                 onClick={() => navigate('/chat')}
               >
                 <MessageSquare className="h-5 w-5" />
-                {stats.messages.unread > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs">
-                    {stats.messages.unread}
-                  </Badge>
+                {stats.chat.totalUnread > 0 && (
+                  <span className="absolute -top-1 -right-1 h-5 w-5 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center font-medium">
+                    {stats.chat.totalUnread}
+                  </span>
                 )}
               </Button>
-            </div>
 
+              {/* Theme Toggle */}
+              <ThemeToggle />
+
+              <Separator orientation="vertical" className="h-6" />
+            </div>
+            
             {/* Mobile Menu Dropdown */}
             <div className="md:hidden">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon">
-                    <Search className="h-5 w-5" />
+                    <Menu className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuItem onClick={() => navigate('/alumni-directory')}>
-                    <Search className="mr-2 h-4 w-4" />
+                    <Search className="h-4 w-4 mr-2" />
                     Search Alumni
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/responses')}>
-                    <Bell className="mr-2 h-4 w-4" />
+                    <Bell className="h-4 w-4 mr-2" />
                     Notifications
                     {stats.notifications.unread > 0 && (
-                      <Badge className="ml-auto">{stats.notifications.unread}</Badge>
+                      <Badge variant="destructive" className="ml-auto h-5 w-5 p-0 text-xs">
+                        {stats.notifications.unread}
+                      </Badge>
                     )}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/chat')}>
-                    <MessageSquare className="mr-2 h-4 w-4" />
+                    <MessageSquare className="h-4 w-4 mr-2" />
                     Messages
-                    {stats.messages.unread > 0 && (
-                      <Badge className="ml-auto">{stats.messages.unread}</Badge>
+                    {stats.chat.totalUnread > 0 && (
+                      <Badge variant="destructive" className="ml-auto h-5 w-5 p-0 text-xs">
+                        {stats.chat.totalUnread}
+                      </Badge>
                     )}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={onSwitchProfile}>
+                    <UserPlus className="h-4 w-4 mr-2" />
+                    Switch Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={onLogout}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-
+            
             {/* Profile Section */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center space-x-2 px-2">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={profile?.avatar} />
-                    <AvatarFallback>
-                      {profile?.name ? profile.name.split(' ').map((n: string) => n[0]).join('') : 'U'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <ChevronDown className="h-4 w-4" />
+            <div className="flex items-center space-x-2">
+              <div className="hidden lg:block text-right">
+                <p className="text-sm font-medium">{currentProfile.name}</p>
+                <p className="text-xs text-muted-foreground capitalize">{currentProfile.preferences.professionalStatus || 'member'} • {currentProfile.role}</p>
+              </div>
+              <Avatar className="h-8 w-8 border-2 border-primary/20">
+                <AvatarImage src={currentProfile.avatar} />
+                <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
+                  {currentProfile.name.split(' ').map(n => n[0]).join('')}
+                </AvatarFallback>
+              </Avatar>
+              {/* Desktop Profile Actions */}
+              <div className="hidden md:flex items-center space-x-1">
+                <Button variant="ghost" size="icon" onClick={onSwitchProfile}>
+                  <UserPlus className="h-4 w-4" />
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                {/* Desktop Profile Actions */}
-                <div className="px-2 py-1.5">
-                  <p className="text-sm font-medium">{profile?.name || 'User'}</p>
-                  <p className="text-xs text-muted-foreground">{profile?.email || 'user@example.com'}</p>
-                </div>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate('/')}>
-                  <Home className="mr-2 h-4 w-4" />
-                  Home
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/alumni-profile')}>
-                  <FileText className="mr-2 h-4 w-4" />
-                  My Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/preferences')}>
-                  <Settings className="mr-2 h-4 w-4" />
-                  Settings
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate('/')}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                <Button variant="ghost" size="icon" onClick={onLogout}>
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </div>
+              {/* Mobile Theme Toggle */}
+              <div className="md:hidden">
+                <ThemeToggle />
+              </div>
+            </div>
           </div>
         </div>
       </div>

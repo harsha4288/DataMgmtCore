@@ -1,22 +1,22 @@
-# Active Task: Task 5.8.4: Entity Interconnection Architecture
+# Active Task: Component Size Optimization
 
-**Entity ID:** `TASK-1482`  
-**Type:** task  
-**Status:** completed  
-**Priority:** critical  
+**Entity ID:** `TASK-2439`  
+**Type:** subtask  
+**Status:** in_progress  
+**Priority:** medium  
 
 
 ## Description
 
-Task 5.8.4: Entity Interconnection Architecture
+Split components >800 lines, extract reusable logic to hooks, separate test utilities from test cases, reduce test file duplication
 
 ## Breadcrumb
 
-`board:TASK` > `task:TASK-1482`
+`board:TASK` > `subtask:TASK-2439`
 
 ## Quick Actions
 
 - `@active` - Reference this active task in Claude
-- `@entity:TASK-1482` - Direct reference to this entity
+- `@entity:TASK-2439` - Direct reference to this entity
 
-**Last Updated:** 8/31/2025, 10:54:50 PM
+**Last Updated:** 9/1/2025, 6:51:35 AM

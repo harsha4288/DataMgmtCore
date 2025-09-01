@@ -1291,6 +1291,20 @@ class DocumentationDataSources {
            cleanStatus === 'In Progress' ? 'in_progress' : 'pending';
   }
 
+  // Map database document types to GraphQL DocumentTypeEnum values
+  parseDocumentType(dbType) {
+    if (!dbType) return 'technical';
+    
+    const typeMap = {
+      'technical_documentation': 'technical',
+      'requirements': 'requirements',
+      'implementation': 'implementation',
+      'all': 'all'
+    };
+    
+    return typeMap[dbType.toLowerCase()] || 'technical';
+  }
+
   parseIssueType(type) {
     const cleanType = type.toLowerCase().replace(/[^\w]/g, '');
     const types = ['bug', 'feature', 'improvement', 'qa', 'uat'];
@@ -1480,31 +1494,6 @@ class DocumentationDataSources {
         console.log(`[getDocumentsByEntity] Found ${taskDocs.length} documents in project_documents for task ${entityId}`);
       }
       
-      // If no documents found and it's a task, try fallback to old documents table for compatibility
-      if (rows.length === 0 && (entityType === 'task' || entityType === 'TASK')) {
-        console.log(`[getDocumentsByEntity] No documents in project_documents, checking old documents table for compatibility...`);
-        const oldDocsStmt = db.prepare('SELECT * FROM documents WHERE entity_id = ? ORDER BY updated_at DESC');
-        const oldDocs = oldDocsStmt.all(entityId);
-        console.log(`[getDocumentsByEntity] Found ${oldDocs.length} documents in old documents table`);
-        
-        // Map old document structure to new format for compatibility
-        const mappedOldDocs = oldDocs.map(row => ({
-          id: row.id,
-          task_id: row.entity_id,
-          title: row.title,
-          document_type: row.type,
-          content: row.content,
-          version: row.version?.toString() || '1.0.0',
-          created_at: row.created_at,
-          updated_at: row.updated_at,
-          metadata: null,
-          file_path: null,
-          // Keep track this came from old table
-          _source: 'documents_table'
-        }));
-        rows = rows.concat(mappedOldDocs);
-      }
-      
       console.log(`[getDocumentsByEntity] Found ${rows.length} total documents for ${entityId}`);
       
       // Transform to GraphQL Document format
@@ -1520,7 +1509,7 @@ class DocumentationDataSources {
           id: row.id,
           title: row.title,
           content: row.content || '',
-          type: row.document_type || 'technical',
+          type: this.parseDocumentType(row.document_type),
           status: metadata?.status || 'approved', // Default to approved for project documents
           entityId: row.task_id || row.entity_id, // Support both formats
           entityType: 'task', // Project documents are always task-related
@@ -3318,24 +3307,35 @@ const resolvers = {
 
   // Field resolvers
   Task: {
-    documents: async (parent, _args, _context) => {
+    documents: async (parent, _args, context) => {
       try {
-        // Query documents table for documents linked to this task
+        // Query project_documents table for documents linked to this task
         const stmt = db.prepare(`
-          SELECT id, entity_id as taskId, title, type as documentType, 
-                 '' as filePath, content, '{}' as metadata, version, 
-                 CASE WHEN status != 'archived' THEN 1 ELSE 0 END as isActive,
+          SELECT id, task_id as taskId, title, document_type as documentType, 
+                 file_path as filePath, content, metadata, version, 
+                 CASE WHEN is_active = 1 THEN 1 ELSE 0 END as isActive,
                  created_at as createdAt, updated_at as updatedAt
-          FROM documents 
-          WHERE entity_id = ? AND status != 'archived'
+          FROM project_documents 
+          WHERE task_id = ? AND is_active = 1
           ORDER BY created_at DESC
         `);
         const rows = stmt.all(parent.id);
         
-        return rows.map(row => ({
-          ...row,
-          metadata: row.metadata ? JSON.parse(row.metadata) : {}
-        }));
+        const documents = rows.map(row => {
+          const metadata = row.metadata ? JSON.parse(row.metadata) : {};
+          return {
+            id: row.id,
+            taskId: row.taskId,
+            title: row.title,
+            documentType: context.dataSources.parseDocumentType(row.documentType),
+            filePath: row.filePath,
+            version: row.version || '1.0',
+            ...row,
+            metadata: metadata
+          };
+        });
+        
+        return documents;
       } catch (error) {
         console.error('Error fetching task documents:', error);
         return [];

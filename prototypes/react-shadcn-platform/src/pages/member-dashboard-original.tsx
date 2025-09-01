@@ -9,18 +9,6 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
 import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu'
-
-import { 
-  Bell, 
-  MessageSquare, 
-  Search, 
-  Plus,
   Heart,
   MessageCircle,
   Share,
@@ -29,11 +17,6 @@ import {
   Users,
   Users2,
   Star,
-  Filter,
-  Settings,
-  LogOut,
-  Home,
-  FileText,
   Eye,
   BookOpen,
   ChevronDown,
@@ -42,21 +25,29 @@ import {
   MapPin,
   Calendar,
   CheckCircle2,
-  AlertCircle,
-  HelpCircle,
+  Activity,
+  Target,
+  BarChart3,
+  MessageSquare,
+  Filter,
+  Settings,
   Briefcase,
   GraduationCap,
-  Activity,
-  UserPlus,
+  HelpCircle,
+  Search,
+  Plus,
   ArrowUpRight,
-  BarChart3,
-  Target,
-  Menu
+  AlertCircle,
+  Home,
+  FileText,
+  UserPlus
 } from 'lucide-react'
 import { type UserProfile } from '@/lib/mock-data/auth'
 import { getDashboardStats, mockPostings, getNotificationsByUser, getConversationsByUser } from '@/lib/mock-data'
 import { getPersonalizedAlumniPosts, type AlumniPost } from '@/lib/mock-data/enhanced-alumni-posts'
 import { type Posting } from '@/lib/mock-data/postings'
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
+import { WelcomeHero } from '@/components/dashboard/WelcomeHeroSection'
 
 // Unified display type for both alumni posts and regular postings
 type UnifiedPost = {
@@ -81,7 +72,6 @@ type UnifiedPost = {
   isUrgent?: boolean
   organization?: string
 }
-import { ThemeToggle } from '@/components/theme/ThemeToggle'
 
 export default function MemberDashboard() {
   const navigate = useNavigate()
@@ -245,262 +235,22 @@ export default function MemberDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-
-      {/* Enhanced Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 sm:px-6 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo and Brand */}
-            <div className="flex items-center space-x-3">
-              <img
-                src="/images/opportunities/sgsgf-logo.png"
-                alt="SGS Gita Foundation Logo"
-                className="h-8 w-auto"
-              />
-              <div>
-                <h1 className="text-lg font-bold">SGS Connect</h1>
-                <p className="text-xs text-muted-foreground hidden sm:block">Alumni Network</p>
-              </div>
-            </div>
-            
-            {/* Navigation and Actions */}
-            <div className="flex items-center space-x-2">
-              {/* Desktop Navigation */}
-              <div className="hidden md:flex items-center space-x-2">
-                {/* Quick Search */}
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="text-muted-foreground"
-                  onClick={() => navigate('/alumni-directory')}
-                >
-                  <Search className="h-4 w-4 mr-2" />
-                  Search alumni...
-                </Button>
-
-                {/* Notifications */}
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="relative"
-                  onClick={() => navigate('/responses')}
-                >
-                  <Bell className="h-5 w-5" />
-                  {stats.notifications.unread > 0 && (
-                    <span className="absolute -top-1 -right-1 h-5 w-5 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center font-medium">
-                      {stats.notifications.unread}
-                    </span>
-                  )}
-                </Button>
-                
-                {/* Messages */}
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="relative"
-                  onClick={() => navigate('/chat')}
-                >
-                  <MessageSquare className="h-5 w-5" />
-                  {stats.chat.totalUnread > 0 && (
-                    <span className="absolute -top-1 -right-1 h-5 w-5 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center font-medium">
-                      {stats.chat.totalUnread}
-                    </span>
-                  )}
-                </Button>
-
-                {/* Theme Toggle */}
-                <ThemeToggle />
-
-                <Separator orientation="vertical" className="h-6" />
-              </div>
-              
-              {/* Mobile Menu Dropdown */}
-              <div className="md:hidden">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <Menu className="h-5 w-5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuItem onClick={() => navigate('/alumni-directory')}>
-                      <Search className="h-4 w-4 mr-2" />
-                      Search Alumni
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/responses')}>
-                      <Bell className="h-4 w-4 mr-2" />
-                      Notifications
-                      {stats.notifications.unread > 0 && (
-                        <Badge variant="destructive" className="ml-auto h-5 w-5 p-0 text-xs">
-                          {stats.notifications.unread}
-                        </Badge>
-                      )}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/chat')}>
-                      <MessageSquare className="h-4 w-4 mr-2" />
-                      Messages
-                      {stats.chat.totalUnread > 0 && (
-                        <Badge variant="destructive" className="ml-auto h-5 w-5 p-0 text-xs">
-                          {stats.chat.totalUnread}
-                        </Badge>
-                      )}
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleSwitchProfile}>
-                      <UserPlus className="h-4 w-4 mr-2" />
-                      Switch Profile
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleLogout}>
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Logout
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-              
-              {/* Profile Section */}
-              <div className="flex items-center space-x-2">
-                <div className="hidden lg:block text-right">
-                  <p className="text-sm font-medium">{currentProfile.name}</p>
-                  <p className="text-xs text-muted-foreground capitalize">{currentProfile.preferences.professionalStatus || 'member'} • {currentProfile.role}</p>
-                </div>
-                <Avatar className="h-8 w-8 border-2 border-primary/20">
-                  <AvatarImage src={currentProfile.avatar} />
-                  <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
-                    {currentProfile.name.split(' ').map(n => n[0]).join('')}
-                  </AvatarFallback>
-                </Avatar>
-                {/* Desktop Profile Actions */}
-                <div className="hidden md:flex items-center space-x-1">
-                  <Button variant="ghost" size="icon" onClick={handleSwitchProfile}>
-                    <UserPlus className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={handleLogout}>
-                    <LogOut className="h-4 w-4" />
-                  </Button>
-                </div>
-                {/* Mobile Theme Toggle */}
-                <div className="md:hidden">
-                  <ThemeToggle />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <DashboardHeader 
+        currentProfile={currentProfile}
+        stats={{
+          notifications: { unread: stats.notifications.unread },
+          chat: { totalUnread: stats.chat.totalUnread }
+        }}
+        onSwitchProfile={handleSwitchProfile}
+        onLogout={handleLogout}
+      />
 
       <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
-        {/* Hero Welcome Section */}
-        <div className="mb-4 sm:mb-6">
-          <Card className="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20">
-            <CardContent className="p-3 sm:p-4">
-              
-              {/* Top Row - Welcome & Actions */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 space-y-2 sm:space-y-0">
-                <div className="flex-1">
-                  <h2 className="text-base sm:text-lg font-semibold mb-1">
-                    Welcome back, {currentProfile.name.split(' ')[0]}!
-                  </h2>
-                  <p className="text-xs sm:text-sm text-muted-foreground">
-                    Connect, collaborate, and grow with the SGS Gita Connect Alumni Network
-                  </p>
-                </div>
-                <div className="flex items-center space-x-2 sm:space-x-3">
-                  {/* Status Badges */}
-                  <div className="flex items-center space-x-1">
-                    <Badge variant="default" className="text-xs px-2 py-1">
-                      {currentProfile.preferences.supportMode === 'offer' ? (
-                        <>
-                          <Users2 className="h-3 w-3 mr-1" />
-                          Offering
-                        </>
-                      ) : (
-                        <>
-                          <HelpCircle className="h-3 w-3 mr-1" />
-                          Seeking
-                        </>
-                      )}
-                    </Badge>
-                    <Badge variant="outline" className="text-xs px-2 py-1">
-                      {currentProfile.preferences.professionalStatus === 'student' ? (
-                        <>
-                          <GraduationCap className="h-3 w-3 mr-1" />
-                          Student
-                        </>
-                      ) : (
-                        <>
-                          <Briefcase className="h-3 w-3 mr-1" />
-                          Professional
-                        </>
-                      )}
-                    </Badge>
-                  </div>
-                  {/* Animated Visual */}
-                  <div className="relative h-12 w-12">
-                    <div className="absolute inset-0 bg-primary/20 rounded-full animate-pulse"></div>
-                    <div className="absolute inset-1 bg-primary/30 rounded-full animate-pulse" style={{ animationDelay: '200ms' }}></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-center">
-                        <p className="text-sm font-bold">{totalEngagement}</p>
-                        <p className="text-xs text-muted-foreground">Reach</p>
-                      </div>
-                    </div>
-                  </div>
-                  <Button variant="ghost" size="sm" onClick={() => navigate('/preferences')}>
-                    <Settings className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-
-              {/* Bottom Row - Metrics */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
-                <div className="flex items-center space-x-2">
-                  <div className="p-1 sm:p-1.5 bg-green-500/10 rounded">
-                    <TrendingUp className="h-3 w-3 text-green-500" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold">12</p>
-                    <p className="text-xs text-muted-foreground truncate">Connections</p>
-                    <p className="text-xs text-green-600 hidden sm:block">+3 this week</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  <div className="p-1 sm:p-1.5 bg-blue-500/10 rounded">
-                    <Star className="h-3 w-3 text-blue-500" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold">8</p>
-                    <p className="text-xs text-muted-foreground truncate">Help Given</p>
-                    <p className="text-xs text-blue-600 hidden sm:block">4.8 rating</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  <div className="p-1 sm:p-1.5 bg-purple-500/10 rounded">
-                    <Eye className="h-3 w-3 text-purple-500" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold">45</p>
-                    <p className="text-xs text-muted-foreground truncate">Profile Views</p>
-                    <p className="text-xs text-purple-600 hidden sm:block">+12% growth</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  <div className="p-1 sm:p-1.5 bg-primary/10 rounded">
-                    <Activity className="h-3 w-3 text-primary" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold">92%</p>
-                    <p className="text-xs text-muted-foreground truncate">Engagement</p>
-                    <Progress value={92} className="h-1.5 mt-1" />
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <WelcomeHero 
+          profile={currentProfile}
+          stats={stats}
+          totalEngagement={totalEngagement}
+        />
 
         {/* Main Content Area */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">

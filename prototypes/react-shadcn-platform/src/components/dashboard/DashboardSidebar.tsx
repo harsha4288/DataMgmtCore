@@ -1,95 +1,128 @@
 import { useNavigate } from 'react-router-dom'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
+import { Button } from '@/components/ui/button'
 import { 
-  Plus,
-  MessageSquare, 
+  Activity,
   Users,
-  Users2,
-  Star,
-  BookOpen,
-  Briefcase,
   GraduationCap,
-  UserPlus,
-  CheckCircle2,
+  Search,
+  Plus,
+  MessageSquare,
+  Star,
+  Target,
+  AlertCircle,
+  Heart,
+  Settings,
+  Briefcase,
   HelpCircle,
-  Eye,
+  ArrowUpRight
 } from 'lucide-react'
-import { ActiveTaskPanel } from './ActiveTaskPanel'
+import { type UserProfile } from '@/lib/mock-data/auth'
 
 interface DashboardSidebarProps {
-  stats: any;
-  domains: string[];
+  currentProfile: UserProfile
+  stats: {
+    chat: { totalUnread: number }
+  }
 }
 
-export function DashboardSidebar({ stats, domains }: DashboardSidebarProps) {
+export function DashboardSidebar({ currentProfile, stats }: DashboardSidebarProps) {
   const navigate = useNavigate()
 
-  const getActionIcon = (action: any) => {
-    const iconMap: { [key: string]: any } = {
-      connection_request: UserPlus,
-      mentoring_request: Users,
-      profile_review: Eye,
-      opportunity_response: Briefcase,
-      feedback_request: MessageSquare,
-      document_approval: CheckCircle2
+  const getDomainIcon = (domain: string) => {
+    const iconMap: Record<string, any> = {
+      'Healthcare': Heart,
+      'Engineering': Settings,
+      'Medical': Heart,
+      'Computer Science': Settings,
+      'Arts & Crafts': Star,
+      'Business': Briefcase,
+      'Education': GraduationCap,
     }
-    const Icon = iconMap[action.type] || HelpCircle
+    const Icon = iconMap[domain] || HelpCircle
     return <Icon className="h-4 w-4" />
   }
 
-  return (
-    <div className="w-80 space-y-6">
-      {/* Active Task Panel */}
-      <ActiveTaskPanel />
+  const getCategoryColor = (category: string) => {
+    const colorMap: Record<string, string> = {
+      'Healthcare': 'text-red-500',
+      'Engineering': 'text-blue-500',
+      'Medical': 'text-pink-500',
+      'Computer Science': 'text-purple-500',
+      'Arts & Crafts': 'text-yellow-500',
+      'Business': 'text-green-500',
+      'Education': 'text-indigo-500',
+    }
+    return colorMap[category] || 'text-gray-500'
+  }
 
+  return (
+    <div className="space-y-4 lg:space-y-6">
       {/* Quick Actions */}
       <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">Quick Actions</CardTitle>
+        <CardHeader className="pb-2 sm:pb-3">
+          <CardTitle className="text-sm sm:text-base font-semibold flex items-center">
+            <Activity className="h-4 w-4 mr-2 text-primary" />
+            Quick Actions
+          </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2">
+        <CardContent className="space-y-2 p-3 sm:p-6">
           <Button 
-            className="w-full justify-start" 
-            variant="outline" 
-            onClick={() => navigate('/create-posting')}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Share an Update
-          </Button>
-          <Button 
-            className="w-full justify-start" 
-            variant="outline" 
-            onClick={() => navigate('/chat')}
-          >
-            <MessageSquare className="h-4 w-4 mr-2" />
-            Start Conversation
-          </Button>
-          <Button 
-            className="w-full justify-start" 
-            variant="outline" 
+            className="w-full justify-start group min-h-[44px] text-sm" 
+            variant="default"
             onClick={() => navigate('/alumni-directory')}
           >
-            <Users className="h-4 w-4 mr-2" />
-            Browse Directory
+            <Users className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
+            <span className="truncate">Alumni Directory</span>
+            <Badge variant="secondary" className="ml-auto hidden sm:flex">
+              New
+            </Badge>
           </Button>
           <Button 
-            className="w-full justify-start" 
             variant="outline" 
-            onClick={() => navigate('/alumni-opportunities')}
+            className="w-full justify-start group min-h-[44px] text-sm"
+            onClick={() => navigate('/mentorship')}
           >
-            <Briefcase className="h-4 w-4 mr-2" />
-            Find Opportunities
+            <GraduationCap className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
+            <span className="truncate">Mentorship Platform</span>
           </Button>
           <Button 
-            className="w-full justify-start" 
             variant="outline" 
-            onClick={() => navigate('/alumni-profile')}
+            className="w-full justify-start group min-h-[44px] text-sm"
+            onClick={() => navigate('/browse-postings')}
           >
-            <Users2 className="h-4 w-4 mr-2" />
-            Update Profile
+            <Search className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
+            <span className="truncate">Browse Requests</span>
+          </Button>
+          <Button 
+            variant="outline" 
+            className="w-full justify-start group min-h-[44px] text-sm"
+            onClick={() => navigate('/create-posting')}
+          >
+            <Plus className="h-4 w-4 mr-2 group-hover:rotate-90 transition-transform" />
+            <span className="truncate">Create Posting</span>
+          </Button>
+          <Button 
+            variant="outline" 
+            className="w-full justify-start group min-h-[44px] text-sm"
+            onClick={() => navigate('/chat')}
+          >
+            <MessageSquare className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
+            <span className="truncate">Start Chat</span>
+            {stats.chat.totalUnread > 0 && (
+              <Badge variant="destructive" className="ml-auto">
+                {stats.chat.totalUnread}
+              </Badge>
+            )}
+          </Button>
+          <Button 
+            variant="outline" 
+            className="w-full justify-start group min-h-[44px] text-sm"
+            onClick={() => navigate('/express-interest')}
+          >
+            <Star className="h-4 w-4 mr-2 group-hover:rotate-12 transition-transform" />
+            <span className="truncate">Express Interest</span>
           </Button>
         </CardContent>
       </Card>
@@ -97,110 +130,98 @@ export function DashboardSidebar({ stats, domains }: DashboardSidebarProps) {
       {/* Domain Expertise */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center">
-            <BookOpen className="h-4 w-4 mr-2" />
-            Your Domains
+          <CardTitle className="text-base font-semibold flex items-center">
+            <Target className="h-4 w-4 mr-2 text-primary" />
+            Your Expertise Areas
           </CardTitle>
+          <CardDescription className="text-xs">
+            {currentProfile.preferences.domains.length}/5 domains selected
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            {domains.map((domain, index) => (
-              <div key={index} className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className={`w-2 h-2 rounded-full ${
-                    index === 0 ? 'bg-blue-500' : 
-                    index === 1 ? 'bg-green-500' : 
-                    index === 2 ? 'bg-purple-500' : 'bg-orange-500'
-                  }`} />
+          <div className="space-y-2">
+            {currentProfile.preferences.domains.map((domain, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-muted/50 transition-colors group"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className={`${getCategoryColor(domain)}`}>
+                    {getDomainIcon(domain)}
+                  </div>
                   <span className="text-sm font-medium">{domain}</span>
                 </div>
-                <Badge variant="outline" className="text-xs">
-                  {Math.floor(Math.random() * 20) + 5} connections
-                </Badge>
+                <div className="flex items-center space-x-2">
+                  <Badge variant="secondary" className="text-xs">
+                    Active
+                  </Badge>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 px-2 text-xs"
+                    onClick={() => {
+                      navigate('/preferences')
+                    }}
+                  >
+                    Manage
+                  </Button>
+                </div>
               </div>
             ))}
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="w-full mt-3"
-              onClick={() => navigate('/alumni-profile')}
-            >
-              <GraduationCap className="h-4 w-4 mr-2" />
-              Add More Domains
-            </Button>
           </div>
+          <Button 
+            variant="link" 
+            className="w-full mt-3 text-xs"
+            onClick={() => navigate('/preferences')}
+          >
+            Manage Domains
+            <ArrowUpRight className="h-3 w-3 ml-1" />
+          </Button>
         </CardContent>
       </Card>
 
       {/* Pending Actions */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center justify-between">
-            <span>Pending Actions</span>
-            <Badge variant={(stats.notifications?.actionRequired || 0) > 0 ? "destructive" : "secondary"}>
-              {stats.notifications?.actionRequired || 0}
-            </Badge>
+          <CardTitle className="text-base font-semibold flex items-center">
+            <AlertCircle className="h-4 w-4 mr-2 text-yellow-500" />
+            Pending Actions
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {(stats.notifications?.actionRequired || 0) > 0 ? (
-            <div className="space-y-3">
-              {[
-                { type: 'connection_request', title: 'Connection Request', subtitle: 'From Rajesh Kumar' },
-                { type: 'mentoring_request', title: 'Mentoring Opportunity', subtitle: 'Tech startup guidance' },
-                { type: 'profile_review', title: 'Profile Completion', subtitle: '85% complete' }
-              ].slice(0, stats.notifications?.actionRequired || 0).map((action, index) => (
-                <div key={index} className="flex items-start space-x-3 p-2 rounded-lg bg-muted/50">
-                  <div className="flex-shrink-0 mt-1">
-                    {getActionIcon(action)}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{action.title}</p>
-                    <p className="text-xs text-muted-foreground truncate">{action.subtitle}</p>
-                  </div>
-                  <Button size="sm" variant="ghost" className="flex-shrink-0">
-                    View
-                  </Button>
-                </div>
-              ))}
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="w-full"
-                onClick={() => navigate('/responses')}
-              >
-                View All Actions
-              </Button>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-secondary hover:bg-secondary/80 border border-border group cursor-pointer transition-colors"
+                 onClick={() => navigate('/responses')}>
+              <div className="flex items-center space-x-3">
+                <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
+                <span className="text-sm font-medium">Review responses</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Badge variant="secondary" className="text-xs">3</Badge>
+                <ArrowUpRight className="h-4 w-4 opacity-50 group-hover:opacity-100 transition-opacity" />
+              </div>
             </div>
-          ) : (
-            <div className="text-center py-6">
-              <CheckCircle2 className="h-8 w-8 text-green-500 mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground">All caught up!</p>
-              <p className="text-xs text-muted-foreground">No pending actions</p>
+            <div className="flex items-center justify-between p-3 rounded-lg bg-secondary hover:bg-secondary/80 border border-border group cursor-pointer transition-colors"
+                 onClick={() => navigate('/profile')}>
+              <div className="flex items-center space-x-3">
+                <div className="h-2 w-2 rounded-full bg-blue-500"></div>
+                <span className="text-sm font-medium">Complete profile</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Badge variant="secondary" className="text-xs">85%</Badge>
+                <ArrowUpRight className="h-4 w-4 opacity-50 group-hover:opacity-100 transition-opacity" />
+              </div>
             </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Profile Completeness */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">Profile Strength</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm">Completeness</span>
-              <span className="text-sm font-medium">{stats.profile?.completeness || 85}%</span>
-            </div>
-            <Progress value={stats.profile?.completeness || 85} className="h-2" />
-            <div className="flex items-center space-x-2">
-              <Star className="h-4 w-4 text-yellow-500" />
-              <span className="text-sm text-muted-foreground">
-                {(stats.profile?.completeness || 85) > 90 ? 'Excellent' :
-                 (stats.profile?.completeness || 85) > 75 ? 'Great' :
-                 (stats.profile?.completeness || 85) > 50 ? 'Good' : 'Needs improvement'}
-              </span>
+            <div className="flex items-center justify-between p-3 rounded-lg bg-secondary hover:bg-secondary/80 border border-border group cursor-pointer transition-colors"
+                 onClick={() => navigate('/ratings')}>
+              <div className="flex items-center space-x-3">
+                <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                <span className="text-sm font-medium">Rate helpers</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Badge variant="secondary" className="text-xs">2</Badge>
+                <ArrowUpRight className="h-4 w-4 opacity-50 group-hover:opacity-100 transition-opacity" />
+              </div>
             </div>
           </div>
         </CardContent>

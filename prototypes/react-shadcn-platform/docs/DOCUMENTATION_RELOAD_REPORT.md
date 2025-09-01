@@ -1,34 +1,34 @@
 # Documentation System Reload Report
 
-**Generated:** 2025-08-31T20:24:02.677Z
+**Generated:** 2025-09-01T12:42:46.768Z
 **Mode:** LIVE RUN
 
 ## Summary Statistics
 
-- **Files Processed:** 62
-- **Documents Created:** 62
+- **Files Processed:** 66
+- **Documents Created:** 66
 - **Entities Updated:** 0
 - **ID Mappings Created:** 8
 - **Errors:** 0
 
 ## Database State
 
-- **Total Entities:** 51
-- **Total Documents:** 62
+- **Total Entities:** 58
+- **Total Documents:** 66
 - **ID Mappings:** 8
-- **Orphaned Documents:** 62
-- **Entities Without Documents:** 51
+- **Orphaned Documents:** 66
+- **Entities Without Documents:** 53
 
 ## Status Distribution
 
-- **draft:** 34
-- **approved:** 26
+- **draft:** 39
+- **approved:** 25
 - **review:** 2
 
 ## Validation Results
 
-⚠️ Document-Entity Linking: 62 orphaned
-⚠️ Entity Documentation: 51 missing docs
+⚠️ Document-Entity Linking: 66 orphaned
+⚠️ Entity Documentation: 53 missing docs
 ✅ Processing Errors: None
 
 ## Next Steps

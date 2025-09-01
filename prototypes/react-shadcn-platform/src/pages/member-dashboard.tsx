@@ -127,11 +127,31 @@ export default function MemberDashboard() {
   }))
 
   // Safe access to profile data with fallbacks
-  const domains = currentProfile?.preferences?.domains || ['Technology', 'Data Science', 'Artificial Intelligence']
+  // const domains = currentProfile?.preferences?.domains || ['Technology', 'Data Science', 'Artificial Intelligence']
+
+  const handleSwitchProfile = () => {
+    // Navigate to profile selection or show profile switcher
+    navigate('/profile-selection')
+  }
+
+  const handleLogout = () => {
+    // Clear authentication and navigate to login
+    localStorage.removeItem('currentProfile')
+    localStorage.removeItem('authenticated')
+    navigate('/login')
+  }
 
   return (
     <div className="min-h-screen bg-background">
-      <DashboardHeader stats={stats} profile={currentProfile} />
+      <DashboardHeader 
+        currentProfile={currentProfile} 
+        stats={{
+          notifications: stats.notifications || { unread: 0 },
+          chat: stats.messages || { totalUnread: 0 }
+        }}
+        onSwitchProfile={handleSwitchProfile}
+        onLogout={handleLogout}
+      />
       
       <WelcomeHeroSection 
         profile={currentProfile} 
@@ -140,19 +160,28 @@ export default function MemberDashboard() {
       />
 
       <div className="container mx-auto px-4 sm:px-6 py-8">
-        <div className="flex gap-8">
-          <DashboardSidebar stats={stats} domains={domains} />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+          <div className="lg:col-span-4 xl:col-span-3">
+            <DashboardSidebar 
+              currentProfile={currentProfile} 
+              stats={{
+                chat: stats.messages || { totalUnread: 0 }
+              }}
+            />
+          </div>
           
-          <DashboardTabs 
-            stats={stats}
-            personalizedPosts={personalizedPosts}
-            recentActivity={recentActivity}
-            recommendedConnections={recommendedConnections}
-            trendingPosts={trendingPosts}
-            connections={conversations}
-            conversationPreviews={conversationPreviews}
-            profile={currentProfile}
-          />
+          <div className="lg:col-span-8 xl:col-span-9">
+            <DashboardTabs 
+              stats={stats}
+              personalizedPosts={personalizedPosts}
+              recentActivity={recentActivity}
+              recommendedConnections={recommendedConnections}
+              trendingPosts={trendingPosts}
+              connections={conversations}
+              conversationPreviews={conversationPreviews}
+              profile={currentProfile}
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -79,9 +79,9 @@ process.on('SIGTERM', () => shutdown('SIGTERM'));
 
 async function startDevelopmentEnvironment() {
   try {
-    // Start GraphQL Server (port 3004)
-    console.log('📊 Starting GraphQL Server (port 3004)...');
-    graphqlProcess = spawn('node', ['scripts/graphql-server.cjs'], {
+    // Start GraphQL Server (port 3006) - New Modular Server
+    console.log('📊 Starting GraphQL Server (port 3006)...');
+    graphqlProcess = spawn('node', ['scripts/graphql-server-new.cjs'], {
       cwd: path.join(__dirname, '..'),
       stdio: ['inherit', 'pipe', 'pipe']
     });
@@ -117,7 +117,7 @@ async function startDevelopmentEnvironment() {
     console.log('\n⏳ Waiting for APIs to be ready...\n');
     
     const healthChecks = await Promise.allSettled([
-      healthCheck(3004, 'GraphQL Server'),
+      healthCheck(3006, 'GraphQL Server'),
       healthCheck(3005, 'Validation Server')
     ]);
 
