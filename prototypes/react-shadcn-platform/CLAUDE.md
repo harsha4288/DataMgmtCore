@@ -7,17 +7,53 @@
 
 ## 🚀 CURRENT PROJECT STATUS
 
-### Active Phase: Phase 5
+### Active Phase: Managed by Active Context System
+**Current Active Task:** Check `.claude/active-context.json` for current task
+
+## 🎯 ACTIVE TASK MANAGEMENT
+
+### ❗ PRIMARY TASK IDENTIFICATION RULES
+
+**WHEN ASKED "WHAT'S THE CURRENT TASK" OR SIMILAR:**
+1. **ALWAYS** check `.claude/active-context.json` or run `node scripts/sync-claude-context.cjs export`
+2. **USE** the active context as the primary source of truth (all tasks migrated to database)
+
+### 🔗 ACTIVE CONTEXT REFERENCES
+
+- `@active` - References the current active task from `.claude/active-context.json`
+- `@entity:TASK-123` - References specific entity by ID
+- Always check active context before starting work
+
+### 📋 ACTIVE CONTEXT WORKFLOW
+
+```bash
+# Check current active task
+node scripts/sync-claude-context.cjs export
+
+# List available entities
+node scripts/sync-claude-context.cjs list
+
+# Set active task (typically done from dashboard)
+node scripts/sync-claude-context.cjs set TASK-123
+
+# Clear active task
+node scripts/sync-claude-context.cjs clear
+```
+
+**Auto-Generated Documentation:**
+- `docs/active/current-task.md` - Active task details
+- `docs/active/related-entities.md` - Related entities
+- `docs/active/context-history.md` - Activity history
 
 ## 📋 DEVELOPMENT LIFECYCLE WORKFLOW
 
 ### 1. Task Initiation
 **AUTOMATIC ACTIONS WHEN STARTING A TASK:**
-- Check PROGRESS.md for current task details
+- **FIRST** Check `.claude/active-context.json` or run `node scripts/sync-claude-context.cjs export` for active task
 - Create task documentation folder if needed
 - Run `npm run workflow:check` to verify environment
 - Create todo list for task breakdown
-- Mark task as "in_progress" in PROGRESS.md
+- Update task status in active context system
 
 ### 2. Implementation Phase
 **DURING DEVELOPMENT:**
@@ -65,7 +101,7 @@ Quality Checks: ✅ Lint | ✅ TypeCheck | ✅ Theme | ✅ Manual Testing"
 
 ### Context Awareness
 **I WILL AUTOMATICALLY:**
-1. Check current phase and task from PROGRESS.md
+1. Check current active task from `.claude/active-context.json` (primary source of truth)
 2. Reference relevant documentation and guidelines
 3. Track progress using TodoWrite tool
 4. Run quality checks before suggesting completion
@@ -74,8 +110,8 @@ Quality Checks: ✅ Lint | ✅ TypeCheck | ✅ Theme | ✅ Manual Testing"
 ### Task Progression
 **AUTOMATIC TASK FLOW:**
 ```
-Start Task → Update PROGRESS.md → Implement → Quality Checks → 
-Manual Testing → User Approval → Git Commit → Update PROGRESS.md → Next Task
+Start Task → Check Active Context → Implement → Quality Checks → 
+Manual Testing → User Approval → Git Commit → Update Task Status → Next Task
 ```
 
 ### Quality Standards

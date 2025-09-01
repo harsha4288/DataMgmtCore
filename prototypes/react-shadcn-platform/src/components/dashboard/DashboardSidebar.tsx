@@ -17,6 +17,7 @@ import {
   HelpCircle,
   Eye,
 } from 'lucide-react'
+import { ActiveTaskPanel } from './ActiveTaskPanel'
 
 interface DashboardSidebarProps {
   stats: any;
@@ -41,6 +42,9 @@ export function DashboardSidebar({ stats, domains }: DashboardSidebarProps) {
 
   return (
     <div className="w-80 space-y-6">
+      {/* Active Task Panel */}
+      <ActiveTaskPanel />
+
       {/* Quick Actions */}
       <Card>
         <CardHeader className="pb-3">

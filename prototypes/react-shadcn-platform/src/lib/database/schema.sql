@@ -146,47 +146,149 @@ CREATE INDEX IF NOT EXISTS idx_entities_board ON entities(board_id);
 CREATE INDEX IF NOT EXISTS idx_entities_hierarchy ON entities(hierarchy_path);
 CREATE INDEX IF NOT EXISTS idx_entities_level ON entities(level);
 CREATE INDEX IF NOT EXISTS idx_entities_priority ON entities(priority);
+CREATE INDEX IF NOT EXISTS idx_entities_assignee ON entities(assignee);
+CREATE INDEX IF NOT EXISTS idx_entities_completion ON entities(completion_date);
 
--- Board prefixes for unique entity ID generation
+-- Indexes for entity relationships table
+CREATE INDEX IF NOT EXISTS idx_relationships_source ON entity_relationships(source_entity_id);
+CREATE INDEX IF NOT EXISTS idx_relationships_target ON entity_relationships(target_entity_id);
+CREATE INDEX IF NOT EXISTS idx_relationships_type ON entity_relationships(relationship_type);
+CREATE INDEX IF NOT EXISTS idx_relationships_active ON entity_relationships(is_active);
+CREATE INDEX IF NOT EXISTS idx_relationships_strength ON entity_relationships(strength);
+CREATE INDEX IF NOT EXISTS idx_relationships_created ON entity_relationships(created_at);
+
+-- Indexes for working context table
+CREATE INDEX IF NOT EXISTS idx_working_context_user ON working_context(user_id);
+CREATE INDEX IF NOT EXISTS idx_working_context_entity ON working_context(current_entity_id);
+CREATE INDEX IF NOT EXISTS idx_working_context_activity ON working_context(last_activity);
+
+-- Board prefixes for unique entity ID generation (JIRA-style)
 CREATE TABLE IF NOT EXISTS boards (
-    prefix VARCHAR(50) PRIMARY KEY,
-    current_counter INTEGER DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    prefix VARCHAR(50) PRIMARY KEY,         -- PET, CORE.UI, ALUMNI.DB, RAJ.WORK, etc.
+    name TEXT NOT NULL,                     -- "UI Components", "Alumni Database"
+    description TEXT,                       -- Board purpose and scope
+    current_counter INTEGER DEFAULT 0,      -- Next ID number to assign
+    default_entity_type TEXT DEFAULT 'task', -- Default type for new entities
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_active BOOLEAN DEFAULT 1,            -- Whether board is currently in use
+    
+    -- Constraints
+    CHECK (default_entity_type IN ('project', 'phase', 'task', 'subtask', 'issue', 'epic', 'specification', 'quality_report', 'review', 'approval'))
 );
 
 -- Unified entities table (replaces tasks and phases tables)
 -- This is the foundation for Task 5.8.4 Entity Interconnection Architecture
 CREATE TABLE IF NOT EXISTS entities (
     id TEXT PRIMARY KEY,                    -- TASK-1459, phase-5, ISSUE-123, etc.
-    entity_type TEXT NOT NULL,              -- 'phase', 'task', 'subtask', 'issue', 'epic'
+    entity_type TEXT NOT NULL,              -- 'project', 'phase', 'task', 'subtask', 'issue', 'epic', 'specification', 'quality_report', 'review', 'approval'
     parent_id TEXT,                         -- Hierarchical relationships
     board_id TEXT NOT NULL,                 -- Board prefix used for this entity
     title TEXT NOT NULL,                    -- Display title
     description TEXT,                       -- Full description/content
     status TEXT NOT NULL,                   -- 'pending', 'in_progress', 'completed', 'blocked', 'cancelled'
     priority TEXT,                          -- 'low', 'medium', 'high', 'critical'
-    level INTEGER NOT NULL,                 -- Hierarchy depth (0=phase, 1=task, 2=subtask, etc.)
-    hierarchy_path TEXT NOT NULL,           -- Full path like "phase-5/TASK-1459/TASK-1460"
+    level INTEGER NOT NULL,                 -- Hierarchy depth (0=project, 1=phase, 2=task, 3=subtask, etc.)
+    hierarchy_path TEXT NOT NULL,           -- Full path like "/project-1/phase-5/TASK-1459/TASK-1460"
     sort_order INTEGER,                     -- Display ordering within parent
-    metadata TEXT,                          -- JSON blob for entity-specific data
-    progress INTEGER DEFAULT 0,             -- 0-100 completion percentage
+    
+    -- Enhanced metadata and attributes
+    metadata TEXT DEFAULT '{}',             -- JSON blob for entity-specific data
+    attributes TEXT DEFAULT '{}',           -- JSON blob for custom fields per entity type
+    
+    -- Progress and lifecycle
+    progress INTEGER DEFAULT 0,             -- 0-100 completion percentage (calculated, not hardcoded)
     estimated_hours REAL,                   -- Time estimates
     actual_hours REAL,                      -- Actual time spent
+    start_date DATE,                        -- Entity start date
+    due_date DATE,                          -- Entity due date
+    completion_date DATE,                   -- When entity was completed
+    
+    -- Assignment and tracking
     assignee TEXT,                          -- Who is responsible
     labels TEXT DEFAULT '[]',               -- JSON array of labels/tags
     dependencies TEXT DEFAULT '[]',         -- JSON array of dependency IDs
+    
+    -- Audit trail
+    created_by TEXT DEFAULT 'system',       -- Who created this entity
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_by TEXT DEFAULT 'system',       -- Who last updated this entity
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     
     -- Constraints
     CHECK (progress >= 0 AND progress <= 100),
     CHECK (status IN ('pending', 'in_progress', 'completed', 'blocked', 'cancelled')),
-    CHECK (entity_type IN ('phase', 'task', 'subtask', 'issue', 'epic')),
-    CHECK (level >= 0),
+    CHECK (entity_type IN ('project', 'phase', 'task', 'subtask', 'issue', 'epic', 'specification', 'quality_report', 'review', 'approval')),
+    CHECK (level >= 0 AND level <= 10),     -- Prevent excessive nesting
     
     -- Foreign key relationships
     FOREIGN KEY (parent_id) REFERENCES entities(id) ON DELETE SET NULL,
     FOREIGN KEY (board_id) REFERENCES boards(prefix) ON DELETE RESTRICT
+);
+
+-- Entity Relationships table - The heart of Task 5.8.4 Entity Interconnection Architecture
+CREATE TABLE IF NOT EXISTS entity_relationships (
+    id TEXT PRIMARY KEY,                    -- Unique relationship ID
+    source_entity_id TEXT NOT NULL,        -- Entity that starts the relationship
+    target_entity_id TEXT NOT NULL,        -- Entity that receives the relationship
+    relationship_type TEXT NOT NULL,       -- Type of relationship
+    
+    -- Relationship metadata
+    strength REAL DEFAULT 0.5,             -- Confidence/strength of relationship (0-1)
+    is_auto_generated BOOLEAN DEFAULT 0,   -- Whether relationship was auto-generated
+    validated_by TEXT,                     -- Who validated this relationship
+    validated_at DATETIME,                 -- When relationship was validated
+    impact_score REAL DEFAULT 0.5,         -- How much one entity affects the other (0-1)
+    
+    -- Lifecycle management
+    is_active BOOLEAN DEFAULT 1,           -- Whether relationship is currently active
+    created_by TEXT DEFAULT 'system',      -- Who created the relationship
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_by TEXT DEFAULT 'system',      -- Who last updated the relationship
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Bidirectional support
+    is_bidirectional BOOLEAN DEFAULT 0,    -- Whether relationship works both ways
+    reverse_type TEXT,                     -- Type when viewed from target to source
+    
+    -- Additional context
+    context TEXT DEFAULT '{}',             -- JSON metadata for relationship context
+    tags TEXT DEFAULT '[]',                -- JSON array of relationship tags
+    notes TEXT,                            -- Human-readable notes about the relationship
+    
+    -- Constraints
+    CHECK (strength >= 0 AND strength <= 1),
+    CHECK (impact_score >= 0 AND impact_score <= 1),
+    CHECK (relationship_type IN ('depends_on', 'blocks', 'relates_to', 'implements', 'tests', 'resolves', 'references', 'derived_from', 'supersedes', 'validates', 'generates', 'parent_of', 'child_of', 'duplicate_of', 'similar_to')),
+    CHECK (source_entity_id != target_entity_id), -- Prevent self-references
+    
+    -- Foreign key relationships
+    FOREIGN KEY (source_entity_id) REFERENCES entities(id) ON DELETE CASCADE,
+    FOREIGN KEY (target_entity_id) REFERENCES entities(id) ON DELETE CASCADE,
+    
+    -- Unique constraint to prevent duplicate relationships
+    UNIQUE (source_entity_id, target_entity_id, relationship_type)
+);
+
+-- Working Context table - Track current user focus and context
+CREATE TABLE IF NOT EXISTS working_context (
+    id TEXT PRIMARY KEY,                    -- Context session ID
+    user_id TEXT DEFAULT 'default',        -- User identifier (for multi-user support)
+    current_entity_id TEXT NOT NULL,       -- Entity currently being worked on
+    context_breadcrumb TEXT NOT NULL,      -- JSON array of breadcrumb path
+    focus_start_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    last_activity DATETIME DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Context metadata
+    work_type TEXT,                        -- 'implementation', 'review', 'planning', etc.
+    context_notes TEXT,                    -- Notes about current work context
+    session_metadata TEXT DEFAULT '{}',    -- JSON blob for session-specific data
+    
+    -- Activity tracking
+    time_spent_minutes INTEGER DEFAULT 0,  -- Time spent on this entity
+    activity_count INTEGER DEFAULT 0,      -- Number of activities in this context
+    last_checkpoint DATETIME,              -- Last major progress checkpoint
+    
+    FOREIGN KEY (current_entity_id) REFERENCES entities(id) ON DELETE CASCADE
 );
 
 -- Initial seed data for demonstration
