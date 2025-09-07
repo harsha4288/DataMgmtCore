@@ -1,4 +1,16 @@
-#!/usr/bin/env node
+
+// Shebang removed for Windows compatibility
+
+// === SAFETY CHECK: Ensure script is run from correct directory ===
+const expectedDir = require('path').resolve(__dirname, '..');
+const cwd = process.cwd();
+if (cwd !== expectedDir) {
+  console.error('\n❌ ERROR: You are running this script from the wrong directory.');
+  console.error('   Current working directory: ' + cwd);
+  console.error('   Expected:                 ' + expectedDir);
+  console.error('\nPlease cd to the correct project folder and try again.');
+  process.exit(1);
+}
 
 /**
  * Development Server with Universal Project Management System

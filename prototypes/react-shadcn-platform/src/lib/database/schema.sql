@@ -55,57 +55,11 @@ CREATE TABLE IF NOT EXISTS quality_standards (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tasks (Replacing .md files in docs/progress/)
-CREATE TABLE IF NOT EXISTS tasks (
-    id TEXT PRIMARY KEY,
-    name TEXT NOT NULL,
-    description TEXT NOT NULL,
-    phase_id TEXT NOT NULL,
-    status TEXT NOT NULL CHECK (status IN ('pending', 'in_progress', 'completed', 'blocked', 'cancelled')) DEFAULT 'pending',
-    priority TEXT NOT NULL CHECK (priority IN ('low', 'medium', 'high', 'critical')) DEFAULT 'medium',
-    estimated_hours REAL,
-    actual_hours REAL,
-    assignee TEXT,
-    labels TEXT NOT NULL DEFAULT '[]', -- JSON array
-    dependencies TEXT NOT NULL DEFAULT '[]', -- JSON array
-    subtasks TEXT NOT NULL DEFAULT '[]', -- JSON array
-    progress INTEGER NOT NULL DEFAULT 0 CHECK (progress >= 0 AND progress <= 100),
-    completion_date DATE,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+-- Legacy tasks table removed
 
--- Phases (Replacing phase .md files)
-CREATE TABLE IF NOT EXISTS phases (
-    id TEXT PRIMARY KEY,
-    name TEXT NOT NULL,
-    description TEXT NOT NULL,
-    status TEXT NOT NULL CHECK (status IN ('pending', 'in_progress', 'completed')) DEFAULT 'pending',
-    start_date DATE,
-    end_date DATE,
-    completion_date DATE,
-    total_estimated_hours REAL,
-    total_actual_hours REAL,
-    dependencies TEXT NOT NULL DEFAULT '[]', -- JSON array
-    progress INTEGER NOT NULL DEFAULT 0 CHECK (progress >= 0 AND progress <= 100),
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+-- Legacy phases table removed
 
--- Issues (Quality assurance and bug tracking)
-CREATE TABLE IF NOT EXISTS issues (
-    id TEXT PRIMARY KEY,
-    title TEXT NOT NULL,
-    description TEXT NOT NULL,
-    type TEXT NOT NULL CHECK (type IN ('bug', 'feature', 'improvement', 'qa', 'uat')) DEFAULT 'qa',
-    status TEXT NOT NULL CHECK (status IN ('open', 'in_progress', 'resolved', 'closed')) DEFAULT 'open',
-    severity TEXT NOT NULL CHECK (severity IN ('low', 'medium', 'high', 'critical')) DEFAULT 'medium',
-    related_tasks TEXT NOT NULL DEFAULT '[]', -- JSON array
-    resolution_attempts TEXT NOT NULL DEFAULT '[]', -- JSON array
-    resolved_date DATE,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+-- Legacy issues table removed
 
 -- Documents (Replacing .md files entirely - Phase 2.1)
 CREATE TABLE IF NOT EXISTS documents (
@@ -141,10 +95,10 @@ CREATE INDEX IF NOT EXISTS idx_documents_status ON documents(status);
 CREATE INDEX IF NOT EXISTS idx_documents_type ON documents(type);
 CREATE INDEX IF NOT EXISTS idx_entities_type ON entities(entity_type);
 CREATE INDEX IF NOT EXISTS idx_entities_status ON entities(status);
-CREATE INDEX IF NOT EXISTS idx_entities_parent ON entities(parent_id);
+-- idx_entities_parent removed - now using entity_relationships
 CREATE INDEX IF NOT EXISTS idx_entities_board ON entities(board_id);
-CREATE INDEX IF NOT EXISTS idx_entities_hierarchy ON entities(hierarchy_path);
-CREATE INDEX IF NOT EXISTS idx_entities_level ON entities(level);
+-- idx_entities_hierarchy removed - now using entity_relationships
+-- idx_entities_level removed - level calculated dynamically
 CREATE INDEX IF NOT EXISTS idx_entities_priority ON entities(priority);
 CREATE INDEX IF NOT EXISTS idx_entities_assignee ON entities(assignee);
 CREATE INDEX IF NOT EXISTS idx_entities_completion ON entities(completion_date);
@@ -181,14 +135,13 @@ CREATE TABLE IF NOT EXISTS boards (
 CREATE TABLE IF NOT EXISTS entities (
     id TEXT PRIMARY KEY,                    -- TASK-1459, phase-5, ISSUE-123, etc.
     entity_type TEXT NOT NULL,              -- 'project', 'phase', 'task', 'subtask', 'issue', 'epic', 'specification', 'quality_report', 'review', 'approval'
-    parent_id TEXT,                         -- Hierarchical relationships
+    -- parent_id removed - now using entity_relationships table
     board_id TEXT NOT NULL,                 -- Board prefix used for this entity
     title TEXT NOT NULL,                    -- Display title
     description TEXT,                       -- Full description/content
     status TEXT NOT NULL,                   -- 'pending', 'in_progress', 'completed', 'blocked', 'cancelled'
     priority TEXT,                          -- 'low', 'medium', 'high', 'critical'
-    level INTEGER NOT NULL,                 -- Hierarchy depth (0=project, 1=phase, 2=task, 3=subtask, etc.)
-    hierarchy_path TEXT NOT NULL,           -- Full path like "/project-1/phase-5/TASK-1459/TASK-1460"
+    -- level and hierarchy_path removed - now calculated dynamically from entity_relationships
     sort_order INTEGER,                     -- Display ordering within parent
     
     -- Enhanced metadata and attributes
@@ -218,10 +171,8 @@ CREATE TABLE IF NOT EXISTS entities (
     CHECK (progress >= 0 AND progress <= 100),
     CHECK (status IN ('pending', 'in_progress', 'completed', 'blocked', 'cancelled')),
     CHECK (entity_type IN ('project', 'phase', 'task', 'subtask', 'issue', 'epic', 'specification', 'quality_report', 'review', 'approval')),
-    CHECK (level >= 0 AND level <= 10),     -- Prevent excessive nesting
-    
+    -- Constraints adjusted for simplified schema
     -- Foreign key relationships
-    FOREIGN KEY (parent_id) REFERENCES entities(id) ON DELETE SET NULL,
     FOREIGN KEY (board_id) REFERENCES boards(prefix) ON DELETE RESTRICT
 );
 

@@ -372,7 +372,7 @@ export function TanStackTableDemo() {
   return (
     <div className="w-full space-y-6 p-6">
       <div className="space-y-2">
-        <h2 className="text-2xl font-bold tracking-tight">TanStack Advanced Table Demo</h2>
+        <h2 className="text-2xl font-bold tracking-tight">TanStack asdfAdvanced Table Demo</h2>
         <p className="text-muted-foreground">
           Volunteer management with frozen columns, sorting, resizing, inline editing, and full theme support.
         </p>

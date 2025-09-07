@@ -117,7 +117,7 @@ class DatabaseConnection {
     }
 
     try {
-      const result = this.db.prepare('SELECT COUNT(*) as count FROM sqlite_master WHERE type="table"').get();
+      const result = this.db.prepare("SELECT COUNT(*) as count FROM sqlite_master WHERE type='table'").get();
       return {
         connected: this.isConnected,
         tablesCount: result.count,

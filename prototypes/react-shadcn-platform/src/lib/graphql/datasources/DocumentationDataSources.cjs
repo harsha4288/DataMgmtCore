@@ -53,42 +53,46 @@ class DocumentationDataSources {
       const stmt = this.db.prepare(`
         SELECT * FROM entities 
         WHERE entity_type = 'phase' 
+          AND board_id = 'SGS-PROJECT-BOARD'
         ORDER BY id
       `);
       const phaseRows = stmt.all();
       
       const phases = [];
       for (const row of phaseRows) {
-        // Get tasks for this phase
-        const taskStmt = this.db.prepare(`
-          SELECT * FROM entities 
-          WHERE entity_type IN ('task', 'subtask') 
-          AND (parent_id = ? OR hierarchy_path LIKE ?)
-          ORDER BY level, sort_order
-        `);
-        const taskRows = taskStmt.all(row.id, `${row.hierarchy_path}%`);
-        
-        const tasks = taskRows.map(taskRow => ({
-          id: taskRow.id,
-          name: taskRow.title,
-          description: taskRow.description || '',
-          phase_id: row.id,
-          status: taskRow.status,
-          progress: taskRow.progress || 0,
-          completion_date: taskRow.updated_at ? taskRow.updated_at.split('T')[0] : null,
-          subtasks: [], // Will be populated by parseSubtasksFromDB if needed
-          metadata: {
-            status: taskRow.status,
-            priority: taskRow.priority || 'medium',
-            assignee: taskRow.assignee,
-            labels: taskRow.labels ? JSON.parse(taskRow.labels) : [],
-            dependencies: taskRow.dependencies ? JSON.parse(taskRow.dependencies) : [],
-            estimated_hours: taskRow.estimated_hours,
-            actual_hours: taskRow.actual_hours
-          },
-          created_at: taskRow.created_at,
-          updated_at: taskRow.updated_at
-        }));
+        // Use entity_relationships table to find tasks for this phase
+        let tasks = [];
+        try {
+          // Get tasks related to this phase via relationships
+          const relationshipStmt = this.db.prepare(`
+            SELECT e.* FROM entities e
+            JOIN entity_relationships er ON e.id = er.target_entity_id
+            WHERE er.source_entity_id = ? 
+              AND e.entity_type = 'task'
+              AND er.relationship_type IN ('parent_of', 'contains')
+              AND er.is_active = 1
+            ORDER BY e.sort_order, e.id
+          `);
+          let taskRows = relationshipStmt.all(row.id);
+          
+          // Fallback: If no relationships found, try pattern matching for task IDs
+          if (taskRows.length === 0) {
+            // For phases like "phase-0", look for tasks starting with "TASK-0."
+            const phaseNumber = row.id.replace(/^(PHASE-|phase-)/, '');
+            const taskPatternStmt = this.db.prepare(`
+              SELECT * FROM entities
+              WHERE entity_type = 'task' 
+                AND (id LIKE ? OR id LIKE ?)
+              ORDER BY sort_order, id
+            `);
+            taskRows = taskPatternStmt.all(`TASK-${phaseNumber}.%`, `TASK-${phaseNumber}`);
+          }
+          
+          tasks = this.buildEntityHierarchy(taskRows, row.id);
+        } catch (taskError) {
+          console.warn(`Could not load tasks for phase ${row.id}:`, taskError.message);
+          tasks = [];
+        }
 
         const phase = {
           id: row.id,
@@ -151,9 +155,9 @@ class DocumentationDataSources {
         metadata: {
           status: row.status,
           priority: row.priority || 'medium',
-          assignee: row.assignee,
-          labels: row.labels ? JSON.parse(row.labels) : [],
-          dependencies: row.dependencies ? JSON.parse(row.dependencies) : [],
+          assignee: row.assignee || '',
+          labels: this.parseJsonField(row.labels, []),
+          dependencies: this.parseJsonField(row.dependencies, []),
           estimated_hours: row.estimated_hours,
           actual_hours: row.actual_hours
         },
@@ -232,6 +236,113 @@ class DocumentationDataSources {
   }
 
   // Helper methods
+  parseJsonField(field, defaultValue = []) {
+    if (!field || field === 'null' || field === '[]') {
+      return defaultValue;
+    }
+    try {
+      return JSON.parse(field);
+    } catch (e) {
+      console.warn('Failed to parse JSON field:', field, e.message);
+      return defaultValue;
+    }
+  }
+
+  buildEntityHierarchy(entityRows, parentId = null) {
+    try {
+      const result = entityRows.filter(row => row.entity_type === 'task').map(row => {
+        // Load subtasks for this task using relationships
+        let subtasks = [];
+        try {
+          const subtaskStmt = this.db.prepare(`
+            SELECT e.* FROM entities e
+            JOIN entity_relationships er ON e.id = er.target_entity_id
+            WHERE er.source_entity_id = ? 
+              AND e.entity_type = 'subtask'
+              AND er.relationship_type = 'parent_of'
+              AND er.is_active = 1
+            ORDER BY e.sort_order, e.id
+          `);
+          const subtaskRows = subtaskStmt.all(row.id);
+          
+          subtasks = subtaskRows.map(subtaskRow => ({
+            id: subtaskRow.id,
+            name: subtaskRow.title || '',
+            completed: subtaskRow.status === 'completed',
+            description: subtaskRow.description || '',
+            status: subtaskRow.status || 'pending',
+            progress: subtaskRow.progress || 0
+          }));
+        } catch (subtaskError) {
+          console.warn(`Could not load subtasks for task ${row.id}:`, subtaskError.message);
+          subtasks = [];
+        }
+
+        // Load relationships for this task
+        let relationships = [];
+        try {
+          const relationshipStmt = this.db.prepare(`
+            SELECT * FROM entity_relationships
+            WHERE (source_entity_id = ? OR target_entity_id = ?)
+              AND is_active = 1
+            ORDER BY relationship_type
+          `);
+          const relationshipRows = relationshipStmt.all(row.id, row.id);
+          
+          relationships = relationshipRows
+            .filter(relRow => relRow.source_entity_id && relRow.target_entity_id && relRow.relationship_type) // Filter out invalid relationships
+            .map(relRow => ({
+              id: relRow.id || `rel-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+              sourceEntityId: relRow.source_entity_id,
+              targetEntityId: relRow.target_entity_id,
+              relationshipType: relRow.relationship_type,
+              strength: relRow.strength || 0.5,
+              impactScore: relRow.impact_score || 0.5,
+              isActive: relRow.is_active === 1,
+              isBidirectional: relRow.is_bidirectional === 1,
+              reverseType: relRow.reverse_type || null,
+              context: relRow.context || null,
+              tags: this.parseJsonField(relRow.tags, []),
+              notes: relRow.notes || null
+            }));
+        } catch (relationshipError) {
+          console.warn(`Could not load relationships for task ${row.id}:`, relationshipError.message);
+          relationships = [];
+        }
+        
+        return {
+          id: row.id,
+          name: row.title || '',
+          description: row.description || '',
+          phase_id: parentId,
+          status: row.status || 'pending',
+          progress: row.progress || 0,
+          completion_date: row.status === 'completed' ? (row.updated_at ? row.updated_at.split('T')[0] : null) : null,
+          subtasks,
+          documents: [], // Will be loaded by separate document resolver
+          relationships,
+          metadata: {
+            status: row.status || 'pending',
+            priority: row.priority || 'medium',
+            assignee: row.assignee || '',
+            labels: this.parseJsonField(row.labels, []),
+            dependencies: this.parseJsonField(row.dependencies, []),
+            estimated_hours: row.estimated_hours || 0,
+            actual_hours: row.actual_hours || 0
+          },
+          created_at: row.created_at,
+          updated_at: row.updated_at,
+          entity_type: row.entity_type
+        };
+      });
+      
+      return result;
+    } catch (error) {
+      console.error('Error in buildEntityHierarchy:', error);
+      return [];
+    }
+  }
+
   parsePhaseStatus(status) {
     // Map database statuses to GraphQL enum values
     const statusMap = {
@@ -329,6 +440,95 @@ class DocumentationDataSources {
         completion_percentage: 0,
         avg_task_completion_time: null
       };
+    }
+  }
+
+  // Document methods required by GraphQL resolvers
+  async getDocumentsByEntity(entityId, entityType) {
+    try {
+      if (!this.db) {
+        console.warn('Database not available for document queries');
+        return [];
+      }
+
+      const stmt = this.db.prepare(`
+        SELECT * FROM documents 
+        WHERE entity_id = ? AND entity_type = ?
+        ORDER BY version DESC, updated_at DESC
+      `);
+      const documentRows = stmt.all(entityId, entityType);
+
+      return documentRows.map(row => ({
+        id: row.id,
+        title: row.title,
+        content: row.content,
+        type: row.type,
+        status: row.status,
+        entityId: row.entity_id,
+        entityType: row.entity_type,
+        author: row.author,
+        version: row.version,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      }));
+    } catch (error) {
+      console.error('Error loading documents by entity:', error);
+      return [];
+    }
+  }
+
+  async getDocument(id) {
+    try {
+      if (!this.db) {
+        console.warn('Database not available for document queries');
+        return null;
+      }
+
+      const stmt = this.db.prepare(`
+        SELECT * FROM documents 
+        WHERE id = ?
+      `);
+      const row = stmt.get(id);
+
+      if (!row) return null;
+
+      return {
+        id: row.id,
+        title: row.title,
+        content: row.content,
+        type: row.type,
+        status: row.status,
+        entityId: row.entity_id,
+        entityType: row.entity_type,
+        author: row.author,
+        version: row.version,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      };
+    } catch (error) {
+      console.error('Error loading document:', error);
+      return null;
+    }
+  }
+
+  async getDocumentContent(entityId, entityType) {
+    try {
+      const documents = await this.getDocumentsByEntity(entityId, entityType);
+      if (documents.length === 0) return null;
+      
+      // Return the latest document's content
+      return {
+        content: documents[0].content,
+        metadata: {
+          title: documents[0].title,
+          author: documents[0].author,
+          version: documents[0].version,
+          lastUpdated: documents[0].updatedAt
+        }
+      };
+    } catch (error) {
+      console.error('Error loading document content:', error);
+      return null;
     }
   }
 

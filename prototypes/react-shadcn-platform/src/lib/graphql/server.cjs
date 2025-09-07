@@ -60,7 +60,14 @@ class GraphQLServer {
           db: this.db
         },
         cors: {
-          origin: ['http://localhost:3000', 'http://localhost:3001'],
+          origin: [
+            'http://localhost:3000', 
+            'http://localhost:3001', 
+            'http://localhost:5173',
+            /^http:\/\/192\.168\.1\.\d+:5173$/,  // Allow network access
+            /^http:\/\/localhost:\d+$/,          // Allow any localhost port
+            /^http:\/\/127\.0\.0\.1:\d+$/        // Allow any 127.0.0.1 port
+          ],
           credentials: true
         }
       });
